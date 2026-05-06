@@ -1910,7 +1910,7 @@ function calcBin() {
     <div id="loadQuoteList"></div>
     <div class="gap"></div>
   </div>
-</div> <button class="gen-btn" id="genBtn" onclick="generatePDF()">⬇ Download Quote PDF</button>
+<button onclick="sendQuoteToInvoice()" style="background:transparent;border:1px solid #2e6da4;border-radius:6px;color:#4a90d9;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase;width:100%;margin-bottom:10px">🧾 Send to Invoice</button></div> <button class="gen-btn" id="genBtn" onclick="generatePDF()">⬇ Download Quote PDF</button>
   <div id="statusMsg"></div>
   <div class="gap"></div>
 </div>
@@ -2358,7 +2358,21 @@ function generatePDF() {
   }
 }
 
-// ===== SUPABASE INVOICE SYNC =====
+// ===== SEND QUOTE TO INVOICE =====
+function sendQuoteToInvoice() {
+  document.getElementById('inv-client').value = document.getElementById('clientName').value || '';
+  document.getElementById('inv-address').value = document.getElementById('clientAddress').value || '';
+  document.getElementById('inv-desc').value = document.getElementById('jobTitle').value || '';
+  document.getElementById('inv-date').valueAsDate = new Date();
+  const due = new Date(); due.setDate(due.getDate() + 7);
+  document.getElementById('inv-due').valueAsDate = due;
+  const quoteNum = document.getElementById('quoteNum').value || '';
+  document.getElementById('inv-num').value = 'INV-' + quoteNum;
+  invItems = materials.map(m => ({ desc: m.name, qty: m.qty || 1, price: m.price || 0 }));
+  if (typeof renderInvItems === 'function') renderInvItems();
+  switchTab3('invoice');
+  showToast('✓ Quote sent to Invoice!');
+}// ===== SUPABASE INVOICE SYNC =====
 function getInvoiceData() {
   return {
     client: document.getElementById('inv-client').value,
