@@ -2372,7 +2372,39 @@ function sendQuoteToInvoice() {
   if (typeof renderInvItems === 'function') renderInvItems();
   switchTab3('invoice');
   showToast('✓ Quote sent to Invoice!');
-}// ===== SUPABASE INVOICE SYNC =====
+// ===== INVOICE ITEMS =====
+var invItems = [];
+
+function renderInvItems() {
+  var el = document.getElementById('inv-items-list');
+  if (!el) return;
+  el.innerHTML = '';
+  invItems.forEach((item, i) => {
+    var row = document.createElement('div');
+    row.className = 'mat-row';
+    row.innerHTML = `
+      <input class="mat-name" type="text" placeholder="Description" value="${item.desc || ''}" oninput="invItems[${i}].desc=this.value;calcInvoice()">
+      <input class="mat-qty" type="number" placeholder="Qty" value="${item.qty || 1}" min="1" oninput="invItems[${i}].qty=this.value;calcInvoice()">
+      <input class="mat-price" type="number" placeholder="$0" value="${item.price || 0}" oninput="invItems[${i}].price=this.value;calcInvoice()">
+      <button class="mat-remove" onclick="invItems.splice(${i},1);renderInvItems()">×</button>`;
+    el.appendChild(row);
+  });
+  calcInvoice();
+}
+
+function addInvItem() {
+  invItems.push({desc:'', qty:1, price:0});
+  renderInvItems();
+}
+
+function calcInvoice() {
+  var subtotal = invItems.reduce((s,i) => s + (parseFloat(i.price)||0)*(parseFloat(i.qty)||1), 0);
+  var gst = subtotal * 0.10;
+  var total = subtotal + gst;
+  document.getElementById('inv-subtotal').textContent = fmt(subtotal);
+  document.getElementById('inv-gst').textContent = fmt(gst);
+  document.getElementById('inv-total').textContent = fmt(total);
+}}// ===== SUPABASE INVOICE SYNC =====
 function getInvoiceData() {
   return {
     client: document.getElementById('inv-client').value,
