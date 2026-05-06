@@ -2356,7 +2356,115 @@ function generatePDF() {
   }
 }
 
-// Init
+// ===== SUPABASE QUOTE SYNC =====
+const SB_URL = 'https://vgegsaarmzuqpacisbrl.supabase.co';
+const SB_KEY = 'sb_publishable_wk9jv_8MPmgdM2NvIHclOg_nJDtlZlX';
+
+function getQuoteData() {
+  return {
+    clientName: document.getElementById('clientName').value,
+    clientAddress: document.getElementById('clientAddress').value,
+    quoteNum: document.getElementById('quoteNum').value,
+    issueDate: document.getElementById('issueDate').value,
+    validDate: document.getElementById('validDate').value,
+    depositPct: document.getElementById('depositPct').value,
+    jobTitle: document.getElementById('jobTitle').value,
+    hours: document.getElementById('hours').value,
+    wage: document.getElementById('wage').value,
+    overheads: document.getElementById('overheads').value,
+    margin: document.getElementById('margin').value,
+    markup: document.getElementById('markupToggle').checked,
+    itemise: document.getElementById('itemiseToggle').checked,
+    scopeLines, exclusions, materials
+  };
+}
+
+function loadQuoteData(d) {
+  document.getElementById('clientName').value = d.clientName || '';
+  document.getElementById('clientAddress').value = d.clientAddress || '';
+  document.getElementById('quoteNum').value = d.quoteNum || '';
+  document.getElementById('issueDate').value = d.issueDate || '';
+  document.getElementById('validDate').value = d.validDate || '';
+  document.getElementById('depositPct').value = d.depositPct || 50;
+  document.getElementById('jobTitle').value = d.jobTitle || '';
+  document.getElementById('hours').value = d.hours || 0;
+  document.getElementById('wage').value = d.wage || 100;
+  document.getElementById('overheads').value = d.overheads || 7;
+  document.getElementById('margin').value = d.margin || 20;
+  document.getElementById('markupToggle').checked = d.markup !== false;
+  document.getElementById('itemiseToggle').checked = d.itemise || false;
+  scopeLines = d.scopeLines || [];
+  exclusions = d.exclusions || [];
+  materials = d.materials || [];
+  renderScope(); renderExclusions(); renderMats(); recalc();
+}
+
+async function saveQuote() {
+  const data = getQuoteData();
+  const name = data.clientName || 'Unnamed';
+  const id = 'quote_' + (data.quoteNum || Date.now());
+  const label = name + ' — Quote ' + (data.quoteNum || '') + ' (' + new Date().toLocaleDateString('en-AU') + ')';
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/gg_quotes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Prefer': 'resolution=merge-duplicates' },
+      body: JSON.stringify({ id, name: label, data, updated_at: new Date().toISOString() })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('✓ Quote saved to cloud!');
+  } catch(e) { showToast('⚠ Could not save to cloud'); console.error(e); }
+}
+
+async function showLoadQuotes() {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/gg_quotes?select=id,name,updated_at&order=updated_at.desc`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+    });
+    const rows = await res.json();
+    if (!rows.length) { showToast('No saved quotes found'); return; }
+    const modal = document.getElementById('loadQuoteModal');
+    const list = document.getElementById('loadQuoteList');
+    list.innerHTML = rows.map(r => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:14px;color:var(--cream);flex:1;padding-right:10px">${r.name}</span>
+        <div style="display:flex;gap:8px">
+          <button onclick="loadQuoteById('${r.id}')" style="background:var(--green);border:none;border-radius:4px;color:white;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;padding:7px 14px;text-transform:uppercase">Load</button>
+          <button onclick="confirmDeleteQuote('${r.id}','${r.name.replace(/'/g,"\\'")}')" style="background:transparent;border:1px solid #9e3a2e;border-radius:4px;color:#c0392b;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;padding:7px 14px;text-transform:uppercase">🗑</button>
+        </div>
+      </div>`).join('');
+    modal.classList.add('show');
+  } catch(e) { showToast('⚠ Could not load quotes'); console.error(e); }
+}
+
+function confirmDeleteQuote(id, name) {
+  if (confirm('Delete "' + name + '"?\n\nThis cannot be undone.')) { deleteQuote(id); }
+}
+
+async function deleteQuote(id) {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/gg_quotes?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+    });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('✓ Quote deleted');
+    showLoadQuotes();
+  } catch(e) { showToast('⚠ Could not delete'); console.error(e); }
+}
+
+async function loadQuoteById(id) {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/gg_quotes?id=eq.${id}&select=data`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+    });
+    const rows = await res.json();
+    if (!rows.length) { showToast('Quote not found'); return; }
+    loadQuoteData(rows[0].data);
+    document.getElementById('loadQuoteModal').classList.remove('show');
+    switchTab3('quote');
+    showToast('✓ Quote loaded!');
+  } catch(e) { showToast('⚠ Could not load quote'); console.error(e); }
+}// Init
 document.getElementById('issueDate').valueAsDate = new Date();
 const validDate2 = new Date(); validDate2.setDate(validDate2.getDate()+7);
 document.getElementById('validDate').valueAsDate = validDate2;
