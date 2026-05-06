@@ -3823,5 +3823,38 @@ window.addEventListener('load', function() {
   renderInvItems();
 });
 </script>
-</body>
+<script>
+function confirmDeleteQuote(id, name) {
+  if (confirm('Delete "' + name + '"?\n\nThis cannot be undone.')) {
+    deleteQuote(id);
+  }
+}
+async function deleteQuote(id) {
+  try {
+    const res = await fetch('https://vgegsaarmzuqpacisbrl.supabase.co/rest/v1/gg_quotes?id=eq.' + id, {
+      method: 'DELETE',
+      headers: { 'apikey': 'sb_publishable_wk9jv_8MPmgdM2NvIHclOg_nJDtlZlX', 'Authorization': 'Bearer sb_publishable_wk9jv_8MPmgdM2NvIHclOg_nJDtlZlX' }
+    });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('✓ Quote deleted');
+    showLoadQuotes();
+  } catch(e) { showToast('⚠ Could not delete'); console.error(e); }
+}
+function confirmDeleteInvoice(id, name) {
+  if (confirm('Delete "' + name + '"?\n\nThis cannot be undone.')) {
+    deleteInvoice(id);
+  }
+}
+async function deleteInvoice(id) {
+  try {
+    const res = await fetch('https://vgegsaarmzuqpacisbrl.supabase.co/rest/v1/gg_invoices?id=eq.' + id, {
+      method: 'DELETE',
+      headers: { 'apikey': 'sb_publishable_wk9jv_8MPmgdM2NvIHclOg_nJDtlZlX', 'Authorization': 'Bearer sb_publishable_wk9jv_8MPmgdM2NvIHclOg_nJDtlZlX' }
+    });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('✓ Invoice deleted');
+    showLoadInvoices();
+  } catch(e) { showToast('⚠ Could not delete'); console.error(e); }
+}
+</script></body>
 </html>
