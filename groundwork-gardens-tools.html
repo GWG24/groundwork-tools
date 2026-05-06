@@ -1898,7 +1898,17 @@ function calcBin() {
     <div class="toggle-label">Show itemised breakdown on quote<small>Turn off to show total price only</small></div>
     <label class="toggle"><input type="checkbox" id="itemiseToggle"><span class="toggle-slider"></span></label>
   </div>
-  <button class="gen-btn" id="genBtn" onclick="generatePDF()">⬇ Download Quote PDF</button>
+  <div style="display:flex;gap:10px;margin-bottom:10px">
+  <button onclick="saveQuote()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">☁ Save Quote</button>
+  <button onclick="showLoadQuotes()" style="flex:1;background:transparent;border:1px solid #2e6da4;border-radius:6px;color:#4a90d9;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">📂 Load Quote</button>
+</div>
+<div class="overlay" id="loadQuoteModal">
+  <div class="modal">
+    <div class="modal-title">Saved Quotes <button class="modal-close" onclick="document.getElementById('loadQuoteModal').classList.remove('show')">×</button></div>
+    <div id="loadQuoteList"></div>
+    <div class="gap"></div>
+  </div>
+</div><button class="gen-btn" id="genBtn" onclick="generatePDF()">⬇ Download Quote PDF</button>
   <div id="statusMsg"></div>
   <div class="gap"></div>
 </div>
