@@ -3659,7 +3659,17 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="toggle-label">Show itemised breakdown<small>Turn off to show total only</small></div>
     <label class="toggle"><input type="checkbox" id="inv-itemise"><span class="toggle-slider"></span></label>
   </div>
-  <button class="gen-btn" onclick="generateInvoicePDF()">⬇ Download Invoice PDF</button>
+  <div style="display:flex;gap:10px;margin-bottom:10px">
+  <button onclick="saveInvoice()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">☁ Save Invoice</button>
+  <button onclick="showLoadInvoices()" style="flex:1;background:transparent;border:1px solid #2e6da4;border-radius:6px;color:#4a90d9;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">📂 Load Invoice</button>
+</div>
+<div class="overlay" id="loadInvoiceModal">
+  <div class="modal">
+    <div class="modal-title">Saved Invoices <button class="modal-close" onclick="document.getElementById('loadInvoiceModal').classList.remove('show')">×</button></div>
+    <div id="loadInvoiceList"></div>
+    <div class="gap"></div>
+  </div>
+</div><button class="gen-btn" onclick="generateInvoicePDF()">⬇ Download Invoice PDF</button>
   <div id="inv-status-msg" style="text-align:center;font-size:13px;color:var(--green-bright);margin-top:10px;min-height:20px"></div>
   <div class="gap"></div>
 </div>
