@@ -859,6 +859,2181 @@
 
 </div><!-- end tab-calc -->
 
+<!-- ==================== CALCULATOR TAB ==================== -->
+<div class="tab-panel" id="tab-calc">
+
+<div class="section">
+  <div class="section-title">Select Job Types</div>
+  <div class="job-pills">
+    <div class="pill active" onclick="togglePill(this,'quickcalc')">📐 m² & m³ Calc</div>
+    <div class="pill active" onclick="togglePill(this,'concrete')">🪨 Concrete Slab</div>
+    <div class="pill active" onclick="togglePill(this,'garden')">🌿 Garden Beds</div>
+    <div class="pill active" onclick="togglePill(this,'irrigation')">💧 Irrigation</div>
+    <div class="pill active" onclick="togglePill(this,'retaining')">🧱 Retaining Wall</div>
+    <div class="pill active" onclick="togglePill(this,'turf')">🟩 Turf / Lawn</div>
+    <div class="pill active" onclick="togglePill(this,'fencing')">🪵 Fencing</div>
+    <div class="pill active" onclick="togglePill(this,'planting')">🌱 Planting</div>
+    <div class="pill active" onclick="togglePill(this,'drainage')">🌊 Drainage</div>
+    <div class="pill active" onclick="togglePill(this,'paving')">🟫 Paving</div>
+    <div class="pill active" onclick="togglePill(this,'decking')">🪵 Decking</div>
+    <div class="pill active" onclick="togglePill(this,'pathway')">🛤️ Pathways</div>
+    <div class="pill active" onclick="togglePill(this,'pergola')">🏠 Pergola</div>
+    <div class="pill active" onclick="togglePill(this,'excavation')">🚜 Excavation</div>
+    <div class="pill active" onclick="togglePill(this,'artificial')">🎯 Artificial Grass</div>
+    <div class="pill active" onclick="togglePill(this,'steps')">🪜 Steps</div>
+    <div class="pill active" onclick="togglePill(this,'lighting')">💡 Garden Lighting</div>
+    <div class="pill active" onclick="togglePill(this,'bin')">🗑️ Bin / Waste</div>
+  </div>
+</div>
+
+<!-- QUICK CALC -->
+<div class="section" id="sec-quickcalc">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('quickcalc')">
+      <div class="job-icon">📐</div>
+      <div class="job-title">Quick m² & m³ Calculator</div>
+      <div class="job-badge" id="badge-quickcalc"></div>
+      <div class="job-toggle open" id="toggle-quickcalc">▾</div>
+    </div>
+    <div class="job-body open" id="body-quickcalc">
+      <div style="margin-bottom:16px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--green-bright);margin-bottom:10px">📏 Area Calculator (m²)</div>
+        <div class="input-grid">
+          <div class="field"><label>Length (m)</label><input type="number" id="qc-l1" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Width (m)</label><input type="number" id="qc-w1" placeholder="0" oninput="calcQuick()"></div>
+        </div>
+        <div class="field"><label>Result</label>
+          <div id="qc-area" style="background:var(--green-leaf);border:1px solid var(--green);border-radius:4px;padding:9px 14px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--white)">0.00 m²</div>
+        </div>
+      </div>
+      <div style="height:1px;background:#e8f0e6;margin-bottom:16px"></div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:10px">📦 Volume Calculator (m³)</div>
+        <div class="input-grid">
+          <div class="field"><label>Length (m)</label><input type="number" id="qc-l2" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Width (m)</label><input type="number" id="qc-w2" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Depth (mm)</label><input type="number" id="qc-d2" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Result</label>
+            <div id="qc-vol" style="background:rgba(192,122,47,0.15);border:1px solid var(--orange);border-radius:4px;padding:9px 14px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--orange)">0.000 m³</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONCRETE SLAB -->
+<div class="section" id="sec-concrete">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('concrete')">
+      <div class="job-icon">🪨</div><div class="job-title">Concrete Slab</div>
+      <div class="job-badge" id="badge-concrete"></div><div class="job-toggle open" id="toggle-concrete">▾</div>
+    </div>
+    <div class="job-body open" id="body-concrete">
+      <div class="input-grid three">
+        <div class="field"><label>Length (m)</label><input type="number" id="c-length" placeholder="0" oninput="calcConcrete()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="c-width" placeholder="0" oninput="calcConcrete()"></div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="c-depth" value="100" oninput="calcConcrete()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Mesh type</label>
+          <select id="c-mesh" onchange="calcConcrete()">
+            <option value="SL62">SL62 (light)</option><option value="SL72">SL72 (standard)</option>
+            <option value="SL82">SL82 (heavy)</option><option value="none">No mesh</option>
+          </select>
+        </div>
+        <div class="field"><label>Crushed rock depth (mm)</label><input type="number" id="c-rock" value="100" oninput="calcConcrete()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('cp')">⚙ Edit material prices <span id="cp-arrow">▾</span></div>
+      <div class="prices-grid" id="cp">
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="cp-concrete" value="230" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Crushed rock ($/m³)</label><input type="number" id="cp-rock" value="65" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL62 ($/sheet)</label><input type="number" id="cp-mesh62" value="22" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL72 ($/sheet)</label><input type="number" id="cp-mesh72" value="28" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL82 ($/sheet)</label><input type="number" id="cp-mesh82" value="38" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Formwork ($/lm)</label><input type="number" id="cp-form" value="4" oninput="calcConcrete()"></div>
+      </div>
+      <div class="result-list" id="res-concrete"></div>
+      <div class="hours-estimate" id="hrs-concrete" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-concrete-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- GARDEN BEDS -->
+<div class="section" id="sec-garden">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('garden')">
+      <div class="job-icon">🌿</div><div class="job-title">Garden Beds</div>
+      <div class="job-badge" id="badge-garden"></div><div class="job-toggle open" id="toggle-garden">▾</div>
+    </div>
+    <div class="job-body open" id="body-garden">
+      <div class="input-grid three">
+        <div class="field"><label>Area (m²)</label><input type="number" id="g-area" placeholder="0" oninput="calcGarden()"></div>
+        <div class="field"><label>Soil depth (mm)</label><input type="number" id="g-soil" value="300" oninput="calcGarden()"></div>
+        <div class="field"><label>Mulch depth (mm)</label><input type="number" id="g-mulch" value="75" oninput="calcGarden()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Garden edging (lm)</label><input type="number" id="g-edging" placeholder="0" oninput="calcGarden()"></div>
+        <div class="field"><label>Weed mat (m²)</label><input type="number" id="g-weedmat" placeholder="0" oninput="calcGarden()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('gp')">⚙ Edit material prices <span id="gp-arrow">▾</span></div>
+      <div class="prices-grid" id="gp">
+        <div class="price-field"><label>Premium soil ($/m³)</label><input type="number" id="gp-soil" value="85" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Mulch ($/m³)</label><input type="number" id="gp-mulch" value="55" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Compost ($/bag 25L)</label><input type="number" id="gp-compost" value="12" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Edging ($/lm)</label><input type="number" id="gp-edging" value="8" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="gp-weedmat" value="3.50" oninput="calcGarden()"></div>
+      </div>
+      <div class="result-list" id="res-garden"></div>
+      <div class="hours-estimate" id="hrs-garden" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-garden-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- IRRIGATION -->
+<div class="section" id="sec-irrigation">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('irrigation')">
+      <div class="job-icon">💧</div><div class="job-title">Irrigation System</div>
+      <div class="job-badge" id="badge-irrigation"></div><div class="job-toggle open" id="toggle-irrigation">▾</div>
+    </div>
+    <div class="job-body open" id="body-irrigation">
+      <div class="input-grid">
+        <div class="field"><label>No. of zones</label><input type="number" id="i-zones" value="1" min="1" oninput="calcIrrigation()"></div>
+        <div class="field"><label>20mm poly pipe (lm)</label><input type="number" id="i-pipe" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>13mm dripline (lm)</label><input type="number" id="i-dripline" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>Spray heads</label><input type="number" id="i-heads" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>Drip emitters</label><input type="number" id="i-drip" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>1-way tap timer</label><input type="number" id="i-timer1" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>4-way tap timer</label><input type="number" id="i-timer4" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>Tap adapter manifold</label><input type="number" id="i-tapadapter" placeholder="0" oninput="calcIrrigation()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('ip')">⚙ Edit material prices <span id="ip-arrow">▾</span></div>
+      <div class="prices-grid" id="ip">
+        <div class="price-field"><label>20mm poly pipe ($/lm)</label><input type="number" id="ip-pipe" value="2.20" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Tap timer ($/unit)</label><input type="number" id="ip-timer" value="85" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Manifold 2-way ($/unit)</label><input type="number" id="ip-manifold" value="45" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Spray head ($/unit)</label><input type="number" id="ip-head" value="8.50" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Drip emitter ($/unit)</label><input type="number" id="ip-drip" value="1.80" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>13mm dripline ($/lm)</label><input type="number" id="ip-dripline" value="1.80" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>1-way tap timer ($)</label><input type="number" id="ip-timer1" value="65" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>4-way tap timer ($)</label><input type="number" id="ip-timer4" value="120" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Tap adapter ($)</label><input type="number" id="ip-tapadapter" value="35" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Fittings allowance ($)</label><input type="number" id="ip-fittings" value="45" oninput="calcIrrigation()"></div>
+      </div>
+      <div class="result-list" id="res-irrigation"></div>
+      <div class="hours-estimate" id="hrs-irrigation" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-irrigation-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- RETAINING WALL -->
+<div class="section" id="sec-retaining">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('retaining')">
+      <div class="job-icon">🧱</div><div class="job-title">Retaining Wall</div>
+      <div class="job-badge" id="badge-retaining"></div><div class="job-toggle open" id="toggle-retaining">▾</div>
+    </div>
+    <div class="job-body open" id="body-retaining">
+      <div class="input-grid">
+        <div class="field"><label>Length (lm)</label><input type="number" id="r-length" placeholder="0" oninput="calcRetaining()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="r-height" placeholder="0" oninput="calcRetaining()"></div>
+        <div class="field"><label>Post spacing (m)</label><input type="number" id="r-spacing" value="1.8" oninput="calcRetaining()"></div>
+        <div class="field"><label>Wall type</label>
+          <select id="r-type" onchange="calcRetaining()">
+            <option value="sleeper">Timber sleeper</option><option value="concrete">Concrete sleeper</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('rp')">⚙ Edit material prices <span id="rp-arrow">▾</span></div>
+      <div class="prices-grid" id="rp">
+        <div class="price-field"><label>H4 post 2.4m ($/unit)</label><input type="number" id="rp-post" value="38" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Timber sleeper ($/unit)</label><input type="number" id="rp-tsleeper" value="32" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Concrete sleeper ($/unit)</label><input type="number" id="rp-csleeper" value="65" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="rp-concrete" value="230" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Fixings ($)</label><input type="number" id="rp-fixings" value="40" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Drainage aggregate ($/m³)</label><input type="number" id="rp-agg" value="75" oninput="calcRetaining()"></div>
+      </div>
+      <div class="result-list" id="res-retaining"></div>
+      <div class="hours-estimate" id="hrs-retaining" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-retaining-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TURF -->
+<div class="section" id="sec-turf">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('turf')">
+      <div class="job-icon">🟩</div><div class="job-title">Turf / Lawn</div>
+      <div class="job-badge" id="badge-turf"></div><div class="job-toggle open" id="toggle-turf">▾</div>
+    </div>
+    <div class="job-body open" id="body-turf">
+      <div class="input-grid">
+        <div class="field"><label>Area (m²)</label><input type="number" id="t-area" placeholder="0" oninput="calcTurf()"></div>
+        <div class="field"><label>Turf type</label>
+          <select id="t-type" onchange="calcTurf()">
+            <option value="kik">Kikuyu</option><option value="buf">Buffalo</option>
+            <option value="cou">Couch</option><option value="zoy">Zoysia</option>
+          </select>
+        </div>
+        <div class="field"><label>Topsoil depth (mm)</label><input type="number" id="t-soil" value="100" oninput="calcTurf()"></div>
+        <div class="field"><label>Undersoil prep?</label>
+          <select id="t-prep" onchange="calcTurf()"><option value="yes">Yes</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('tp')">⚙ Edit material prices <span id="tp-arrow">▾</span></div>
+      <div class="prices-grid" id="tp">
+        <div class="price-field"><label>Kikuyu ($/m²)</label><input type="number" id="tp-kik" value="12" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Buffalo ($/m²)</label><input type="number" id="tp-buf" value="15" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Couch ($/m²)</label><input type="number" id="tp-cou" value="13" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Zoysia ($/m²)</label><input type="number" id="tp-zoy" value="18" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Topsoil ($/m³)</label><input type="number" id="tp-soil" value="75" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Starter fertiliser ($)</label><input type="number" id="tp-fert" value="35" oninput="calcTurf()"></div>
+      </div>
+      <div class="result-list" id="res-turf"></div>
+      <div class="hours-estimate" id="hrs-turf" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-turf-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FENCING -->
+<div class="section" id="sec-fencing">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('fencing')">
+      <div class="job-icon">🪵</div><div class="job-title">Fencing</div>
+      <div class="job-badge" id="badge-fencing"></div><div class="job-toggle open" id="toggle-fencing">▾</div>
+    </div>
+    <div class="job-body open" id="body-fencing">
+      <div class="input-grid">
+        <div class="field"><label>Length (lm)</label><input type="number" id="f-length" placeholder="0" oninput="calcFencing()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="f-height" value="1.8" oninput="calcFencing()"></div>
+        <div class="field"><label>Post spacing (m)</label><input type="number" id="f-spacing" value="2.4" oninput="calcFencing()"></div>
+        <div class="field"><label>Fence type</label>
+          <select id="f-type" onchange="calcFencing()">
+            <option value="paling">Timber paling</option><option value="colorbond">Colorbond</option><option value="pool">Pool/wire</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('fp')">⚙ Edit material prices <span id="fp-arrow">▾</span></div>
+      <div class="prices-grid" id="fp">
+        <div class="price-field"><label>H4 post ($/unit)</label><input type="number" id="fp-post" value="38" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Paling ($/unit)</label><input type="number" id="fp-paling" value="3.50" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Rail 4.2m ($/unit)</label><input type="number" id="fp-rail" value="22" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="fp-conc" value="9" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Fixings ($)</label><input type="number" id="fp-fix" value="35" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Colorbond panel ($/lm)</label><input type="number" id="fp-cb" value="85" oninput="calcFencing()"></div>
+      </div>
+      <div class="result-list" id="res-fencing"></div>
+      <div class="hours-estimate" id="hrs-fencing" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-fencing-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLANTING -->
+<div class="section" id="sec-planting">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('planting')">
+      <div class="job-icon">🌱</div><div class="job-title">Planting</div>
+      <div class="job-badge" id="badge-planting"></div><div class="job-toggle open" id="toggle-planting">▾</div>
+    </div>
+    <div class="job-body open" id="body-planting">
+      <div id="plantList"></div>
+      <button class="add-btn" onclick="addPlant()">+ Add Plant</button>
+      <div class="gap"></div>
+      <div class="input-grid">
+        <div class="field"><label>Potting mix bags</label><input type="number" id="pl-mix" placeholder="0" oninput="calcPlanting()"></div>
+        <div class="field"><label>Fertiliser tablets?</label>
+          <select id="pl-fert" onchange="calcPlanting()"><option value="yes">Yes</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pp')">⚙ Edit supply prices <span id="pp-arrow">▾</span></div>
+      <div class="prices-grid" id="pp">
+        <div class="price-field"><label>Potting mix ($/bag)</label><input type="number" id="pp-mix" value="14" oninput="calcPlanting()"></div>
+        <div class="price-field"><label>Fert tablets ($/pack)</label><input type="number" id="pp-fert" value="18" oninput="calcPlanting()"></div>
+      </div>
+      <div class="result-list" id="res-planting"></div>
+      <div class="hours-estimate" id="hrs-planting" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-planting-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DRAINAGE -->
+<div class="section" id="sec-drainage">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('drainage')">
+      <div class="job-icon">🌊</div><div class="job-title">Drainage</div>
+      <div class="job-badge" id="badge-drainage"></div><div class="job-toggle open" id="toggle-drainage">▾</div>
+    </div>
+    <div class="job-body open" id="body-drainage">
+      <div class="input-grid">
+        <div class="field"><label>Ag pipe run (lm)</label><input type="number" id="d-ag" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Channel drain (lm)</label><input type="number" id="d-channel" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Pits needed</label><input type="number" id="d-pits" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Scoria/aggregate (m³)</label><input type="number" id="d-scoria" placeholder="0" oninput="calcDrainage()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('dp')">⚙ Edit material prices <span id="dp-arrow">▾</span></div>
+      <div class="prices-grid" id="dp">
+        <div class="price-field"><label>Ag pipe 100mm ($/lm)</label><input type="number" id="dp-ag" value="4.50" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Channel drain ($/lm)</label><input type="number" id="dp-channel" value="35" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Pit 300x300 ($/unit)</label><input type="number" id="dp-pit" value="65" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Scoria ($/m³)</label><input type="number" id="dp-scoria" value="80" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Geotech fabric ($/m²)</label><input type="number" id="dp-geo" value="4" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Fittings allowance ($)</label><input type="number" id="dp-fit" value="40" oninput="calcDrainage()"></div>
+      </div>
+      <div class="result-list" id="res-drainage"></div>
+      <div class="hours-estimate" id="hrs-drainage" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-drainage-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAVING -->
+<div class="section" id="sec-paving">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('paving')">
+      <div class="job-icon">🟫</div><div class="job-title">Paving</div>
+      <div class="job-badge" id="badge-paving"></div><div class="job-toggle open" id="toggle-paving">▾</div>
+    </div>
+    <div class="job-body open" id="body-paving">
+      <div class="input-grid three">
+        <div class="field"><label>Area (m²)</label><input type="number" id="pv-area" placeholder="0" oninput="calcPaving()"></div>
+        <div class="field"><label>Paver type</label>
+          <select id="pv-type" onchange="calcPaving()">
+            <option value="concrete">Concrete paver</option><option value="travertine">Travertine</option>
+            <option value="bluestone">Bluestone</option><option value="porcelain">Porcelain tile</option><option value="brick">Clay brick</option>
+          </select>
+        </div>
+        <div class="field"><label>Edge restraint (lm)</label><input type="number" id="pv-edge" placeholder="0" oninput="calcPaving()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Paver size</label>
+          <select id="pv-size" onchange="paverSizeChange()">
+            <option value="0.16">400×400mm</option><option value="0.36">600×600mm</option>
+            <option value="0.18">600×300mm</option><option value="custom">Custom size</option>
+          </select>
+        </div>
+        <div class="field" id="pv-custom-wrap" style="display:none"><label>Custom (m² per paver)</label><input type="number" id="pv-custom-size" placeholder="e.g. 0.25" step="0.01" oninput="calcPaving()"></div>
+        <div class="field"><label>Sand bed depth (mm)</label><input type="number" id="pv-sand" value="30" oninput="calcPaving()"></div>
+        <div class="field"><label>Base (mm)</label><input type="number" id="pv-base" value="100" oninput="calcPaving()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pvp')">⚙ Edit material prices <span id="pvp-arrow">▾</span></div>
+      <div class="prices-grid" id="pvp">
+        <div class="price-field"><label>Concrete paver ($/m²)</label><input type="number" id="pvp-concrete" value="45" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Travertine ($/m²)</label><input type="number" id="pvp-travertine" value="95" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Bluestone ($/m²)</label><input type="number" id="pvp-bluestone" value="110" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Porcelain ($/m²)</label><input type="number" id="pvp-porcelain" value="85" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Clay brick ($/m²)</label><input type="number" id="pvp-brick" value="55" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Bedding sand ($/m³)</label><input type="number" id="pvp-sand" value="60" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Crusher dust ($/m³)</label><input type="number" id="pvp-base" value="65" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Edge restraint ($/lm)</label><input type="number" id="pvp-edge" value="6" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Grout/adhesive ($)</label><input type="number" id="pvp-grout" value="60" oninput="calcPaving()"></div>
+      </div>
+      <div class="result-list" id="res-paving"></div>
+      <div class="hours-estimate" id="hrs-paving" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-paving-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DECKING -->
+<div class="section" id="sec-decking">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('decking')">
+      <div class="job-icon">🪵</div><div class="job-title">Decking</div>
+      <div class="job-badge" id="badge-decking"></div><div class="job-toggle open" id="toggle-decking">▾</div>
+    </div>
+    <div class="job-body open" id="body-decking">
+      <div class="input-grid three">
+        <div class="field"><label>Length (m)</label><input type="number" id="dk-length" placeholder="0" oninput="calcDecking()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="dk-width" placeholder="0" oninput="calcDecking()"></div>
+        <div class="field"><label>Deck type</label>
+          <select id="dk-type" onchange="calcDecking()">
+            <option value="merbau">Merbau hardwood</option><option value="pine">Treated pine</option><option value="composite">Composite</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Deck height (m)</label><input type="number" id="dk-height" value="0.3" oninput="calcDecking()"></div>
+        <div class="field"><label>Handrail needed?</label>
+          <select id="dk-rail" onchange="calcDecking()"><option value="no">No</option><option value="yes">Yes</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('dkp')">⚙ Edit material prices <span id="dkp-arrow">▾</span></div>
+      <div class="prices-grid" id="dkp">
+        <div class="price-field"><label>Merbau boards ($/lm)</label><input type="number" id="dkp-merbau" value="18" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Treated pine ($/lm)</label><input type="number" id="dkp-pine" value="9" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Composite ($/lm)</label><input type="number" id="dkp-composite" value="28" oninput="calcDecking()"></div>
+        <div class="price-field"><label>H4 bearer/joist ($/lm)</label><input type="number" id="dkp-frame" value="8" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Post 100x100 ($/unit)</label><input type="number" id="dkp-post" value="45" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="dkp-conc" value="9" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Fixings/screws ($)</label><input type="number" id="dkp-fix" value="80" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Handrail ($/lm)</label><input type="number" id="dkp-rail" value="120" oninput="calcDecking()"></div>
+      </div>
+      <div class="result-list" id="res-decking"></div>
+      <div class="hours-estimate" id="hrs-decking" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-decking-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PATHWAYS -->
+<div class="section" id="sec-pathway">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('pathway')">
+      <div class="job-icon">🛤️</div><div class="job-title">Pathways</div>
+      <div class="job-badge" id="badge-pathway"></div><div class="job-toggle open" id="toggle-pathway">▾</div>
+    </div>
+    <div class="job-body open" id="body-pathway">
+      <div class="input-grid">
+        <div class="field"><label>Length (m)</label><input type="number" id="pw-length" placeholder="0" oninput="calcPathway()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="pw-width" value="1.2" oninput="calcPathway()"></div>
+        <div class="field"><label>Pathway type</label>
+          <select id="pw-type" onchange="calcPathway()">
+            <option value="gravel">Gravel/crushed granite</option><option value="stepping">Stepping stones</option>
+            <option value="dg">Decomposed granite</option><option value="bark">Bark chips</option>
+          </select>
+        </div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="pw-depth" value="75" oninput="calcPathway()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pwp')">⚙ Edit material prices <span id="pwp-arrow">▾</span></div>
+      <div class="prices-grid" id="pwp">
+        <div class="price-field"><label>Gravel ($/m³)</label><input type="number" id="pwp-gravel" value="70" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Stepping stones ($/unit)</label><input type="number" id="pwp-stepping" value="25" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Decomposed granite ($/m³)</label><input type="number" id="pwp-dg" value="85" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Bark chips ($/m³)</label><input type="number" id="pwp-bark" value="55" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="pwp-weed" value="3.50" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Edge restraint ($/lm)</label><input type="number" id="pwp-edge" value="6" oninput="calcPathway()"></div>
+      </div>
+      <div class="result-list" id="res-pathway"></div>
+      <div class="hours-estimate" id="hrs-pathway" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-pathway-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PERGOLA -->
+<div class="section" id="sec-pergola">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('pergola')">
+      <div class="job-icon">🏠</div><div class="job-title">Pergola / Shade Structure</div>
+      <div class="job-badge" id="badge-pergola"></div><div class="job-toggle open" id="toggle-pergola">▾</div>
+    </div>
+    <div class="job-body open" id="body-pergola">
+      <div class="input-grid three">
+        <div class="field"><label>Length (m)</label><input type="number" id="pg-length" placeholder="0" oninput="calcPergola()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="pg-width" placeholder="0" oninput="calcPergola()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="pg-height" value="2.4" oninput="calcPergola()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Material</label>
+          <select id="pg-type" onchange="calcPergola()">
+            <option value="pine">Treated pine</option><option value="hardwood">Hardwood</option><option value="steel">Steel/Aluminium</option>
+          </select>
+        </div>
+        <div class="field"><label>Roofing type</label>
+          <select id="pg-roof" onchange="calcPergola()">
+            <option value="open">Open (no roof)</option><option value="polycarbonate">Polycarbonate</option><option value="colorbond">Colorbond</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pgp')">⚙ Edit material prices <span id="pgp-arrow">▾</span></div>
+      <div class="prices-grid" id="pgp">
+        <div class="price-field"><label>Post 100x100 ($/unit)</label><input type="number" id="pgp-post" value="55" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Beam 190x45 ($/lm)</label><input type="number" id="pgp-beam" value="12" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Rafter 90x45 ($/lm)</label><input type="number" id="pgp-rafter" value="7" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="pgp-conc" value="9" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Fixings/brackets ($)</label><input type="number" id="pgp-fix" value="120" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Polycarbonate ($/m²)</label><input type="number" id="pgp-poly" value="45" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Colorbond ($/m²)</label><input type="number" id="pgp-cb" value="55" oninput="calcPergola()"></div>
+      </div>
+      <div class="result-list" id="res-pergola"></div>
+      <div class="hours-estimate" id="hrs-pergola" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-pergola-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXCAVATION -->
+<div class="section" id="sec-excavation">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('excavation')">
+      <div class="job-icon">🚜</div><div class="job-title">Excavation / Earthworks</div>
+      <div class="job-badge" id="badge-excavation"></div><div class="job-toggle open" id="toggle-excavation">▾</div>
+    </div>
+    <div class="job-body open" id="body-excavation">
+      <div class="input-grid">
+        <div class="field"><label>Area (m²)</label><input type="number" id="ex-area" placeholder="0" oninput="calcExcavation()"></div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="ex-depth" value="300" oninput="calcExcavation()"></div>
+        <div class="field"><label>No. of days (bobcat)</label><input type="number" id="ex-days" value="1" min="1" oninput="calcExcavation()"></div>
+        <div class="field"><label>Soil removal needed?</label>
+          <select id="ex-remove" onchange="calcExcavation()"><option value="yes">Yes — tip off site</option><option value="no">No — spread on site</option></select>
+        </div>
+        <div class="field"><label>Access type</label>
+          <select id="ex-access" onchange="calcExcavation()"><option value="good">Good (bobcat access)</option><option value="limited">Limited (hand dig)</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('exp')">⚙ Edit prices <span id="exp-arrow">▾</span></div>
+      <div class="prices-grid" id="exp">
+        <div class="price-field"><label>Bobcat hire ($/day)</label><input type="number" id="exp-bobcat" value="900" oninput="calcExcavation()"></div>
+        <div class="price-field"><label>Tip truck hire ($/load)</label><input type="number" id="exp-truck" value="350" oninput="calcExcavation()"></div>
+        <div class="price-field"><label>Tip fees ($/tonne)</label><input type="number" id="exp-tip" value="85" oninput="calcExcavation()"></div>
+      </div>
+      <div class="result-list" id="res-excavation"></div>
+      <div class="hours-estimate" id="hrs-excavation" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-excavation-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ARTIFICIAL GRASS -->
+<div class="section" id="sec-artificial">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('artificial')">
+      <div class="job-icon">🎯</div><div class="job-title">Artificial Grass</div>
+      <div class="job-badge" id="badge-artificial"></div><div class="job-toggle open" id="toggle-artificial">▾</div>
+    </div>
+    <div class="job-body open" id="body-artificial">
+      <div class="input-grid">
+        <div class="field"><label>Area (m²)</label><input type="number" id="ag-area" placeholder="0" oninput="calcArtificial()"></div>
+        <div class="field"><label>Grass quality</label>
+          <select id="ag-type" onchange="calcArtificial()">
+            <option value="standard">Standard (30mm)</option><option value="premium">Premium (40mm)</option><option value="luxury">Luxury (45mm)</option>
+          </select>
+        </div>
+        <div class="field"><label>Base depth (mm)</label><input type="number" id="ag-base" value="75" oninput="calcArtificial()"></div>
+        <div class="field"><label>Infill needed?</label>
+          <select id="ag-infill" onchange="calcArtificial()"><option value="yes">Yes (silica sand)</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('agp')">⚙ Edit material prices <span id="agp-arrow">▾</span></div>
+      <div class="prices-grid" id="agp">
+        <div class="price-field"><label>Standard grass ($/m²)</label><input type="number" id="agp-standard" value="28" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Premium grass ($/m²)</label><input type="number" id="agp-premium" value="42" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Luxury grass ($/m²)</label><input type="number" id="agp-luxury" value="58" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Crusher dust ($/m³)</label><input type="number" id="agp-base" value="65" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="agp-weed" value="3.50" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Silica sand infill ($/bag)</label><input type="number" id="agp-infill" value="22" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Joining tape ($/lm)</label><input type="number" id="agp-tape" value="8" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Nails/pegs ($)</label><input type="number" id="agp-nails" value="35" oninput="calcArtificial()"></div>
+      </div>
+      <div class="result-list" id="res-artificial"></div>
+      <div class="hours-estimate" id="hrs-artificial" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-artificial-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="section" id="sec-steps">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('steps')">
+      <div class="job-icon">🪜</div><div class="job-title">Garden Steps</div>
+      <div class="job-badge" id="badge-steps"></div><div class="job-toggle open" id="toggle-steps">▾</div>
+    </div>
+    <div class="job-body open" id="body-steps">
+      <div class="input-grid">
+        <div class="field"><label>No. of steps</label><input type="number" id="st-count" placeholder="0" oninput="calcSteps()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="st-width" value="1.2" oninput="calcSteps()"></div>
+        <div class="field"><label>Step type</label>
+          <select id="st-type" onchange="calcSteps()">
+            <option value="sleeper">Timber sleeper</option><option value="concrete">Concrete/poured</option>
+            <option value="stone">Natural stone</option><option value="brick">Brick</option>
+          </select>
+        </div>
+        <div class="field"><label>Riser height (mm)</label><input type="number" id="st-riser" value="175" oninput="calcSteps()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('stp')">⚙ Edit material prices <span id="stp-arrow">▾</span></div>
+      <div class="prices-grid" id="stp">
+        <div class="price-field"><label>Timber sleeper ($/unit)</label><input type="number" id="stp-sleeper" value="32" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="stp-concrete" value="230" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Natural stone ($/m²)</label><input type="number" id="stp-stone" value="120" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Brick ($/unit)</label><input type="number" id="stp-brick" value="1.20" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Fixings/pins ($)</label><input type="number" id="stp-fix" value="30" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Crushed rock base ($/m³)</label><input type="number" id="stp-rock" value="65" oninput="calcSteps()"></div>
+      </div>
+      <div class="result-list" id="res-steps"></div>
+      <div class="hours-estimate" id="hrs-steps" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-steps-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- GARDEN LIGHTING -->
+<div class="section" id="sec-lighting">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('lighting')">
+      <div class="job-icon">💡</div><div class="job-title">Garden Lighting</div>
+      <div class="job-badge" id="badge-lighting"></div><div class="job-toggle open" id="toggle-lighting">▾</div>
+    </div>
+    <div class="job-body open" id="body-lighting">
+      <div class="input-grid">
+        <div class="field"><label>Spike lights</label><input type="number" id="lt-spike" placeholder="0" oninput="calcLighting()"></div>
+        <div class="field"><label>Path lights</label><input type="number" id="lt-path" placeholder="0" oninput="calcLighting()"></div>
+        <div class="field"><label>Wall/step lights</label><input type="number" id="lt-wall" placeholder="0" oninput="calcLighting()"></div>
+        <div class="field"><label>Cable run (lm)</label><input type="number" id="lt-cable" placeholder="0" oninput="calcLighting()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('ltp')">⚙ Edit material prices <span id="ltp-arrow">▾</span></div>
+      <div class="prices-grid" id="ltp">
+        <div class="price-field"><label>Spike light ($/unit)</label><input type="number" id="ltp-spike" value="35" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Path light ($/unit)</label><input type="number" id="ltp-path" value="45" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Wall/step light ($/unit)</label><input type="number" id="ltp-wall" value="55" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Low volt cable ($/lm)</label><input type="number" id="ltp-cable" value="3.50" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Transformer ($/unit)</label><input type="number" id="ltp-trans" value="120" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Connectors/clips ($)</label><input type="number" id="ltp-conn" value="40" oninput="calcLighting()"></div>
+      </div>
+      <div class="result-list" id="res-lighting"></div>
+      <div class="hours-estimate" id="hrs-lighting" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-lighting-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- BIN / WASTE -->
+<div class="section" id="sec-bin">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('bin')">
+      <div class="job-icon">🗑️</div><div class="job-title">Bin / Waste Removal</div>
+      <div class="job-badge" id="badge-bin"></div><div class="job-toggle open" id="toggle-bin">▾</div>
+    </div>
+    <div class="job-body open" id="body-bin">
+      <div style="background:rgba(74,124,63,0.08);border:1px solid rgba(74,124,63,0.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--green-bright)">Formula: (Size × $100) + $60 delivery fee</div>
+      <div class="input-grid">
+        <div class="field"><label>Number of bins</label><input type="number" id="bin-qty" value="1" min="1" oninput="calcBin()"></div>
+        <div class="field"><label>Bin size (m³)</label>
+          <select id="bin-size" onchange="calcBin()">
+            <option value="2">2m³ — $260</option><option value="3">3m³ — $360</option>
+            <option value="4">4m³ — $460</option><option value="6" selected>6m³ — $660</option>
+            <option value="8">8m³ — $860</option><option value="9">9m³ — $960</option>
+            <option value="custom">Custom size</option>
+          </select>
+        </div>
+        <div class="field" id="bin-custom-field" style="display:none"><label>Custom size (m³)</label><input type="number" id="bin-custom" placeholder="0" oninput="calcBin()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('binp')">⚙ Edit pricing formula <span id="binp-arrow">▾</span></div>
+      <div class="prices-grid" id="binp">
+        <div class="price-field"><label>Rate per m³ ($)</label><input type="number" id="binp-rate" value="100" oninput="calcBin()"></div>
+        <div class="price-field"><label>Delivery fee ($)</label><input type="number" id="binp-delivery" value="60" oninput="calcBin()"></div>
+      </div>
+      <div class="result-list" id="res-bin"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW PANEL -->
+<div class="review-panel" id="reviewPanel">
+  <div class="review-title">📋 Review Materials List</div>
+  <div id="reviewItems"></div>
+  <div class="divider"></div>
+  <div class="review-total">
+    <span class="rtl">Materials Total</span>
+    <span class="rtv" id="reviewTotal">$0.00</span>
+  </div>
+  <div style="font-size:11px;color:var(--text-secondary);margin-top:4px">Tick items to include · Edit prices · Remove unwanted items</div>
+  <button class="send-btn" onclick="sendToQuote()">→ Send to Quote Builder</button>
+  <button class="clear-btn" onclick="clearAll()">Clear All Calculations</button>
+</div>
+<div class="gap"></div>
+
+</div><!-- end tab-calc -->
+
+<!-- ==================== CALCULATOR TAB ==================== -->
+<div class="tab-panel" id="tab-calc">
+
+<div class="section">
+  <div class="section-title">Select Job Types</div>
+  <div class="job-pills">
+    <div class="pill active" onclick="togglePill(this,'quickcalc')">📐 m² & m³ Calc</div>
+    <div class="pill active" onclick="togglePill(this,'concrete')">🪨 Concrete Slab</div>
+    <div class="pill active" onclick="togglePill(this,'garden')">🌿 Garden Beds</div>
+    <div class="pill active" onclick="togglePill(this,'irrigation')">💧 Irrigation</div>
+    <div class="pill active" onclick="togglePill(this,'retaining')">🧱 Retaining Wall</div>
+    <div class="pill active" onclick="togglePill(this,'turf')">🟩 Turf / Lawn</div>
+    <div class="pill active" onclick="togglePill(this,'fencing')">🪵 Fencing</div>
+    <div class="pill active" onclick="togglePill(this,'planting')">🌱 Planting</div>
+    <div class="pill active" onclick="togglePill(this,'drainage')">🌊 Drainage</div>
+    <div class="pill active" onclick="togglePill(this,'paving')">🟫 Paving</div>
+    <div class="pill active" onclick="togglePill(this,'decking')">🪵 Decking</div>
+    <div class="pill active" onclick="togglePill(this,'pathway')">🛤️ Pathways</div>
+    <div class="pill active" onclick="togglePill(this,'pergola')">🏠 Pergola</div>
+    <div class="pill active" onclick="togglePill(this,'excavation')">🚜 Excavation</div>
+    <div class="pill active" onclick="togglePill(this,'artificial')">🎯 Artificial Grass</div>
+    <div class="pill active" onclick="togglePill(this,'steps')">🪜 Steps</div>
+    <div class="pill active" onclick="togglePill(this,'lighting')">💡 Garden Lighting</div>
+    <div class="pill active" onclick="togglePill(this,'bin')">🗑️ Bin / Waste</div>
+  </div>
+</div>
+
+<!-- QUICK CALC -->
+<div class="section" id="sec-quickcalc">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('quickcalc')">
+      <div class="job-icon">📐</div>
+      <div class="job-title">Quick m² & m³ Calculator</div>
+      <div class="job-badge" id="badge-quickcalc"></div>
+      <div class="job-toggle open" id="toggle-quickcalc">▾</div>
+    </div>
+    <div class="job-body open" id="body-quickcalc">
+      <div style="margin-bottom:16px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--green-bright);margin-bottom:10px">📏 Area Calculator (m²)</div>
+        <div class="input-grid">
+          <div class="field"><label>Length (m)</label><input type="number" id="qc-l1" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Width (m)</label><input type="number" id="qc-w1" placeholder="0" oninput="calcQuick()"></div>
+        </div>
+        <div class="field"><label>Result</label>
+          <div id="qc-area" style="background:var(--green-leaf);border:1px solid var(--green);border-radius:4px;padding:9px 14px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--white)">0.00 m²</div>
+        </div>
+      </div>
+      <div style="height:1px;background:#e8f0e6;margin-bottom:16px"></div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:10px">📦 Volume Calculator (m³)</div>
+        <div class="input-grid">
+          <div class="field"><label>Length (m)</label><input type="number" id="qc-l2" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Width (m)</label><input type="number" id="qc-w2" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Depth (mm)</label><input type="number" id="qc-d2" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Result</label>
+            <div id="qc-vol" style="background:rgba(192,122,47,0.15);border:1px solid var(--orange);border-radius:4px;padding:9px 14px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--orange)">0.000 m³</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONCRETE SLAB -->
+<div class="section" id="sec-concrete">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('concrete')">
+      <div class="job-icon">🪨</div><div class="job-title">Concrete Slab</div>
+      <div class="job-badge" id="badge-concrete"></div><div class="job-toggle open" id="toggle-concrete">▾</div>
+    </div>
+    <div class="job-body open" id="body-concrete">
+      <div class="input-grid three">
+        <div class="field"><label>Length (m)</label><input type="number" id="c-length" placeholder="0" oninput="calcConcrete()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="c-width" placeholder="0" oninput="calcConcrete()"></div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="c-depth" value="100" oninput="calcConcrete()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Mesh type</label>
+          <select id="c-mesh" onchange="calcConcrete()">
+            <option value="SL62">SL62 (light)</option><option value="SL72">SL72 (standard)</option>
+            <option value="SL82">SL82 (heavy)</option><option value="none">No mesh</option>
+          </select>
+        </div>
+        <div class="field"><label>Crushed rock depth (mm)</label><input type="number" id="c-rock" value="100" oninput="calcConcrete()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('cp')">⚙ Edit material prices <span id="cp-arrow">▾</span></div>
+      <div class="prices-grid" id="cp">
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="cp-concrete" value="230" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Crushed rock ($/m³)</label><input type="number" id="cp-rock" value="65" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL62 ($/sheet)</label><input type="number" id="cp-mesh62" value="22" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL72 ($/sheet)</label><input type="number" id="cp-mesh72" value="28" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL82 ($/sheet)</label><input type="number" id="cp-mesh82" value="38" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Formwork ($/lm)</label><input type="number" id="cp-form" value="4" oninput="calcConcrete()"></div>
+      </div>
+      <div class="result-list" id="res-concrete"></div>
+      <div class="hours-estimate" id="hrs-concrete" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-concrete-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- GARDEN BEDS -->
+<div class="section" id="sec-garden">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('garden')">
+      <div class="job-icon">🌿</div><div class="job-title">Garden Beds</div>
+      <div class="job-badge" id="badge-garden"></div><div class="job-toggle open" id="toggle-garden">▾</div>
+    </div>
+    <div class="job-body open" id="body-garden">
+      <div class="input-grid three">
+        <div class="field"><label>Area (m²)</label><input type="number" id="g-area" placeholder="0" oninput="calcGarden()"></div>
+        <div class="field"><label>Soil depth (mm)</label><input type="number" id="g-soil" value="300" oninput="calcGarden()"></div>
+        <div class="field"><label>Mulch depth (mm)</label><input type="number" id="g-mulch" value="75" oninput="calcGarden()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Garden edging (lm)</label><input type="number" id="g-edging" placeholder="0" oninput="calcGarden()"></div>
+        <div class="field"><label>Weed mat (m²)</label><input type="number" id="g-weedmat" placeholder="0" oninput="calcGarden()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('gp')">⚙ Edit material prices <span id="gp-arrow">▾</span></div>
+      <div class="prices-grid" id="gp">
+        <div class="price-field"><label>Premium soil ($/m³)</label><input type="number" id="gp-soil" value="85" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Mulch ($/m³)</label><input type="number" id="gp-mulch" value="55" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Compost ($/bag 25L)</label><input type="number" id="gp-compost" value="12" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Edging ($/lm)</label><input type="number" id="gp-edging" value="8" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="gp-weedmat" value="3.50" oninput="calcGarden()"></div>
+      </div>
+      <div class="result-list" id="res-garden"></div>
+      <div class="hours-estimate" id="hrs-garden" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-garden-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- IRRIGATION -->
+<div class="section" id="sec-irrigation">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('irrigation')">
+      <div class="job-icon">💧</div><div class="job-title">Irrigation System</div>
+      <div class="job-badge" id="badge-irrigation"></div><div class="job-toggle open" id="toggle-irrigation">▾</div>
+    </div>
+    <div class="job-body open" id="body-irrigation">
+      <div class="input-grid">
+        <div class="field"><label>No. of zones</label><input type="number" id="i-zones" value="1" min="1" oninput="calcIrrigation()"></div>
+        <div class="field"><label>20mm poly pipe (lm)</label><input type="number" id="i-pipe" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>13mm dripline (lm)</label><input type="number" id="i-dripline" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>Spray heads</label><input type="number" id="i-heads" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>Drip emitters</label><input type="number" id="i-drip" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>1-way tap timer</label><input type="number" id="i-timer1" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>4-way tap timer</label><input type="number" id="i-timer4" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>Tap adapter manifold</label><input type="number" id="i-tapadapter" placeholder="0" oninput="calcIrrigation()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('ip')">⚙ Edit material prices <span id="ip-arrow">▾</span></div>
+      <div class="prices-grid" id="ip">
+        <div class="price-field"><label>20mm poly pipe ($/lm)</label><input type="number" id="ip-pipe" value="2.20" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Tap timer ($/unit)</label><input type="number" id="ip-timer" value="85" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Manifold 2-way ($/unit)</label><input type="number" id="ip-manifold" value="45" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Spray head ($/unit)</label><input type="number" id="ip-head" value="8.50" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Drip emitter ($/unit)</label><input type="number" id="ip-drip" value="1.80" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>13mm dripline ($/lm)</label><input type="number" id="ip-dripline" value="1.80" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>1-way tap timer ($)</label><input type="number" id="ip-timer1" value="65" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>4-way tap timer ($)</label><input type="number" id="ip-timer4" value="120" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Tap adapter ($)</label><input type="number" id="ip-tapadapter" value="35" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Fittings allowance ($)</label><input type="number" id="ip-fittings" value="45" oninput="calcIrrigation()"></div>
+      </div>
+      <div class="result-list" id="res-irrigation"></div>
+      <div class="hours-estimate" id="hrs-irrigation" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-irrigation-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- RETAINING WALL -->
+<div class="section" id="sec-retaining">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('retaining')">
+      <div class="job-icon">🧱</div><div class="job-title">Retaining Wall</div>
+      <div class="job-badge" id="badge-retaining"></div><div class="job-toggle open" id="toggle-retaining">▾</div>
+    </div>
+    <div class="job-body open" id="body-retaining">
+      <div class="input-grid">
+        <div class="field"><label>Length (lm)</label><input type="number" id="r-length" placeholder="0" oninput="calcRetaining()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="r-height" placeholder="0" oninput="calcRetaining()"></div>
+        <div class="field"><label>Post spacing (m)</label><input type="number" id="r-spacing" value="1.8" oninput="calcRetaining()"></div>
+        <div class="field"><label>Wall type</label>
+          <select id="r-type" onchange="calcRetaining()">
+            <option value="sleeper">Timber sleeper</option><option value="concrete">Concrete sleeper</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('rp')">⚙ Edit material prices <span id="rp-arrow">▾</span></div>
+      <div class="prices-grid" id="rp">
+        <div class="price-field"><label>H4 post 2.4m ($/unit)</label><input type="number" id="rp-post" value="38" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Timber sleeper ($/unit)</label><input type="number" id="rp-tsleeper" value="32" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Concrete sleeper ($/unit)</label><input type="number" id="rp-csleeper" value="65" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="rp-concrete" value="230" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Fixings ($)</label><input type="number" id="rp-fixings" value="40" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Drainage aggregate ($/m³)</label><input type="number" id="rp-agg" value="75" oninput="calcRetaining()"></div>
+      </div>
+      <div class="result-list" id="res-retaining"></div>
+      <div class="hours-estimate" id="hrs-retaining" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-retaining-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TURF -->
+<div class="section" id="sec-turf">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('turf')">
+      <div class="job-icon">🟩</div><div class="job-title">Turf / Lawn</div>
+      <div class="job-badge" id="badge-turf"></div><div class="job-toggle open" id="toggle-turf">▾</div>
+    </div>
+    <div class="job-body open" id="body-turf">
+      <div class="input-grid">
+        <div class="field"><label>Area (m²)</label><input type="number" id="t-area" placeholder="0" oninput="calcTurf()"></div>
+        <div class="field"><label>Turf type</label>
+          <select id="t-type" onchange="calcTurf()">
+            <option value="kik">Kikuyu</option><option value="buf">Buffalo</option>
+            <option value="cou">Couch</option><option value="zoy">Zoysia</option>
+          </select>
+        </div>
+        <div class="field"><label>Topsoil depth (mm)</label><input type="number" id="t-soil" value="100" oninput="calcTurf()"></div>
+        <div class="field"><label>Undersoil prep?</label>
+          <select id="t-prep" onchange="calcTurf()"><option value="yes">Yes</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('tp')">⚙ Edit material prices <span id="tp-arrow">▾</span></div>
+      <div class="prices-grid" id="tp">
+        <div class="price-field"><label>Kikuyu ($/m²)</label><input type="number" id="tp-kik" value="12" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Buffalo ($/m²)</label><input type="number" id="tp-buf" value="15" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Couch ($/m²)</label><input type="number" id="tp-cou" value="13" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Zoysia ($/m²)</label><input type="number" id="tp-zoy" value="18" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Topsoil ($/m³)</label><input type="number" id="tp-soil" value="75" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Starter fertiliser ($)</label><input type="number" id="tp-fert" value="35" oninput="calcTurf()"></div>
+      </div>
+      <div class="result-list" id="res-turf"></div>
+      <div class="hours-estimate" id="hrs-turf" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-turf-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FENCING -->
+<div class="section" id="sec-fencing">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('fencing')">
+      <div class="job-icon">🪵</div><div class="job-title">Fencing</div>
+      <div class="job-badge" id="badge-fencing"></div><div class="job-toggle open" id="toggle-fencing">▾</div>
+    </div>
+    <div class="job-body open" id="body-fencing">
+      <div class="input-grid">
+        <div class="field"><label>Length (lm)</label><input type="number" id="f-length" placeholder="0" oninput="calcFencing()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="f-height" value="1.8" oninput="calcFencing()"></div>
+        <div class="field"><label>Post spacing (m)</label><input type="number" id="f-spacing" value="2.4" oninput="calcFencing()"></div>
+        <div class="field"><label>Fence type</label>
+          <select id="f-type" onchange="calcFencing()">
+            <option value="paling">Timber paling</option><option value="colorbond">Colorbond</option><option value="pool">Pool/wire</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('fp')">⚙ Edit material prices <span id="fp-arrow">▾</span></div>
+      <div class="prices-grid" id="fp">
+        <div class="price-field"><label>H4 post ($/unit)</label><input type="number" id="fp-post" value="38" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Paling ($/unit)</label><input type="number" id="fp-paling" value="3.50" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Rail 4.2m ($/unit)</label><input type="number" id="fp-rail" value="22" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="fp-conc" value="9" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Fixings ($)</label><input type="number" id="fp-fix" value="35" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Colorbond panel ($/lm)</label><input type="number" id="fp-cb" value="85" oninput="calcFencing()"></div>
+      </div>
+      <div class="result-list" id="res-fencing"></div>
+      <div class="hours-estimate" id="hrs-fencing" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-fencing-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLANTING -->
+<div class="section" id="sec-planting">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('planting')">
+      <div class="job-icon">🌱</div><div class="job-title">Planting</div>
+      <div class="job-badge" id="badge-planting"></div><div class="job-toggle open" id="toggle-planting">▾</div>
+    </div>
+    <div class="job-body open" id="body-planting">
+      <div id="plantList"></div>
+      <button class="add-btn" onclick="addPlant()">+ Add Plant</button>
+      <div class="gap"></div>
+      <div class="input-grid">
+        <div class="field"><label>Potting mix bags</label><input type="number" id="pl-mix" placeholder="0" oninput="calcPlanting()"></div>
+        <div class="field"><label>Fertiliser tablets?</label>
+          <select id="pl-fert" onchange="calcPlanting()"><option value="yes">Yes</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pp')">⚙ Edit supply prices <span id="pp-arrow">▾</span></div>
+      <div class="prices-grid" id="pp">
+        <div class="price-field"><label>Potting mix ($/bag)</label><input type="number" id="pp-mix" value="14" oninput="calcPlanting()"></div>
+        <div class="price-field"><label>Fert tablets ($/pack)</label><input type="number" id="pp-fert" value="18" oninput="calcPlanting()"></div>
+      </div>
+      <div class="result-list" id="res-planting"></div>
+      <div class="hours-estimate" id="hrs-planting" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-planting-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DRAINAGE -->
+<div class="section" id="sec-drainage">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('drainage')">
+      <div class="job-icon">🌊</div><div class="job-title">Drainage</div>
+      <div class="job-badge" id="badge-drainage"></div><div class="job-toggle open" id="toggle-drainage">▾</div>
+    </div>
+    <div class="job-body open" id="body-drainage">
+      <div class="input-grid">
+        <div class="field"><label>Ag pipe run (lm)</label><input type="number" id="d-ag" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Channel drain (lm)</label><input type="number" id="d-channel" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Pits needed</label><input type="number" id="d-pits" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Scoria/aggregate (m³)</label><input type="number" id="d-scoria" placeholder="0" oninput="calcDrainage()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('dp')">⚙ Edit material prices <span id="dp-arrow">▾</span></div>
+      <div class="prices-grid" id="dp">
+        <div class="price-field"><label>Ag pipe 100mm ($/lm)</label><input type="number" id="dp-ag" value="4.50" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Channel drain ($/lm)</label><input type="number" id="dp-channel" value="35" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Pit 300x300 ($/unit)</label><input type="number" id="dp-pit" value="65" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Scoria ($/m³)</label><input type="number" id="dp-scoria" value="80" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Geotech fabric ($/m²)</label><input type="number" id="dp-geo" value="4" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Fittings allowance ($)</label><input type="number" id="dp-fit" value="40" oninput="calcDrainage()"></div>
+      </div>
+      <div class="result-list" id="res-drainage"></div>
+      <div class="hours-estimate" id="hrs-drainage" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-drainage-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAVING -->
+<div class="section" id="sec-paving">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('paving')">
+      <div class="job-icon">🟫</div><div class="job-title">Paving</div>
+      <div class="job-badge" id="badge-paving"></div><div class="job-toggle open" id="toggle-paving">▾</div>
+    </div>
+    <div class="job-body open" id="body-paving">
+      <div class="input-grid three">
+        <div class="field"><label>Area (m²)</label><input type="number" id="pv-area" placeholder="0" oninput="calcPaving()"></div>
+        <div class="field"><label>Paver type</label>
+          <select id="pv-type" onchange="calcPaving()">
+            <option value="concrete">Concrete paver</option><option value="travertine">Travertine</option>
+            <option value="bluestone">Bluestone</option><option value="porcelain">Porcelain tile</option><option value="brick">Clay brick</option>
+          </select>
+        </div>
+        <div class="field"><label>Edge restraint (lm)</label><input type="number" id="pv-edge" placeholder="0" oninput="calcPaving()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Paver size</label>
+          <select id="pv-size" onchange="paverSizeChange()">
+            <option value="0.16">400×400mm</option><option value="0.36">600×600mm</option>
+            <option value="0.18">600×300mm</option><option value="custom">Custom size</option>
+          </select>
+        </div>
+        <div class="field" id="pv-custom-wrap" style="display:none"><label>Custom (m² per paver)</label><input type="number" id="pv-custom-size" placeholder="e.g. 0.25" step="0.01" oninput="calcPaving()"></div>
+        <div class="field"><label>Sand bed depth (mm)</label><input type="number" id="pv-sand" value="30" oninput="calcPaving()"></div>
+        <div class="field"><label>Base (mm)</label><input type="number" id="pv-base" value="100" oninput="calcPaving()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pvp')">⚙ Edit material prices <span id="pvp-arrow">▾</span></div>
+      <div class="prices-grid" id="pvp">
+        <div class="price-field"><label>Concrete paver ($/m²)</label><input type="number" id="pvp-concrete" value="45" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Travertine ($/m²)</label><input type="number" id="pvp-travertine" value="95" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Bluestone ($/m²)</label><input type="number" id="pvp-bluestone" value="110" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Porcelain ($/m²)</label><input type="number" id="pvp-porcelain" value="85" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Clay brick ($/m²)</label><input type="number" id="pvp-brick" value="55" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Bedding sand ($/m³)</label><input type="number" id="pvp-sand" value="60" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Crusher dust ($/m³)</label><input type="number" id="pvp-base" value="65" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Edge restraint ($/lm)</label><input type="number" id="pvp-edge" value="6" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Grout/adhesive ($)</label><input type="number" id="pvp-grout" value="60" oninput="calcPaving()"></div>
+      </div>
+      <div class="result-list" id="res-paving"></div>
+      <div class="hours-estimate" id="hrs-paving" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-paving-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DECKING -->
+<div class="section" id="sec-decking">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('decking')">
+      <div class="job-icon">🪵</div><div class="job-title">Decking</div>
+      <div class="job-badge" id="badge-decking"></div><div class="job-toggle open" id="toggle-decking">▾</div>
+    </div>
+    <div class="job-body open" id="body-decking">
+      <div class="input-grid three">
+        <div class="field"><label>Length (m)</label><input type="number" id="dk-length" placeholder="0" oninput="calcDecking()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="dk-width" placeholder="0" oninput="calcDecking()"></div>
+        <div class="field"><label>Deck type</label>
+          <select id="dk-type" onchange="calcDecking()">
+            <option value="merbau">Merbau hardwood</option><option value="pine">Treated pine</option><option value="composite">Composite</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Deck height (m)</label><input type="number" id="dk-height" value="0.3" oninput="calcDecking()"></div>
+        <div class="field"><label>Handrail needed?</label>
+          <select id="dk-rail" onchange="calcDecking()"><option value="no">No</option><option value="yes">Yes</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('dkp')">⚙ Edit material prices <span id="dkp-arrow">▾</span></div>
+      <div class="prices-grid" id="dkp">
+        <div class="price-field"><label>Merbau boards ($/lm)</label><input type="number" id="dkp-merbau" value="18" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Treated pine ($/lm)</label><input type="number" id="dkp-pine" value="9" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Composite ($/lm)</label><input type="number" id="dkp-composite" value="28" oninput="calcDecking()"></div>
+        <div class="price-field"><label>H4 bearer/joist ($/lm)</label><input type="number" id="dkp-frame" value="8" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Post 100x100 ($/unit)</label><input type="number" id="dkp-post" value="45" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="dkp-conc" value="9" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Fixings/screws ($)</label><input type="number" id="dkp-fix" value="80" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Handrail ($/lm)</label><input type="number" id="dkp-rail" value="120" oninput="calcDecking()"></div>
+      </div>
+      <div class="result-list" id="res-decking"></div>
+      <div class="hours-estimate" id="hrs-decking" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-decking-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PATHWAYS -->
+<div class="section" id="sec-pathway">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('pathway')">
+      <div class="job-icon">🛤️</div><div class="job-title">Pathways</div>
+      <div class="job-badge" id="badge-pathway"></div><div class="job-toggle open" id="toggle-pathway">▾</div>
+    </div>
+    <div class="job-body open" id="body-pathway">
+      <div class="input-grid">
+        <div class="field"><label>Length (m)</label><input type="number" id="pw-length" placeholder="0" oninput="calcPathway()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="pw-width" value="1.2" oninput="calcPathway()"></div>
+        <div class="field"><label>Pathway type</label>
+          <select id="pw-type" onchange="calcPathway()">
+            <option value="gravel">Gravel/crushed granite</option><option value="stepping">Stepping stones</option>
+            <option value="dg">Decomposed granite</option><option value="bark">Bark chips</option>
+          </select>
+        </div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="pw-depth" value="75" oninput="calcPathway()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pwp')">⚙ Edit material prices <span id="pwp-arrow">▾</span></div>
+      <div class="prices-grid" id="pwp">
+        <div class="price-field"><label>Gravel ($/m³)</label><input type="number" id="pwp-gravel" value="70" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Stepping stones ($/unit)</label><input type="number" id="pwp-stepping" value="25" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Decomposed granite ($/m³)</label><input type="number" id="pwp-dg" value="85" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Bark chips ($/m³)</label><input type="number" id="pwp-bark" value="55" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="pwp-weed" value="3.50" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Edge restraint ($/lm)</label><input type="number" id="pwp-edge" value="6" oninput="calcPathway()"></div>
+      </div>
+      <div class="result-list" id="res-pathway"></div>
+      <div class="hours-estimate" id="hrs-pathway" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-pathway-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PERGOLA -->
+<div class="section" id="sec-pergola">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('pergola')">
+      <div class="job-icon">🏠</div><div class="job-title">Pergola / Shade Structure</div>
+      <div class="job-badge" id="badge-pergola"></div><div class="job-toggle open" id="toggle-pergola">▾</div>
+    </div>
+    <div class="job-body open" id="body-pergola">
+      <div class="input-grid three">
+        <div class="field"><label>Length (m)</label><input type="number" id="pg-length" placeholder="0" oninput="calcPergola()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="pg-width" placeholder="0" oninput="calcPergola()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="pg-height" value="2.4" oninput="calcPergola()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Material</label>
+          <select id="pg-type" onchange="calcPergola()">
+            <option value="pine">Treated pine</option><option value="hardwood">Hardwood</option><option value="steel">Steel/Aluminium</option>
+          </select>
+        </div>
+        <div class="field"><label>Roofing type</label>
+          <select id="pg-roof" onchange="calcPergola()">
+            <option value="open">Open (no roof)</option><option value="polycarbonate">Polycarbonate</option><option value="colorbond">Colorbond</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pgp')">⚙ Edit material prices <span id="pgp-arrow">▾</span></div>
+      <div class="prices-grid" id="pgp">
+        <div class="price-field"><label>Post 100x100 ($/unit)</label><input type="number" id="pgp-post" value="55" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Beam 190x45 ($/lm)</label><input type="number" id="pgp-beam" value="12" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Rafter 90x45 ($/lm)</label><input type="number" id="pgp-rafter" value="7" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="pgp-conc" value="9" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Fixings/brackets ($)</label><input type="number" id="pgp-fix" value="120" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Polycarbonate ($/m²)</label><input type="number" id="pgp-poly" value="45" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Colorbond ($/m²)</label><input type="number" id="pgp-cb" value="55" oninput="calcPergola()"></div>
+      </div>
+      <div class="result-list" id="res-pergola"></div>
+      <div class="hours-estimate" id="hrs-pergola" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-pergola-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXCAVATION -->
+<div class="section" id="sec-excavation">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('excavation')">
+      <div class="job-icon">🚜</div><div class="job-title">Excavation / Earthworks</div>
+      <div class="job-badge" id="badge-excavation"></div><div class="job-toggle open" id="toggle-excavation">▾</div>
+    </div>
+    <div class="job-body open" id="body-excavation">
+      <div class="input-grid">
+        <div class="field"><label>Area (m²)</label><input type="number" id="ex-area" placeholder="0" oninput="calcExcavation()"></div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="ex-depth" value="300" oninput="calcExcavation()"></div>
+        <div class="field"><label>No. of days (bobcat)</label><input type="number" id="ex-days" value="1" min="1" oninput="calcExcavation()"></div>
+        <div class="field"><label>Soil removal needed?</label>
+          <select id="ex-remove" onchange="calcExcavation()"><option value="yes">Yes — tip off site</option><option value="no">No — spread on site</option></select>
+        </div>
+        <div class="field"><label>Access type</label>
+          <select id="ex-access" onchange="calcExcavation()"><option value="good">Good (bobcat access)</option><option value="limited">Limited (hand dig)</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('exp')">⚙ Edit prices <span id="exp-arrow">▾</span></div>
+      <div class="prices-grid" id="exp">
+        <div class="price-field"><label>Bobcat hire ($/day)</label><input type="number" id="exp-bobcat" value="900" oninput="calcExcavation()"></div>
+        <div class="price-field"><label>Tip truck hire ($/load)</label><input type="number" id="exp-truck" value="350" oninput="calcExcavation()"></div>
+        <div class="price-field"><label>Tip fees ($/tonne)</label><input type="number" id="exp-tip" value="85" oninput="calcExcavation()"></div>
+      </div>
+      <div class="result-list" id="res-excavation"></div>
+      <div class="hours-estimate" id="hrs-excavation" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-excavation-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ARTIFICIAL GRASS -->
+<div class="section" id="sec-artificial">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('artificial')">
+      <div class="job-icon">🎯</div><div class="job-title">Artificial Grass</div>
+      <div class="job-badge" id="badge-artificial"></div><div class="job-toggle open" id="toggle-artificial">▾</div>
+    </div>
+    <div class="job-body open" id="body-artificial">
+      <div class="input-grid">
+        <div class="field"><label>Area (m²)</label><input type="number" id="ag-area" placeholder="0" oninput="calcArtificial()"></div>
+        <div class="field"><label>Grass quality</label>
+          <select id="ag-type" onchange="calcArtificial()">
+            <option value="standard">Standard (30mm)</option><option value="premium">Premium (40mm)</option><option value="luxury">Luxury (45mm)</option>
+          </select>
+        </div>
+        <div class="field"><label>Base depth (mm)</label><input type="number" id="ag-base" value="75" oninput="calcArtificial()"></div>
+        <div class="field"><label>Infill needed?</label>
+          <select id="ag-infill" onchange="calcArtificial()"><option value="yes">Yes (silica sand)</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('agp')">⚙ Edit material prices <span id="agp-arrow">▾</span></div>
+      <div class="prices-grid" id="agp">
+        <div class="price-field"><label>Standard grass ($/m²)</label><input type="number" id="agp-standard" value="28" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Premium grass ($/m²)</label><input type="number" id="agp-premium" value="42" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Luxury grass ($/m²)</label><input type="number" id="agp-luxury" value="58" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Crusher dust ($/m³)</label><input type="number" id="agp-base" value="65" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="agp-weed" value="3.50" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Silica sand infill ($/bag)</label><input type="number" id="agp-infill" value="22" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Joining tape ($/lm)</label><input type="number" id="agp-tape" value="8" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Nails/pegs ($)</label><input type="number" id="agp-nails" value="35" oninput="calcArtificial()"></div>
+      </div>
+      <div class="result-list" id="res-artificial"></div>
+      <div class="hours-estimate" id="hrs-artificial" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-artificial-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="section" id="sec-steps">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('steps')">
+      <div class="job-icon">🪜</div><div class="job-title">Garden Steps</div>
+      <div class="job-badge" id="badge-steps"></div><div class="job-toggle open" id="toggle-steps">▾</div>
+    </div>
+    <div class="job-body open" id="body-steps">
+      <div class="input-grid">
+        <div class="field"><label>No. of steps</label><input type="number" id="st-count" placeholder="0" oninput="calcSteps()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="st-width" value="1.2" oninput="calcSteps()"></div>
+        <div class="field"><label>Step type</label>
+          <select id="st-type" onchange="calcSteps()">
+            <option value="sleeper">Timber sleeper</option><option value="concrete">Concrete/poured</option>
+            <option value="stone">Natural stone</option><option value="brick">Brick</option>
+          </select>
+        </div>
+        <div class="field"><label>Riser height (mm)</label><input type="number" id="st-riser" value="175" oninput="calcSteps()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('stp')">⚙ Edit material prices <span id="stp-arrow">▾</span></div>
+      <div class="prices-grid" id="stp">
+        <div class="price-field"><label>Timber sleeper ($/unit)</label><input type="number" id="stp-sleeper" value="32" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="stp-concrete" value="230" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Natural stone ($/m²)</label><input type="number" id="stp-stone" value="120" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Brick ($/unit)</label><input type="number" id="stp-brick" value="1.20" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Fixings/pins ($)</label><input type="number" id="stp-fix" value="30" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Crushed rock base ($/m³)</label><input type="number" id="stp-rock" value="65" oninput="calcSteps()"></div>
+      </div>
+      <div class="result-list" id="res-steps"></div>
+      <div class="hours-estimate" id="hrs-steps" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-steps-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- GARDEN LIGHTING -->
+<div class="section" id="sec-lighting">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('lighting')">
+      <div class="job-icon">💡</div><div class="job-title">Garden Lighting</div>
+      <div class="job-badge" id="badge-lighting"></div><div class="job-toggle open" id="toggle-lighting">▾</div>
+    </div>
+    <div class="job-body open" id="body-lighting">
+      <div class="input-grid">
+        <div class="field"><label>Spike lights</label><input type="number" id="lt-spike" placeholder="0" oninput="calcLighting()"></div>
+        <div class="field"><label>Path lights</label><input type="number" id="lt-path" placeholder="0" oninput="calcLighting()"></div>
+        <div class="field"><label>Wall/step lights</label><input type="number" id="lt-wall" placeholder="0" oninput="calcLighting()"></div>
+        <div class="field"><label>Cable run (lm)</label><input type="number" id="lt-cable" placeholder="0" oninput="calcLighting()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('ltp')">⚙ Edit material prices <span id="ltp-arrow">▾</span></div>
+      <div class="prices-grid" id="ltp">
+        <div class="price-field"><label>Spike light ($/unit)</label><input type="number" id="ltp-spike" value="35" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Path light ($/unit)</label><input type="number" id="ltp-path" value="45" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Wall/step light ($/unit)</label><input type="number" id="ltp-wall" value="55" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Low volt cable ($/lm)</label><input type="number" id="ltp-cable" value="3.50" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Transformer ($/unit)</label><input type="number" id="ltp-trans" value="120" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Connectors/clips ($)</label><input type="number" id="ltp-conn" value="40" oninput="calcLighting()"></div>
+      </div>
+      <div class="result-list" id="res-lighting"></div>
+      <div class="hours-estimate" id="hrs-lighting" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-lighting-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- BIN / WASTE -->
+<div class="section" id="sec-bin">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('bin')">
+      <div class="job-icon">🗑️</div><div class="job-title">Bin / Waste Removal</div>
+      <div class="job-badge" id="badge-bin"></div><div class="job-toggle open" id="toggle-bin">▾</div>
+    </div>
+    <div class="job-body open" id="body-bin">
+      <div style="background:rgba(74,124,63,0.08);border:1px solid rgba(74,124,63,0.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--green-bright)">Formula: (Size × $100) + $60 delivery fee</div>
+      <div class="input-grid">
+        <div class="field"><label>Number of bins</label><input type="number" id="bin-qty" value="1" min="1" oninput="calcBin()"></div>
+        <div class="field"><label>Bin size (m³)</label>
+          <select id="bin-size" onchange="calcBin()">
+            <option value="2">2m³ — $260</option><option value="3">3m³ — $360</option>
+            <option value="4">4m³ — $460</option><option value="6" selected>6m³ — $660</option>
+            <option value="8">8m³ — $860</option><option value="9">9m³ — $960</option>
+            <option value="custom">Custom size</option>
+          </select>
+        </div>
+        <div class="field" id="bin-custom-field" style="display:none"><label>Custom size (m³)</label><input type="number" id="bin-custom" placeholder="0" oninput="calcBin()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('binp')">⚙ Edit pricing formula <span id="binp-arrow">▾</span></div>
+      <div class="prices-grid" id="binp">
+        <div class="price-field"><label>Rate per m³ ($)</label><input type="number" id="binp-rate" value="100" oninput="calcBin()"></div>
+        <div class="price-field"><label>Delivery fee ($)</label><input type="number" id="binp-delivery" value="60" oninput="calcBin()"></div>
+      </div>
+      <div class="result-list" id="res-bin"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW PANEL -->
+<div class="review-panel" id="reviewPanel">
+  <div class="review-title">📋 Review Materials List</div>
+  <div id="reviewItems"></div>
+  <div class="divider"></div>
+  <div class="review-total">
+    <span class="rtl">Materials Total</span>
+    <span class="rtv" id="reviewTotal">$0.00</span>
+  </div>
+  <div style="font-size:11px;color:var(--text-secondary);margin-top:4px">Tick items to include · Edit prices · Remove unwanted items</div>
+  <button class="send-btn" onclick="sendToQuote()">→ Send to Quote Builder</button>
+  <button class="clear-btn" onclick="clearAll()">Clear All Calculations</button>
+</div>
+<div class="gap"></div>
+
+</div><!-- end tab-calc -->
+
+<!-- ==================== QUOTE BUILDER TAB ==================== -->
+<div class="tab-panel" id="tab-quote">
+
+<div class="section">
+  <div class="section-title">Client Details</div>
+  <div class="card grid2">
+    <div class="field full"><label>Client Name</label><input type="text" id="clientName" placeholder="e.g. Phil"></div>
+    <div class="field full"><label>Job Address</label><input type="text" id="clientAddress" placeholder="e.g. 12 Oak Street, Melbourne VIC 3000"></div>
+    <div class="field"><label>Quote Number</label><input type="text" id="quoteNum" placeholder="e.g. 199"></div>
+    <div class="field"><label>Issue Date</label><input type="date" id="issueDate"></div>
+    <div class="field"><label>Valid To</label><input type="date" id="validDate"></div>
+    <div class="field"><label>Deposit % Required</label><input type="number" id="depositPct" value="50" min="0" max="100" oninput="recalc()"></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Job Description</div>
+  <div class="card">
+    <div class="field"><label>One-line description</label>
+      <input type="text" id="jobTitle" placeholder="e.g. Supply and Installation of Automatic Irrigation System">
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Scope of Works</div>
+  <div id="scopeList"></div>
+  <button class="add-btn" onclick="addScope()">+ Add Scope Line</button>
+</div>
+
+<div class="section">
+  <div class="section-title">Exclusions</div>
+  <div id="exclusionList"></div>
+  <button class="add-btn" onclick="addExclusion()">+ Add Exclusion</button>
+</div>
+
+<div class="section">
+  <div class="section-title">Your Rate</div>
+  <div class="card">
+    <div class="rate-bar">
+      <div class="rate-item"><span class="rate-label">Wage ($/hr)</span><input class="rate-input" type="number" id="wage" value="100" oninput="recalc()"></div>
+      <div class="rate-item"><span class="rate-label">Overheads ($/hr)</span><input class="rate-input" type="number" id="overheads" value="7" oninput="recalc()"></div>
+      <div class="rate-item"><span class="rate-label">Margin (%)</span><input class="rate-input" type="number" id="margin" value="20" oninput="recalc()"></div>
+      <div class="rate-item"><span class="rate-label">Charge Rate/hr</span><div class="rate-val" id="chargeRate">$128.40</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Labour</div>
+  <div class="labour-row">
+    <div style="flex:1"><span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Estimated Hours</span>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;margin-top:3px;color:var(--text-primary)" id="labourDesc">0 hrs</div></div>
+    <div class="hours-control">
+      <button class="hours-btn" onclick="changeHours(-1)">−</button>
+      <input class="hours-input" type="number" id="hours" value="0" min="0" oninput="recalc()">
+      <button class="hours-btn" onclick="changeHours(1)">+</button>
+    </div>
+    <div class="labour-total" id="labourTotal">$0.00</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Materials & Items</div>
+  <div id="matList"></div>
+  <button class="add-btn" onclick="addMat()">+ Add Material / Item</button>
+  <div class="gap"></div>
+  <div class="toggle-row">
+    <div class="toggle-label">Apply 15% markup on materials<small>Covers sourcing, transport &amp; handling</small></div>
+    <label class="toggle"><input type="checkbox" id="markupToggle" checked onchange="recalc()"><span class="toggle-slider"></span></label>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Quote Summary</div>
+  <div class="summary-card">
+    <div class="sum-row"><span class="sl">Labour</span><span class="sv" id="sLabour">$0.00</span></div>
+    <div class="sum-row"><span class="sl">Materials</span><span class="sv" id="sMats">$0.00</span></div>
+    <div class="sum-row" id="markupRow"><span class="sl">Materials Markup (15%)</span><span class="sv" id="sMarkup">$0.00</span></div>
+    <div class="sum-row"><span class="sl">Subtotal (ex. GST)</span><span class="sv" id="sSubtotal">$0.00</span></div>
+    <div class="sum-row"><span class="sl">GST (10%)</span><span class="sv" id="sGST">$0.00</span></div>
+    <div class="sum-row total"><span class="sl">Total Quote</span><span class="sv" id="sTotal">$0.00</span></div>
+  </div>
+  <div class="deposit-box">
+    <span class="dl" id="depositLabel">50% Deposit Required</span>
+    <span class="dv" id="sDeposit">$0.00</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="toggle-row" style="margin-bottom:10px">
+    <div class="toggle-label">Show itemised breakdown on quote<small>Turn off to show total price only</small></div>
+    <label class="toggle"><input type="checkbox" id="itemiseToggle"><span class="toggle-slider"></span></label>
+  </div>
+  <div style="display:flex;gap:10px;margin-bottom:10px">
+    <button onclick="saveQuote()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">☁ Save Quote</button>
+    <button onclick="showLoadQuotes()" style="flex:1;background:transparent;border:1px solid #2e6da4;border-radius:6px;color:#4a90d9;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">📂 Load Quote</button>
+  </div>
+  <button class="gen-btn" id="genBtn" onclick="generatePDF()">⬇ Download Quote PDF</button>
+  <div id="statusMsg"></div>
+  <div class="gap"></div>
+</div>
+
+<!-- Load Quote Modal -->
+<div class="overlay" id="loadQuoteModal">
+  <div class="modal">
+    <div class="modal-title">Saved Quotes <button class="modal-close" onclick="document.getElementById('loadQuoteModal').classList.remove('show')">×</button></div>
+    <div id="loadQuoteList"></div>
+    <div class="gap"></div>
+  </div>
+</div>
+
+</div><!-- end tab-quote -->
+
+<!-- ==================== INVOICE TAB ==================== -->
+<div class="tab-panel" id="tab-invoice">
+
+<div class="section">
+  <div class="section-title">Invoice Details</div>
+  <div class="card grid2">
+    <div class="field full"><label>Client Name</label><input type="text" id="inv-client" placeholder="e.g. John Smith"></div>
+    <div class="field full"><label>Job Address</label><input type="text" id="inv-address" placeholder="e.g. 12 Oak Street, Melbourne VIC 3000"></div>
+    <div class="field"><label>Invoice Number</label><input type="text" id="inv-num" placeholder="e.g. INV-001"></div>
+    <div class="field"><label>Issue Date</label><input type="date" id="inv-date"></div>
+    <div class="field"><label>Due Date</label><input type="date" id="inv-due"></div>
+    <div class="field"><label>Payment Status</label>
+      <select id="inv-status">
+        <option value="unpaid">Unpaid</option>
+        <option value="paid">Paid</option>
+        <option value="partial">Partial</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Job Description</div>
+  <div class="card">
+    <div class="field"><label>Description</label>
+      <input type="text" id="inv-desc" placeholder="e.g. Supply and Installation of Irrigation System">
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Line Items</div>
+  <div id="inv-items-list"></div>
+  <button class="add-btn" onclick="addInvItem()">+ Add Line Item</button>
+</div>
+
+<div class="section">
+  <div class="section-title">Invoice Summary</div>
+  <div class="summary-card">
+    <div class="sum-row"><span class="sl">Subtotal (ex. GST)</span><span class="sv" id="inv-subtotal">$0.00</span></div>
+    <div class="sum-row"><span class="sl">GST (10%)</span><span class="sv" id="inv-gst">$0.00</span></div>
+    <div class="sum-row total"><span class="sl">Total Due</span><span class="sv" id="inv-total">$0.00</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="toggle-row" style="margin-bottom:10px">
+    <div class="toggle-label">Show itemised breakdown<small>Turn off to show total only</small></div>
+    <label class="toggle"><input type="checkbox" id="inv-itemise"><span class="toggle-slider"></span></label>
+  </div>
+  <button class="gen-btn" onclick="generateInvoicePDF()">⬇ Download Invoice PDF</button>
+  <div id="inv-status-msg"></div>
+  <div class="gap"></div>
+</div>
+
+</div><!-- end tab-invoice -->
+
+<!-- ==================== CALCULATOR TAB ==================== -->
+<div class="tab-panel" id="tab-calc">
+
+<div class="section">
+  <div class="section-title">Select Job Types</div>
+  <div class="job-pills">
+    <div class="pill active" onclick="togglePill(this,'quickcalc')">📐 m² & m³ Calc</div>
+    <div class="pill active" onclick="togglePill(this,'concrete')">🪨 Concrete Slab</div>
+    <div class="pill active" onclick="togglePill(this,'garden')">🌿 Garden Beds</div>
+    <div class="pill active" onclick="togglePill(this,'irrigation')">💧 Irrigation</div>
+    <div class="pill active" onclick="togglePill(this,'retaining')">🧱 Retaining Wall</div>
+    <div class="pill active" onclick="togglePill(this,'turf')">🟩 Turf / Lawn</div>
+    <div class="pill active" onclick="togglePill(this,'fencing')">🪵 Fencing</div>
+    <div class="pill active" onclick="togglePill(this,'planting')">🌱 Planting</div>
+    <div class="pill active" onclick="togglePill(this,'drainage')">🌊 Drainage</div>
+    <div class="pill active" onclick="togglePill(this,'paving')">🟫 Paving</div>
+    <div class="pill active" onclick="togglePill(this,'decking')">🪵 Decking</div>
+    <div class="pill active" onclick="togglePill(this,'pathway')">🛤️ Pathways</div>
+    <div class="pill active" onclick="togglePill(this,'pergola')">🏠 Pergola</div>
+    <div class="pill active" onclick="togglePill(this,'excavation')">🚜 Excavation</div>
+    <div class="pill active" onclick="togglePill(this,'artificial')">🎯 Artificial Grass</div>
+    <div class="pill active" onclick="togglePill(this,'steps')">🪜 Steps</div>
+    <div class="pill active" onclick="togglePill(this,'lighting')">💡 Garden Lighting</div>
+    <div class="pill active" onclick="togglePill(this,'bin')">🗑️ Bin / Waste</div>
+  </div>
+</div>
+
+<!-- QUICK CALC -->
+<div class="section" id="sec-quickcalc">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('quickcalc')">
+      <div class="job-icon">📐</div>
+      <div class="job-title">Quick m² & m³ Calculator</div>
+      <div class="job-badge" id="badge-quickcalc"></div>
+      <div class="job-toggle open" id="toggle-quickcalc">▾</div>
+    </div>
+    <div class="job-body open" id="body-quickcalc">
+      <div style="margin-bottom:16px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--green-bright);margin-bottom:10px">📏 Area Calculator (m²)</div>
+        <div class="input-grid">
+          <div class="field"><label>Length (m)</label><input type="number" id="qc-l1" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Width (m)</label><input type="number" id="qc-w1" placeholder="0" oninput="calcQuick()"></div>
+        </div>
+        <div class="field"><label>Result</label>
+          <div id="qc-area" style="background:var(--green-leaf);border:1px solid var(--green);border-radius:4px;padding:9px 14px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--white)">0.00 m²</div>
+        </div>
+      </div>
+      <div style="height:1px;background:#e8f0e6;margin-bottom:16px"></div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:10px">📦 Volume Calculator (m³)</div>
+        <div class="input-grid">
+          <div class="field"><label>Length (m)</label><input type="number" id="qc-l2" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Width (m)</label><input type="number" id="qc-w2" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Depth (mm)</label><input type="number" id="qc-d2" placeholder="0" oninput="calcQuick()"></div>
+          <div class="field"><label>Result</label>
+            <div id="qc-vol" style="background:rgba(192,122,47,0.15);border:1px solid var(--orange);border-radius:4px;padding:9px 14px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--orange)">0.000 m³</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONCRETE SLAB -->
+<div class="section" id="sec-concrete">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('concrete')">
+      <div class="job-icon">🪨</div><div class="job-title">Concrete Slab</div>
+      <div class="job-badge" id="badge-concrete"></div><div class="job-toggle open" id="toggle-concrete">▾</div>
+    </div>
+    <div class="job-body open" id="body-concrete">
+      <div class="input-grid three">
+        <div class="field"><label>Length (m)</label><input type="number" id="c-length" placeholder="0" oninput="calcConcrete()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="c-width" placeholder="0" oninput="calcConcrete()"></div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="c-depth" value="100" oninput="calcConcrete()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Mesh type</label>
+          <select id="c-mesh" onchange="calcConcrete()">
+            <option value="SL62">SL62 (light)</option><option value="SL72">SL72 (standard)</option>
+            <option value="SL82">SL82 (heavy)</option><option value="none">No mesh</option>
+          </select>
+        </div>
+        <div class="field"><label>Crushed rock depth (mm)</label><input type="number" id="c-rock" value="100" oninput="calcConcrete()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('cp')">⚙ Edit material prices <span id="cp-arrow">▾</span></div>
+      <div class="prices-grid" id="cp">
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="cp-concrete" value="230" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Crushed rock ($/m³)</label><input type="number" id="cp-rock" value="65" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL62 ($/sheet)</label><input type="number" id="cp-mesh62" value="22" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL72 ($/sheet)</label><input type="number" id="cp-mesh72" value="28" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL82 ($/sheet)</label><input type="number" id="cp-mesh82" value="38" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Formwork ($/lm)</label><input type="number" id="cp-form" value="4" oninput="calcConcrete()"></div>
+      </div>
+      <div class="result-list" id="res-concrete"></div>
+      <div class="hours-estimate" id="hrs-concrete" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-concrete-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- GARDEN BEDS -->
+<div class="section" id="sec-garden">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('garden')">
+      <div class="job-icon">🌿</div><div class="job-title">Garden Beds</div>
+      <div class="job-badge" id="badge-garden"></div><div class="job-toggle open" id="toggle-garden">▾</div>
+    </div>
+    <div class="job-body open" id="body-garden">
+      <div class="input-grid three">
+        <div class="field"><label>Area (m²)</label><input type="number" id="g-area" placeholder="0" oninput="calcGarden()"></div>
+        <div class="field"><label>Soil depth (mm)</label><input type="number" id="g-soil" value="300" oninput="calcGarden()"></div>
+        <div class="field"><label>Mulch depth (mm)</label><input type="number" id="g-mulch" value="75" oninput="calcGarden()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Garden edging (lm)</label><input type="number" id="g-edging" placeholder="0" oninput="calcGarden()"></div>
+        <div class="field"><label>Weed mat (m²)</label><input type="number" id="g-weedmat" placeholder="0" oninput="calcGarden()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('gp')">⚙ Edit material prices <span id="gp-arrow">▾</span></div>
+      <div class="prices-grid" id="gp">
+        <div class="price-field"><label>Premium soil ($/m³)</label><input type="number" id="gp-soil" value="85" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Mulch ($/m³)</label><input type="number" id="gp-mulch" value="55" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Compost ($/bag 25L)</label><input type="number" id="gp-compost" value="12" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Edging ($/lm)</label><input type="number" id="gp-edging" value="8" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="gp-weedmat" value="3.50" oninput="calcGarden()"></div>
+      </div>
+      <div class="result-list" id="res-garden"></div>
+      <div class="hours-estimate" id="hrs-garden" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-garden-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- IRRIGATION -->
+<div class="section" id="sec-irrigation">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('irrigation')">
+      <div class="job-icon">💧</div><div class="job-title">Irrigation System</div>
+      <div class="job-badge" id="badge-irrigation"></div><div class="job-toggle open" id="toggle-irrigation">▾</div>
+    </div>
+    <div class="job-body open" id="body-irrigation">
+      <div class="input-grid">
+        <div class="field"><label>No. of zones</label><input type="number" id="i-zones" value="1" min="1" oninput="calcIrrigation()"></div>
+        <div class="field"><label>20mm poly pipe (lm)</label><input type="number" id="i-pipe" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>13mm dripline (lm)</label><input type="number" id="i-dripline" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>Spray heads</label><input type="number" id="i-heads" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>Drip emitters</label><input type="number" id="i-drip" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>1-way tap timer</label><input type="number" id="i-timer1" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>4-way tap timer</label><input type="number" id="i-timer4" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>Tap adapter manifold</label><input type="number" id="i-tapadapter" placeholder="0" oninput="calcIrrigation()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('ip')">⚙ Edit material prices <span id="ip-arrow">▾</span></div>
+      <div class="prices-grid" id="ip">
+        <div class="price-field"><label>20mm poly pipe ($/lm)</label><input type="number" id="ip-pipe" value="2.20" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Tap timer ($/unit)</label><input type="number" id="ip-timer" value="85" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Manifold 2-way ($/unit)</label><input type="number" id="ip-manifold" value="45" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Spray head ($/unit)</label><input type="number" id="ip-head" value="8.50" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Drip emitter ($/unit)</label><input type="number" id="ip-drip" value="1.80" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>13mm dripline ($/lm)</label><input type="number" id="ip-dripline" value="1.80" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>1-way tap timer ($)</label><input type="number" id="ip-timer1" value="65" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>4-way tap timer ($)</label><input type="number" id="ip-timer4" value="120" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Tap adapter ($)</label><input type="number" id="ip-tapadapter" value="35" oninput="calcIrrigation()"></div>
+        <div class="price-field"><label>Fittings allowance ($)</label><input type="number" id="ip-fittings" value="45" oninput="calcIrrigation()"></div>
+      </div>
+      <div class="result-list" id="res-irrigation"></div>
+      <div class="hours-estimate" id="hrs-irrigation" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-irrigation-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- RETAINING WALL -->
+<div class="section" id="sec-retaining">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('retaining')">
+      <div class="job-icon">🧱</div><div class="job-title">Retaining Wall</div>
+      <div class="job-badge" id="badge-retaining"></div><div class="job-toggle open" id="toggle-retaining">▾</div>
+    </div>
+    <div class="job-body open" id="body-retaining">
+      <div class="input-grid">
+        <div class="field"><label>Length (lm)</label><input type="number" id="r-length" placeholder="0" oninput="calcRetaining()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="r-height" placeholder="0" oninput="calcRetaining()"></div>
+        <div class="field"><label>Post spacing (m)</label><input type="number" id="r-spacing" value="1.8" oninput="calcRetaining()"></div>
+        <div class="field"><label>Wall type</label>
+          <select id="r-type" onchange="calcRetaining()">
+            <option value="sleeper">Timber sleeper</option><option value="concrete">Concrete sleeper</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('rp')">⚙ Edit material prices <span id="rp-arrow">▾</span></div>
+      <div class="prices-grid" id="rp">
+        <div class="price-field"><label>H4 post 2.4m ($/unit)</label><input type="number" id="rp-post" value="38" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Timber sleeper ($/unit)</label><input type="number" id="rp-tsleeper" value="32" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Concrete sleeper ($/unit)</label><input type="number" id="rp-csleeper" value="65" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="rp-concrete" value="230" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Fixings ($)</label><input type="number" id="rp-fixings" value="40" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Drainage aggregate ($/m³)</label><input type="number" id="rp-agg" value="75" oninput="calcRetaining()"></div>
+      </div>
+      <div class="result-list" id="res-retaining"></div>
+      <div class="hours-estimate" id="hrs-retaining" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-retaining-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TURF -->
+<div class="section" id="sec-turf">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('turf')">
+      <div class="job-icon">🟩</div><div class="job-title">Turf / Lawn</div>
+      <div class="job-badge" id="badge-turf"></div><div class="job-toggle open" id="toggle-turf">▾</div>
+    </div>
+    <div class="job-body open" id="body-turf">
+      <div class="input-grid">
+        <div class="field"><label>Area (m²)</label><input type="number" id="t-area" placeholder="0" oninput="calcTurf()"></div>
+        <div class="field"><label>Turf type</label>
+          <select id="t-type" onchange="calcTurf()">
+            <option value="kik">Kikuyu</option><option value="buf">Buffalo</option>
+            <option value="cou">Couch</option><option value="zoy">Zoysia</option>
+          </select>
+        </div>
+        <div class="field"><label>Topsoil depth (mm)</label><input type="number" id="t-soil" value="100" oninput="calcTurf()"></div>
+        <div class="field"><label>Undersoil prep?</label>
+          <select id="t-prep" onchange="calcTurf()"><option value="yes">Yes</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('tp')">⚙ Edit material prices <span id="tp-arrow">▾</span></div>
+      <div class="prices-grid" id="tp">
+        <div class="price-field"><label>Kikuyu ($/m²)</label><input type="number" id="tp-kik" value="12" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Buffalo ($/m²)</label><input type="number" id="tp-buf" value="15" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Couch ($/m²)</label><input type="number" id="tp-cou" value="13" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Zoysia ($/m²)</label><input type="number" id="tp-zoy" value="18" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Topsoil ($/m³)</label><input type="number" id="tp-soil" value="75" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Starter fertiliser ($)</label><input type="number" id="tp-fert" value="35" oninput="calcTurf()"></div>
+      </div>
+      <div class="result-list" id="res-turf"></div>
+      <div class="hours-estimate" id="hrs-turf" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-turf-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FENCING -->
+<div class="section" id="sec-fencing">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('fencing')">
+      <div class="job-icon">🪵</div><div class="job-title">Fencing</div>
+      <div class="job-badge" id="badge-fencing"></div><div class="job-toggle open" id="toggle-fencing">▾</div>
+    </div>
+    <div class="job-body open" id="body-fencing">
+      <div class="input-grid">
+        <div class="field"><label>Length (lm)</label><input type="number" id="f-length" placeholder="0" oninput="calcFencing()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="f-height" value="1.8" oninput="calcFencing()"></div>
+        <div class="field"><label>Post spacing (m)</label><input type="number" id="f-spacing" value="2.4" oninput="calcFencing()"></div>
+        <div class="field"><label>Fence type</label>
+          <select id="f-type" onchange="calcFencing()">
+            <option value="paling">Timber paling</option><option value="colorbond">Colorbond</option><option value="pool">Pool/wire</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('fp')">⚙ Edit material prices <span id="fp-arrow">▾</span></div>
+      <div class="prices-grid" id="fp">
+        <div class="price-field"><label>H4 post ($/unit)</label><input type="number" id="fp-post" value="38" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Paling ($/unit)</label><input type="number" id="fp-paling" value="3.50" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Rail 4.2m ($/unit)</label><input type="number" id="fp-rail" value="22" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="fp-conc" value="9" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Fixings ($)</label><input type="number" id="fp-fix" value="35" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Colorbond panel ($/lm)</label><input type="number" id="fp-cb" value="85" oninput="calcFencing()"></div>
+      </div>
+      <div class="result-list" id="res-fencing"></div>
+      <div class="hours-estimate" id="hrs-fencing" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-fencing-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLANTING -->
+<div class="section" id="sec-planting">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('planting')">
+      <div class="job-icon">🌱</div><div class="job-title">Planting</div>
+      <div class="job-badge" id="badge-planting"></div><div class="job-toggle open" id="toggle-planting">▾</div>
+    </div>
+    <div class="job-body open" id="body-planting">
+      <div id="plantList"></div>
+      <button class="add-btn" onclick="addPlant()">+ Add Plant</button>
+      <div class="gap"></div>
+      <div class="input-grid">
+        <div class="field"><label>Potting mix bags</label><input type="number" id="pl-mix" placeholder="0" oninput="calcPlanting()"></div>
+        <div class="field"><label>Fertiliser tablets?</label>
+          <select id="pl-fert" onchange="calcPlanting()"><option value="yes">Yes</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pp')">⚙ Edit supply prices <span id="pp-arrow">▾</span></div>
+      <div class="prices-grid" id="pp">
+        <div class="price-field"><label>Potting mix ($/bag)</label><input type="number" id="pp-mix" value="14" oninput="calcPlanting()"></div>
+        <div class="price-field"><label>Fert tablets ($/pack)</label><input type="number" id="pp-fert" value="18" oninput="calcPlanting()"></div>
+      </div>
+      <div class="result-list" id="res-planting"></div>
+      <div class="hours-estimate" id="hrs-planting" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-planting-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DRAINAGE -->
+<div class="section" id="sec-drainage">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('drainage')">
+      <div class="job-icon">🌊</div><div class="job-title">Drainage</div>
+      <div class="job-badge" id="badge-drainage"></div><div class="job-toggle open" id="toggle-drainage">▾</div>
+    </div>
+    <div class="job-body open" id="body-drainage">
+      <div class="input-grid">
+        <div class="field"><label>Ag pipe run (lm)</label><input type="number" id="d-ag" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Channel drain (lm)</label><input type="number" id="d-channel" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Pits needed</label><input type="number" id="d-pits" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Scoria/aggregate (m³)</label><input type="number" id="d-scoria" placeholder="0" oninput="calcDrainage()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('dp')">⚙ Edit material prices <span id="dp-arrow">▾</span></div>
+      <div class="prices-grid" id="dp">
+        <div class="price-field"><label>Ag pipe 100mm ($/lm)</label><input type="number" id="dp-ag" value="4.50" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Channel drain ($/lm)</label><input type="number" id="dp-channel" value="35" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Pit 300x300 ($/unit)</label><input type="number" id="dp-pit" value="65" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Scoria ($/m³)</label><input type="number" id="dp-scoria" value="80" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Geotech fabric ($/m²)</label><input type="number" id="dp-geo" value="4" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Fittings allowance ($)</label><input type="number" id="dp-fit" value="40" oninput="calcDrainage()"></div>
+      </div>
+      <div class="result-list" id="res-drainage"></div>
+      <div class="hours-estimate" id="hrs-drainage" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-drainage-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAVING -->
+<div class="section" id="sec-paving">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('paving')">
+      <div class="job-icon">🟫</div><div class="job-title">Paving</div>
+      <div class="job-badge" id="badge-paving"></div><div class="job-toggle open" id="toggle-paving">▾</div>
+    </div>
+    <div class="job-body open" id="body-paving">
+      <div class="input-grid three">
+        <div class="field"><label>Area (m²)</label><input type="number" id="pv-area" placeholder="0" oninput="calcPaving()"></div>
+        <div class="field"><label>Paver type</label>
+          <select id="pv-type" onchange="calcPaving()">
+            <option value="concrete">Concrete paver</option><option value="travertine">Travertine</option>
+            <option value="bluestone">Bluestone</option><option value="porcelain">Porcelain tile</option><option value="brick">Clay brick</option>
+          </select>
+        </div>
+        <div class="field"><label>Edge restraint (lm)</label><input type="number" id="pv-edge" placeholder="0" oninput="calcPaving()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Paver size</label>
+          <select id="pv-size" onchange="paverSizeChange()">
+            <option value="0.16">400×400mm</option><option value="0.36">600×600mm</option>
+            <option value="0.18">600×300mm</option><option value="custom">Custom size</option>
+          </select>
+        </div>
+        <div class="field" id="pv-custom-wrap" style="display:none"><label>Custom (m² per paver)</label><input type="number" id="pv-custom-size" placeholder="e.g. 0.25" step="0.01" oninput="calcPaving()"></div>
+        <div class="field"><label>Sand bed depth (mm)</label><input type="number" id="pv-sand" value="30" oninput="calcPaving()"></div>
+        <div class="field"><label>Base (mm)</label><input type="number" id="pv-base" value="100" oninput="calcPaving()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pvp')">⚙ Edit material prices <span id="pvp-arrow">▾</span></div>
+      <div class="prices-grid" id="pvp">
+        <div class="price-field"><label>Concrete paver ($/m²)</label><input type="number" id="pvp-concrete" value="45" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Travertine ($/m²)</label><input type="number" id="pvp-travertine" value="95" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Bluestone ($/m²)</label><input type="number" id="pvp-bluestone" value="110" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Porcelain ($/m²)</label><input type="number" id="pvp-porcelain" value="85" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Clay brick ($/m²)</label><input type="number" id="pvp-brick" value="55" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Bedding sand ($/m³)</label><input type="number" id="pvp-sand" value="60" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Crusher dust ($/m³)</label><input type="number" id="pvp-base" value="65" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Edge restraint ($/lm)</label><input type="number" id="pvp-edge" value="6" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Grout/adhesive ($)</label><input type="number" id="pvp-grout" value="60" oninput="calcPaving()"></div>
+      </div>
+      <div class="result-list" id="res-paving"></div>
+      <div class="hours-estimate" id="hrs-paving" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-paving-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DECKING -->
+<div class="section" id="sec-decking">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('decking')">
+      <div class="job-icon">🪵</div><div class="job-title">Decking</div>
+      <div class="job-badge" id="badge-decking"></div><div class="job-toggle open" id="toggle-decking">▾</div>
+    </div>
+    <div class="job-body open" id="body-decking">
+      <div class="input-grid three">
+        <div class="field"><label>Length (m)</label><input type="number" id="dk-length" placeholder="0" oninput="calcDecking()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="dk-width" placeholder="0" oninput="calcDecking()"></div>
+        <div class="field"><label>Deck type</label>
+          <select id="dk-type" onchange="calcDecking()">
+            <option value="merbau">Merbau hardwood</option><option value="pine">Treated pine</option><option value="composite">Composite</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Deck height (m)</label><input type="number" id="dk-height" value="0.3" oninput="calcDecking()"></div>
+        <div class="field"><label>Handrail needed?</label>
+          <select id="dk-rail" onchange="calcDecking()"><option value="no">No</option><option value="yes">Yes</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('dkp')">⚙ Edit material prices <span id="dkp-arrow">▾</span></div>
+      <div class="prices-grid" id="dkp">
+        <div class="price-field"><label>Merbau boards ($/lm)</label><input type="number" id="dkp-merbau" value="18" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Treated pine ($/lm)</label><input type="number" id="dkp-pine" value="9" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Composite ($/lm)</label><input type="number" id="dkp-composite" value="28" oninput="calcDecking()"></div>
+        <div class="price-field"><label>H4 bearer/joist ($/lm)</label><input type="number" id="dkp-frame" value="8" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Post 100x100 ($/unit)</label><input type="number" id="dkp-post" value="45" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="dkp-conc" value="9" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Fixings/screws ($)</label><input type="number" id="dkp-fix" value="80" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Handrail ($/lm)</label><input type="number" id="dkp-rail" value="120" oninput="calcDecking()"></div>
+      </div>
+      <div class="result-list" id="res-decking"></div>
+      <div class="hours-estimate" id="hrs-decking" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-decking-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PATHWAYS -->
+<div class="section" id="sec-pathway">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('pathway')">
+      <div class="job-icon">🛤️</div><div class="job-title">Pathways</div>
+      <div class="job-badge" id="badge-pathway"></div><div class="job-toggle open" id="toggle-pathway">▾</div>
+    </div>
+    <div class="job-body open" id="body-pathway">
+      <div class="input-grid">
+        <div class="field"><label>Length (m)</label><input type="number" id="pw-length" placeholder="0" oninput="calcPathway()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="pw-width" value="1.2" oninput="calcPathway()"></div>
+        <div class="field"><label>Pathway type</label>
+          <select id="pw-type" onchange="calcPathway()">
+            <option value="gravel">Gravel/crushed granite</option><option value="stepping">Stepping stones</option>
+            <option value="dg">Decomposed granite</option><option value="bark">Bark chips</option>
+          </select>
+        </div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="pw-depth" value="75" oninput="calcPathway()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pwp')">⚙ Edit material prices <span id="pwp-arrow">▾</span></div>
+      <div class="prices-grid" id="pwp">
+        <div class="price-field"><label>Gravel ($/m³)</label><input type="number" id="pwp-gravel" value="70" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Stepping stones ($/unit)</label><input type="number" id="pwp-stepping" value="25" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Decomposed granite ($/m³)</label><input type="number" id="pwp-dg" value="85" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Bark chips ($/m³)</label><input type="number" id="pwp-bark" value="55" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="pwp-weed" value="3.50" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Edge restraint ($/lm)</label><input type="number" id="pwp-edge" value="6" oninput="calcPathway()"></div>
+      </div>
+      <div class="result-list" id="res-pathway"></div>
+      <div class="hours-estimate" id="hrs-pathway" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-pathway-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PERGOLA -->
+<div class="section" id="sec-pergola">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('pergola')">
+      <div class="job-icon">🏠</div><div class="job-title">Pergola / Shade Structure</div>
+      <div class="job-badge" id="badge-pergola"></div><div class="job-toggle open" id="toggle-pergola">▾</div>
+    </div>
+    <div class="job-body open" id="body-pergola">
+      <div class="input-grid three">
+        <div class="field"><label>Length (m)</label><input type="number" id="pg-length" placeholder="0" oninput="calcPergola()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="pg-width" placeholder="0" oninput="calcPergola()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="pg-height" value="2.4" oninput="calcPergola()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Material</label>
+          <select id="pg-type" onchange="calcPergola()">
+            <option value="pine">Treated pine</option><option value="hardwood">Hardwood</option><option value="steel">Steel/Aluminium</option>
+          </select>
+        </div>
+        <div class="field"><label>Roofing type</label>
+          <select id="pg-roof" onchange="calcPergola()">
+            <option value="open">Open (no roof)</option><option value="polycarbonate">Polycarbonate</option><option value="colorbond">Colorbond</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('pgp')">⚙ Edit material prices <span id="pgp-arrow">▾</span></div>
+      <div class="prices-grid" id="pgp">
+        <div class="price-field"><label>Post 100x100 ($/unit)</label><input type="number" id="pgp-post" value="55" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Beam 190x45 ($/lm)</label><input type="number" id="pgp-beam" value="12" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Rafter 90x45 ($/lm)</label><input type="number" id="pgp-rafter" value="7" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="pgp-conc" value="9" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Fixings/brackets ($)</label><input type="number" id="pgp-fix" value="120" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Polycarbonate ($/m²)</label><input type="number" id="pgp-poly" value="45" oninput="calcPergola()"></div>
+        <div class="price-field"><label>Colorbond ($/m²)</label><input type="number" id="pgp-cb" value="55" oninput="calcPergola()"></div>
+      </div>
+      <div class="result-list" id="res-pergola"></div>
+      <div class="hours-estimate" id="hrs-pergola" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-pergola-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXCAVATION -->
+<div class="section" id="sec-excavation">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('excavation')">
+      <div class="job-icon">🚜</div><div class="job-title">Excavation / Earthworks</div>
+      <div class="job-badge" id="badge-excavation"></div><div class="job-toggle open" id="toggle-excavation">▾</div>
+    </div>
+    <div class="job-body open" id="body-excavation">
+      <div class="input-grid">
+        <div class="field"><label>Area (m²)</label><input type="number" id="ex-area" placeholder="0" oninput="calcExcavation()"></div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="ex-depth" value="300" oninput="calcExcavation()"></div>
+        <div class="field"><label>No. of days (bobcat)</label><input type="number" id="ex-days" value="1" min="1" oninput="calcExcavation()"></div>
+        <div class="field"><label>Soil removal needed?</label>
+          <select id="ex-remove" onchange="calcExcavation()"><option value="yes">Yes — tip off site</option><option value="no">No — spread on site</option></select>
+        </div>
+        <div class="field"><label>Access type</label>
+          <select id="ex-access" onchange="calcExcavation()"><option value="good">Good (bobcat access)</option><option value="limited">Limited (hand dig)</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('exp')">⚙ Edit prices <span id="exp-arrow">▾</span></div>
+      <div class="prices-grid" id="exp">
+        <div class="price-field"><label>Bobcat hire ($/day)</label><input type="number" id="exp-bobcat" value="900" oninput="calcExcavation()"></div>
+        <div class="price-field"><label>Tip truck hire ($/load)</label><input type="number" id="exp-truck" value="350" oninput="calcExcavation()"></div>
+        <div class="price-field"><label>Tip fees ($/tonne)</label><input type="number" id="exp-tip" value="85" oninput="calcExcavation()"></div>
+      </div>
+      <div class="result-list" id="res-excavation"></div>
+      <div class="hours-estimate" id="hrs-excavation" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-excavation-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ARTIFICIAL GRASS -->
+<div class="section" id="sec-artificial">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('artificial')">
+      <div class="job-icon">🎯</div><div class="job-title">Artificial Grass</div>
+      <div class="job-badge" id="badge-artificial"></div><div class="job-toggle open" id="toggle-artificial">▾</div>
+    </div>
+    <div class="job-body open" id="body-artificial">
+      <div class="input-grid">
+        <div class="field"><label>Area (m²)</label><input type="number" id="ag-area" placeholder="0" oninput="calcArtificial()"></div>
+        <div class="field"><label>Grass quality</label>
+          <select id="ag-type" onchange="calcArtificial()">
+            <option value="standard">Standard (30mm)</option><option value="premium">Premium (40mm)</option><option value="luxury">Luxury (45mm)</option>
+          </select>
+        </div>
+        <div class="field"><label>Base depth (mm)</label><input type="number" id="ag-base" value="75" oninput="calcArtificial()"></div>
+        <div class="field"><label>Infill needed?</label>
+          <select id="ag-infill" onchange="calcArtificial()"><option value="yes">Yes (silica sand)</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('agp')">⚙ Edit material prices <span id="agp-arrow">▾</span></div>
+      <div class="prices-grid" id="agp">
+        <div class="price-field"><label>Standard grass ($/m²)</label><input type="number" id="agp-standard" value="28" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Premium grass ($/m²)</label><input type="number" id="agp-premium" value="42" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Luxury grass ($/m²)</label><input type="number" id="agp-luxury" value="58" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Crusher dust ($/m³)</label><input type="number" id="agp-base" value="65" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="agp-weed" value="3.50" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Silica sand infill ($/bag)</label><input type="number" id="agp-infill" value="22" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Joining tape ($/lm)</label><input type="number" id="agp-tape" value="8" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Nails/pegs ($)</label><input type="number" id="agp-nails" value="35" oninput="calcArtificial()"></div>
+      </div>
+      <div class="result-list" id="res-artificial"></div>
+      <div class="hours-estimate" id="hrs-artificial" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-artificial-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="section" id="sec-steps">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('steps')">
+      <div class="job-icon">🪜</div><div class="job-title">Garden Steps</div>
+      <div class="job-badge" id="badge-steps"></div><div class="job-toggle open" id="toggle-steps">▾</div>
+    </div>
+    <div class="job-body open" id="body-steps">
+      <div class="input-grid">
+        <div class="field"><label>No. of steps</label><input type="number" id="st-count" placeholder="0" oninput="calcSteps()"></div>
+        <div class="field"><label>Width (m)</label><input type="number" id="st-width" value="1.2" oninput="calcSteps()"></div>
+        <div class="field"><label>Step type</label>
+          <select id="st-type" onchange="calcSteps()">
+            <option value="sleeper">Timber sleeper</option><option value="concrete">Concrete/poured</option>
+            <option value="stone">Natural stone</option><option value="brick">Brick</option>
+          </select>
+        </div>
+        <div class="field"><label>Riser height (mm)</label><input type="number" id="st-riser" value="175" oninput="calcSteps()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('stp')">⚙ Edit material prices <span id="stp-arrow">▾</span></div>
+      <div class="prices-grid" id="stp">
+        <div class="price-field"><label>Timber sleeper ($/unit)</label><input type="number" id="stp-sleeper" value="32" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="stp-concrete" value="230" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Natural stone ($/m²)</label><input type="number" id="stp-stone" value="120" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Brick ($/unit)</label><input type="number" id="stp-brick" value="1.20" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Fixings/pins ($)</label><input type="number" id="stp-fix" value="30" oninput="calcSteps()"></div>
+        <div class="price-field"><label>Crushed rock base ($/m³)</label><input type="number" id="stp-rock" value="65" oninput="calcSteps()"></div>
+      </div>
+      <div class="result-list" id="res-steps"></div>
+      <div class="hours-estimate" id="hrs-steps" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-steps-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- GARDEN LIGHTING -->
+<div class="section" id="sec-lighting">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('lighting')">
+      <div class="job-icon">💡</div><div class="job-title">Garden Lighting</div>
+      <div class="job-badge" id="badge-lighting"></div><div class="job-toggle open" id="toggle-lighting">▾</div>
+    </div>
+    <div class="job-body open" id="body-lighting">
+      <div class="input-grid">
+        <div class="field"><label>Spike lights</label><input type="number" id="lt-spike" placeholder="0" oninput="calcLighting()"></div>
+        <div class="field"><label>Path lights</label><input type="number" id="lt-path" placeholder="0" oninput="calcLighting()"></div>
+        <div class="field"><label>Wall/step lights</label><input type="number" id="lt-wall" placeholder="0" oninput="calcLighting()"></div>
+        <div class="field"><label>Cable run (lm)</label><input type="number" id="lt-cable" placeholder="0" oninput="calcLighting()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('ltp')">⚙ Edit material prices <span id="ltp-arrow">▾</span></div>
+      <div class="prices-grid" id="ltp">
+        <div class="price-field"><label>Spike light ($/unit)</label><input type="number" id="ltp-spike" value="35" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Path light ($/unit)</label><input type="number" id="ltp-path" value="45" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Wall/step light ($/unit)</label><input type="number" id="ltp-wall" value="55" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Low volt cable ($/lm)</label><input type="number" id="ltp-cable" value="3.50" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Transformer ($/unit)</label><input type="number" id="ltp-trans" value="120" oninput="calcLighting()"></div>
+        <div class="price-field"><label>Connectors/clips ($)</label><input type="number" id="ltp-conn" value="40" oninput="calcLighting()"></div>
+      </div>
+      <div class="result-list" id="res-lighting"></div>
+      <div class="hours-estimate" id="hrs-lighting" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-lighting-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- BIN / WASTE -->
+<div class="section" id="sec-bin">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('bin')">
+      <div class="job-icon">🗑️</div><div class="job-title">Bin / Waste Removal</div>
+      <div class="job-badge" id="badge-bin"></div><div class="job-toggle open" id="toggle-bin">▾</div>
+    </div>
+    <div class="job-body open" id="body-bin">
+      <div style="background:rgba(74,124,63,0.08);border:1px solid rgba(74,124,63,0.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--green-bright)">Formula: (Size × $100) + $60 delivery fee</div>
+      <div class="input-grid">
+        <div class="field"><label>Number of bins</label><input type="number" id="bin-qty" value="1" min="1" oninput="calcBin()"></div>
+        <div class="field"><label>Bin size (m³)</label>
+          <select id="bin-size" onchange="calcBin()">
+            <option value="2">2m³ — $260</option><option value="3">3m³ — $360</option>
+            <option value="4">4m³ — $460</option><option value="6" selected>6m³ — $660</option>
+            <option value="8">8m³ — $860</option><option value="9">9m³ — $960</option>
+            <option value="custom">Custom size</option>
+          </select>
+        </div>
+        <div class="field" id="bin-custom-field" style="display:none"><label>Custom size (m³)</label><input type="number" id="bin-custom" placeholder="0" oninput="calcBin()"></div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('binp')">⚙ Edit pricing formula <span id="binp-arrow">▾</span></div>
+      <div class="prices-grid" id="binp">
+        <div class="price-field"><label>Rate per m³ ($)</label><input type="number" id="binp-rate" value="100" oninput="calcBin()"></div>
+        <div class="price-field"><label>Delivery fee ($)</label><input type="number" id="binp-delivery" value="60" oninput="calcBin()"></div>
+      </div>
+      <div class="result-list" id="res-bin"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW PANEL -->
+<div class="review-panel" id="reviewPanel">
+  <div class="review-title">📋 Review Materials List</div>
+  <div id="reviewItems"></div>
+  <div class="divider"></div>
+  <div class="review-total">
+    <span class="rtl">Materials Total</span>
+    <span class="rtv" id="reviewTotal">$0.00</span>
+  </div>
+  <div style="font-size:11px;color:var(--text-secondary);margin-top:4px">Tick items to include · Edit prices · Remove unwanted items</div>
+  <button class="send-btn" onclick="sendToQuote()">→ Send to Quote Builder</button>
+  <button class="clear-btn" onclick="clearAll()">Clear All Calculations</button>
+</div>
+<div class="gap"></div>
+
+</div><!-- end tab-calc -->
+
 <!-- ==================== QUOTE BUILDER TAB ==================== -->
 <div class="tab-panel" id="tab-quote">
 
@@ -2025,3 +4200,4 @@ window.addEventListener('load', function() {
 </script>
 </body>
 </html>
+
