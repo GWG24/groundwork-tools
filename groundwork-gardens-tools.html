@@ -2464,7 +2464,42 @@ async function loadQuoteById(id) {
     switchTab3('quote');
     showToast('✓ Quote loaded!');
   } catch(e) { showToast('⚠ Could not load quote'); console.error(e); }
-}// Init
+async function saveInvoice() {
+  const data = {
+    client: document.getElementById('inv-client').value,
+    address: document.getElementById('inv-address').value,
+    num: document.getElementById('inv-num').value,
+    date: document.getElementById('inv-date').value,
+    due: document.getElementById('inv-due').value,
+    status: document.getElementById('inv-status').value,
+    desc: document.getElementById('inv-desc').value,
+    itemise: document.getElementById('inv-itemise').checked,
+    items: invItems
+  };
+  const id = 'inv_' + (data.num || Date.now());
+  const label = (data.client || 'Unnamed') + ' — Invoice ' + (data.num || '') + ' (' + new Date().toLocaleDateString('en-AU') + ')';
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/gg_invoices`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Prefer': 'resolution=merge-duplicates' },
+      body: JSON.stringify({ id, name: label, data, updated_at: new Date().toISOString() })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('✓ Invoice saved to cloud!');
+  } catch(e) { showToast('⚠ Could not save to cloud'); console.error(e); }
+}
+async function showLoadInvoices() {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/gg_invoices?select=id,name,updated_at&order=updated_at.desc`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+    });
+    const rows = await res.json();
+    if (!rows.length) { showToast('No saved invoices found'); return; }
+    const modal = document.getElementById('loadInvoiceModal');
+    const list = document.getElementById('loadInvoiceList');
+    list.innerHTML = rows.map(r => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:14px;color:var(--cream);flex:1;padding-right:10px">${r.name}</span><div style="display:flex;gap:8px"><button onclick="loadInvoiceById('${r.id}')" style="background:var(--green);border:none;border-radius:4px;color:white;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;padding:7px 14px;text-transform:uppercase">Load</button><button onclick="confirmDeleteInvoice('${r.id}','${r.name.replace(/'/g,"\\'")}')" style="background:transparent;border:1px solid #9e3a2e;border-radius:4px;color:#c0392b;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;padding:7px 14px;text-transform:uppercase">🗑</button></div></div>`).join('');
+    modal.classList.add('show');
+  } catch(e) { showToast('⚠ Could not load invoices}'); console.error(e); }
 document.getElementById('issueDate').valueAsDate = new Date();
 const validDate2 = new Date(); validDate2.setDate(validDate2.getDate()+7);
 document.getElementById('validDate').valueAsDate = validDate2;
