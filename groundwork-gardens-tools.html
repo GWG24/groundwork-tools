@@ -330,6 +330,50 @@
       <div class="job-badge" id="badge-irrigation"></div><div class="job-toggle open" id="toggle-irrigation">▾</div>
     </div>
     <div class="job-body open" id="body-irrigation">
+      <div class="input-grid" style="margin-bottom:14px">
+        <div class="field full"><label>Job Type</label>
+          <select id="i-jobtype" onchange="irrigationJobType()">
+            <option value="install">💧 Installation</option>
+            <option value="report">📋 Report Only</option>
+            <option value="repair">🔧 Repair Only</option>
+            <option value="both">📋🔧 Report + Repair</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- REPORT FIELDS -->
+      <div id="i-report-fields" style="display:none">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--green-bright);margin-bottom:8px">📋 Report Details</div>
+        <div class="input-grid">
+          <div class="field"><label>Report fee ($)</label><input type="number" id="i-report-fee" value="150" oninput="calcIrrigation()"></div>
+          <div class="field"><label>No. of zones inspected</label><input type="number" id="i-report-zones" placeholder="0" oninput="calcIrrigation()"></div>
+        </div>
+        <div class="field" style="margin-bottom:12px"><label>Notes / Findings</label>
+          <textarea id="i-report-notes" rows="3" placeholder="e.g. Zone 2 head blocked, Zone 4 solenoid faulty..." style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:13px;padding:8px 10px;resize:vertical"></textarea>
+        </div>
+        <div style="height:1px;background:#e8f0e6;margin-bottom:12px"></div>
+      </div>
+
+      <!-- REPAIR FIELDS -->
+      <div id="i-repair-fields" style="display:none">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:8px">🔧 Repair Details</div>
+        <div class="input-grid">
+          <div class="field"><label>Heads replaced</label><input type="number" id="i-rep-heads" placeholder="0" oninput="calcIrrigation()"></div>
+          <div class="field"><label>Solenoids replaced</label><input type="number" id="i-rep-solenoids" placeholder="0" oninput="calcIrrigation()"></div>
+          <div class="field"><label>Poly pipe repair (lm)</label><input type="number" id="i-rep-pipe" placeholder="0" oninput="calcIrrigation()"></div>
+          <div class="field"><label>Fittings/parts ($)</label><input type="number" id="i-rep-parts" value="0" oninput="calcIrrigation()"></div>
+        </div>
+        <div class="prices-toggle" onclick="togglePrices('irp')">⚙ Edit repair prices <span id="irp-arrow">▾</span></div>
+        <div class="prices-grid" id="irp">
+          <div class="price-field"><label>Replacement head ($/unit)</label><input type="number" id="irp-head" value="18" oninput="calcIrrigation()"></div>
+          <div class="price-field"><label>Solenoid ($/unit)</label><input type="number" id="irp-solenoid" value="65" oninput="calcIrrigation()"></div>
+          <div class="price-field"><label>Poly pipe repair ($/lm)</label><input type="number" id="irp-pipe" value="12" oninput="calcIrrigation()"></div>
+        </div>
+        <div style="height:1px;background:#e8f0e6;margin-bottom:12px;margin-top:12px"></div>
+      </div>
+
+      <!-- INSTALL FIELDS -->
+      <div id="i-install-fields">
       <div class="input-grid">
         <div class="field"><label>No. of zones</label><input type="number" id="i-zones" value="1" min="1" oninput="calcIrrigation()"></div>
         <div class="field"><label>20mm poly pipe (lm)</label><input type="number" id="i-pipe" placeholder="0" oninput="calcIrrigation()"></div>
@@ -340,6 +384,7 @@
         <div class="field"><label>4-way tap timer</label><input type="number" id="i-timer4" placeholder="0" oninput="calcIrrigation()"></div>
         <div class="field"><label>Tap adapter manifold</label><input type="number" id="i-tapadapter" placeholder="0" oninput="calcIrrigation()"></div>
       </div>
+      </div><!-- end install fields -->
       <div class="prices-toggle" onclick="togglePrices('ip')">⚙ Edit material prices <span id="ip-arrow">▾</span></div>
       <div class="prices-grid" id="ip">
         <div class="price-field"><label>20mm poly pipe ($/lm)</label><input type="number" id="ip-pipe" value="2.20" oninput="calcIrrigation()"></div>
@@ -1245,26 +1290,63 @@ function calcGarden() {
   showResults('garden', items, Math.round(area * 0.4), Math.round(area * 0.7));
 }
 
+function irrigationJobType() {
+  var type = document.getElementById('i-jobtype').value;
+  var installFields = document.getElementById('i-install-fields');
+  var reportFields = document.getElementById('i-report-fields');
+  var repairFields = document.getElementById('i-repair-fields');
+  installFields.style.display = (type === 'install') ? 'block' : 'none';
+  reportFields.style.display = (type === 'report' || type === 'both') ? 'block' : 'none';
+  repairFields.style.display = (type === 'repair' || type === 'both') ? 'block' : 'none';
+  calcIrrigation();
+}
+
 function calcIrrigation() {
-  var zones = v('i-zones'), pipe = v('i-pipe'), heads = v('i-heads'), drip = v('i-drip');
-  var timer1 = v('i-timer1'), timer4 = v('i-timer4'), tapadapter = v('i-tapadapter');
-  var dripline = v('i-dripline');
-  if (zones <= 0 && pipe <= 0) { showResults('irrigation', []); return; }
-  var manifolds = Math.ceil(zones / 2);
-  var fittings = v('ip-fittings') + pipe * 0.5;
-  var items = [
-    { name: '20mm poly pipe', qty: pipe + ' lm', total: pipe * v('ip-pipe') },
-    { name: 'Automatic tap timer', qty: zones + ' units', total: zones * v('ip-timer') },
-    { name: '2-way manifold', qty: manifolds + ' units', total: manifolds * v('ip-manifold') }
-  ];
-  if (heads > 0) items.push({ name: 'Adjustable spray heads', qty: heads + ' units', total: heads * v('ip-head') });
-  if (drip > 0) items.push({ name: 'Drip emitters', qty: drip + ' units', total: drip * v('ip-drip') });
-  if (dripline > 0) items.push({ name: '13mm dripline', qty: dripline + ' lm', total: dripline * v('ip-dripline') });
-  if (timer1 > 0) items.push({ name: '1-way tap timer', qty: timer1 + ' units', total: timer1 * v('ip-timer1') });
-  if (timer4 > 0) items.push({ name: '4-way tap timer', qty: timer4 + ' units', total: timer4 * v('ip-timer4') });
-  if (tapadapter > 0) items.push({ name: 'Tap adapter manifold', qty: tapadapter + ' units', total: tapadapter * v('ip-tapadapter') });
-  items.push({ name: 'Fittings & connectors', qty: '1 lot', total: fittings });
-  showResults('irrigation', items, Math.round(zones * 3 + pipe * 0.1), Math.round(zones * 5 + pipe * 0.15));
+  var type = document.getElementById('i-jobtype') ? document.getElementById('i-jobtype').value : 'install';
+  var items = [];
+
+  // REPORT items
+  if (type === 'report' || type === 'both') {
+    var reportFee = v('i-report-fee');
+    var reportZones = v('i-report-zones');
+    if (reportFee > 0) items.push({ name: 'Irrigation system report', qty: reportZones > 0 ? reportZones + ' zones inspected' : '1 report', total: reportFee });
+  }
+
+  // REPAIR items
+  if (type === 'repair' || type === 'both') {
+    var repHeads = v('i-rep-heads'), repSolenoids = v('i-rep-solenoids');
+    var repPipe = v('i-rep-pipe'), repParts = v('i-rep-parts');
+    if (repHeads > 0) items.push({ name: 'Replacement spray heads', qty: repHeads + ' units', total: repHeads * v('irp-head') });
+    if (repSolenoids > 0) items.push({ name: 'Replacement solenoids', qty: repSolenoids + ' units', total: repSolenoids * v('irp-solenoid') });
+    if (repPipe > 0) items.push({ name: 'Poly pipe repair', qty: repPipe + ' lm', total: repPipe * v('irp-pipe') });
+    if (repParts > 0) items.push({ name: 'Parts & fittings', qty: '1 lot', total: repParts });
+    if (items.length === 0 && type === 'repair') { showResults('irrigation', []); return; }
+  }
+
+  // INSTALL items
+  if (type === 'install') {
+    var zones = v('i-zones'), pipe = v('i-pipe'), heads = v('i-heads'), drip = v('i-drip');
+    var timer1 = v('i-timer1'), timer4 = v('i-timer4'), tapadapter = v('i-tapadapter');
+    var dripline = v('i-dripline');
+    if (zones <= 0 && pipe <= 0) { showResults('irrigation', []); return; }
+    var manifolds = Math.ceil(zones / 2);
+    var fittings = v('ip-fittings') + pipe * 0.5;
+    items.push({ name: '20mm poly pipe', qty: pipe + ' lm', total: pipe * v('ip-pipe') });
+    items.push({ name: 'Automatic tap timer', qty: zones + ' units', total: zones * v('ip-timer') });
+    items.push({ name: '2-way manifold', qty: manifolds + ' units', total: manifolds * v('ip-manifold') });
+    if (heads > 0) items.push({ name: 'Adjustable spray heads', qty: heads + ' units', total: heads * v('ip-head') });
+    if (drip > 0) items.push({ name: 'Drip emitters', qty: drip + ' units', total: drip * v('ip-drip') });
+    if (dripline > 0) items.push({ name: '13mm dripline', qty: dripline + ' lm', total: dripline * v('ip-dripline') });
+    if (timer1 > 0) items.push({ name: '1-way tap timer', qty: timer1 + ' units', total: timer1 * v('ip-timer1') });
+    if (timer4 > 0) items.push({ name: '4-way tap timer', qty: timer4 + ' units', total: timer4 * v('ip-timer4') });
+    if (tapadapter > 0) items.push({ name: 'Tap adapter manifold', qty: tapadapter + ' units', total: tapadapter * v('ip-tapadapter') });
+    items.push({ name: 'Fittings & connectors', qty: '1 lot', total: fittings });
+    showResults('irrigation', items, Math.round(zones * 3 + pipe * 0.1), Math.round(zones * 5 + pipe * 0.15));
+    return;
+  }
+
+  if (items.length === 0) { showResults('irrigation', []); return; }
+  showResults('irrigation', items, 1, 3);
 }
 
 function calcRetaining() {
