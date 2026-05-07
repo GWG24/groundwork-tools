@@ -957,6 +957,7 @@
     <button onclick="saveQuote()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">☁ Save Quote</button>
     <button onclick="showLoadQuotes()" style="flex:1;background:transparent;border:1px solid #2e6da4;border-radius:6px;color:#4a90d9;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">📂 Load Quote</button>
   </div>
+  <button onclick="sendToInvoice()" style="width:100%;background:transparent;border:1px solid var(--orange);border-radius:6px;color:var(--orange);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase;margin-bottom:10px">🧾 Send to Invoice</button>
   <button class="gen-btn" id="genBtn" onclick="generatePDF()">⬇ Download Quote PDF</button>
   <div id="statusMsg"></div>
   <div class="gap"></div>
@@ -2002,6 +2003,64 @@ function generateInvoicePDF() {
     if (status) status.textContent = 'Error generating PDF.';
     if (btn) btn.disabled = false;
   }
+}
+
+// ==================== SEND TO INVOICE ====================
+function sendToInvoice() {
+  // Copy client details
+  var clientName = document.getElementById('clientName').value || '';
+  var clientAddress = document.getElementById('clientAddress').value || '';
+  var jobTitle = document.getElementById('jobTitle').value || '';
+  var quoteNum = document.getElementById('quoteNum').value || '';
+
+  // Set invoice fields
+  var invClient = document.getElementById('inv-client');
+  var invAddress = document.getElementById('inv-address');
+  var invDesc = document.getElementById('inv-desc');
+  var invNum = document.getElementById('inv-num');
+  var invDate = document.getElementById('inv-date');
+  var invDue = document.getElementById('inv-due');
+
+  if (invClient) invClient.value = clientName;
+  if (invAddress) invAddress.value = clientAddress;
+  if (invDesc) invDesc.value = jobTitle;
+  if (invNum) invNum.value = quoteNum ? 'INV-' + quoteNum : '';
+  if (invDate) invDate.valueAsDate = new Date();
+  if (invDue) { var dd = new Date(); dd.setDate(dd.getDate() + 14); invDue.valueAsDate = dd; }
+
+  // Build invoice line items from quote
+  invItems = [];
+
+  // Add labour if any
+  var hours = parseFloat(document.getElementById('hours').value) || 0;
+  var rate = getRate();
+  if (hours > 0) {
+    invItems.push({ name: 'Labour — ' + hours + ' hrs @ ' + fmt(rate) + '/hr', qty: 1, price: Math.round(hours * rate * 100) / 100 });
+  }
+
+  // Add materials
+  materials.forEach(function(m) {
+    if (m.name || m.price) {
+      var lineTotal = (parseFloat(m.price) || 0) * (parseFloat(m.qty) || 1);
+      invItems.push({ name: m.name || 'Item', qty: parseFloat(m.qty) || 1, price: parseFloat(m.price) || 0 });
+    }
+  });
+
+  // Add markup if applied
+  var matTotal = materials.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
+  var markup = document.getElementById('markupToggle').checked ? matTotal * 0.15 : 0;
+  if (markup > 0) {
+    invItems.push({ name: 'Materials handling & sourcing (15%)', qty: 1, price: Math.round(markup * 100) / 100 });
+  }
+
+  if (invItems.length === 0) {
+    showToast('⚠ No items to send — add labour or materials first');
+    return;
+  }
+
+  renderInvItems();
+  switchTab('invoice');
+  showToast('✓ Quote sent to Invoice!');
 }
 
 // ==================== INIT ====================
