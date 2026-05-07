@@ -2499,7 +2499,7 @@ async function showLoadInvoices() {
     const list = document.getElementById('loadInvoiceList');
     list.innerHTML = rows.map(r => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:14px;color:var(--cream);flex:1;padding-right:10px">${r.name}</span><div style="display:flex;gap:8px"><button onclick="loadInvoiceById('${r.id}')" style="background:var(--green);border:none;border-radius:4px;color:white;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;padding:7px 14px;text-transform:uppercase">Load</button><button onclick="confirmDeleteInvoice('${r.id}','${r.name.replace(/'/g,"\\'")}')" style="background:transparent;border:1px solid #9e3a2e;border-radius:4px;color:#c0392b;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;padding:7px 14px;text-transform:uppercase">🗑</button></div></div>`).join('');
     modal.classList.add('show');
-  } catch(e) { showToast('⚠ Could not load invoices}// Init
+  } catch(e) { showToast('⚠ Could not load invoices}'); console.error(e); }
 document.getElementById('issueDate').valueAsDate = new Date();
 const validDate2 = new Date(); validDate2.setDate(validDate2.getDate()+7);
 document.getElementById('validDate').valueAsDate = validDate2;
