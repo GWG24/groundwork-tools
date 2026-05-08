@@ -1875,7 +1875,7 @@ function generatePDF() {
     var jobTitle = document.getElementById('jobTitle').value || 'Landscaping Works';
 
     // Header logo
-    doc.addImage(LOGO_B64, 'JPEG', margin, y, 60, 25);
+    doc.addImage(LOGO_B64, 'JPEG', margin, y, 55, 18);
     doc.setFontSize(8.5); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
     doc.text('Joffre Road, Pascoe Vale VIC 3044, Australia', pw-margin, y+5, {align:'right'});
     doc.text('Phone: 0408 165 409', pw-margin, y+11, {align:'right'});
@@ -2028,7 +2028,7 @@ function generateInvoicePDF() {
     var invDesc = document.getElementById('inv-desc').value || 'Landscaping Works';
     var showItemised = document.getElementById('inv-itemise').checked;
 
-    doc.addImage(LOGO_B64, 'JPEG', margin, y, 60, 25);
+    doc.addImage(LOGO_B64, 'JPEG', margin, y, 55, 18);
     doc.setFontSize(8.5); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
     doc.text('Joffre Road, Pascoe Vale VIC 3044', pw-margin, y+5, {align:'right'});
     doc.text('Phone: 0408 165 409', pw-margin, y+11, {align:'right'});
