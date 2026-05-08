@@ -1019,6 +1019,15 @@
 
 </div><!-- end tab-quote -->
 
+<!-- Load Invoice Modal -->
+<div class="overlay" id="loadInvoiceModal">
+  <div class="modal">
+    <div class="modal-title">Saved Invoices <button class="modal-close" onclick="document.getElementById('loadInvoiceModal').classList.remove('show')">×</button></div>
+    <div id="loadInvoiceList"></div>
+    <div class="gap"></div>
+  </div>
+</div>
+
 <!-- ==================== INVOICE TAB ==================== -->
 <div class="tab-panel" id="tab-invoice" style="display:none">
 
@@ -1044,7 +1053,7 @@
   <div class="section-title">Job Description</div>
   <div class="card">
     <div class="field"><label>Description</label>
-      <input type="text" id="inv-desc" placeholder="e.g. Supply and Installation of Irrigation System">
+      <textarea id="inv-desc" rows="3" placeholder="e.g. Supply and Installation of Irrigation System&#10;Additional line items or notes here..." style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:14px;padding:9px 11px;resize:vertical"></textarea>
     </div>
   </div>
 </div>
@@ -1073,6 +1082,10 @@
   <div class="toggle-row" style="margin-bottom:10px">
     <div class="toggle-label">Show itemised breakdown<small>Turn off to show total only</small></div>
     <label class="toggle"><input type="checkbox" id="inv-itemise"><span class="toggle-slider"></span></label>
+  </div>
+  <div style="display:flex;gap:10px;margin-bottom:10px">
+    <button onclick="saveInvoice()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">☁ Save Invoice</button>
+    <button onclick="showLoadInvoices()" style="flex:1;background:transparent;border:1px solid #2e6da4;border-radius:6px;color:#4a90d9;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">📂 Load Invoice</button>
   </div>
   <button class="gen-btn" onclick="generateInvoicePDF()">⬇ Download Invoice PDF</button>
   <div id="inv-status-msg"></div>
@@ -2174,6 +2187,88 @@ function sendToInvoice() {
   renderInvItems();
   switchTab('invoice');
   showToast('✓ Quote sent to Invoice!');
+}
+
+// ==================== INVOICE SAVE/LOAD ====================
+function getInvoiceData() {
+  return {
+    client: document.getElementById('inv-client').value,
+    address: document.getElementById('inv-address').value,
+    num: document.getElementById('inv-num').value,
+    date: document.getElementById('inv-date').value,
+    due: document.getElementById('inv-due').value,
+    status: document.getElementById('inv-status').value,
+    desc: document.getElementById('inv-desc').value,
+    deposit: document.getElementById('inv-deposit') ? document.getElementById('inv-deposit').value : 0,
+    itemise: document.getElementById('inv-itemise').checked,
+    items: invItems
+  };
+}
+
+function loadInvoiceData(d) {
+  document.getElementById('inv-client').value = d.client || '';
+  document.getElementById('inv-address').value = d.address || '';
+  document.getElementById('inv-num').value = d.num || '';
+  document.getElementById('inv-date').value = d.date || '';
+  document.getElementById('inv-due').value = d.due || '';
+  document.getElementById('inv-status').value = d.status || 'unpaid';
+  document.getElementById('inv-desc').value = d.desc || '';
+  if (document.getElementById('inv-deposit')) document.getElementById('inv-deposit').value = d.deposit || '';
+  document.getElementById('inv-itemise').checked = d.itemise || false;
+  invItems = d.items || [];
+  renderInvItems();
+  calcInv();
+}
+
+async function saveInvoice() {
+  var data = getInvoiceData();
+  var id = 'invoice_' + (data.num || Date.now());
+  var label = (data.client || 'Unnamed') + ' — Invoice ' + (data.num || '') + ' (' + new Date().toLocaleDateString('en-AU') + ')';
+  try {
+    var res = await fetch(SB_URL + '/rest/v1/gg_quotes', { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'resolution=merge-duplicates' }, body: JSON.stringify({ id: id, name: label, data: data, updated_at: new Date().toISOString() }) });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('✓ Invoice saved to cloud!');
+  } catch(e) { showToast('⚠ Could not save invoice'); console.error(e); }
+}
+
+async function showLoadInvoices() {
+  try {
+    var res = await fetch(SB_URL + '/rest/v1/gg_quotes?select=id,name,updated_at&order=updated_at.desc', { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } });
+    var rows = await res.json();
+    var invoices = rows.filter(function(r) { return r.id.startsWith('invoice_'); });
+    if (!invoices.length) { showToast('No saved invoices found'); return; }
+    var modal = document.getElementById('loadInvoiceModal');
+    var list = document.getElementById('loadInvoiceList');
+    list.innerHTML = invoices.map(function(r) {
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e8f0e6"><span style="font-size:14px;color:var(--text-primary);flex:1;padding-right:10px">' + r.name + '</span><div style="display:flex;gap:8px"><button onclick="loadInvoiceById('' + r.id + '')" style="background:var(--green);border:none;border-radius:4px;color:white;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;padding:7px 14px">Load</button><button onclick="confirmDeleteInvoice('' + r.id + '','' + r.name.replace(/'/g,"\'") + '')" style="background:transparent;border:1px solid #9e3a2e;border-radius:4px;color:#c0392b;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;padding:7px 14px">🗑</button></div></div>';
+    }).join('');
+    modal.classList.add('show');
+  } catch(e) { showToast('⚠ Could not load invoices'); console.error(e); }
+}
+
+function confirmDeleteInvoice(id, name) {
+  if (confirm('Delete "' + name + '"?
+
+This cannot be undone.')) deleteInvoice(id);
+}
+
+async function deleteInvoice(id) {
+  try {
+    var res = await fetch(SB_URL + '/rest/v1/gg_quotes?id=eq.' + id, { method: 'DELETE', headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('✓ Invoice deleted'); showLoadInvoices();
+  } catch(e) { showToast('⚠ Could not delete'); console.error(e); }
+}
+
+async function loadInvoiceById(id) {
+  try {
+    var res = await fetch(SB_URL + '/rest/v1/gg_quotes?id=eq.' + id + '&select=data', { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } });
+    var rows = await res.json();
+    if (!rows.length) { showToast('Invoice not found'); return; }
+    loadInvoiceData(rows[0].data);
+    document.getElementById('loadInvoiceModal').classList.remove('show');
+    showToast('✓ Invoice loaded!');
+  } catch(e) { showToast('⚠ Could not load invoice'); console.error(e); }
 }
 
 // ==================== INIT ====================
