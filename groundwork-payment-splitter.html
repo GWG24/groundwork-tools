@@ -7,33 +7,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0a0a0a; --dark: #111111; --card: #181818; --border: #2a2a2a;
+    --black: #0a0a0a; --card: #f0f0f0; --border: #2a2a2a;
     --cream: #d4c9a8; --cream-dim: #9e9278; --green: #4a7c3f;
     --green-bright: #5d9e50; --green-leaf: #3d6b34; --white: #f0ece0;
-    --orange: #c07a2f; --blue: #2e6da4; --purple: #6b4a9e; --red: #9e3a2e;
+    --orange: #c07a2f; --blue: #2e6da4; --bg-page: #f5f5f5;
+    --text-primary: #1a2e17; --text-secondary: #4a5e45;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--black); color: var(--cream); font-family: 'Barlow', sans-serif; font-weight: 300; min-height: 100vh; padding-bottom: 60px; }
+  body { background: var(--bg-page); color: var(--text-primary); font-family: 'Barlow', sans-serif; font-weight: 300; min-height: 100vh; padding-bottom: 60px; }
 
-  .header { background: var(--dark); border-bottom: 1px solid var(--border); padding: 16px 20px; display: flex; align-items: center; gap: 14px; }
-  .header img { height: 44px; width: auto; }
-  .header-label { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--green-bright); border: 1px solid var(--green); padding: 4px 10px; border-radius: 2px; }
+  .header { background: #1a2e17; border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 14px; }
+  .header img { height: 44px; width: auto; object-fit: contain; }
+  .header-label { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-dim); }
 
   .section { padding: 20px 20px 0; }
-  .sec-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--green-bright); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .sec-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--green); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
   .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
 
   .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
   .field:last-child { margin-bottom: 0; }
-  .field label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--cream-dim); }
-  .field input, .field select { background: var(--black); border: 1px solid var(--border); border-radius: 4px; color: var(--cream); font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 600; padding: 10px 14px; transition: border-color 0.2s; }
+  .field label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); }
+  .field input, .field select { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; color: var(--text-primary); font-family: 'Barlow', sans-serif; font-size: 14px; padding: 9px 11px; transition: border-color 0.2s; }
   .field input:focus, .field select:focus { outline: none; border-color: var(--green); }
-  .field input.small, .field select.small { font-size: 16px; font-family: 'Barlow', sans-serif; font-weight: 300; }
+  .field input.small, .field select.small { font-size: 14px; font-family: 'Barlow', sans-serif; font-weight: 300; }
+  .field input.big { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 600; }
 
   .pay-type { display: flex; gap: 8px; margin-bottom: 0; }
-  .pay-type-btn { flex: 1; padding: 10px 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--cream-dim); font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: 1px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .pay-type-btn { flex: 1; padding: 10px 6px; border-radius: 6px; border: 0.5px solid #c5d4c0; background: #ffffff; color: var(--text-secondary); font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: 1px; text-align: center; cursor: pointer; transition: all 0.2s; }
   .pay-type-btn.active { background: var(--green-leaf); border-color: var(--green); color: var(--white); }
 
   .split-result { display: none; margin-top: 4px; }
@@ -43,81 +45,86 @@
   .split-card .sc-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
   .split-card .sc-amount { font-family: 'Barlow Condensed', sans-serif; font-size: 30px; font-weight: 700; line-height: 1; }
   .split-card .sc-action { font-size: 10px; margin-top: 4px; opacity: 0.7; }
-  .sc-tax { background: rgba(158,58,46,0.15); border: 1px solid rgba(192,57,43,0.3); }
+  .sc-tax { background: rgba(158,58,46,0.1); border: 1px solid rgba(192,57,43,0.25); }
   .sc-tax .sc-label, .sc-tax .sc-action { color: #c0392b; }
   .sc-tax .sc-amount { color: #c0392b; }
-  .sc-mat { background: rgba(192,122,47,0.15); border: 1px solid rgba(192,122,47,0.3); }
+  .sc-mat { background: rgba(192,122,47,0.1); border: 1px solid rgba(192,122,47,0.25); }
   .sc-mat .sc-label, .sc-mat .sc-action { color: #c07a2f; }
   .sc-mat .sc-amount { color: #c07a2f; }
-  .sc-pay { background: rgba(46,109,164,0.15); border: 1px solid rgba(46,109,164,0.3); }
-  .sc-pay .sc-label, .sc-pay .sc-action { color: #4a90d9; }
-  .sc-pay .sc-amount { color: #4a90d9; }
-  .sc-profit { background: rgba(107,74,158,0.15); border: 1px solid rgba(107,74,158,0.3); }
-  .sc-profit .sc-label, .sc-profit .sc-action { color: #9b59b6; }
-  .sc-profit .sc-amount { color: #9b59b6; }
+  .sc-pay { background: rgba(46,109,164,0.1); border: 1px solid rgba(46,109,164,0.25); }
+  .sc-pay .sc-label, .sc-pay .sc-action { color: #2e6da4; }
+  .sc-pay .sc-amount { color: #2e6da4; }
+  .sc-profit { background: rgba(74,124,63,0.1); border: 1px solid rgba(74,124,63,0.25); }
+  .sc-profit .sc-label, .sc-profit .sc-action { color: var(--green); }
+  .sc-profit .sc-amount { color: var(--green-bright); }
 
   .mat-note { background: rgba(192,122,47,0.08); border: 1px solid rgba(192,122,47,0.2); border-radius: 6px; padding: 10px 14px; font-size: 12px; color: #c07a2f; margin-bottom: 10px; }
 
   .calc-btn { background: var(--green); border: none; border-radius: 6px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 3px; padding: 16px; text-transform: uppercase; width: 100%; transition: background 0.2s; margin-top: 14px; }
   .calc-btn:hover { background: var(--green-bright); }
   .save-btn { background: transparent; border: 1px solid var(--green); border-radius: 6px; color: var(--green-bright); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 2px; padding: 13px; text-transform: uppercase; width: 100%; margin-top: 10px; }
-  .clear-btn { background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--cream-dim); cursor: pointer; font-size: 13px; padding: 10px; width: 100%; margin-top: 8px; }
-  .sync-btn { background: transparent; border: 1px solid #2e6da4; border-radius: 6px; color: #4a90d9; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 2px; padding: 13px; text-transform: uppercase; width: 100%; margin-top: 10px; }
+  .clear-btn { background: transparent; border: 1px solid #c5d4c0; border-radius: 6px; color: var(--text-secondary); cursor: pointer; font-size: 13px; padding: 10px; width: 100%; margin-top: 8px; }
+  .sync-btn { background: transparent; border: 1px solid #2e6da4; border-radius: 6px; color: #2e6da4; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 2px; padding: 13px; text-transform: uppercase; width: 100%; margin-top: 10px; }
 
   /* STATUS BADGES */
   .status-bar { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-  .status-btn { padding: 5px 12px; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--cream-dim); font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
-  .status-btn.s-active { background: rgba(74,124,63,0.2); border-color: var(--green); color: var(--green-bright); }
-  .status-btn.s-invoiced { background: rgba(192,122,47,0.2); border-color: var(--orange); color: var(--orange); }
-  .status-btn.s-completed { background: rgba(46,109,164,0.2); border-color: #2e6da4; color: #4a90d9; }
+  .status-btn { padding: 5px 12px; border-radius: 12px; border: 0.5px solid #c5d4c0; background: #ffffff; color: var(--text-secondary); font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
+  .status-btn.s-active { background: rgba(74,124,63,0.12); border-color: var(--green); color: var(--green-bright); }
+  .status-btn.s-invoiced { background: rgba(192,122,47,0.12); border-color: var(--orange); color: var(--orange); }
+  .status-btn.s-completed { background: rgba(46,109,164,0.12); border-color: #2e6da4; color: #2e6da4; }
 
-  .job-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .job-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .job-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-  .job-name { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; }
-  .job-sub { font-size: 11px; color: var(--cream-dim); margin-top: 2px; }
+  .job-name { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; color: var(--text-primary); }
+  .job-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
   .job-badge { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; }
-  .badge-active { background: rgba(74,124,63,0.2); color: var(--green-bright); }
-  .badge-invoiced { background: rgba(192,122,47,0.2); color: var(--orange); }
-  .badge-completed { background: rgba(46,109,164,0.2); color: #4a90d9; }
-  .job-body { padding: 0 16px 16px; border-top: 1px solid var(--border); display: none; }
+  .badge-active { background: rgba(74,124,63,0.12); color: var(--green-bright); }
+  .badge-invoiced { background: rgba(192,122,47,0.12); color: var(--orange); }
+  .badge-completed { background: rgba(46,109,164,0.12); color: #2e6da4; }
+  .job-body { padding: 0 16px 16px; border-top: 1px solid #e8f0e6; display: none; }
   .job-body.open { display: block; padding-top: 14px; }
-  .progress-bar { background: var(--border); border-radius: 4px; height: 6px; margin: 10px 0 4px; }
+  .progress-bar { background: #e8f0e6; border-radius: 4px; height: 6px; margin: 10px 0 4px; }
   .progress-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width 0.4s; }
   .job-amounts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 10px 0; }
-  .ja { text-align: center; }
-  .ja-label { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 3px; }
-  .ja-value { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; }
-  .job-pmts { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; }
-  .job-pmt-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--cream-dim); padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .ja { text-align: center; background: #f7f9f6; border-radius: 6px; padding: 10px 4px; }
+  .ja-label { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 3px; }
+  .ja-value { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; color: var(--text-primary); }
+  .job-pmts { margin-top: 8px; border-top: 1px solid #e8f0e6; padding-top: 8px; }
+  .job-pmt-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); padding: 5px 0; border-bottom: 1px solid #f0f5ef; }
   .job-pmt-row:last-child { border-bottom: none; }
   .job-actions { display: flex; gap: 8px; margin-top: 12px; }
-  .job-btn { flex: 1; background: transparent; border: 1px solid var(--green); border-radius: 4px; color: var(--green-bright); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 9px; text-transform: uppercase; }
-  .job-del { background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--cream-dim); cursor: pointer; font-size: 14px; padding: 9px 12px; }
+  .job-btn { flex: 1; background: var(--green-leaf); border: 1px solid var(--green); border-radius: 6px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; padding: 10px; text-transform: uppercase; }
+  .job-del { background: transparent; border: 0.5px solid #c5d4c0; border-radius: 6px; color: var(--text-secondary); cursor: pointer; font-size: 14px; padding: 9px 12px; }
 
   /* EDIT TOTAL INLINE */
   .edit-total-row { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
-  .edit-total-input { background: var(--black); border: 1px solid var(--green); border-radius: 4px; color: var(--cream); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; padding: 6px 10px; flex: 1; }
-  .edit-total-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 4px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; padding: 7px 12px; white-space: nowrap; }
+  .edit-total-input { background: #ffffff; border: 1px solid var(--green); border-radius: 6px; color: var(--text-primary); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; padding: 8px 10px; flex: 1; }
+  .edit-total-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 6px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; padding: 9px 14px; white-space: nowrap; }
 
-  .rt-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .rt-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .rt-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .rt-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #e8f0e6; }
   .rt-row:last-child { border-bottom: none; }
-  .rt-label { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .rt-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); }
   .rt-dot { width: 8px; height: 8px; border-radius: 50%; }
   .rt-value { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 600; }
 
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: none; align-items: flex-end; }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: none; align-items: flex-end; }
   .overlay.show { display: flex; }
-  .modal { background: var(--dark); border: 1px solid var(--border); border-radius: 16px 16px 0 0; padding: 20px; width: 100%; max-height: 90vh; overflow-y: auto; }
-  .modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
-  .modal-close { background: none; border: none; color: var(--cream-dim); font-size: 22px; cursor: pointer; }
+  .modal { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 16px 16px 0 0; padding: 20px; width: 100%; max-height: 90vh; overflow-y: auto; }
+  .modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+  .modal-close { background: none; border: none; color: var(--text-secondary); font-size: 22px; cursor: pointer; }
   .gap { height: 12px; }
 
   /* PCT QUICK BUTTONS */
   .pct-quick { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-  .pct-quick-btn { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--cream-dim); font-family: 'Barlow Condensed', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+  .pct-quick-btn { padding: 7px 14px; border-radius: 20px; border: 0.5px solid #c5d4c0; background: #ffffff; color: var(--text-secondary); font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
   .pct-quick-btn:hover { border-color: var(--green); color: var(--green-bright); }
-  .pct-quick-btn.active { background: rgba(74,124,63,0.2); border-color: var(--green); color: var(--green-bright); }
+  .pct-quick-btn.active { background: var(--green); border-color: var(--green); color: var(--white); }
+
+  /* SPLIT PCT SETTINGS */
+  .split-pct-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e8f0e6; }
+  .split-pct-row:last-child { border-bottom: none; }
+  .split-pct-input { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; color: var(--text-primary); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; width: 65px; text-align: center; padding: 6px 4px; }
 </style>
 </head>
 <body>
@@ -144,7 +151,7 @@
     <div class="field"><label>Total Job Value ($)</label><input type="number" id="newJobValue" placeholder="0"></div>
     <button class="calc-btn" style="margin-top:8px" onclick="createJob()">+ Create Job</button>
   </div>
-  <div id="jobsList"><div style="color:var(--cream-dim);font-size:13px;padding:8px 0">No jobs yet — create one above.</div></div>
+  <div id="jobsList"><div style="color:var(--text-secondary);font-size:13px;padding:8px 0">No jobs yet — create one above.</div></div>
 </div>
 
 <!-- RECORD PAYMENT MODAL -->
@@ -154,7 +161,7 @@
       <span id="modalJobName">Record Payment</span>
       <button class="modal-close" onclick="closePayModal()">×</button>
     </div>
-    <div style="background:rgba(74,124,63,0.1);border:1px solid rgba(74,124,63,0.2);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--green-bright)" id="modalOutstanding"></div>
+    <div style="background:rgba(74,124,63,0.08);border:1px solid rgba(74,124,63,0.2);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--green)" id="modalOutstanding"></div>
 
     <!-- PERCENTAGE QUICK PICK -->
     <div style="margin-bottom:14px">
@@ -168,7 +175,7 @@
         <button class="pct-quick-btn" onclick="applyPctQuick(100)">100%</button>
       </div>
       <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-        <input type="number" id="customPct" placeholder="Custom %" min="1" max="100" style="background:var(--black);border:1px solid var(--border);border-radius:4px;color:var(--cream);font-family:'Barlow Condensed',sans-serif;font-size:16px;padding:8px 10px;width:120px" oninput="applyCustomPct()">
+        <input type="number" id="customPct" placeholder="Custom %" min="1" max="100" style="background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-primary);font-family:'Barlow Condensed',sans-serif;font-size:16px;padding:8px 10px;width:120px" oninput="applyCustomPct()">
         <span style="font-size:12px;color:var(--cream-dim)">% of job value</span>
       </div>
     </div>
@@ -205,17 +212,17 @@
     <div style="display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:10px"><div style="width:10px;height:10px;border-radius:50%;background:#c0392b"></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px">Tax / GST</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-tax" value="30" min="0" max="100" oninput="checkPcts()" style="background:var(--black);border:1px solid var(--border);border-radius:4px;color:var(--cream);font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;width:60px;text-align:center;padding:6px 4px"><span style="color:var(--cream-dim);font-size:12px">%</span></div>
+        <div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-tax" value="30" min="0" max="100" oninput="checkPcts()" class="split-pct-input"><span style="color:var(--cream-dim);font-size:12px">%</span></div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:10px"><div style="width:10px;height:10px;border-radius:50%;background:#4a90d9"></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px">Pay</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-pay" value="45" min="0" max="100" oninput="checkPcts()" style="background:var(--black);border:1px solid var(--border);border-radius:4px;color:var(--cream);font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;width:60px;text-align:center;padding:6px 4px"><span style="color:var(--cream-dim);font-size:12px">%</span></div>
+        <div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-pay" value="45" min="0" max="100" oninput="checkPcts()" class="split-pct-input"><span style="color:var(--cream-dim);font-size:12px">%</span></div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:10px"><div style="width:10px;height:10px;border-radius:50%;background:#9b59b6"></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px">Profit</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-profit" value="25" min="0" max="100" oninput="checkPcts()" style="background:var(--black);border:1px solid var(--border);border-radius:4px;color:var(--cream);font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;width:60px;text-align:center;padding:6px 4px"><span style="color:var(--cream-dim);font-size:12px">%</span></div>
+        <div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-profit" value="25" min="0" max="100" oninput="checkPcts()" class="split-pct-input"><span style="color:var(--cream-dim);font-size:12px">%</span></div>
       </div>
-      <div id="pctWarn" style="display:none;background:rgba(192,122,47,0.15);border:1px solid var(--orange);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--orange)">⚠ Percentages must add to 100% — currently <span id="pctTotal">100</span>%</div>
+      <div id="pctWarn" style="display:none;background:rgba(192,122,47,0.08);border:1px solid var(--orange);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--orange)">⚠ Percentages must add to 100% — currently <span id="pctTotal">100</span>%</div>
     </div>
   </div>
 </div>
@@ -228,7 +235,7 @@
     <div class="rt-row"><div class="rt-label"><div class="rt-dot" style="background:#c07a2f"></div>Materials</div><div class="rt-value" style="color:#c07a2f" id="rt-mat">$0.00</div></div>
     <div class="rt-row"><div class="rt-label"><div class="rt-dot" style="background:#4a90d9"></div>Pay</div><div class="rt-value" style="color:#4a90d9" id="rt-pay">$0.00</div></div>
     <div class="rt-row"><div class="rt-label"><div class="rt-dot" style="background:#9b59b6"></div>Profit</div><div class="rt-value" style="color:#9b59b6" id="rt-profit">$0.00</div></div>
-    <div class="rt-row" style="background:rgba(74,124,63,0.08)"><div class="rt-label" style="font-weight:600">Total Received</div><div class="rt-value" style="color:var(--green-bright)" id="rt-total">$0.00</div></div>
+    <div class="rt-row" style="background:var(--green-leaf)"><div class="rt-label" style="font-weight:600;color:#ffffff">Total Received</div><div class="rt-value" style="color:#ffffff" id="rt-total">$0.00</div></div>
   </div>
   <button class="save-btn" style="margin-top:12px" onclick="exportCSV()">⬇ Export to CSV</button>
   <button class="clear-btn" onclick="clearAll()">Clear All Data</button>
@@ -374,7 +381,7 @@ function updateJobValue(jobId, newValue) {
 function renderJobs() {
   var el = document.getElementById('jobsList');
   if (jobs.length === 0) {
-    el.innerHTML = '<div style="color:var(--cream-dim);font-size:13px;padding:8px 0">No jobs yet — create one above.</div>';
+    el.innerHTML = '<div style="color:var(--text-secondary);font-size:13px;padding:8px 0">No jobs yet — create one above.</div>';
     updateTotals(); return;
   }
   el.innerHTML = jobs.map(function(job, i) {
