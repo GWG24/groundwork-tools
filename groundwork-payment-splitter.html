@@ -28,9 +28,9 @@
   .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
   .field:last-child { margin-bottom: 0; }
   .field label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--cream-dim); }
-  .field input { background: var(--black); border: 1px solid var(--border); border-radius: 4px; color: var(--cream); font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 600; padding: 10px 14px; transition: border-color 0.2s; }
-  .field input:focus { outline: none; border-color: var(--green); }
-  .field input.small { font-size: 16px; font-family: 'Barlow', sans-serif; font-weight: 300; }
+  .field input, .field select { background: var(--black); border: 1px solid var(--border); border-radius: 4px; color: var(--cream); font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 600; padding: 10px 14px; transition: border-color 0.2s; }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--green); }
+  .field input.small, .field select.small { font-size: 16px; font-family: 'Barlow', sans-serif; font-weight: 300; }
 
   .pay-type { display: flex; gap: 8px; margin-bottom: 0; }
   .pay-type-btn { flex: 1; padding: 10px 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--cream-dim); font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: 1px; text-align: center; cursor: pointer; transition: all 0.2s; }
@@ -64,13 +64,21 @@
   .clear-btn { background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--cream-dim); cursor: pointer; font-size: 13px; padding: 10px; width: 100%; margin-top: 8px; }
   .sync-btn { background: transparent; border: 1px solid #2e6da4; border-radius: 6px; color: #4a90d9; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 2px; padding: 13px; text-transform: uppercase; width: 100%; margin-top: 10px; }
 
+  /* STATUS BADGES */
+  .status-bar { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .status-btn { padding: 5px 12px; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--cream-dim); font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
+  .status-btn.s-active { background: rgba(74,124,63,0.2); border-color: var(--green); color: var(--green-bright); }
+  .status-btn.s-invoiced { background: rgba(192,122,47,0.2); border-color: var(--orange); color: var(--orange); }
+  .status-btn.s-completed { background: rgba(46,109,164,0.2); border-color: #2e6da4; color: #4a90d9; }
+
   .job-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
   .job-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
   .job-name { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; }
   .job-sub { font-size: 11px; color: var(--cream-dim); margin-top: 2px; }
   .job-badge { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; }
   .badge-active { background: rgba(74,124,63,0.2); color: var(--green-bright); }
-  .badge-complete { background: rgba(46,109,164,0.2); color: #4a90d9; }
+  .badge-invoiced { background: rgba(192,122,47,0.2); color: var(--orange); }
+  .badge-completed { background: rgba(46,109,164,0.2); color: #4a90d9; }
   .job-body { padding: 0 16px 16px; border-top: 1px solid var(--border); display: none; }
   .job-body.open { display: block; padding-top: 14px; }
   .progress-bar { background: var(--border); border-radius: 4px; height: 6px; margin: 10px 0 4px; }
@@ -80,10 +88,16 @@
   .ja-label { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 3px; }
   .ja-value { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; }
   .job-pmts { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; }
-  .job-pmt-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--cream-dim); padding: 4px 0; }
+  .job-pmt-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--cream-dim); padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .job-pmt-row:last-child { border-bottom: none; }
   .job-actions { display: flex; gap: 8px; margin-top: 12px; }
   .job-btn { flex: 1; background: transparent; border: 1px solid var(--green); border-radius: 4px; color: var(--green-bright); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 9px; text-transform: uppercase; }
   .job-del { background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--cream-dim); cursor: pointer; font-size: 14px; padding: 9px 12px; }
+
+  /* EDIT TOTAL INLINE */
+  .edit-total-row { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+  .edit-total-input { background: var(--black); border: 1px solid var(--green); border-radius: 4px; color: var(--cream); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; padding: 6px 10px; flex: 1; }
+  .edit-total-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 4px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; padding: 7px 12px; white-space: nowrap; }
 
   .rt-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .rt-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
@@ -98,6 +112,12 @@
   .modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
   .modal-close { background: none; border: none; color: var(--cream-dim); font-size: 22px; cursor: pointer; }
   .gap { height: 12px; }
+
+  /* PCT QUICK BUTTONS */
+  .pct-quick { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .pct-quick-btn { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--cream-dim); font-family: 'Barlow Condensed', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+  .pct-quick-btn:hover { border-color: var(--green); color: var(--green-bright); }
+  .pct-quick-btn.active { background: rgba(74,124,63,0.2); border-color: var(--green); color: var(--green-bright); }
 </style>
 </head>
 <body>
@@ -135,7 +155,25 @@
       <button class="modal-close" onclick="closePayModal()">×</button>
     </div>
     <div style="background:rgba(74,124,63,0.1);border:1px solid rgba(74,124,63,0.2);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--green-bright)" id="modalOutstanding"></div>
-    <div class="field"><label>Amount Received ($)</label><input type="number" id="modalAmount" placeholder="0" oninput="calcModalSplit()"></div>
+
+    <!-- PERCENTAGE QUICK PICK -->
+    <div style="margin-bottom:14px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);margin-bottom:8px">Quick % of job value</div>
+      <div class="pct-quick" id="pctQuickBtns">
+        <button class="pct-quick-btn" onclick="applyPctQuick(10)">10%</button>
+        <button class="pct-quick-btn" onclick="applyPctQuick(20)">20%</button>
+        <button class="pct-quick-btn" onclick="applyPctQuick(25)">25%</button>
+        <button class="pct-quick-btn" onclick="applyPctQuick(30)">30%</button>
+        <button class="pct-quick-btn" onclick="applyPctQuick(50)">50%</button>
+        <button class="pct-quick-btn" onclick="applyPctQuick(100)">100%</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+        <input type="number" id="customPct" placeholder="Custom %" min="1" max="100" style="background:var(--black);border:1px solid var(--border);border-radius:4px;color:var(--cream);font-family:'Barlow Condensed',sans-serif;font-size:16px;padding:8px 10px;width:120px" oninput="applyCustomPct()">
+        <span style="font-size:12px;color:var(--cream-dim)">% of job value</span>
+      </div>
+    </div>
+
+    <div class="field"><label>Amount Received ($)</label><input type="number" id="modalAmount" placeholder="0" oninput="calcModalSplit(); clearPctHighlight()"></div>
     <div class="field"><label>Materials in this payment ($)</label><input type="number" id="modalMat" placeholder="0" oninput="calcModalSplit()"></div>
     <div class="field">
       <label>Payment Type</label>
@@ -209,12 +247,12 @@ async function supabaseSave(jobs) {
       data: job,
       updated_at: new Date().toISOString()
     }));
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/gg_jobs`, {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/gg_jobs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
         'Prefer': 'resolution=merge-duplicates'
       },
       body: JSON.stringify(payload)
@@ -230,11 +268,8 @@ async function supabaseSave(jobs) {
 async function supabaseLoad() {
   showSyncStatus('Syncing from cloud…', 'blue');
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/gg_jobs?select=data,updated_at&order=updated_at.desc`, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
-      }
+    const res = await fetch(SUPABASE_URL + '/rest/v1/gg_jobs?select=data,updated_at&order=updated_at.desc', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
     });
     if (!res.ok) throw new Error(await res.text());
     const rows = await res.json();
@@ -251,57 +286,52 @@ async function supabaseLoad() {
 
 async function supabaseDeleteJob(id) {
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/gg_jobs?id=eq.${String(id)}`, {
+    await fetch(SUPABASE_URL + '/rest/v1/gg_jobs?id=eq.' + String(id), {
       method: 'DELETE',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
-      }
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
     });
-  } catch (e) {
-    console.error('Supabase delete error:', e);
-  }
+  } catch (e) { console.error('Supabase delete error:', e); }
 }
 
 function showSyncStatus(msg, colour) {
-  const el = document.getElementById('syncStatus');
+  var el = document.getElementById('syncStatus');
   if (!el) return;
-  const colours = { green: '#5d9e50', orange: '#c07a2f', blue: '#4a90d9' };
+  var colours = { green: '#5d9e50', orange: '#c07a2f', blue: '#4a90d9' };
   el.textContent = msg;
   el.style.color = colours[colour] || colours.green;
   el.style.opacity = '1';
   clearTimeout(el._timeout);
-  el._timeout = setTimeout(() => { el.style.opacity = '0'; }, 4000);
+  el._timeout = setTimeout(function() { el.style.opacity = '0'; }, 4000);
 }
 
 // ===== CORE APP =====
-let jobs = JSON.parse(localStorage.getItem('gg_jobs2') || '[]');
-let currentJobId = null;
-let modalPayType = 'deposit';
+var jobs = JSON.parse(localStorage.getItem('gg_jobs2') || '[]');
+var currentJobId = null;
+var modalPayType = 'deposit';
 
 function fmt(n) { return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 function fmtShort(n) { return '$' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
 
 function getSplit(amount, matCost) {
-  const taxPct = v('pct-tax') / 100;
-  const payPct = v('pct-pay') / 100;
-  const profitPct = v('pct-profit') / 100;
-  const afterMat = Math.max(0, amount - matCost);
-  const tax = afterMat * taxPct;
-  const rem = afterMat - tax;
-  const denom = payPct + profitPct;
+  var taxPct = v('pct-tax') / 100;
+  var payPct = v('pct-pay') / 100;
+  var profitPct = v('pct-profit') / 100;
+  var afterMat = Math.max(0, amount - matCost);
+  var tax = afterMat * taxPct;
+  var rem = afterMat - tax;
+  var denom = payPct + profitPct;
   return {
-    tax,
+    tax: tax,
     mat: matCost,
     pay: denom > 0 ? rem * (payPct / denom) : 0,
     profit: denom > 0 ? rem * (profitPct / denom) : 0,
-    afterMat
+    afterMat: afterMat
   };
 }
 
 function checkPcts() {
-  const total = v('pct-tax') + v('pct-pay') + v('pct-profit');
+  var total = v('pct-tax') + v('pct-pay') + v('pct-profit');
   document.getElementById('pctTotal').textContent = total;
   document.getElementById('pctWarn').style.display = Math.abs(total - 100) > 0.1 ? 'block' : 'none';
   calcModalSplit();
@@ -314,58 +344,97 @@ function saveJobs() {
 }
 
 function createJob() {
-  const client = document.getElementById('newJobClient').value.trim();
-  const desc = document.getElementById('newJobDesc').value.trim();
-  const value = parseFloat(document.getElementById('newJobValue').value) || 0;
+  var client = document.getElementById('newJobClient').value.trim();
+  var desc = document.getElementById('newJobDesc').value.trim();
+  var value = parseFloat(document.getElementById('newJobValue').value) || 0;
   if (!client || value <= 0) { alert('Please enter a client name and job value.'); return; }
-  jobs.unshift({ id: Date.now(), client, desc, value, payments: [], created: new Date().toLocaleDateString('en-AU') });
+  jobs.unshift({
+    id: Date.now(), client: client, desc: desc, value: value,
+    status: 'active', payments: [], created: new Date().toLocaleDateString('en-AU')
+  });
   saveJobs(); renderJobs();
   document.getElementById('newJobClient').value = '';
   document.getElementById('newJobDesc').value = '';
   document.getElementById('newJobValue').value = '';
 }
 
+function setJobStatus(jobId, status) {
+  var job = jobs.find(function(j) { return j.id === jobId; });
+  if (job) { job.status = status; saveJobs(); renderJobs(); }
+}
+
+function updateJobValue(jobId, newValue) {
+  var job = jobs.find(function(j) { return j.id === jobId; });
+  if (job && newValue > 0) {
+    job.value = newValue;
+    saveJobs(); renderJobs();
+  }
+}
+
 function renderJobs() {
-  const el = document.getElementById('jobsList');
-  if (jobs.length === 0) { el.innerHTML = '<div style="color:var(--cream-dim);font-size:13px;padding:8px 0">No jobs yet — create one above.</div>'; updateTotals(); return; }
-  el.innerHTML = jobs.map((job, i) => {
-    const paid = job.payments.reduce((s, p) => s + p.amount, 0);
-    const outstanding = Math.max(0, job.value - paid);
-    const pct = Math.min(100, (paid / job.value) * 100);
-    const complete = outstanding <= 0;
-    const pmtRows = job.payments.map(p => `<div class="job-pmt-row"><span>${p.type} · ${p.date}</span><span style="color:var(--green-bright)">${fmt(p.amount)}</span></div>`).join('');
-    return `<div class="job-card">
-      <div class="job-header" onclick="toggleJobBody(${i})">
-        <div><div class="job-name">${job.client}</div><div class="job-sub">${job.desc || ''} · ${job.created}</div></div>
-        <div class="job-badge ${complete ? 'badge-complete' : 'badge-active'}">${complete ? '✓ Done' : fmt(outstanding) + ' left'}</div>
-      </div>
-      <div class="job-body" id="jb-${i}">
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-        <div style="font-size:10px;color:var(--cream-dim);text-align:right;margin-bottom:4px">${pct.toFixed(0)}% paid</div>
-        <div class="job-amounts">
-          <div class="ja"><div class="ja-label">Total</div><div class="ja-value">${fmtShort(job.value)}</div></div>
-          <div class="ja"><div class="ja-label">Paid</div><div class="ja-value" style="color:var(--green-bright)">${fmtShort(paid)}</div></div>
-          <div class="ja"><div class="ja-label">Owed</div><div class="ja-value" style="color:${outstanding > 0 ? '#c07a2f' : '#4a90d9'}">${fmtShort(outstanding)}</div></div>
-        </div>
-        ${job.payments.length > 0 ? `<div class="job-pmts">${pmtRows}</div>` : ''}
-        <div class="job-actions">
-          ${!complete ? `<button class="job-btn" onclick="openPayModal(${job.id})">+ Record Payment</button>` : `<button class="job-btn" style="opacity:0.4;cursor:default">✓ Fully Paid</button>`}
-          <button class="job-del" onclick="deleteJob(${job.id})">🗑</button>
-        </div>
-      </div>
-    </div>`;
+  var el = document.getElementById('jobsList');
+  if (jobs.length === 0) {
+    el.innerHTML = '<div style="color:var(--cream-dim);font-size:13px;padding:8px 0">No jobs yet — create one above.</div>';
+    updateTotals(); return;
+  }
+  el.innerHTML = jobs.map(function(job, i) {
+    var paid = job.payments.reduce(function(s, p) { return s + p.amount; }, 0);
+    var outstanding = Math.max(0, job.value - paid);
+    var pct = Math.min(100, job.value > 0 ? (paid / job.value) * 100 : 0);
+    var status = job.status || 'active';
+
+    var badgeClass = status === 'completed' ? 'badge-completed' : status === 'invoiced' ? 'badge-invoiced' : 'badge-active';
+    var badgeText = status === 'completed' ? '✓ Completed' : status === 'invoiced' ? '📄 Invoiced' : fmt(outstanding) + ' left';
+
+    var pmtRows = job.payments.map(function(p) {
+      return '<div class="job-pmt-row"><span>' + p.type.charAt(0).toUpperCase() + p.type.slice(1) + ' · ' + p.date + '</span><span style="color:var(--green-bright)">' + fmt(p.amount) + '</span></div>';
+    }).join('');
+
+    return '<div class="job-card">' +
+      '<div class="job-header" onclick="toggleJobBody(' + i + ')">' +
+        '<div><div class="job-name">' + job.client + '</div><div class="job-sub">' + (job.desc || '') + ' · Created ' + job.created + '</div></div>' +
+        '<div class="job-badge ' + badgeClass + '">' + badgeText + '</div>' +
+      '</div>' +
+      '<div class="job-body" id="jb-' + i + '">' +
+        '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+        '<div style="font-size:10px;color:var(--cream-dim);text-align:right;margin-bottom:8px">' + pct.toFixed(0) + '% paid</div>' +
+        '<div class="job-amounts">' +
+          '<div class="ja"><div class="ja-label">Total</div><div class="ja-value">' + fmtShort(job.value) + '</div></div>' +
+          '<div class="ja"><div class="ja-label">Paid</div><div class="ja-value" style="color:var(--green-bright)">' + fmtShort(paid) + '</div></div>' +
+          '<div class="ja"><div class="ja-label">Owed</div><div class="ja-value" style="color:' + (outstanding > 0 ? '#c07a2f' : '#4a90d9') + '">' + fmtShort(outstanding) + '</div></div>' +
+        '</div>' +
+        '<div style="margin-bottom:10px">' +
+          '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);margin-bottom:6px">Edit Job Total</div>' +
+          '<div class="edit-total-row">' +
+            '<input class="edit-total-input" type="number" id="editVal-' + job.id + '" value="' + job.value + '" placeholder="New total">' +
+            '<button class="edit-total-btn" onclick="updateJobValue(' + job.id + ', parseFloat(document.getElementById(\'editVal-' + job.id + '\').value))">Update</button>' +
+          '</div>' +
+        '</div>' +
+        '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);margin-bottom:6px">Job Status</div>' +
+        '<div class="status-bar">' +
+          '<button class="status-btn' + (status === 'active' ? ' s-active' : '') + '" onclick="setJobStatus(' + job.id + ', \'active\')">🔨 Active</button>' +
+          '<button class="status-btn' + (status === 'invoiced' ? ' s-invoiced' : '') + '" onclick="setJobStatus(' + job.id + ', \'invoiced\')">📄 Invoiced</button>' +
+          '<button class="status-btn' + (status === 'completed' ? ' s-completed' : '') + '" onclick="setJobStatus(' + job.id + ', \'completed\')">✓ Completed</button>' +
+        '</div>' +
+        (job.payments.length > 0 ? '<div class="job-pmts" style="margin-top:10px"><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);margin-bottom:6px">Payment History</div>' + pmtRows + '</div>' : '') +
+        '<div class="job-actions">' +
+          '<button class="job-btn" onclick="openPayModal(' + job.id + ')">+ Record Payment</button>' +
+          '<button class="job-del" onclick="deleteJob(' + job.id + ')">🗑</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
   }).join('');
   updateTotals();
 }
 
 function toggleJobBody(i) {
-  const el = document.getElementById('jb-' + i);
+  var el = document.getElementById('jb-' + i);
   el.classList.toggle('open');
 }
 
 function deleteJob(id) {
   if (!confirm('Delete this job?')) return;
-  jobs = jobs.filter(j => j.id !== id);
+  jobs = jobs.filter(function(j) { return j.id !== id; });
   supabaseDeleteJob(id);
   saveJobs(); renderJobs();
 }
@@ -373,14 +442,16 @@ function deleteJob(id) {
 // ===== PAYMENT MODAL =====
 function openPayModal(jobId) {
   currentJobId = jobId;
-  const job = jobs.find(j => j.id === jobId);
-  const paid = job.payments.reduce((s, p) => s + p.amount, 0);
-  const outstanding = Math.max(0, job.value - paid);
-  document.getElementById('modalJobName').textContent = job.client;
-  document.getElementById('modalOutstanding').textContent = fmt(outstanding) + ' still outstanding on this job';
+  var job = jobs.find(function(j) { return j.id === jobId; });
+  var paid = job.payments.reduce(function(s, p) { return s + p.amount; }, 0);
+  var outstanding = Math.max(0, job.value - paid);
+  document.getElementById('modalJobName').textContent = job.client + ' — ' + (job.desc || '');
+  document.getElementById('modalOutstanding').textContent = fmt(outstanding) + ' still outstanding · Job total ' + fmt(job.value);
   document.getElementById('modalAmount').value = '';
   document.getElementById('modalMat').value = '';
+  document.getElementById('customPct').value = '';
   document.getElementById('modalSplitResult').classList.remove('show');
+  clearPctHighlight();
   setModalType('deposit');
   document.getElementById('payModal').classList.add('show');
 }
@@ -391,21 +462,48 @@ function closePayModal() {
 
 function setModalType(type) {
   modalPayType = type;
-  ['deposit','progress','final'].forEach(t => {
+  ['deposit','progress','final'].forEach(function(t) {
     document.getElementById('mbtn-' + t).classList.toggle('active', t === type);
   });
 }
 
+function applyPctQuick(pct) {
+  var job = jobs.find(function(j) { return j.id === currentJobId; });
+  if (!job) return;
+  var amount = (job.value * pct / 100).toFixed(2);
+  document.getElementById('modalAmount').value = amount;
+  document.getElementById('customPct').value = '';
+  clearPctHighlight();
+  document.querySelectorAll('.pct-quick-btn').forEach(function(btn) { btn.classList.remove('active'); });
+  event.target.classList.add('active');
+  calcModalSplit();
+}
+
+function applyCustomPct() {
+  var pct = parseFloat(document.getElementById('customPct').value) || 0;
+  if (pct <= 0) return;
+  var job = jobs.find(function(j) { return j.id === currentJobId; });
+  if (!job) return;
+  var amount = (job.value * pct / 100).toFixed(2);
+  document.getElementById('modalAmount').value = amount;
+  clearPctHighlight();
+  calcModalSplit();
+}
+
+function clearPctHighlight() {
+  document.querySelectorAll('.pct-quick-btn').forEach(function(btn) { btn.classList.remove('active'); });
+}
+
 function calcModalSplit() {
-  const amount = parseFloat(document.getElementById('modalAmount').value) || 0;
-  const matCost = parseFloat(document.getElementById('modalMat').value) || 0;
+  var amount = parseFloat(document.getElementById('modalAmount').value) || 0;
+  var matCost = parseFloat(document.getElementById('modalMat').value) || 0;
   if (amount <= 0) { document.getElementById('modalSplitResult').classList.remove('show'); return; }
-  const s = getSplit(amount, matCost);
+  var s = getSplit(amount, matCost);
   document.getElementById('ms-tax').textContent = fmtShort(s.tax);
   document.getElementById('ms-mat').textContent = fmtShort(s.mat);
   document.getElementById('ms-pay').textContent = fmtShort(s.pay);
   document.getElementById('ms-profit').textContent = fmtShort(s.profit);
-  const matNote = document.getElementById('modalMatNote');
+  var matNote = document.getElementById('modalMatNote');
   if (matCost > 0) {
     matNote.style.display = 'block';
     matNote.textContent = fmt(matCost) + ' for materials deducted first. Splits on remaining ' + fmt(s.afterMat) + '.';
@@ -414,19 +512,19 @@ function calcModalSplit() {
 }
 
 function saveJobPayment() {
-  const amount = parseFloat(document.getElementById('modalAmount').value) || 0;
-  const matCost = parseFloat(document.getElementById('modalMat').value) || 0;
+  var amount = parseFloat(document.getElementById('modalAmount').value) || 0;
+  var matCost = parseFloat(document.getElementById('modalMat').value) || 0;
   if (amount <= 0) { alert('Please enter an amount.'); return; }
-  const job = jobs.find(j => j.id === currentJobId);
-  job.payments.push({ amount, matCost, type: modalPayType, date: new Date().toLocaleDateString('en-AU') });
+  var job = jobs.find(function(j) { return j.id === currentJobId; });
+  job.payments.push({ amount: amount, matCost: matCost, type: modalPayType, date: new Date().toLocaleDateString('en-AU') });
   saveJobs(); renderJobs(); closePayModal();
 }
 
 function updateTotals() {
-  let tax=0, mat=0, pay=0, profit=0, total=0;
-  jobs.forEach(job => {
-    job.payments.forEach(p => {
-      const s = getSplit(p.amount, p.matCost);
+  var tax=0, mat=0, pay=0, profit=0, total=0;
+  jobs.forEach(function(job) {
+    job.payments.forEach(function(p) {
+      var s = getSplit(p.amount, p.matCost);
       tax += s.tax; mat += s.mat; pay += s.pay; profit += s.profit; total += p.amount;
     });
   });
@@ -444,22 +542,22 @@ function clearAll() {
 
 function exportCSV() {
   if (jobs.length === 0) { alert('No data to export.'); return; }
-  let csv = 'Groundwork Gardens — Payment Export\nExported: ' + new Date().toLocaleDateString('en-AU') + '\n\n';
-  csv += 'Client,Description,Total,Paid,Outstanding\n';
-  jobs.forEach(job => {
-    const paid = job.payments.reduce((s,p) => s+p.amount, 0);
-    csv += `"${job.client}","${job.desc||''}",$${job.value.toFixed(2)},$${paid.toFixed(2)},$${Math.max(0,job.value-paid).toFixed(2)}\n`;
+  var csv = 'Groundwork Gardens — Payment Export\nExported: ' + new Date().toLocaleDateString('en-AU') + '\n\n';
+  csv += 'Client,Description,Status,Total,Paid,Outstanding\n';
+  jobs.forEach(function(job) {
+    var paid = job.payments.reduce(function(s,p) { return s+p.amount; }, 0);
+    csv += '"' + job.client + '","' + (job.desc||'') + '","' + (job.status||'active') + '",$' + job.value.toFixed(2) + ',$' + paid.toFixed(2) + ',$' + Math.max(0,job.value-paid).toFixed(2) + '\n';
   });
   csv += '\nClient,Date,Type,Amount,Materials,Tax,Pay,Profit\n';
-  jobs.forEach(job => {
-    job.payments.forEach(p => {
-      const s = getSplit(p.amount, p.matCost);
-      csv += `"${job.client}","${p.date}","${p.type}",$${p.amount.toFixed(2)},$${p.matCost.toFixed(2)},$${s.tax.toFixed(2)},$${s.pay.toFixed(2)},$${s.profit.toFixed(2)}\n`;
+  jobs.forEach(function(job) {
+    job.payments.forEach(function(p) {
+      var s = getSplit(p.amount, p.matCost);
+      csv += '"' + job.client + '","' + p.date + '","' + p.type + '",$' + p.amount.toFixed(2) + ',$' + p.matCost.toFixed(2) + ',$' + s.tax.toFixed(2) + ',$' + s.pay.toFixed(2) + ',$' + s.profit.toFixed(2) + '\n';
     });
   });
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
   a.href = url;
   a.download = 'GG-Payments-' + new Date().toLocaleDateString('en-AU').replace(/\//g,'-') + '.csv';
   a.click();
