@@ -2289,11 +2289,12 @@ function generateInvoicePDF() {
     doc.setFillColor(61,107,52); doc.roundedRect(tx-4, y-1, pw-margin-tx+8, 11, 1, 1, 'F');
     doc.setFontSize(8); doc.setTextColor(200,220,200); doc.setFont('helvetica','normal'); doc.text('TOTAL', tx, y+7);
     doc.setFontSize(14); doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.text(fmt(total), pw-margin-2, y+7, {align:'right'}); y+=16;
-    if (deposit > 0) {
+    // Only show deposit/balance on full payment invoices
+    if (deposit > 0 && paymentType === 'full') {
       doc.setFontSize(9); doc.setTextColor(100,100,100); doc.setFont('helvetica','normal'); doc.text('Deposit Paid', tx, y); doc.setFont('helvetica','bold'); doc.setTextColor(150,30,30); doc.text('-' + fmt(deposit), pw-margin, y, {align:'right'}); y+=8;
       doc.setFillColor(46,109,164); doc.roundedRect(tx-4, y-1, pw-margin-tx+8, 11, 1, 1, 'F');
       doc.setFontSize(8); doc.setTextColor(200,220,240); doc.setFont('helvetica','normal'); doc.text('BALANCE DUE', tx, y+7);
-      doc.setFontSize(14); doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.text(fmt(balance), pw-margin-2, y+7, {align:'right'}); y+=16;
+      doc.setFontSize(14); doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.text(fmt(Math.max(0,balance)), pw-margin-2, y+7, {align:'right'}); y+=16;
     }
 
     // Contract total & remaining if applicable
