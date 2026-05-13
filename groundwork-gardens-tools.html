@@ -2142,17 +2142,30 @@ function calcInv() {
   if (g) g.textContent = fmt(gst);
   if (t) t.textContent = fmt(total);
 
-  // Deposit row
+  // Deposit row — only show on full payment invoices
+  var paytypeElDep = document.getElementById('inv-payment-type');
+  var paytypeDep = paytypeElDep ? paytypeElDep.value : 'full';
   var depRow = document.getElementById('inv-deposit-row');
   var depDisplay = document.getElementById('inv-deposit-display');
   var balRow = document.getElementById('inv-balance-row');
   var balDisplay = document.getElementById('inv-balance');
-  if (deposit > 0) {
-    if (depRow) depRow.style.display = 'flex';
-    if (depDisplay) depDisplay.textContent = '-' + fmt(deposit);
-    if (balRow) balRow.style.display = 'flex';
-    if (balDisplay) balDisplay.textContent = fmt(balance);
+  var depInputRow = document.getElementById('inv-deposit-input-row');
+
+  if (paytypeDep === 'full') {
+    // Show deposit field for full invoices
+    if (depInputRow) depInputRow.style.display = 'block';
+    if (deposit > 0) {
+      if (depRow) depRow.style.display = 'flex';
+      if (depDisplay) depDisplay.textContent = '-' + fmt(deposit);
+      if (balRow) balRow.style.display = 'flex';
+      if (balDisplay) balDisplay.textContent = fmt(balance);
+    } else {
+      if (depRow) depRow.style.display = 'none';
+      if (balRow) balRow.style.display = 'none';
+    }
   } else {
+    // Hide deposit field for progress/deposit/final invoices
+    if (depInputRow) depInputRow.style.display = 'none';
     if (depRow) depRow.style.display = 'none';
     if (balRow) balRow.style.display = 'none';
   }
