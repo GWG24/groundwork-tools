@@ -1232,7 +1232,18 @@ function switchTab(tab) {
   }
 
   window.scrollTo(0, 0);
-  if (tab === 'invoice' && typeof renderInvItems === 'function') renderInvItems();
+  if (tab === 'invoice' && typeof renderInvItems === 'function') {
+    renderInvItems();
+    // Auto-generate invoice number if field is empty
+    var invNumEl = document.getElementById('inv-num');
+    if (invNumEl && !invNumEl.value) {
+      var year = new Date().getFullYear();
+      var storageKey = 'gg_inv_seq_' + year;
+      var seq = parseInt(localStorage.getItem(storageKey) || '0') + 1;
+      localStorage.setItem(storageKey, seq);
+      invNumEl.value = 'INV-' + year + '-' + String(seq).padStart(3, '0');
+    }
+  }
 }
 
 // ==================== UTILITIES ====================
@@ -2189,12 +2200,14 @@ function calcInv() {
 
   if (contractTotal > 0) {
     if (contractRow) { contractRow.style.display = 'flex'; contractDisplay.textContent = fmt(contractTotal); }
+    // Only use FIRST line item for % calculation (the progress payment line)
+    var firstItemAmount = invItems.length > 0 ? (parseFloat(invItems[0].price)||0) * (parseFloat(invItems[0].qty)||1) : 0;
     var alreadyPaid = deposit + subtotal;
     var remaining = Math.max(0, contractTotal - alreadyPaid);
     if (remainingRow) { remainingRow.style.display = 'flex'; remainingDisplay.textContent = fmt(remaining); }
     if (paytypeRow && paytype !== 'full') {
       paytypeRow.style.display = 'flex';
-      var pct = contractTotal > 0 ? Math.round((subtotal / contractTotal) * 100) : 0;
+      var pct = contractTotal > 0 ? Math.round((firstItemAmount / contractTotal) * 100) : 0;
       var labels = { deposit: 'Deposit', progress: 'Progress Payment', final: 'Final Payment' };
       if (paytypeLabel) paytypeLabel.textContent = labels[paytype] || 'Payment';
       if (paytypePct) paytypePct.textContent = pct + '% of contract';
@@ -2712,6 +2725,17 @@ function applyInvCustomPct() {
   applyInvPct(pct);
 }
 
+// ==================== AUTO INVOICE NUMBER ====================
+function autoInvoiceNumber() {
+  var year = new Date().getFullYear();
+  var storageKey = 'gg_inv_seq_' + year;
+  var seq = parseInt(localStorage.getItem(storageKey) || '0') + 1;
+  localStorage.setItem(storageKey, seq);
+  var invNum = 'INV-' + year + '-' + String(seq).padStart(3, '0');
+  var el = document.getElementById('inv-num');
+  if (el && !el.value) el.value = invNum;
+}
+
 // ==================== INIT ====================
 window.addEventListener('load', function() {
   // Set dates
@@ -2730,6 +2754,9 @@ window.addEventListener('load', function() {
   // Load material prices
   loadMaterialPrices();
   loadMaterialsFromCloud();
+
+  // Auto generate invoice number
+  autoInvoiceNumber();
 
   // Start on calculator tab
   switchTab('calc');
