@@ -2300,14 +2300,19 @@ function generateInvoicePDF() {
     // Contract total & remaining if applicable
     if (contractTotal > 0 && paymentType !== 'full') {
       var invoiceSubtotal = invItems.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
-      var remaining = Math.max(0, contractTotal - invoiceSubtotal);
-      var pct = contractTotal > 0 ? Math.round((invoiceSubtotal / contractTotal) * 100) : 0;
+      var firstItemOnly = invItems.length > 0 ? (parseFloat(invItems[0].price)||0)*(parseFloat(invItems[0].qty)||1) : invoiceSubtotal;
+      var pct = contractTotal > 0 ? Math.round((firstItemOnly / contractTotal) * 100) : 0;
+      // Remaining = contract - deposit already paid - this invoice subtotal
+      var depositPdfEl = document.getElementById('inv-deposit');
+      var depositPdf = depositPdfEl ? (parseFloat(depositPdfEl.value) || 0) : 0;
+      var remaining = Math.max(0, contractTotal - depositPdf - invoiceSubtotal);
       doc.setFontSize(8); doc.setTextColor(100,100,100); doc.setFont('helvetica','normal');
       doc.text('Total Contract Value: ' + fmt(contractTotal), margin, y+12);
-      doc.text('This invoice: ' + pct + '% of contract', margin, y+18);
+      if (depositPdf > 0) doc.text('Deposit / Prev. payments: ' + fmt(depositPdf), margin, y+18);
+      doc.text('This invoice: ' + pct + '% of contract', margin, depositPdf > 0 ? y+24 : y+18);
       doc.setFont('helvetica','bold'); doc.setTextColor(30,30,30);
-      doc.text('Remaining after this invoice: ' + fmt(remaining), margin, y+24);
-      y += 16;
+      doc.text('Remaining after this invoice: ' + fmt(remaining), margin, depositPdf > 0 ? y+30 : y+24);
+      y += depositPdf > 0 ? 22 : 16;
     }
     doc.setDrawColor(220,220,220); doc.line(margin, y+10, pw-margin, y+10); y+=15;
     doc.setFontSize(7); doc.setTextColor(180,180,180);
