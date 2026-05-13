@@ -2142,30 +2142,34 @@ function calcInv() {
   if (g) g.textContent = fmt(gst);
   if (t) t.textContent = fmt(total);
 
-  // Deposit row — only show on full payment invoices
+  // Deposit row — always show, but label changes based on payment type
   var paytypeElDep = document.getElementById('inv-payment-type');
   var paytypeDep = paytypeElDep ? paytypeElDep.value : 'full';
   var depRow = document.getElementById('inv-deposit-row');
   var depDisplay = document.getElementById('inv-deposit-display');
+  var depLabel = document.querySelector('#inv-deposit-row .sl');
   var balRow = document.getElementById('inv-balance-row');
   var balDisplay = document.getElementById('inv-balance');
   var depInputRow = document.getElementById('inv-deposit-input-row');
 
-  if (paytypeDep === 'full') {
-    // Show deposit field for full invoices
-    if (depInputRow) depInputRow.style.display = 'block';
-    if (deposit > 0) {
-      if (depRow) depRow.style.display = 'flex';
-      if (depDisplay) depDisplay.textContent = '-' + fmt(deposit);
+  if (depInputRow) depInputRow.style.display = 'block';
+
+  if (deposit > 0) {
+    if (depRow) depRow.style.display = 'flex';
+    if (depDisplay) depDisplay.textContent = '-' + fmt(deposit);
+    // Label changes based on type
+    if (depLabel) {
+      if (paytypeDep === 'full') depLabel.textContent = 'Deposit Paid';
+      else depLabel.textContent = 'Deposit / Prev. Payments';
+    }
+    // Balance due — never show negative, hide if progress payment
+    if (paytypeDep === 'full') {
       if (balRow) balRow.style.display = 'flex';
-      if (balDisplay) balDisplay.textContent = fmt(balance);
+      if (balDisplay) balDisplay.textContent = fmt(Math.max(0, balance));
     } else {
-      if (depRow) depRow.style.display = 'none';
       if (balRow) balRow.style.display = 'none';
     }
   } else {
-    // Hide deposit field for progress/deposit/final invoices
-    if (depInputRow) depInputRow.style.display = 'none';
     if (depRow) depRow.style.display = 'none';
     if (balRow) balRow.style.display = 'none';
   }
@@ -2185,7 +2189,8 @@ function calcInv() {
 
   if (contractTotal > 0) {
     if (contractRow) { contractRow.style.display = 'flex'; contractDisplay.textContent = fmt(contractTotal); }
-    var remaining = Math.max(0, contractTotal - subtotal);
+    var alreadyPaid = deposit + subtotal;
+    var remaining = Math.max(0, contractTotal - alreadyPaid);
     if (remainingRow) { remainingRow.style.display = 'flex'; remainingDisplay.textContent = fmt(remaining); }
     if (paytypeRow && paytype !== 'full') {
       paytypeRow.style.display = 'flex';
