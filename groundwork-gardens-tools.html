@@ -1059,6 +1059,29 @@
 </div>
 
 <div class="section">
+  <div class="section-title">Progress Payment</div>
+  <div class="card">
+    <div class="field"><label>Total Job Value ($) — for % calculation</label>
+      <input type="number" id="inv-job-total" placeholder="e.g. 10000" oninput="calcInvPct()">
+    </div>
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px">Quick % — tap to add as line item</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <button onclick="applyInvPct(10)" style="padding:8px 14px;border-radius:20px;border:0.5px solid #c5d4c0;background:#ffffff;color:var(--text-secondary);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer">10%</button>
+      <button onclick="applyInvPct(20)" style="padding:8px 14px;border-radius:20px;border:0.5px solid #c5d4c0;background:#ffffff;color:var(--text-secondary);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer">20%</button>
+      <button onclick="applyInvPct(25)" style="padding:8px 14px;border-radius:20px;border:0.5px solid #c5d4c0;background:#ffffff;color:var(--text-secondary);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer">25%</button>
+      <button onclick="applyInvPct(30)" style="padding:8px 14px;border-radius:20px;border:0.5px solid #c5d4c0;background:#ffffff;color:var(--text-secondary);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer">30%</button>
+      <button onclick="applyInvPct(50)" style="padding:8px 14px;border-radius:20px;border:0.5px solid #c5d4c0;background:#ffffff;color:var(--text-secondary);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer">50%</button>
+      <button onclick="applyInvPct(100)" style="padding:8px 14px;border-radius:20px;border:0.5px solid #c5d4c0;background:#ffffff;color:var(--text-secondary);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer">100%</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="number" id="inv-custom-pct" placeholder="Custom %" min="1" max="100" style="background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-primary);font-family:'Barlow Condensed',sans-serif;font-size:16px;padding:8px 10px;width:130px">
+      <button onclick="applyInvCustomPct()" style="background:var(--green-leaf);border:1px solid var(--green);border-radius:6px;color:var(--white);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;padding:9px 16px">Apply %</button>
+      <span id="inv-pct-preview" style="font-family:'Barlow Condensed',sans-serif;font-size:16px;color:var(--green-bright);font-weight:600"></span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
   <div class="section-title">Line Items</div>
   <div id="inv-items-list"></div>
   <button class="add-btn" onclick="addInvItem()">+ Add Line Item</button>
@@ -1094,6 +1117,80 @@
 
 </div><!-- end tab-invoice -->
 
+
+<!-- ==================== MATERIALS PRICE LIST TAB ==================== -->
+<div class="tab-panel" id="tab-materials" style="display:none">
+
+<div class="section">
+  <div class="section-title">Materials Price List</div>
+  <div style="background:rgba(74,124,63,0.08);border:1px solid rgba(74,124,63,0.2);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--green)">
+    Edit any price and tap Save — prices sync to cloud and auto-fill your calculators next time.
+  </div>
+</div>
+
+<!-- CONCRETE & EARTHWORKS -->
+<div class="section">
+  <div class="section-title">🪨 Concrete & Earthworks</div>
+  <div class="card" id="mat-section-concrete"></div>
+</div>
+
+<!-- GARDEN & LANDSCAPING -->
+<div class="section">
+  <div class="section-title">🌿 Garden & Landscaping</div>
+  <div class="card" id="mat-section-garden"></div>
+</div>
+
+<!-- TURF & LAWN -->
+<div class="section">
+  <div class="section-title">🟩 Turf & Lawn</div>
+  <div class="card" id="mat-section-turf"></div>
+</div>
+
+<!-- IRRIGATION -->
+<div class="section">
+  <div class="section-title">💧 Irrigation</div>
+  <div class="card" id="mat-section-irrigation"></div>
+</div>
+
+<!-- PAVING & PATHS -->
+<div class="section">
+  <div class="section-title">🟫 Paving & Paths</div>
+  <div class="card" id="mat-section-paving"></div>
+</div>
+
+<!-- DECKING & STRUCTURES -->
+<div class="section">
+  <div class="section-title">🪵 Decking & Structures</div>
+  <div class="card" id="mat-section-decking"></div>
+</div>
+
+<!-- DRAINAGE & RETAINING -->
+<div class="section">
+  <div class="section-title">🌊 Drainage & Retaining</div>
+  <div class="card" id="mat-section-drainage"></div>
+</div>
+
+<!-- FENCING & STEPS -->
+<div class="section">
+  <div class="section-title">🪵 Fencing, Steps & Lighting</div>
+  <div class="card" id="mat-section-fencing"></div>
+</div>
+
+<!-- WASTE -->
+<div class="section">
+  <div class="section-title">🗑️ Waste & Excavation</div>
+  <div class="card" id="mat-section-waste"></div>
+</div>
+
+<div class="section">
+  <div style="display:flex;gap:10px;margin-top:4px;margin-bottom:20px">
+    <button onclick="saveMaterials()" style="flex:1;background:var(--green);border:none;border-radius:6px;color:var(--white);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:14px;text-transform:uppercase">☁ Save Price List</button>
+    <button onclick="resetMaterials()" style="flex:1;background:transparent;border:1px solid #c5d4c0;border-radius:6px;color:var(--text-secondary);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:14px;text-transform:uppercase">↺ Reset Defaults</button>
+  </div>
+  <div id="mat-save-msg" style="text-align:center;font-size:13px;color:var(--green-bright);margin-bottom:20px;min-height:20px"></div>
+</div>
+
+</div><!-- end tab-materials -->
 <script>
 // ==================== LOGO ====================
 const LOGO_B64 = "data:image/jpeg;base64,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";
@@ -1118,7 +1215,7 @@ function switchTab(tab) {
   // Highlight active tab button
   var btn = document.getElementById('btn-' + tab);
   if (btn) {
-    var colors = { calc: '#c07a2f', quote: '#5d9e50', invoice: '#4a90d9' };
+    var colors = { calc: '#c07a2f', quote: '#5d9e50', invoice: '#4a90d9', materials: '#9b59b6' };;
     btn.style.color = colors[tab] || '#5d9e50';
     btn.style.borderBottom = '2px solid ' + (colors[tab] || '#5d9e50');
   }
@@ -1965,12 +2062,17 @@ function generatePDF() {
 
     // Exclusions
     if (exclusions.filter(function(e){return e.trim();}).length > 0) {
+      if (y > 230) { doc.addPage(); y = 15; }
       doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); doc.text('EXCLUSIONS', margin, y); y+=5;
-      exclusions.filter(function(e){return e.trim();}).forEach(function(excl) { doc.setFontSize(9); doc.setTextColor(60,60,60); doc.text('• ' + excl, margin+2, y); y+=5; }); y+=4;
+      exclusions.filter(function(e){return e.trim();}).forEach(function(excl) {
+        if (y > 270) { doc.addPage(); y = 15; }
+        doc.setFontSize(9); doc.setTextColor(60,60,60); doc.text('• ' + excl, margin+2, y); y+=5;
+      }); y+=4;
     }
 
     // Deposit
-    if (depositPct > 0 && y < 270) {
+    if (depositPct > 0) {
+      if (y > 255) { doc.addPage(); y = 15; }
       doc.setDrawColor(74,124,63); doc.setLineWidth(0.4); doc.setFillColor(240,247,238);
       doc.roundedRect(margin, y, cw, 10, 1, 1, 'FD');
       doc.setFontSize(9); doc.setTextColor(45,90,36); doc.setFont('helvetica','normal'); doc.text(depositPct+'% deposit required to confirm booking', margin+4, y+6.5);
@@ -1978,13 +2080,13 @@ function generatePDF() {
     }
 
     // Signature
-    if (y < 265) {
-      doc.setDrawColor(180,180,180); doc.setLineWidth(0.3); doc.line(margin, y, margin+70, y); doc.line(pw-margin-70, y, pw-margin, y);
-      doc.setFontSize(8); doc.setTextColor(130,130,130); doc.setFont('helvetica','normal');
-      doc.text('Client signature', margin, y+4); doc.text('Date', margin+45, y+4); doc.text('Authorised by Groundwork Gardens', pw-margin-70, y+4); y+=14;
-    }
+    if (y > 255) { doc.addPage(); y = 15; }
+    doc.setDrawColor(180,180,180); doc.setLineWidth(0.3); doc.line(margin, y, margin+70, y); doc.line(pw-margin-70, y, pw-margin, y);
+    doc.setFontSize(8); doc.setTextColor(130,130,130); doc.setFont('helvetica','normal');
+    doc.text('Client signature', margin, y+4); doc.text('Date', margin+45, y+4); doc.text('Authorised by Groundwork Gardens', pw-margin-70, y+4); y+=14;
 
     // Footer
+    if (y > 270) { doc.addPage(); y = 15; }
     doc.setDrawColor(220,220,220); doc.line(margin, y, pw-margin, y); y+=5;
     doc.setFontSize(7); doc.setTextColor(180,180,180);
     doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, y, {align:'center'});
@@ -2271,6 +2373,262 @@ async function loadInvoiceById(id) {
   } catch(e) { showToast('⚠ Could not load invoice'); console.error(e); }
 }
 
+// ==================== MATERIALS PRICE LIST ====================
+var DEFAULT_MATERIALS = {
+  concrete: [
+    { id: 'cp-concrete', label: 'Concrete ready mix', unit: '/m³', value: 230 },
+    { id: 'cp-rock', label: 'Crushed rock base', unit: '/m³', value: 65 },
+    { id: 'cp-form', label: 'Formwork timber', unit: '/lm', value: 4 },
+    { id: 'cp-mesh62', label: 'Mesh SL62', unit: '/sheet', value: 22 },
+    { id: 'cp-mesh72', label: 'Mesh SL72', unit: '/sheet', value: 28 },
+    { id: 'cp-mesh82', label: 'Mesh SL82', unit: '/sheet', value: 38 }
+  ],
+  garden: [
+    { id: 'gp-soil', label: 'Premium garden soil', unit: '/m³', value: 85 },
+    { id: 'gp-mulch', label: 'Mulch', unit: '/m³', value: 55 },
+    { id: 'gp-compost', label: 'Compost (25L bags)', unit: '/bag', value: 12 },
+    { id: 'gp-edging', label: 'Garden edging', unit: '/lm', value: 8 },
+    { id: 'gp-weedmat', label: 'Weed mat', unit: '/m²', value: 3.50 },
+    { id: 'pp-mix', label: 'Potting mix', unit: '/bag', value: 14 },
+    { id: 'pp-fert', label: 'Fertiliser tablets', unit: '/pack', value: 18 }
+  ],
+  turf: [
+    { id: 'tp-kik', label: 'Kikuyu turf', unit: '/m²', value: 12 },
+    { id: 'tp-buf', label: 'Buffalo turf', unit: '/m²', value: 15 },
+    { id: 'tp-cou', label: 'Couch turf', unit: '/m²', value: 13 },
+    { id: 'tp-zoy', label: 'Zoysia turf', unit: '/m²', value: 18 },
+    { id: 'tp-soil', label: 'Topsoil', unit: '/m³', value: 75 },
+    { id: 'tp-fert', label: 'Starter fertiliser', unit: '/bag', value: 35 },
+    { id: 'agp-standard', label: 'Artificial grass standard 30mm', unit: '/m²', value: 28 },
+    { id: 'agp-premium', label: 'Artificial grass premium 40mm', unit: '/m²', value: 42 },
+    { id: 'agp-luxury', label: 'Artificial grass luxury 45mm', unit: '/m²', value: 58 },
+    { id: 'agp-infill', label: 'Silica sand infill', unit: '/bag', value: 22 },
+    { id: 'agp-tape', label: 'Artificial grass joining tape', unit: '/lm', value: 8 },
+    { id: 'agp-nails', label: 'Nails & pegs', unit: '/lot', value: 35 }
+  ],
+  irrigation: [
+    { id: 'ip-pipe', label: '20mm poly pipe', unit: '/lm', value: 2.20 },
+    { id: 'ip-dripline', label: '13mm dripline', unit: '/lm', value: 1.80 },
+    { id: 'ip-head', label: 'Spray head', unit: '/unit', value: 8.50 },
+    { id: 'ip-drip', label: 'Drip emitter', unit: '/unit', value: 1.80 },
+    { id: 'ip-timer', label: 'Automatic tap timer', unit: '/unit', value: 85 },
+    { id: 'ip-timer1', label: '1-way tap timer', unit: '/unit', value: 65 },
+    { id: 'ip-timer4', label: '4-way tap timer', unit: '/unit', value: 120 },
+    { id: 'ip-manifold', label: '2-way manifold', unit: '/unit', value: 45 },
+    { id: 'ip-tapadapter', label: 'Tap adapter manifold', unit: '/unit', value: 35 },
+    { id: 'ip-fittings', label: 'Fittings allowance', unit: '/lot', value: 45 },
+    { id: 'irp-head', label: 'Replacement spray head', unit: '/unit', value: 18 },
+    { id: 'irp-solenoid', label: 'Replacement solenoid', unit: '/unit', value: 65 },
+    { id: 'irp-pipe', label: 'Poly pipe repair', unit: '/lm', value: 12 }
+  ],
+  paving: [
+    { id: 'pvp-concrete', label: 'Concrete pavers', unit: '/m²', value: 45 },
+    { id: 'pvp-travertine', label: 'Travertine pavers', unit: '/m²', value: 95 },
+    { id: 'pvp-bluestone', label: 'Bluestone pavers', unit: '/m²', value: 110 },
+    { id: 'pvp-porcelain', label: 'Porcelain tiles', unit: '/m²', value: 85 },
+    { id: 'pvp-brick', label: 'Clay brick pavers', unit: '/m²', value: 55 },
+    { id: 'pvp-sand', label: 'Bedding sand', unit: '/m³', value: 60 },
+    { id: 'pvp-base', label: 'Crusher dust base', unit: '/m³', value: 65 },
+    { id: 'pvp-edge', label: 'Edge restraint', unit: '/lm', value: 6 },
+    { id: 'pvp-grout', label: 'Grout / adhesive', unit: '/lot', value: 60 },
+    { id: 'pwp-gravel', label: 'Gravel / crushed granite', unit: '/m³', value: 70 },
+    { id: 'pwp-stepping', label: 'Stepping stones', unit: '/unit', value: 25 },
+    { id: 'pwp-dg', label: 'Decomposed granite', unit: '/m³', value: 85 },
+    { id: 'pwp-bark', label: 'Bark chips', unit: '/m³', value: 55 },
+    { id: 'pwp-weed', label: 'Weed mat (pathways)', unit: '/m²', value: 3.50 },
+    { id: 'pwp-edge', label: 'Edge restraint (pathways)', unit: '/lm', value: 6 }
+  ],
+  decking: [
+    { id: 'dkp-merbau', label: 'Merbau decking boards', unit: '/lm', value: 18 },
+    { id: 'dkp-pine', label: 'Treated pine boards', unit: '/lm', value: 9 },
+    { id: 'dkp-composite', label: 'Composite boards', unit: '/lm', value: 28 },
+    { id: 'dkp-frame', label: 'H4 bearer / joist', unit: '/lm', value: 8 },
+    { id: 'dkp-post', label: 'Post 100x100', unit: '/unit', value: 45 },
+    { id: 'dkp-conc', label: 'Concrete post mix', unit: '/bag', value: 9 },
+    { id: 'dkp-fix', label: 'Deck fixings & hardware', unit: '/lot', value: 80 },
+    { id: 'dkp-rail', label: 'Handrail', unit: '/lm', value: 120 },
+    { id: 'pgp-post', label: 'Pergola post 100x100', unit: '/unit', value: 55 },
+    { id: 'pgp-beam', label: 'Pergola beam 190x45', unit: '/lm', value: 12 },
+    { id: 'pgp-rafter', label: 'Pergola rafter 90x45', unit: '/lm', value: 7 },
+    { id: 'pgp-fix', label: 'Pergola fixings & brackets', unit: '/lot', value: 120 },
+    { id: 'pgp-poly', label: 'Polycarbonate roofing', unit: '/m²', value: 45 },
+    { id: 'pgp-cb', label: 'Colorbond roofing', unit: '/m²', value: 55 },
+    { id: 'ltp-spike', label: 'Spike / spotlight', unit: '/unit', value: 35 },
+    { id: 'ltp-path', label: 'Path light', unit: '/unit', value: 45 },
+    { id: 'ltp-wall', label: 'Wall / step light', unit: '/unit', value: 55 },
+    { id: 'ltp-cable', label: 'Low volt cable', unit: '/lm', value: 3.50 },
+    { id: 'ltp-trans', label: 'Transformer', unit: '/unit', value: 120 },
+    { id: 'ltp-conn', label: 'Connectors & clips', unit: '/lot', value: 40 }
+  ],
+  drainage: [
+    { id: 'dp-ag', label: 'Ag pipe 100mm', unit: '/lm', value: 4.50 },
+    { id: 'dp-channel', label: 'Channel drain', unit: '/lm', value: 35 },
+    { id: 'dp-pit', label: 'Drainage pit 300x300', unit: '/unit', value: 65 },
+    { id: 'dp-scoria', label: 'Scoria aggregate', unit: '/m³', value: 80 },
+    { id: 'dp-geo', label: 'Geotextile fabric', unit: '/m²', value: 4 },
+    { id: 'dp-fit', label: 'Drainage fittings', unit: '/lot', value: 40 },
+    { id: 'rp-post', label: 'H4 treated post 2.4m', unit: '/unit', value: 38 },
+    { id: 'rp-tsleeper', label: 'Hardwood timber sleeper', unit: '/unit', value: 32 },
+    { id: 'rp-csleeper', label: 'Concrete sleeper', unit: '/unit', value: 65 },
+    { id: 'rp-agg', label: 'Drainage aggregate (retaining)', unit: '/m³', value: 75 },
+    { id: 'rp-fixings', label: 'Retaining wall fixings', unit: '/lot', value: 40 },
+    { id: 'stp-sleeper', label: 'Step timber sleeper', unit: '/unit', value: 32 },
+    { id: 'stp-stone', label: 'Natural stone steps', unit: '/m²', value: 120 },
+    { id: 'stp-brick', label: 'Step bricks', unit: '/unit', value: 1.20 },
+    { id: 'stp-rock', label: 'Crushed rock (steps base)', unit: '/m³', value: 65 },
+    { id: 'stp-fix', label: 'Step fixings & pins', unit: '/lot', value: 30 }
+  ],
+  fencing: [
+    { id: 'fp-post', label: 'H4 fence post', unit: '/unit', value: 38 },
+    { id: 'fp-paling', label: 'Timber paling', unit: '/unit', value: 3.50 },
+    { id: 'fp-rail', label: 'Rail 4.2m', unit: '/unit', value: 22 },
+    { id: 'fp-conc', label: 'Concrete post mix', unit: '/bag', value: 9 },
+    { id: 'fp-fix', label: 'Fence fixings', unit: '/lot', value: 35 },
+    { id: 'fp-cb', label: 'Colorbond fence panel', unit: '/lm', value: 85 },
+    { id: 'agp-base', label: 'Crusher dust (artificial grass)', unit: '/m³', value: 65 },
+    { id: 'agp-weed', label: 'Weed mat (artificial grass)', unit: '/m²', value: 3.50 }
+  ],
+  waste: [
+    { id: 'exp-bobcat', label: 'Bobcat hire', unit: '/day', value: 900 },
+    { id: 'exp-truck', label: 'Tip truck hire', unit: '/load', value: 350 },
+    { id: 'exp-tip', label: 'Tip / disposal fees', unit: '/tonne', value: 85 },
+    { id: 'binp-rate', label: 'Skip bin rate', unit: '/m³', value: 100 },
+    { id: 'binp-delivery', label: 'Skip bin delivery fee', unit: '/bin', value: 60 },
+    { id: 'pgp-conc', label: 'Concrete post mix (pergola)', unit: '/bag', value: 9 },
+    { id: 'rp-concrete', label: 'Concrete (retaining footings)', unit: '/m³', value: 230 },
+    { id: 'stp-concrete', label: 'Concrete (steps)', unit: '/m³', value: 230 }
+  ]
+};
+
+var savedMaterials = {};
+
+function loadMaterialPrices() {
+  var saved = localStorage.getItem('gg_materials');
+  savedMaterials = saved ? JSON.parse(saved) : {};
+}
+
+function getMaterialValue(id, defaultVal) {
+  return savedMaterials[id] !== undefined ? savedMaterials[id] : defaultVal;
+}
+
+function renderMaterialsTab() {
+  Object.keys(DEFAULT_MATERIALS).forEach(function(section) {
+    var el = document.getElementById('mat-section-' + section);
+    if (!el) return;
+    var html = '';
+    DEFAULT_MATERIALS[section].forEach(function(mat) {
+      var val = getMaterialValue(mat.id, mat.value);
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #e8f0e6';
+      var labelDiv = document.createElement('div');
+      labelDiv.style.flex = '1';
+      labelDiv.innerHTML = '<div style="font-size:13px;color:var(--text-primary)">' + mat.label + '</div><div style="font-size:10px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-top:2px">$ ' + mat.unit + '</div>';
+      var inputWrap = document.createElement('div');
+      inputWrap.style.cssText = 'display:flex;align-items:center;gap:6px';
+      var dollar = document.createElement('span');
+      dollar.textContent = '$';
+      dollar.style.cssText = 'font-size:13px;color:var(--text-secondary)';
+      var inp = document.createElement('input');
+      inp.type = 'number';
+      inp.setAttribute('data-mat-id', mat.id);
+      inp.value = val;
+      inp.step = '0.01';
+      inp.style.cssText = 'background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-primary);font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:600;width:90px;padding:6px 8px;text-align:right';
+      inp.oninput = function() { updateMaterialPrice(this); };
+      inputWrap.appendChild(dollar);
+      inputWrap.appendChild(inp);
+      row.appendChild(labelDiv);
+      row.appendChild(inputWrap);
+      el.appendChild(row);
+    });
+  });
+  applyMaterialPricesToCalculators();
+}
+
+function updateMaterialPrice(input) {
+  var id = input.getAttribute('data-mat-id');
+  var val = parseFloat(input.value) || 0;
+  savedMaterials[id] = val;
+  // Live update the calculator input if it exists
+  var calcInput = document.getElementById(id);
+  if (calcInput) calcInput.value = val;
+}
+
+function applyMaterialPricesToCalculators() {
+  Object.keys(DEFAULT_MATERIALS).forEach(function(section) {
+    DEFAULT_MATERIALS[section].forEach(function(mat) {
+      var val = getMaterialValue(mat.id, mat.value);
+      var calcInput = document.getElementById(mat.id);
+      if (calcInput) calcInput.value = val;
+    });
+  });
+}
+
+async function saveMaterials() {
+  localStorage.setItem('gg_materials', JSON.stringify(savedMaterials));
+  var msg = document.getElementById('mat-save-msg');
+  // Also save to Supabase
+  try {
+    var res = await fetch(SB_URL + '/rest/v1/gg_quotes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'resolution=merge-duplicates' },
+      body: JSON.stringify({ id: 'gg_materials_prices', name: 'Materials Price List', data: savedMaterials, updated_at: new Date().toISOString() })
+    });
+    if (msg) { msg.textContent = '✓ Prices saved to cloud!'; setTimeout(function() { msg.textContent = ''; }, 3000); }
+  } catch(e) {
+    localStorage.setItem('gg_materials', JSON.stringify(savedMaterials));
+    if (msg) { msg.textContent = '✓ Prices saved locally!'; setTimeout(function() { msg.textContent = ''; }, 3000); }
+  }
+  applyMaterialPricesToCalculators();
+  showToast('✓ Price list saved!');
+}
+
+async function loadMaterialsFromCloud() {
+  try {
+    var res = await fetch(SB_URL + '/rest/v1/gg_quotes?id=eq.gg_materials_prices&select=data', { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } });
+    var rows = await res.json();
+    if (rows.length && rows[0].data) {
+      savedMaterials = rows[0].data;
+      localStorage.setItem('gg_materials', JSON.stringify(savedMaterials));
+      renderMaterialsTab();
+    }
+  } catch(e) { console.log('Could not load materials from cloud'); }
+}
+
+function resetMaterials() {
+  if (!confirm('Reset all prices to defaults?')) return;
+  savedMaterials = {};
+  localStorage.removeItem('gg_materials');
+  renderMaterialsTab();
+  showToast('✓ Prices reset to defaults');
+}
+
+// ==================== INVOICE PROGRESS % ====================
+function calcInvPct() {
+  var total = parseFloat(document.getElementById('inv-job-total').value) || 0;
+  var customPct = parseFloat(document.getElementById('inv-custom-pct').value) || 0;
+  if (total > 0 && customPct > 0) {
+    var amount = (total * customPct / 100).toFixed(2);
+    document.getElementById('inv-pct-preview').textContent = '= $' + parseFloat(amount).toLocaleString('en-AU', {minimumFractionDigits:2});
+  }
+}
+
+function applyInvPct(pct) {
+  var total = parseFloat(document.getElementById('inv-job-total').value) || 0;
+  if (total <= 0) { showToast('⚠ Enter job total first'); return; }
+  var amount = parseFloat((total * pct / 100).toFixed(2));
+  var desc = pct + '% progress payment';
+  invItems.push({ name: desc, qty: 1, price: amount });
+  renderInvItems();
+  showToast('✓ ' + pct + '% added — ' + fmt(amount));
+}
+
+function applyInvCustomPct() {
+  var pct = parseFloat(document.getElementById('inv-custom-pct').value) || 0;
+  if (pct <= 0 || pct > 100) { showToast('⚠ Enter a % between 1 and 100'); return; }
+  applyInvPct(pct);
+}
+
 // ==================== INIT ====================
 window.addEventListener('load', function() {
   // Set dates
@@ -2285,6 +2643,10 @@ window.addEventListener('load', function() {
   renderScope();
   renderExclusions();
   recalc();
+
+  // Load material prices
+  loadMaterialPrices();
+  loadMaterialsFromCloud();
 
   // Start on calculator tab
   switchTab('calc');
