@@ -1046,6 +1046,17 @@
         <option value="partial">Partial</option>
       </select>
     </div>
+    <div class="field"><label>Total Contract Value ($)</label>
+      <input type="number" id="inv-contract-total" placeholder="e.g. 10000" oninput="calcInv()">
+    </div>
+    <div class="field"><label>Payment Type</label>
+      <select id="inv-payment-type" onchange="calcInv()">
+        <option value="full">Full Payment</option>
+        <option value="deposit">Deposit</option>
+        <option value="progress">Progress Payment</option>
+        <option value="final">Final Payment</option>
+      </select>
+    </div>
   </div>
 </div>
 
@@ -1059,13 +1070,10 @@
 </div>
 
 <div class="section">
-  <div class="section-title">Progress Payment</div>
+  <div class="section-title">Progress Payment Amount</div>
   <div class="card">
-    <div class="field"><label>Total Job Value ($) — for % calculation</label>
-      <input type="number" id="inv-job-total" placeholder="e.g. 10000" oninput="calcInvPct()">
-    </div>
-    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px">Quick % — tap to add as line item</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px">Quick % of contract value</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
       <button onclick="applyInvPct(10)" style="padding:8px 14px;border-radius:20px;border:0.5px solid #c5d4c0;background:#ffffff;color:var(--text-secondary);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer">10%</button>
       <button onclick="applyInvPct(20)" style="padding:8px 14px;border-radius:20px;border:0.5px solid #c5d4c0;background:#ffffff;color:var(--text-secondary);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer">20%</button>
       <button onclick="applyInvPct(25)" style="padding:8px 14px;border-radius:20px;border:0.5px solid #c5d4c0;background:#ffffff;color:var(--text-secondary);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer">25%</button>
@@ -1093,11 +1101,14 @@
     <div class="field"><label>Deposit Paid ($)</label><input type="number" id="inv-deposit" placeholder="0.00" oninput="calcInv()" style="background-image:none !important;"></div>
   </div>
   <div class="summary-card">
+    <div class="sum-row" id="inv-contract-row" style="display:none"><span class="sl">Total Contract Value</span><span class="sv" id="inv-contract-display" style="color:var(--text-secondary)">$0.00</span></div>
+    <div class="sum-row" id="inv-paytype-row" style="display:none"><span class="sl" id="inv-paytype-label">Progress Payment</span><span class="sv" id="inv-paytype-pct" style="color:var(--green)"></span></div>
     <div class="sum-row"><span class="sl">Subtotal (ex. GST)</span><span class="sv" id="inv-subtotal">$0.00</span></div>
     <div class="sum-row"><span class="sl">GST (10%)</span><span class="sv" id="inv-gst">$0.00</span></div>
-    <div class="sum-row total"><span class="sl">Total</span><span class="sv" id="inv-total">$0.00</span></div>
+    <div class="sum-row total"><span class="sv" id="inv-total">$0.00</span><span class="sl">Total Due</span></div>
     <div class="sum-row" id="inv-deposit-row" style="display:none"><span class="sl">Deposit Paid</span><span class="sv" id="inv-deposit-display" style="color:#c0392b">-$0.00</span></div>
     <div class="sum-row total" id="inv-balance-row" style="display:none;background:#2e6da4"><span class="sl">Balance Due</span><span class="sv" id="inv-balance">$0.00</span></div>
+    <div class="sum-row" id="inv-remaining-row" style="display:none;background:rgba(74,124,63,0.06)"><span class="sl">Remaining After This Invoice</span><span class="sv" id="inv-remaining" style="color:var(--text-secondary)">$0.00</span></div>
   </div>
 </div>
 
@@ -2130,6 +2141,8 @@ function calcInv() {
   if (s) s.textContent = fmt(subtotal);
   if (g) g.textContent = fmt(gst);
   if (t) t.textContent = fmt(total);
+
+  // Deposit row
   var depRow = document.getElementById('inv-deposit-row');
   var depDisplay = document.getElementById('inv-deposit-display');
   var balRow = document.getElementById('inv-balance-row');
@@ -2142,6 +2155,36 @@ function calcInv() {
   } else {
     if (depRow) depRow.style.display = 'none';
     if (balRow) balRow.style.display = 'none';
+  }
+
+  // Contract total & remaining
+  var contractEl = document.getElementById('inv-contract-total');
+  var contractTotal = contractEl ? (parseFloat(contractEl.value) || 0) : 0;
+  var contractRow = document.getElementById('inv-contract-row');
+  var contractDisplay = document.getElementById('inv-contract-display');
+  var remainingRow = document.getElementById('inv-remaining-row');
+  var remainingDisplay = document.getElementById('inv-remaining');
+  var paytypeRow = document.getElementById('inv-paytype-row');
+  var paytypeLabel = document.getElementById('inv-paytype-label');
+  var paytypePct = document.getElementById('inv-paytype-pct');
+  var paytypeEl = document.getElementById('inv-payment-type');
+  var paytype = paytypeEl ? paytypeEl.value : 'full';
+
+  if (contractTotal > 0) {
+    if (contractRow) { contractRow.style.display = 'flex'; contractDisplay.textContent = fmt(contractTotal); }
+    var remaining = Math.max(0, contractTotal - subtotal);
+    if (remainingRow) { remainingRow.style.display = 'flex'; remainingDisplay.textContent = fmt(remaining); }
+    if (paytypeRow && paytype !== 'full') {
+      paytypeRow.style.display = 'flex';
+      var pct = contractTotal > 0 ? Math.round((subtotal / contractTotal) * 100) : 0;
+      var labels = { deposit: 'Deposit', progress: 'Progress Payment', final: 'Final Payment' };
+      if (paytypeLabel) paytypeLabel.textContent = labels[paytype] || 'Payment';
+      if (paytypePct) paytypePct.textContent = pct + '% of contract';
+    } else if (paytypeRow) { paytypeRow.style.display = 'none'; }
+  } else {
+    if (contractRow) contractRow.style.display = 'none';
+    if (remainingRow) remainingRow.style.display = 'none';
+    if (paytypeRow) paytypeRow.style.display = 'none';
   }
 }
 
@@ -2163,6 +2206,10 @@ function generateInvoicePDF() {
     var invDue = document.getElementById('inv-due').value || '';
     var invDesc = document.getElementById('inv-desc').value || 'Landscaping Works';
     var showItemised = document.getElementById('inv-itemise').checked;
+    var contractTotal = parseFloat(document.getElementById('inv-contract-total') ? document.getElementById('inv-contract-total').value : 0) || 0;
+    var paymentType = document.getElementById('inv-payment-type') ? document.getElementById('inv-payment-type').value : 'full';
+    var payTypeLabels = { deposit: 'Deposit Invoice', progress: 'Progress Payment Invoice', final: 'Final Payment Invoice', full: 'Invoice' };
+    var invoiceTypeLabel = payTypeLabels[paymentType] || 'Invoice';
 
     doc.addImage(LOGO_B64, 'JPEG', margin, y, 68, 16);
     doc.setFontSize(8.5); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
@@ -2172,7 +2219,7 @@ function generateInvoicePDF() {
     y += 28;
 
     doc.setDrawColor(74,124,63); doc.setLineWidth(0.8); doc.line(margin, y, pw-margin, y); y += 8;
-    doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(30,30,30); doc.text('Invoice', margin, y);
+    doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(30,30,30); doc.text(invoiceTypeLabel, margin, y);
     doc.setFontSize(18); doc.setTextColor(74,124,63); doc.text(invNum, pw-margin, y, {align:'right'});
     y += 5; doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,100,100);
     doc.text('Groundwork Gardens  |  ABN: 28 594 108 955', margin, y);
@@ -2218,6 +2265,18 @@ function generateInvoicePDF() {
       doc.setFontSize(14); doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.text(fmt(balance), pw-margin-2, y+7, {align:'right'}); y+=16;
     }
 
+    // Contract total & remaining if applicable
+    if (contractTotal > 0 && paymentType !== 'full') {
+      var invoiceSubtotal = invItems.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
+      var remaining = Math.max(0, contractTotal - invoiceSubtotal);
+      var pct = contractTotal > 0 ? Math.round((invoiceSubtotal / contractTotal) * 100) : 0;
+      doc.setFontSize(8); doc.setTextColor(100,100,100); doc.setFont('helvetica','normal');
+      doc.text('Total Contract Value: ' + fmt(contractTotal), margin, y+12);
+      doc.text('This invoice: ' + pct + '% of contract', margin, y+18);
+      doc.setFont('helvetica','bold'); doc.setTextColor(30,30,30);
+      doc.text('Remaining after this invoice: ' + fmt(remaining), margin, y+24);
+      y += 16;
+    }
     doc.setDrawColor(220,220,220); doc.line(margin, y+10, pw-margin, y+10); y+=15;
     doc.setFontSize(7); doc.setTextColor(180,180,180);
     doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, y, {align:'center'});
@@ -2605,21 +2664,27 @@ function resetMaterials() {
 
 // ==================== INVOICE PROGRESS % ====================
 function calcInvPct() {
-  var total = parseFloat(document.getElementById('inv-job-total').value) || 0;
+  var contractEl = document.getElementById('inv-contract-total');
+  var total = contractEl ? (parseFloat(contractEl.value) || 0) : 0;
   var customPct = parseFloat(document.getElementById('inv-custom-pct').value) || 0;
   if (total > 0 && customPct > 0) {
     var amount = (total * customPct / 100).toFixed(2);
-    document.getElementById('inv-pct-preview').textContent = '= $' + parseFloat(amount).toLocaleString('en-AU', {minimumFractionDigits:2});
+    document.getElementById('inv-pct-preview').textContent = '= ' + fmt(parseFloat(amount));
   }
 }
 
 function applyInvPct(pct) {
-  var total = parseFloat(document.getElementById('inv-job-total').value) || 0;
-  if (total <= 0) { showToast('⚠ Enter job total first'); return; }
+  var contractEl = document.getElementById('inv-contract-total');
+  var total = contractEl ? (parseFloat(contractEl.value) || 0) : 0;
+  if (total <= 0) { showToast('⚠ Enter Total Contract Value in Invoice Details first'); return; }
   var amount = parseFloat((total * pct / 100).toFixed(2));
-  var desc = pct + '% progress payment';
-  invItems.push({ name: desc, qty: 1, price: amount });
+  var paytypeEl = document.getElementById('inv-payment-type');
+  var paytype = paytypeEl ? paytypeEl.value : 'progress';
+  var labels = { deposit: 'Deposit', progress: 'Progress payment', final: 'Final payment', full: 'Payment' };
+  var desc = (labels[paytype] || 'Progress payment') + ' (' + pct + '% of $' + total.toLocaleString('en-AU') + ')';
+  invItems = [{ name: desc, qty: 1, price: amount }];
   renderInvItems();
+  document.getElementById('inv-pct-preview').textContent = '= ' + fmt(amount);
   showToast('✓ ' + pct + '% added — ' + fmt(amount));
 }
 
