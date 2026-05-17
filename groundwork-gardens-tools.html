@@ -2040,7 +2040,9 @@ function getQuoteData() {
     margin: document.getElementById('margin').value,
     markup: document.getElementById('markupToggle').checked,
     itemise: document.getElementById('itemiseToggle').checked,
-    scopeLines: scopeLines, exclusions: exclusions, materials: materials
+    scopeLines: scopeLines, exclusions: exclusions, materials: materials,
+    calcState: saveCalcInputs(),
+    allResults: allResults
   };
 }
 
@@ -2060,6 +2062,13 @@ function loadQuoteData(d) {
   document.getElementById('itemiseToggle').checked = d.itemise || false;
   scopeLines = d.scopeLines || []; exclusions = d.exclusions || []; materials = d.materials || [];
   renderScope(); renderExclusions(); renderMats(); recalc();
+  // Restore calculator state if saved
+  if (d.calcState) {
+    restoreCalcInputs(d.calcState);
+    if (d.allResults) allResults = d.allResults;
+    updateReview();
+    showToast('✓ Calculator inputs restored!');
+  }
 }
 
 async function saveQuote() {
@@ -3103,6 +3112,66 @@ function autoInvoiceNumber() {
   var invNum = 'INV-' + year + '-' + String(seq).padStart(3, '0');
   var el = document.getElementById('inv-num');
   if (el && !el.value) el.value = invNum;
+}
+
+// ==================== CALCULATOR STATE SAVE/RESTORE ====================
+var CALC_INPUT_IDS = ['qc-l1', 'qc-w1', 'qc-l2', 'qc-w2', 'qc-d2', 'c-length', 'c-width', 'c-depth', 'c-mesh', 'c-rock', 'cp-concrete', 'cp-rock', 'cp-mesh62', 'cp-mesh72', 'cp-mesh82', 'cp-form', 'g-area', 'g-soil', 'g-mulch', 'g-edging', 'g-weedmat', 'gp-soil', 'gp-mulch', 'gp-compost', 'gp-edging', 'gp-weedmat', 'i-jobtype', 'i-report-fee', 'i-report-zones', 'i-rep-heads', 'i-rep-solenoids', 'i-rep-pipe', 'i-rep-parts', 'irp-head', 'irp-solenoid', 'irp-pipe', 'i-zones', 'i-pipe', 'i-dripline', 'i-heads', 'i-drip', 'i-timer1', 'i-timer4', 'i-tapadapter', 'ip-pipe', 'ip-timer', 'ip-manifold', 'ip-head', 'ip-drip', 'ip-dripline', 'ip-timer1', 'ip-timer4', 'ip-tapadapter', 'ip-fittings', 'r-length', 'r-height', 'r-spacing', 'r-type', 'rp-post', 'rp-tsleeper', 'rp-csleeper', 'rp-concrete', 'rp-fixings', 'rp-agg', 't-area', 't-type', 't-soil', 't-prep', 'tp-kik', 'tp-buf', 'tp-cou', 'tp-zoy', 'tp-soil', 'tp-fert', 'f-length', 'f-height', 'f-spacing', 'f-type', 'fp-post', 'fp-paling', 'fp-rail', 'fp-conc', 'fp-fix', 'fp-cb', 'pl-mix', 'pl-fert', 'pp-mix', 'pp-fert', 'd-ag', 'd-channel', 'd-pits', 'd-scoria', 'dp-ag', 'dp-channel', 'dp-pit', 'dp-scoria', 'dp-geo', 'dp-fit', 'pv-area', 'pv-type', 'pv-edge', 'pv-size', 'pv-custom-size', 'pv-sand', 'pv-base', 'pvp-concrete', 'pvp-travertine', 'pvp-bluestone', 'pvp-porcelain', 'pvp-brick', 'pvp-sand', 'pvp-base', 'pvp-edge', 'pvp-grout', 'dk-length', 'dk-width', 'dk-type', 'dk-height', 'dk-rail', 'dkp-merbau', 'dkp-pine', 'dkp-composite', 'dkp-frame', 'dkp-post', 'dkp-conc', 'dkp-fix', 'dkp-rail', 'pw-length', 'pw-width', 'pw-type', 'pw-depth', 'pwp-gravel', 'pwp-stepping', 'pwp-dg', 'pwp-bark', 'pwp-weed', 'pwp-edge', 'pg-length', 'pg-width', 'pg-height', 'pg-type', 'pg-roof', 'pgp-post', 'pgp-beam', 'pgp-rafter', 'pgp-conc', 'pgp-fix', 'pgp-poly', 'pgp-cb', 'ex-area', 'ex-depth', 'ex-days', 'ex-remove', 'ex-access', 'exp-bobcat', 'exp-truck', 'exp-tip', 'ag-area', 'ag-type', 'ag-base', 'ag-infill', 'agp-standard', 'agp-premium', 'agp-luxury', 'agp-base', 'agp-weed', 'agp-infill', 'agp-tape', 'agp-nails', 'st-count', 'st-width', 'st-type', 'st-riser', 'stp-sleeper', 'stp-concrete', 'stp-stone', 'stp-brick', 'stp-fix', 'stp-rock', 'lt-spike', 'lt-path', 'lt-wall', 'lt-cable', 'ltp-spike', 'ltp-path', 'ltp-wall', 'ltp-cable', 'ltp-trans', 'ltp-conn', 'bin-qty', 'bin-size', 'bin-custom', 'binp-rate', 'binp-delivery', 'bl-length', 'bl-height', 'bl-skin', 'bl-bricktype', 'bl-pattern', 'bl-returns', 'bl-mortar', 'bl-ties', 'blp-common', 'blp-face', 'blp-recycled', 'blp-besser', 'blp-mortar', 'blp-ties', 'ft-length', 'ft-width', 'ft-depth', 'ft-pads', 'ft-padsize', 'ft-paddepth', 'ft-reo', 'ftp-concrete', 'ftp-reo', 'ftp-mesh', 'ftp-form'];
+
+function saveCalcInputs() {
+  var state = {};
+  CALC_INPUT_IDS.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) state[id] = el.value;
+  });
+  // Also save plants and labour workers
+  state['_plants'] = JSON.parse(JSON.stringify(plants));
+  state['_labourWorkers'] = JSON.parse(JSON.stringify(labourWorkers));
+  return state;
+}
+
+function restoreCalcInputs(state) {
+  if (!state) return;
+  CALC_INPUT_IDS.forEach(function(id) {
+    if (state[id] !== undefined) {
+      var el = document.getElementById(id);
+      if (el) el.value = state[id];
+    }
+  });
+  // Restore plants
+  if (state['_plants']) {
+    plants = state['_plants'];
+    renderPlants();
+  }
+  // Restore labour workers
+  if (state['_labourWorkers']) {
+    labourWorkers = state['_labourWorkers'];
+    renderLabourWorkers();
+  }
+  // Re-run all calculators to restore results
+  calcQuick();
+  calcConcrete();
+  calcGarden();
+  calcIrrigation();
+  calcRetaining();
+  calcTurf();
+  calcFencing();
+  calcPlanting();
+  calcDrainage();
+  calcPaving();
+  calcDecking();
+  calcPathway();
+  calcPergola();
+  calcExcavation();
+  calcArtificial();
+  calcSteps();
+  calcLighting();
+  calcBin();
+  calcBricklaying();
+  calcFootings();
+  calcLabour();
+  // Handle special cases
+  paverSizeChange();
+  if (typeof irrigationJobType === 'function') irrigationJobType();
 }
 
 // ==================== INIT ====================
