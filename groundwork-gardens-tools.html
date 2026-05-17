@@ -2236,12 +2236,6 @@ function generatePDF() {
       doc.setFont('helvetica','bold'); doc.text(fmt(deposit), pw-margin-4, y+6.5, {align:'right'}); y+=16;
     }
 
-    // Signature
-    if (y > 255) { doc.addPage(); y = 15; }
-    doc.setDrawColor(180,180,180); doc.setLineWidth(0.3); doc.line(margin, y, margin+70, y); doc.line(pw-margin-70, y, pw-margin, y);
-    doc.setFontSize(8); doc.setTextColor(130,130,130); doc.setFont('helvetica','normal');
-    doc.text('Client signature', margin, y+4); doc.text('Date', margin+45, y+4); doc.text('Authorised by Groundwork Gardens', pw-margin-70, y+4); y+=14;
-
    // Accept Quote button/link
     if (y > 245) { doc.addPage(); y = 15; }
     var encodedClient = encodeURIComponent(clientName);
@@ -2252,7 +2246,7 @@ function generatePDF() {
     var acceptUrl = 'https://www.groundworkgardens.com.au/accept-your-quote/?quote=' + encodeURIComponent(quoteNum) + '&client=' + encodedClient + '&job=' + encodedJob + '&amount=' + totalRaw + '&date=' + issDate + '&valid=' + valDate;
     doc.setFillColor(61,107,52);
     doc.roundedRect(margin, y, cw, 14, 2, 2, 'F');
-    doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
+    doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.setTextColor(255,255,255);
    doc.textWithLink('ACCEPT THIS QUOTE ONLINE', pw/2, y+9, { url: acceptUrl, align: 'center' });
     doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(200,230,200);
     doc.text('Click to review terms & conditions and confirm your acceptance', pw/2, y+13, { align: 'center' });
