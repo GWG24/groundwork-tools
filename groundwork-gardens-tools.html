@@ -215,6 +215,7 @@
     <div class="pill active" onclick="togglePill(this,'steps')">🪜 Steps</div>
     <div class="pill active" onclick="togglePill(this,'lighting')">💡 Garden Lighting</div>
     <div class="pill active" onclick="togglePill(this,'bin')">🗑️ Bin / Waste</div>
+    <div class="pill active" onclick="togglePill(this,'labour')">👷 Extra Labour</div>
   </div>
 </div>
 
@@ -883,6 +884,21 @@
         <div class="price-field"><label>Delivery fee ($)</label><input type="number" id="binp-delivery" value="60" oninput="calcBin()"></div>
       </div>
       <div class="result-list" id="res-bin"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXTRA LABOUR -->
+<div class="section" id="sec-labour">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('labour')">
+      <div class="job-icon">👷</div><div class="job-title">Extra Labour</div>
+      <div class="job-badge" id="badge-labour"></div><div class="job-toggle open" id="toggle-labour">▾</div>
+    </div>
+    <div class="job-body open" id="body-labour">
+      <div id="labourWorkerList"></div>
+      <button class="add-btn" onclick="addLabourWorker()">+ Add Worker</button>
+      <div class="result-list" id="res-labour"></div>
     </div>
   </div>
 </div>
@@ -2467,6 +2483,130 @@ async function loadInvoiceById(id) {
     document.getElementById('loadInvoiceModal').classList.remove('show');
     showToast('✓ Invoice loaded!');
   } catch(e) { showToast('⚠ Could not load invoice'); console.error(e); }
+}
+
+// ==================== EXTRA LABOUR ====================
+var labourWorkers = [];
+
+var WORKER_TYPES = [
+  { label: '👷 Non-skilled Labourer', rate: 45 },
+  { label: '🔨 Skilled Labourer', rate: 65 },
+  { label: '🪵 Carpenter', rate: 95 },
+  { label: '🪨 Concreter', rate: 95 },
+  { label: '🌿 Horticulturalist', rate: 75 },
+  { label: '💧 Irrigation Technician', rate: 85 },
+  { label: '⚡ Electrician', rate: 110 },
+  { label: '🔧 Plumber', rate: 110 },
+  { label: '🚜 Bobcat Operator', rate: 120 },
+  { label: '🎨 Other', rate: 70 }
+];
+
+function addLabourWorker() {
+  labourWorkers.push({ type: 0, hours: 1, rate: WORKER_TYPES[0].rate });
+  renderLabourWorkers();
+  setTimeout(function() {
+    var selects = document.querySelectorAll('.labour-worker-select');
+    if (selects.length) selects[selects.length-1].focus();
+  }, 50);
+}
+
+function renderLabourWorkers() {
+  var el = document.getElementById('labourWorkerList');
+  if (!el) return;
+  el.innerHTML = '';
+  labourWorkers.forEach(function(w, i) {
+    var row = document.createElement('div');
+    row.style.cssText = 'background:#f7f9f6;border:0.5px solid #c5d4c0;border-radius:8px;padding:12px;margin-bottom:10px';
+
+    // Worker type select
+    var typeLabel = document.createElement('div');
+    typeLabel.style.cssText = 'font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px';
+    typeLabel.textContent = 'Worker Type';
+    var sel = document.createElement('select');
+    sel.className = 'labour-worker-select';
+    sel.style.cssText = 'width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-primary);font-family:Barlow,sans-serif;font-size:14px;padding:9px 11px;margin-bottom:10px;-webkit-appearance:none';
+    WORKER_TYPES.forEach(function(t, ti) {
+      var opt = document.createElement('option');
+      opt.value = ti;
+      opt.textContent = t.label;
+      if (ti === w.type) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.onchange = (function(idx) { return function() {
+      labourWorkers[idx].type = parseInt(this.value);
+      labourWorkers[idx].rate = WORKER_TYPES[parseInt(this.value)].rate;
+      renderLabourWorkers();
+      calcLabour();
+    }; })(i);
+
+    // Hours and rate row
+    var grid = document.createElement('div');
+    grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end';
+
+    // Hours
+    var hrsWrap = document.createElement('div');
+    var hrsLabel = document.createElement('div');
+    hrsLabel.style.cssText = 'font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px';
+    hrsLabel.textContent = 'Hours';
+    var hrsInp = document.createElement('input');
+    hrsInp.type = 'number'; hrsInp.min = '0'; hrsInp.step = '0.5';
+    hrsInp.value = w.hours;
+    hrsInp.style.cssText = 'background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-primary);font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:600;padding:8px 10px;width:100%';
+    hrsInp.oninput = (function(idx) { return function() { labourWorkers[idx].hours = parseFloat(this.value)||0; calcLabour(); }; })(i);
+    hrsWrap.appendChild(hrsLabel); hrsWrap.appendChild(hrsInp);
+
+    // Rate
+    var rateWrap = document.createElement('div');
+    var rateLabel = document.createElement('div');
+    rateLabel.style.cssText = 'font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px';
+    rateLabel.textContent = '$/hr';
+    var rateInp = document.createElement('input');
+    rateInp.type = 'number'; rateInp.min = '0';
+    rateInp.value = w.rate;
+    rateInp.style.cssText = 'background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-primary);font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:600;padding:8px 10px;width:100%';
+    rateInp.oninput = (function(idx) { return function() { labourWorkers[idx].rate = parseFloat(this.value)||0; calcLabour(); }; })(i);
+    rateWrap.appendChild(rateLabel); rateWrap.appendChild(rateInp);
+
+    // Total
+    var totalWrap = document.createElement('div');
+    var totalLabel = document.createElement('div');
+    totalLabel.style.cssText = 'font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px';
+    totalLabel.textContent = 'Total';
+    var totalVal = document.createElement('div');
+    totalVal.style.cssText = 'font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:700;color:var(--green-bright);padding:8px 0';
+    totalVal.textContent = fmt(w.hours * w.rate);
+    totalWrap.appendChild(totalLabel); totalWrap.appendChild(totalVal);
+
+    grid.appendChild(hrsWrap); grid.appendChild(rateWrap); grid.appendChild(totalWrap);
+
+    // Remove button
+    var removeBtn = document.createElement('button');
+    removeBtn.style.cssText = 'background:transparent;border:none;color:var(--text-secondary);font-size:12px;cursor:pointer;margin-top:8px;padding:4px 0;text-align:left';
+    removeBtn.textContent = '× Remove worker';
+    removeBtn.onclick = (function(idx) { return function() { labourWorkers.splice(idx,1); renderLabourWorkers(); calcLabour(); }; })(i);
+
+    row.appendChild(typeLabel);
+    row.appendChild(sel);
+    row.appendChild(grid);
+    row.appendChild(removeBtn);
+    el.appendChild(row);
+  });
+  calcLabour();
+}
+
+function calcLabour() {
+  if (labourWorkers.length === 0) { showResults('labour', []); return; }
+  var items = labourWorkers.filter(function(w) { return w.hours > 0; }).map(function(w) {
+    return {
+      name: WORKER_TYPES[w.type].label,
+      qty: w.hours + ' hrs @ $' + w.rate + '/hr',
+      qty_num: w.hours,
+      total: w.hours * w.rate
+    };
+  });
+  if (items.length === 0) { showResults('labour', []); return; }
+  var totalHrs = labourWorkers.reduce(function(s,w) { return s + w.hours; }, 0);
+  showResults('labour', items, totalHrs, totalHrs);
 }
 
 // ==================== MATERIALS PRICE LIST ====================
