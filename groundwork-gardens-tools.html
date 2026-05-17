@@ -2242,6 +2242,22 @@ function generatePDF() {
     doc.setFontSize(8); doc.setTextColor(130,130,130); doc.setFont('helvetica','normal');
     doc.text('Client signature', margin, y+4); doc.text('Date', margin+45, y+4); doc.text('Authorised by Groundwork Gardens', pw-margin-70, y+4); y+=14;
 
+   // Accept Quote button/link
+    if (y > 245) { doc.addPage(); y = 15; }
+    var encodedClient = encodeURIComponent(clientName);
+    var encodedJob = encodeURIComponent(jobTitle);
+    var totalRaw = Math.round(total * 100) / 100;
+    var issDate = document.getElementById('issueDate').value || '';
+    var valDate = document.getElementById('validDate').value || '';
+    var acceptUrl = 'https://www.groundworkgardens.com.au/accept-your-quote/?quote=' + encodeURIComponent(quoteNum) + '&client=' + encodedClient + '&job=' + encodedJob + '&amount=' + totalRaw + '&date=' + issDate + '&valid=' + valDate;
+    doc.setFillColor(61,107,52);
+    doc.roundedRect(margin, y, cw, 14, 2, 2, 'F');
+    doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
+    doc.textWithLink('\u2714  ACCEPT THIS QUOTE ONLINE', pw/2, y+9, { url: acceptUrl, align: 'center' });
+    doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(200,230,200);
+    doc.text('Click to review terms & conditions and confirm your acceptance', pw/2, y+13, { align: 'center' });
+    y += 20;
+
     // Footer
     if (y > 270) { doc.addPage(); y = 15; }
     doc.setDrawColor(220,220,220); doc.line(margin, y, pw-margin, y); y+=5;
