@@ -2253,7 +2253,7 @@ function generatePDF() {
     doc.setFillColor(61,107,52);
     doc.roundedRect(margin, y, cw, 14, 2, 2, 'F');
     doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
-    doc.textWithLink('\u2714  ACCEPT THIS QUOTE ONLINE', pw/2, y+9, { url: acceptUrl, align: 'center' });
+   doc.textWithLink('ACCEPT THIS QUOTE ONLINE', pw/2, y+9, { url: acceptUrl, align: 'center' });
     doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(200,230,200);
     doc.text('Click to review terms & conditions and confirm your acceptance', pw/2, y+13, { align: 'center' });
     y += 20;
