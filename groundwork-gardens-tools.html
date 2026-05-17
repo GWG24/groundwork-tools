@@ -216,6 +216,8 @@
     <div class="pill active" onclick="togglePill(this,'lighting')">💡 Garden Lighting</div>
     <div class="pill active" onclick="togglePill(this,'bin')">🗑️ Bin / Waste</div>
     <div class="pill active" onclick="togglePill(this,'labour')">👷 Extra Labour</div>
+    <div class="pill active" onclick="togglePill(this,'bricklaying')">🧱 Bricklaying</div>
+    <div class="pill active" onclick="togglePill(this,'footings')">🏗️ Concrete Footings</div>
   </div>
 </div>
 
@@ -884,6 +886,114 @@
         <div class="price-field"><label>Delivery fee ($)</label><input type="number" id="binp-delivery" value="60" oninput="calcBin()"></div>
       </div>
       <div class="result-list" id="res-bin"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BRICKLAYING -->
+<div class="section" id="sec-bricklaying">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('bricklaying')">
+      <div class="job-icon">🧱</div><div class="job-title">Bricklaying</div>
+      <div class="job-badge" id="badge-bricklaying"></div><div class="job-toggle open" id="toggle-bricklaying">▾</div>
+    </div>
+    <div class="job-body open" id="body-bricklaying">
+      <div class="input-grid">
+        <div class="field"><label>Length (lm)</label><input type="number" id="bl-length" placeholder="0" oninput="calcBricklaying()"></div>
+        <div class="field"><label>Height (m)</label><input type="number" id="bl-height" placeholder="0" oninput="calcBricklaying()"></div>
+        <div class="field"><label>Skin type</label>
+          <select id="bl-skin" onchange="calcBricklaying()">
+            <option value="single">Single skin</option>
+            <option value="double">Double skin</option>
+          </select>
+        </div>
+        <div class="field"><label>Brick type</label>
+          <select id="bl-bricktype" onchange="calcBricklaying()">
+            <option value="common">Common brick</option>
+            <option value="face">Face brick</option>
+            <option value="recycled">Recycled brick</option>
+            <option value="besser">Besser block</option>
+          </select>
+        </div>
+        <div class="field"><label>Laying pattern</label>
+          <select id="bl-pattern" onchange="calcBricklaying()">
+            <option value="stretcher">Stretcher (standard)</option>
+            <option value="soldier">Soldier (upright side by side)</option>
+            <option value="header">Header (short end out)</option>
+            <option value="sailor">Sailor (upright face out)</option>
+          </select>
+        </div>
+        <div class="field"><label>No. of returns</label><input type="number" id="bl-returns" value="0" min="0" oninput="calcBricklaying()"></div>
+      </div>
+      <div class="input-grid">
+        <div class="field"><label>Mortar included?</label>
+          <select id="bl-mortar" onchange="calcBricklaying()">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+        <div class="field"><label>Wall ties needed?</label>
+          <select id="bl-ties" onchange="calcBricklaying()">
+            <option value="no">No</option>
+            <option value="yes">Yes (double skin)</option>
+          </select>
+        </div>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('blp')">⚙ Edit material prices <span id="blp-arrow">▾</span></div>
+      <div class="prices-grid" id="blp">
+        <div class="price-field"><label>Common brick ($/1000)</label><input type="number" id="blp-common" value="850" oninput="calcBricklaying()"></div>
+        <div class="price-field"><label>Face brick ($/1000)</label><input type="number" id="blp-face" value="1200" oninput="calcBricklaying()"></div>
+        <div class="price-field"><label>Recycled brick ($/1000)</label><input type="number" id="blp-recycled" value="950" oninput="calcBricklaying()"></div>
+        <div class="price-field"><label>Besser block ($/unit)</label><input type="number" id="blp-besser" value="4.50" oninput="calcBricklaying()"></div>
+        <div class="price-field"><label>Mortar ($/bag)</label><input type="number" id="blp-mortar" value="12" oninput="calcBricklaying()"></div>
+        <div class="price-field"><label>Wall ties ($/100)</label><input type="number" id="blp-ties" value="18" oninput="calcBricklaying()"></div>
+      </div>
+      <div class="result-list" id="res-bricklaying"></div>
+      <div class="hours-estimate" id="hrs-bricklaying" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-bricklaying-val">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONCRETE FOOTINGS -->
+<div class="section" id="sec-footings">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('footings')">
+      <div class="job-icon">🏗️</div><div class="job-title">Concrete Footings</div>
+      <div class="job-badge" id="badge-footings"></div><div class="job-toggle open" id="toggle-footings">▾</div>
+    </div>
+    <div class="job-body open" id="body-footings">
+      <div class="input-grid">
+        <div class="field"><label>Length (lm)</label><input type="number" id="ft-length" placeholder="0" oninput="calcFootings()"></div>
+        <div class="field"><label>Width (mm)</label><input type="number" id="ft-width" value="300" oninput="calcFootings()"></div>
+        <div class="field"><label>Depth (mm)</label><input type="number" id="ft-depth" value="400" oninput="calcFootings()"></div>
+        <div class="field"><label>No. of pad footings</label><input type="number" id="ft-pads" value="0" min="0" oninput="calcFootings()"></div>
+        <div class="field"><label>Pad size (mm x mm)</label>
+          <select id="ft-padsize" onchange="calcFootings()">
+            <option value="0.09">300×300mm</option>
+            <option value="0.16">400×400mm</option>
+            <option value="0.25">500×500mm</option>
+            <option value="0.36">600×600mm</option>
+          </select>
+        </div>
+        <div class="field"><label>Pad depth (mm)</label><input type="number" id="ft-paddepth" value="300" oninput="calcFootings()"></div>
+      </div>
+      <div class="field" style="margin-bottom:12px"><label>Reinforcement</label>
+        <select id="ft-reo" onchange="calcFootings()">
+          <option value="none">None</option>
+          <option value="reobar">Reo bar (N12)</option>
+          <option value="mesh">Mesh (SL72)</option>
+          <option value="both">Reo bar + mesh</option>
+        </select>
+      </div>
+      <div class="prices-toggle" onclick="togglePrices('ftp')">⚙ Edit material prices <span id="ftp-arrow">▾</span></div>
+      <div class="prices-grid" id="ftp">
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="ftp-concrete" value="230" oninput="calcFootings()"></div>
+        <div class="price-field"><label>Reo bar N12 ($/lm)</label><input type="number" id="ftp-reo" value="4.50" oninput="calcFootings()"></div>
+        <div class="price-field"><label>Mesh SL72 ($/sheet)</label><input type="number" id="ftp-mesh" value="28" oninput="calcFootings()"></div>
+        <div class="price-field"><label>Formwork ($/lm)</label><input type="number" id="ftp-form" value="4" oninput="calcFootings()"></div>
+      </div>
+      <div class="result-list" id="res-footings"></div>
+      <div class="hours-estimate" id="hrs-footings" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-footings-val">—</span></div>
     </div>
   </div>
 </div>
@@ -2483,6 +2593,119 @@ async function loadInvoiceById(id) {
     document.getElementById('loadInvoiceModal').classList.remove('show');
     showToast('✓ Invoice loaded!');
   } catch(e) { showToast('⚠ Could not load invoice'); console.error(e); }
+}
+
+// ==================== BRICKLAYING ====================
+function calcBricklaying() {
+  var len = v('bl-length'), h = v('bl-height');
+  if (len <= 0) { showResults('bricklaying', []); return; }
+
+  var skin = document.getElementById('bl-skin').value;
+  var bricktype = document.getElementById('bl-bricktype').value;
+  var pattern = document.getElementById('bl-pattern').value;
+  var returns = v('bl-returns');
+  var hasmortar = document.getElementById('bl-mortar').value === 'yes';
+  var hasties = document.getElementById('bl-ties').value === 'yes';
+
+  // Brick count per m² based on pattern
+  // Standard brick 230x110x76mm
+  var bricksPerM2 = 50; // stretcher
+  if (pattern === 'soldier') bricksPerM2 = 60; // standing upright
+  if (pattern === 'header') bricksPerM2 = 45;
+  if (pattern === 'sailor') bricksPerM2 = 60;
+  if (skin === 'double') bricksPerM2 *= 2;
+
+  var wallHeight = h > 0 ? h : 0.2; // default 200mm for garden edging
+  var area = len * wallHeight;
+  var returnArea = returns > 0 ? returns * wallHeight * 0.3 : 0;
+  var totalArea = area + returnArea;
+
+  var totalBricks = Math.ceil(totalArea * bricksPerM2 * 1.05); // 5% waste
+  var mortarBags = Math.ceil(totalArea * 0.5); // approx bags per m²
+
+  var brickPrices = {
+    common: v('blp-common') / 1000,
+    face: v('blp-face') / 1000,
+    recycled: v('blp-recycled') / 1000,
+    besser: v('blp-besser')
+  };
+  var brickNames = {
+    common: 'Common bricks',
+    face: 'Face bricks',
+    recycled: 'Recycled bricks',
+    besser: 'Besser blocks'
+  };
+
+  var patternNames = {
+    stretcher: 'stretcher bond',
+    soldier: 'soldier course',
+    header: 'header bond',
+    sailor: 'sailor course'
+  };
+
+  var items = [];
+  if (bricktype === 'besser') {
+    var besserCount = Math.ceil(len / 0.4) * Math.ceil(wallHeight / 0.2);
+    items.push({ name: 'Besser blocks (' + patternNames[pattern] + ')', qty: besserCount + ' units', total: besserCount * v('blp-besser'), note: 'incl. 5% waste' });
+  } else {
+    items.push({ name: brickNames[bricktype] + ' (' + patternNames[pattern] + ')', qty: totalBricks + ' bricks', total: totalBricks * brickPrices[bricktype], note: 'incl. 5% waste' });
+  }
+  if (hasmortar) items.push({ name: 'Mortar (pre-mix bags)', qty: mortarBags + ' bags', total: mortarBags * v('blp-mortar') });
+  if (hasties && skin === 'double') {
+    var ties = Math.ceil(totalArea * 5);
+    items.push({ name: 'Wall ties', qty: ties + ' units', total: Math.ceil(ties/100) * v('blp-ties') });
+  }
+  if (returns > 0) items.push({ name: 'Returns', qty: returns + ' corner' + (returns > 1 ? 's' : ''), total: 0, note: 'included in brick count' });
+
+  var labourHrsMin = Math.round(totalArea * (skin === 'double' ? 4 : 2.5));
+  var labourHrsMax = Math.round(totalArea * (skin === 'double' ? 6 : 4));
+
+  showResults('bricklaying', items, labourHrsMin, labourHrsMax);
+}
+
+// ==================== CONCRETE FOOTINGS ====================
+function calcFootings() {
+  var len = v('ft-length');
+  var width = v('ft-width') / 1000;
+  var depth = v('ft-depth') / 1000;
+  var pads = v('ft-pads');
+  var padDepth = v('ft-paddepth') / 1000;
+  var padSize = parseFloat(document.getElementById('ft-padsize').value) || 0.09;
+  var reo = document.getElementById('ft-reo').value;
+
+  if (len <= 0 && pads <= 0) { showResults('footings', []); return; }
+
+  var items = [];
+  var totalConcreteM3 = 0;
+
+  // Strip footing
+  if (len > 0) {
+    var stripM3 = Math.ceil(len * width * depth * 1.1 * 100) / 100;
+    totalConcreteM3 += stripM3;
+    items.push({ name: 'Strip footing concrete', qty: stripM3 + ' m³', total: stripM3 * v('ftp-concrete'), note: len + 'lm × ' + (width*1000) + 'mm × ' + (depth*1000) + 'mm' });
+    // Formwork
+    items.push({ name: 'Formwork', qty: (len * 2).toFixed(1) + ' lm', total: len * 2 * v('ftp-form') });
+  }
+
+  // Pad footings
+  if (pads > 0) {
+    var padM3 = Math.ceil(pads * padSize * padDepth * 1.1 * 100) / 100;
+    totalConcreteM3 += padM3;
+    items.push({ name: 'Pad footings concrete', qty: padM3 + ' m³', total: padM3 * v('ftp-concrete'), note: pads + ' pads' });
+  }
+
+  // Reinforcement
+  if (reo === 'reobar' || reo === 'both') {
+    var reoLen = len > 0 ? len * 3 : pads * 4; // 3 bars for strip, 4 per pad
+    items.push({ name: 'Reo bar N12', qty: Math.ceil(reoLen) + ' lm', total: Math.ceil(reoLen) * v('ftp-reo') });
+  }
+  if (reo === 'mesh' || reo === 'both') {
+    var meshSheets = Math.ceil((len * width) / 14.4) + 1;
+    items.push({ name: 'Mesh SL72', qty: meshSheets + ' sheets', total: meshSheets * v('ftp-mesh') });
+  }
+
+  var labourHrs = Math.round((len * 2 + pads * 1.5));
+  showResults('footings', items, labourHrs, Math.round(labourHrs * 1.4));
 }
 
 // ==================== EXTRA LABOUR ====================
