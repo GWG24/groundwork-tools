@@ -1130,11 +1130,38 @@
   </div>
   <button onclick="sendToInvoice()" style="width:100%;background:transparent;border:1px solid var(--orange);border-radius:6px;color:var(--orange);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase;margin-bottom:10px">🧾 Send to Invoice</button>
   <button class="gen-btn" id="genBtn" onclick="generatePDF()">⬇ Download Quote PDF</button>
+  <button onclick="openEmailModal()" style="width:100%;background:transparent;border:2px solid #1a73e8;border-radius:6px;color:#1a73e8;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:14px;text-transform:uppercase;margin-top:8px;">📧 Send Quote Email</button>
   <div id="statusMsg"></div>
   <div class="gap"></div>
 </div>
 
-<!-- Load Quote Modal -->
+<!-- Quote Email Modal -->
+<div class="overlay" id="emailModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title">📧 Send Quote Email <button class="modal-close" onclick="document.getElementById('emailModal').classList.remove('show')">×</button></div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;background:#f0f7ee;border:1px solid #c5d4c0;border-radius:6px;padding:10px 14px;">This opens Gmail with your quote pre-filled. Review, attach your PDF, and click Send.</div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:5px">To (Client Email)</div>
+      <input type="email" id="emailTo" placeholder="client@email.com" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:14px;padding:9px 11px;background-image:none;">
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:5px">Subject</div>
+      <input type="text" id="emailSubject" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:14px;padding:9px 11px;background-image:none;">
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Email Body</div>
+        <button onclick="resetEmailTemplate()" style="background:none;border:none;font-size:11px;color:var(--cream-dim);cursor:pointer;letter-spacing:1px;text-transform:uppercase;">↺ Reset to default</button>
+      </div>
+      <textarea id="emailBody" rows="12" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:13px;padding:9px 11px;resize:vertical;line-height:1.6;"></textarea>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="saveEmailTemplate()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:12px;text-transform:uppercase">💾 Save Template</button>
+      <button onclick="sendQuoteEmail()" style="flex:2;background:#1a73e8;border:none;border-radius:6px;color:white;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:12px;text-transform:uppercase">📧 Open in Gmail</button>
+    </div>
+  </div>
+</div>
+  <!-- Load Quote Modal -->
 <div class="overlay" id="loadQuoteModal">
   <div class="modal">
     <div class="modal-title">Saved Quotes <button class="modal-close" onclick="document.getElementById('loadQuoteModal').classList.remove('show')">×</button></div>
@@ -1145,7 +1172,33 @@
 
 </div><!-- end tab-quote -->
 
-<!-- Load Invoice Modal -->
+<!-- Invoice Email Modal -->
+<div class="overlay" id="invEmailModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title">📧 Send Invoice Email <button class="modal-close" onclick="document.getElementById('invEmailModal').classList.remove('show')">×</button></div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;background:#f0f7ee;border:1px solid #c5d4c0;border-radius:6px;padding:10px 14px;">This opens Gmail with your invoice pre-filled. Review, attach your PDF, and click Send.</div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:5px">To (Client Email)</div>
+      <input type="email" id="invEmailTo" placeholder="client@email.com" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:14px;padding:9px 11px;background-image:none;">
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:5px">Subject</div>
+      <input type="text" id="invEmailSubject" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:14px;padding:9px 11px;background-image:none;">
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Email Body</div>
+        <button onclick="resetInvEmailTemplate()" style="background:none;border:none;font-size:11px;color:var(--cream-dim);cursor:pointer;letter-spacing:1px;text-transform:uppercase;">↺ Reset to default</button>
+      </div>
+      <textarea id="invEmailBody" rows="12" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:13px;padding:9px 11px;resize:vertical;line-height:1.6;"></textarea>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="saveInvEmailTemplate()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:12px;text-transform:uppercase">💾 Save Template</button>
+      <button onclick="sendInvoiceEmail()" style="flex:2;background:#1a73e8;border:none;border-radius:6px;color:white;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:12px;text-transform:uppercase">📧 Open in Gmail</button>
+    </div>
+  </div>
+</div>
+  <!-- Load Invoice Modal -->
 <div class="overlay" id="loadInvoiceModal">
   <div class="modal">
     <div class="modal-title">Saved Invoices <button class="modal-close" onclick="document.getElementById('loadInvoiceModal').classList.remove('show')">×</button></div>
@@ -1248,6 +1301,7 @@
     <button onclick="showLoadInvoices()" style="flex:1;background:transparent;border:1px solid #2e6da4;border-radius:6px;color:#4a90d9;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">📂 Load Invoice</button>
   </div>
   <button class="gen-btn" onclick="generateInvoicePDF()">⬇ Download Invoice PDF</button>
+  <button onclick="openInvEmailModal()" style="width:100%;background:transparent;border:2px solid #1a73e8;border-radius:6px;color:#1a73e8;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:14px;text-transform:uppercase;margin-top:8px;">📧 Send Invoice Email</button>
   <div id="inv-status-msg"></div>
   <div class="gap"></div>
 </div>
@@ -3184,7 +3238,129 @@ function restoreCalcInputs(state) {
   if (typeof irrigationJobType === 'function') irrigationJobType();
 }
 
-// ==================== INIT ====================
+// ==================== QUOTE EMAIL TEMPLATE ====================
+var DEFAULT_EMAIL_SUBJECT = 'Your Quote from Groundwork Gardens — Quote #{quoteNum}';
+var DEFAULT_EMAIL_BODY = 'Hi {clientName},\n\nThank you for the opportunity to quote on your project.\n\nPlease find your quote attached (Quote #{quoteNum}) for {jobTitle}.\n\nQuote Total: {total} (inc. GST)\nQuote Valid Until: {validDate}\n\nTo formally accept this quote online and review our Terms & Conditions, please click the link below:\n\n{acceptLink}\n\nIf you have any questions or would like to discuss anything, please don\'t hesitate to call me on 0408 165 409 or reply to this email.\n\nLooking forward to working with you.\n\nKind regards,\nMarcus Toscano\nGroundwork Gardens\n0408 165 409\nwww.groundworkgardens.com.au';
+
+function getEmailTemplate() {
+  var saved = localStorage.getItem('gg_email_template');
+  if (saved) { try { return JSON.parse(saved); } catch(e) {} }
+  return { subject: DEFAULT_EMAIL_SUBJECT, body: DEFAULT_EMAIL_BODY };
+}
+function saveEmailTemplate() {
+  localStorage.setItem('gg_email_template', JSON.stringify({ subject: document.getElementById('emailSubject').value, body: document.getElementById('emailBody').value }));
+  showToast('✓ Email template saved!');
+}
+function resetEmailTemplate() {
+  if (!confirm('Reset email to default template?')) return;
+  localStorage.removeItem('gg_email_template');
+  populateEmailModal();
+  showToast('✓ Reset to default');
+}
+function buildAcceptLink(quoteNum, clientName, jobTitle, totalRaw, issueDate, validDate) {
+  return 'https://www.groundworkgardens.com.au/accept-your-quote/?quote=' + encodeURIComponent(quoteNum||'') + '&client=' + encodeURIComponent(clientName||'') + '&job=' + encodeURIComponent(jobTitle||'') + '&amount=' + encodeURIComponent(totalRaw||'0') + '&date=' + encodeURIComponent(issueDate||'') + '&valid=' + encodeURIComponent(validDate||'');
+}
+function populateEmailModal() {
+  var tmpl = getEmailTemplate();
+  var clientName = document.getElementById('clientName').value || 'there';
+  var quoteNum = document.getElementById('quoteNum').value || '001';
+  var jobTitle = document.getElementById('jobTitle').value || 'Landscaping Works';
+  var issueDate = document.getElementById('issueDate').value || '';
+  var validDate = document.getElementById('validDate').value || '';
+  var rate = getRate();
+  var hours = parseFloat(document.getElementById('hours').value)||0;
+  var matTotal = materials.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
+  var markup = document.getElementById('markupToggle').checked ? matTotal*0.15 : 0;
+  var subtotal = (rate*hours) + matTotal + markup;
+  var total = subtotal * 1.10;
+  var totalFormatted = fmt(total);
+  var totalRaw = Math.round(total * 100) / 100;
+  var acceptLink = buildAcceptLink(quoteNum, clientName, jobTitle, totalRaw, issueDate, validDate);
+  function fill(str) {
+    return str.replace(/\{clientName\}/g, clientName).replace(/\{quoteNum\}/g, quoteNum).replace(/\{jobTitle\}/g, jobTitle).replace(/\{total\}/g, totalFormatted).replace(/\{validDate\}/g, validDate).replace(/\{issueDate\}/g, issueDate).replace(/\{acceptLink\}/g, acceptLink);
+  }
+  document.getElementById('emailSubject').value = fill(tmpl.subject);
+  document.getElementById('emailBody').value = fill(tmpl.body);
+}
+function openEmailModal() {
+  populateEmailModal();
+  document.getElementById('emailTo').value = '';
+  document.getElementById('emailTo').style.border = '0.5px solid #c5d4c0';
+  document.getElementById('emailModal').classList.add('show');
+  setTimeout(function() { document.getElementById('emailTo').focus(); }, 150);
+}
+function sendQuoteEmail() {
+  var to = document.getElementById('emailTo').value.trim();
+  var subject = document.getElementById('emailSubject').value;
+  var body = document.getElementById('emailBody').value;
+  if (!to) {
+    document.getElementById('emailTo').style.border = '1.5px solid #c0392b';
+    document.getElementById('emailTo').focus();
+    setTimeout(function() { document.getElementById('emailTo').style.border = '0.5px solid #c5d4c0'; }, 2500);
+    showToast('⚠ Please enter the client email address');
+    return;
+  }
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
+  document.getElementById('emailModal').classList.remove('show');
+  showToast('✓ Gmail opened — attach your PDF and send!');
+}
+
+// ==================== INVOICE EMAIL TEMPLATE ====================
+var DEFAULT_INV_EMAIL_SUBJECT = 'Invoice from Groundwork Gardens — {invNum}';
+var DEFAULT_INV_EMAIL_BODY = 'Hi {clientName},\n\nPlease find attached your invoice ({invNum}) for {jobDesc}.\n\nInvoice Total: {total} (inc. GST)\nPayment Due: {dueDate}\n\nPayment Details:\nAcc Name: Marcus Toscano\nBSB: 633 000\nAccount: 222 994 287\n\nPlease use your invoice number {invNum} as the payment reference.\n\nIf you have any questions, please don\'t hesitate to call me on 0408 165 409 or reply to this email.\n\nThank you for choosing Groundwork Gardens.\n\nKind regards,\nMarcus Toscano\nGroundwork Gardens\n0408 165 409\nwww.groundworkgardens.com.au';
+
+function getInvEmailTemplate() {
+  var saved = localStorage.getItem('gg_inv_email_template');
+  if (saved) { try { return JSON.parse(saved); } catch(e) {} }
+  return { subject: DEFAULT_INV_EMAIL_SUBJECT, body: DEFAULT_INV_EMAIL_BODY };
+}
+function saveInvEmailTemplate() {
+  localStorage.setItem('gg_inv_email_template', JSON.stringify({ subject: document.getElementById('invEmailSubject').value, body: document.getElementById('invEmailBody').value }));
+  showToast('✓ Invoice email template saved!');
+}
+function resetInvEmailTemplate() {
+  if (!confirm('Reset invoice email to default template?')) return;
+  localStorage.removeItem('gg_inv_email_template');
+  populateInvEmailModal();
+  showToast('✓ Reset to default');
+}
+function populateInvEmailModal() {
+  var tmpl = getInvEmailTemplate();
+  var clientName = document.getElementById('inv-client').value || 'there';
+  var invNum = document.getElementById('inv-num').value || 'INV-001';
+  var jobDesc = document.getElementById('inv-desc').value || 'Landscaping Works';
+  var dueDate = document.getElementById('inv-due').value || '';
+  var subtotal = invItems.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
+  var totalFormatted = fmt(subtotal * 1.10);
+  function fill(str) {
+    return str.replace(/\{clientName\}/g, clientName).replace(/\{invNum\}/g, invNum).replace(/\{jobDesc\}/g, jobDesc).replace(/\{total\}/g, totalFormatted).replace(/\{dueDate\}/g, dueDate);
+  }
+  document.getElementById('invEmailSubject').value = fill(tmpl.subject);
+  document.getElementById('invEmailBody').value = fill(tmpl.body);
+}
+function openInvEmailModal() {
+  populateInvEmailModal();
+  document.getElementById('invEmailTo').value = '';
+  document.getElementById('invEmailTo').style.border = '0.5px solid #c5d4c0';
+  document.getElementById('invEmailModal').classList.add('show');
+  setTimeout(function() { document.getElementById('invEmailTo').focus(); }, 150);
+}
+function sendInvoiceEmail() {
+  var to = document.getElementById('invEmailTo').value.trim();
+  var subject = document.getElementById('invEmailSubject').value;
+  var body = document.getElementById('invEmailBody').value;
+  if (!to) {
+    document.getElementById('invEmailTo').style.border = '1.5px solid #c0392b';
+    document.getElementById('invEmailTo').focus();
+    setTimeout(function() { document.getElementById('invEmailTo').style.border = '0.5px solid #c5d4c0'; }, 2500);
+    showToast('⚠ Please enter the client email address');
+    return;
+  }
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
+  document.getElementById('invEmailModal').classList.remove('show');
+  showToast('✓ Gmail opened — attach your PDF invoice and send!');
+}
+  // ==================== INIT ====================
 window.addEventListener('load', function() {
   // Set dates
   document.getElementById('issueDate').valueAsDate = new Date();
