@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groundwork Gardens — CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --paper: #f5f2eb;
+    --card: #fffdf8;
+    --accent: #2a6049;
+    --accent2: #d4500a;
+    --lead: #c8860a;
+    --border: #d8d3c8;
+    --muted: #7a7468;
+    --danger: #c0392b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Mono', monospace; background: var(--paper); color: var(--ink); min-height: 100vh; font-size: 13px; }
+  header { background: var(--ink); color: var(--paper); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  header h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+  header h1 span { color: #6dbe9a; }
+  .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+  .stat { background: var(--card); padding: 10px 16px; text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; line-height: 1; }
+  .stat-label { color: var(--muted); font-size: 10px; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-num.c { color: var(--accent); } .stat-num.l { color: var(--lead); } .stat-num.f { color: var(--accent2); }
+  .toolbar { padding: 12px 16px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--border); background: var(--card); flex-wrap: wrap; }
+  .search-wrap { flex: 1; min-width: 160px; position: relative; }
+  .search-wrap input { width: 100%; padding: 8px 10px 8px 32px; border: 1px solid var(--border); background: var(--paper); font-family: 'DM Mono', monospace; font-size: 12px; border-radius: 4px; color: var(--ink); }
+  .search-wrap::before { content: '⌕'; position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; pointer-events: none; }
+  .filter-tabs { display: flex; gap: 4px; }
+  .tab { padding: 7px 12px; border: 1px solid var(--border); background: var(--paper); font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; border-radius: 4px; color: var(--muted); transition: all 0.15s; }
+  .tab.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn { padding: 8px 14px; border: none; font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; border-radius: 4px; font-weight: 500; transition: opacity 0.15s; }
+  .btn:active { opacity: 0.7; } .btn-primary { background: var(--accent); color: white; } .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--ink); } .btn-sm { padding: 5px 10px; font-size: 11px; } .btn-danger { background: var(--danger); color: white; }
+  .list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+  .card:hover { border-color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+  .badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
+  .badge-customer { background: #d4f0e4; color: var(--accent); } .badge-lead { background: #fdefd3; color: var(--lead); } .badge-followup { background: #fde8df; color: var(--accent2); }
+  .card-detail { color: var(--muted); font-size: 11px; margin-bottom: 2px; }
+  .card-note { font-size: 11px; margin-top: 6px; color: var(--ink); border-top: 1px dashed var(--border); padding-top: 6px; }
+  .card-footer { display: flex; gap: 6px; margin-top: 10px; }
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; align-items: flex-end; justify-content: center; }
+  .overlay.open { display: flex; }
+  .modal { background: var(--card); width: 100%; max-width: 520px; border-radius: 12px 12px 0 0; padding: 20px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.25s ease; }
+  @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .field input, .field select, .field textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--border); background: var(--paper); font-family: 'DM Mono', monospace; font-size: 13px; border-radius: 4px; color: var(--ink); }
+  .field textarea { resize: vertical; min-height: 70px; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .modal-actions .btn { flex: 1; padding: 12px; }
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-icon { font-size: 36px; margin-bottom: 8px; }
+  .empty-text { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .sync-bar { background: #e8f5ee; border-bottom: 1px solid #b8ddc8; padding: 6px 16px; font-size: 11px; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+  .sync-bar.error { background: #fde8df; border-color: #f5c0a8; color: var(--accent2); }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+</style>
+</head>
+<body>
+<header>
+  <h1>GG <span>//</span> Customers & Leads</h1>
+  <button class="btn btn-primary btn-sm" onclick="openAdd()">+ Add</button>
+</header>
+<div class="sync-bar" id="syncBar"><div class="sync-dot"></div><span id="syncMsg">Connecting to cloud...</span></div>
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num c" id="stat-c">0</div><div class="stat-label">Customers</div></div>
+  <div class="stat"><div class="stat-num l" id="stat-l">0</div><div class="stat-label">Leads</div></div>
+  <div class="stat"><div class="stat-num f" id="stat-f">0</div><div class="stat-label">Follow-ups</div></div>
+</div>
+<div class="toolbar">
+  <div class="search-wrap"><input type="text" id="search" placeholder="Search name, phone, suburb..." oninput="render()"></div>
+  <div class="filter-tabs">
+    <button class="tab active" onclick="setTab('all',this)">All</button>
+    <button class="tab" onclick="setTab('customer',this)">Customers</button>
+    <button class="tab" onclick="setTab('lead',this)">Leads</button>
+    <button class="tab" onclick="setTab('followup',this)">Follow-up</button>
+  </div>
+</div>
+<div class="list" id="list"><div class="empty"><div class="empty-icon">🌿</div><div class="empty-text">Loading...</div></div></div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="overlay" id="addOverlay">
+  <div class="modal">
+    <div class="modal-title"><span id="modalTitle">New Contact</span><button class="close-btn" onclick="closeAdd()">✕</button></div>
+    <div class="field"><label>Full Name *</label><input id="f-name" type="text" placeholder="John Smith"></div>
+    <div class="field"><label>Type</label><select id="f-type"><option value="lead">Lead</option><option value="customer">Customer</option><option value="followup">Follow-up needed</option></select></div>
+    <div class="field"><label>Phone</label><input id="f-phone" type="tel" placeholder="04xx xxx xxx"></div>
+    <div class="field"><label>Email</label><input id="f-email" type="email" placeholder="john@email.com"></div>
+    <div class="field"><label>Suburb / Location</label><input id="f-suburb" type="text" placeholder="Suburb or area"></div>
+    <div class="field"><label>Job Type</label><input id="f-job" type="text" placeholder="e.g. Garden bed, Retaining wall"></div>
+    <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Details, source of lead, follow-up info..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAdd()">Cancel</button>
+      <button class="btn btn-primary" id="saveBtn" onclick="saveContact()">Save Contact</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detailOverlay">
+  <div class="modal" id="detailContent"></div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://vgegsaarmzuqpacisbrl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
+
+async function db(path, method='GET', body=null) {
+  const opts = { method, headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': method==='POST' ? 'return=representation' : '' }};
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, opts);
+  if (!res.ok) throw new Error(await res.text());
+  return method === 'DELETE' ? null : res.json();
+}
+
+let contacts = [];
+let currentTab = 'all';
+let editId = null;
+
+function setSyncStatus(ok, msg) {
+  const bar = document.getElementById('syncBar');
+  const msgEl = document.getElementById('syncMsg');
+  bar.className = 'sync-bar' + (ok ? '' : ' error');
+  msgEl.textContent = msg;
+}
+
+async function loadContacts() {
+  try {
+    contacts = await db('customers?order=created_at.desc');
+    setSyncStatus(true, '☁ Synced to Groundwork Gardens cloud');
+    updateStats();
+    render();
+  } catch(e) {
+    setSyncStatus(false, '⚠ Could not connect — check internet');
+    render();
+  }
+}
+
+function updateStats() {
+  document.getElementById('stat-c').textContent = contacts.filter(c=>c.type==='customer').length;
+  document.getElementById('stat-l').textContent = contacts.filter(c=>c.type==='lead').length;
+  document.getElementById('stat-f').textContent = contacts.filter(c=>c.type==='followup').length;
+}
+
+function setTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  let list = contacts.filter(c => {
+    const match = (c.name+c.phone+c.suburb+c.job+c.notes||'').toLowerCase().includes(q);
+    return currentTab === 'all' ? match : match && c.type === currentTab;
+  });
+  const el = document.getElementById('list');
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No contacts yet</div><div style="font-size:12px;color:var(--muted)">Tap + Add to get started</div></div>`;
+    return;
+  }
+  el.innerHTML = list.map(c => {
+    const bc = c.type==='customer'?'badge-customer':c.type==='followup'?'badge-followup':'badge-lead';
+    const bl = c.type==='customer'?'Customer':c.type==='followup'?'Follow-up':'Lead';
+    return `<div class="card" onclick="openDetail('${c.id}')">
+      <div class="card-top"><div class="card-name">${c.name}</div><span class="badge ${bc}">${bl}</span></div>
+      ${c.phone?`<div class="card-detail">📞 ${c.phone}</div>`:''}
+      ${c.suburb?`<div class="card-detail">📍 ${c.suburb}</div>`:''}
+      ${c.job?`<div class="card-detail">🌿 ${c.job}</div>`:''}
+      ${c.notes?`<div class="card-note">💬 ${c.notes.substring(0,80)}${c.notes.length>80?'...':''}</div>`:''}
+      <div class="card-footer">
+        ${c.phone?`<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="btn btn-ghost btn-sm">Call</a>`:''}
+        ${c.phone?`<a href="sms:${c.phone}" onclick="event.stopPropagation()" class="btn btn-ghost btn-sm">Text</a>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEdit('${c.id}')">Edit</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openAdd() {
+  editId = null;
+  document.getElementById('modalTitle').textContent = 'New Contact';
+  ['name','phone','email','suburb','job','notes'].forEach(f=>document.getElementById('f-'+f).value='');
+  document.getElementById('f-type').value = 'lead';
+  document.getElementById('addOverlay').classList.add('open');
+}
+
+function openEdit(id) {
+  const c = contacts.find(x=>x.id===id);
+  if (!c) return;
+  editId = id;
+  document.getElementById('modalTitle').textContent = 'Edit Contact';
+  document.getElementById('f-name').value = c.name||'';
+  document.getElementById('f-type').value = c.type||'lead';
+  document.getElementById('f-phone').value = c.phone||'';
+  document.getElementById('f-email').value = c.email||'';
+  document.getElementById('f-suburb').value = c.suburb||'';
+  document.getElementById('f-job').value = c.job||'';
+  document.getElementById('f-notes').value = c.notes||'';
+  document.getElementById('addOverlay').classList.add('open');
+}
+
+function closeAdd() { document.getElementById('addOverlay').classList.remove('open'); }
+
+async function saveContact() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('Name is required'); return; }
+  const btn = document.getElementById('saveBtn');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  const data = { name, type: document.getElementById('f-type').value, phone: document.getElementById('f-phone').value.trim(), email: document.getElementById('f-email').value.trim(), suburb: document.getElementById('f-suburb').value.trim(), job: document.getElementById('f-job').value.trim(), notes: document.getElementById('f-notes').value.trim() };
+  try {
+    if (editId) {
+      await db(`customers?id=eq.${editId}`, 'PATCH', data);
+    } else {
+      await db('customers', 'POST', data);
+    }
+    closeAdd();
+    await loadContacts();
+  } catch(e) {
+    alert('Save failed: ' + e.message);
+  }
+  btn.textContent = 'Save Contact'; btn.disabled = false;
+}
+
+function openDetail(id) {
+  const c = contacts.find(x=>x.id===id);
+  if (!c) return;
+  const bc = c.type==='customer'?'badge-customer':c.type==='followup'?'badge-followup':'badge-lead';
+  const bl = c.type==='customer'?'Customer':c.type==='followup'?'Follow-up':'Lead';
+  document.getElementById('detailContent').innerHTML = `
+    <div class="modal-title"><span>${c.name}</span><button class="close-btn" onclick="document.getElementById('detailOverlay').classList.remove('open')">✕</button></div>
+    <span class="badge ${bc}" style="margin-bottom:14px;display:inline-block">${bl}</span>
+    ${c.phone?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Phone</div><div style="font-weight:500">${c.phone}</div></div>`:''}
+    ${c.email?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Email</div><div style="font-weight:500">${c.email}</div></div>`:''}
+    ${c.suburb?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Location</div><div style="font-weight:500">${c.suburb}</div></div>`:''}
+    ${c.job?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Job Type</div><div style="font-weight:500">${c.job}</div></div>`:''}
+    ${c.notes?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Notes</div><div style="font-size:13px;line-height:1.5">${c.notes}</div></div>`:''}
+    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+      ${c.phone?`<a href="tel:${c.phone}" class="btn btn-primary" style="flex:1;text-align:center;text-decoration:none">📞 Call</a>`:''}
+      ${c.phone?`<a href="sms:${c.phone}" class="btn btn-ghost" style="flex:1;text-align:center;text-decoration:none">💬 Text</a>`:''}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-ghost" style="flex:1" onclick="document.getElementById('detailOverlay').classList.remove('open');openEdit('${c.id}')">Edit</button>
+      <button class="btn btn-danger" style="flex:1" onclick="deleteContact('${c.id}')">Delete</button>
+    </div>`;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+
+async function deleteContact(id) {
+  if (!confirm('Delete this contact?')) return;
+  try {
+    await db(`customers?id=eq.${id}`, 'DELETE');
+    document.getElementById('detailOverlay').classList.remove('open');
+    await loadContacts();
+  } catch(e) { alert('Delete failed: ' + e.message); }
+}
+
+loadContacts();
+</script>
+</body>
+</html>

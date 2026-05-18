@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groundwork Gardens — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #0f0f0f; --paper: #f0ede4; --card: #fffdf8; --green: #2a6049; --green-light: #6dbe9a; --orange: #d4500a; --gold: #c8860a; --border: #d8d3c8; --muted: #7a7468; --red: #c0392b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Mono', monospace; background: var(--paper); color: var(--ink); min-height: 100vh; font-size: 13px; }
+
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-bg {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(109,190,154,0.04) 20px, rgba(109,190,154,0.04) 40px);
+  }
+
+  .header-content { position: relative; z-index: 1; }
+
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 36px; height: 36px; background: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: -0.3px; }
+  .logo-text span { color: var(--green-light); }
+  .date-badge { font-size: 11px; color: rgba(255,255,255,0.5); }
+  .header-tagline { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  .sync-bar { background: #e8f5ee; border-bottom: 1px solid #b8ddc8; padding: 6px 16px; font-size: 11px; color: var(--green); display: flex; align-items: center; justify-content: space-between; }
+  .sync-bar.error { background: #fde8df; border-color: #f5c0a8; color: var(--orange); }
+  .sync-left { display: flex; align-items: center; gap: 6px; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .refresh-btn { background: none; border: none; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--green); cursor: pointer; text-decoration: underline; }
+
+  .section { padding: 14px 14px 0; }
+  .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+
+  /* MONEY GRID */
+  .money-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .money-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .money-card.full { grid-column: 1 / -1; }
+  .money-card.highlight { background: var(--green); border-color: var(--green); color: white; }
+  .money-card.highlight .money-label { color: rgba(255,255,255,0.7); }
+  .money-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 4px; }
+  .money-val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; line-height: 1; }
+  .money-val.red { color: var(--red); }
+  .money-val.gold { color: var(--gold); }
+  .money-sub { font-size: 10px; color: var(--muted); margin-top: 3px; }
+  .money-card.highlight .money-sub { color: rgba(255,255,255,0.6); }
+
+  /* INVOICE LIST */
+  .invoice-item { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .invoice-name { font-weight: 500; font-size: 13px; }
+  .invoice-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .invoice-right { text-align: right; }
+  .invoice-amt { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
+  .invoice-amt.unpaid { color: var(--red); }
+  .invoice-amt.paid { color: var(--green); }
+  .invoice-amt.partial { color: var(--gold); }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; }
+  .status-dot.unpaid { background: var(--red); }
+  .status-dot.paid { background: var(--green); }
+  .status-dot.partial { background: var(--gold); }
+
+  /* LEADS */
+  .lead-item { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+  .lead-name { font-weight: 500; }
+  .lead-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 500; }
+  .badge-lead { background: #fdefd3; color: var(--gold); }
+  .badge-followup { background: #fde8df; color: var(--orange); }
+
+  /* EXPENSE BAR */
+  .exp-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .exp-bar-label { font-size: 10px; color: var(--muted); width: 70px; text-align: right; flex-shrink: 0; }
+  .exp-bar-track { flex: 1; background: var(--border); border-radius: 2px; height: 8px; overflow: hidden; }
+  .exp-bar-fill { height: 100%; border-radius: 2px; }
+  .exp-bar-val { font-size: 10px; font-family: 'Syne', sans-serif; font-weight: 700; width: 55px; text-align: right; flex-shrink: 0; }
+
+  /* SHORTCUTS */
+  .shortcuts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 14px; }
+  .shortcut { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-decoration: none; color: var(--ink); display: flex; align-items: center; gap: 10px; transition: border-color 0.15s, box-shadow 0.15s; }
+  .shortcut:hover { border-color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .shortcut-icon { font-size: 22px; }
+  .shortcut-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; line-height: 1.2; }
+  .shortcut-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .empty-state { text-align: center; padding: 20px; color: var(--muted); font-size: 12px; }
+  .divider { height: 1px; background: var(--border); margin: 14px 14px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-bg"></div>
+  <div class="header-content">
+    <div class="header-top">
+      <div class="logo">
+        <div class="logo-icon">🌿</div>
+        <div class="logo-text">Groundwork <span>Gardens</span></div>
+      </div>
+      <div class="date-badge" id="todayDate"></div>
+    </div>
+    <div class="header-tagline">Business Dashboard</div>
+  </div>
+</header>
+
+<div class="sync-bar" id="syncBar">
+  <div class="sync-left"><div class="sync-dot"></div><span id="syncMsg">Loading your data...</span></div>
+  <button class="refresh-btn" onclick="loadAll()">Refresh</button>
+</div>
+
+<!-- MONEY THIS MONTH -->
+<div class="section">
+  <div class="section-title">💰 This Month</div>
+  <div class="money-grid">
+    <div class="money-card highlight">
+      <div class="money-label">Invoiced</div>
+      <div class="money-val" id="m-invoiced">—</div>
+      <div class="money-sub" id="m-invoiced-sub">Loading...</div>
+    </div>
+    <div class="money-card">
+      <div class="money-label">Expenses</div>
+      <div class="money-val red" id="m-expenses">—</div>
+      <div class="money-sub" id="m-expenses-sub">Loading...</div>
+    </div>
+    <div class="money-card full">
+      <div class="money-label">Outstanding Invoices</div>
+      <div class="money-val gold" id="m-outstanding">—</div>
+      <div class="money-sub" id="m-outstanding-sub">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- UNPAID INVOICES -->
+<div class="section">
+  <div class="section-title">🧾 Unpaid Invoices</div>
+  <div id="invoice-list"><div class="empty-state">Loading...</div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- LEADS & FOLLOW-UPS -->
+<div class="section">
+  <div class="section-title">👥 Leads & Follow-ups</div>
+  <div id="leads-list"><div class="empty-state">Loading...</div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- EXPENSE BREAKDOWN -->
+<div class="section">
+  <div class="section-title">📊 Expenses by Category</div>
+  <div id="exp-chart" style="padding-bottom:8px"><div class="empty-state">Loading...</div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SHORTCUTS -->
+<div class="section" style="padding-bottom:0">
+  <div class="section-title">🚀 Quick Launch</div>
+</div>
+<div class="shortcuts">
+  <a class="shortcut" href="https://gwg24.github.io/groundwork-tools/groundwork-gardens-tools.html">
+    <div class="shortcut-icon">🧮</div>
+    <div><div class="shortcut-label">Calculator & Quotes</div><div class="shortcut-sub">Build & save quotes</div></div>
+  </a>
+  <a class="shortcut" href="groundwork-crm.html">
+    <div class="shortcut-icon">👥</div>
+    <div><div class="shortcut-label">Customers & Leads</div><div class="shortcut-sub">CRM & contacts</div></div>
+  </a>
+  <a class="shortcut" href="groundwork-expenses.html">
+    <div class="shortcut-icon">💸</div>
+    <div><div class="shortcut-label">Expenses</div><div class="shortcut-sub">Track spending</div></div>
+  </a>
+  <a class="shortcut" href="https://gwg24.github.io/groundwork-tools/groundwork-gardens-tools.html">
+    <div class="shortcut-icon">🧾</div>
+    <div><div class="shortcut-label">Invoices</div><div class="shortcut-sub">Create & send</div></div>
+  </a>
+</div>
+<div style="height: 24px"></div>
+
+<script>
+const SUPABASE_URL = 'https://vgegsaarmzuqpacisbrl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
+
+async function db(path) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }});
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+function fmt(n) { return '$' + Number(n||0).toFixed(2); }
+
+function setSyncStatus(ok, msg) {
+  const bar = document.getElementById('syncBar');
+  bar.className = 'sync-bar' + (ok ? '' : ' error');
+  document.getElementById('syncMsg').textContent = msg;
+}
+
+// Set today's date
+const now = new Date();
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+document.getElementById('todayDate').textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+function thisMonth(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
+  return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+}
+
+async function loadAll() {
+  setSyncStatus(true, 'Refreshing...');
+  try {
+    const [invoices, expenses, customers] = await Promise.all([
+      db('invoices?order=created_at.desc'),
+      db('expenses?order=expense_date.desc'),
+      db('customers?order=created_at.desc')
+    ]);
+
+    // INVOICES THIS MONTH
+    const monthInvoices = invoices.filter(i => thisMonth(i.issue_date) || thisMonth(i.created_at));
+    const totalInvoiced = monthInvoices.reduce((s,i) => s + parseFloat(i.total||0), 0);
+    const unpaid = invoices.filter(i => i.payment_status === 'Unpaid');
+    const totalOutstanding = unpaid.reduce((s,i) => s + parseFloat(i.total||0), 0);
+
+    document.getElementById('m-invoiced').textContent = fmt(totalInvoiced);
+    document.getElementById('m-invoiced-sub').textContent = `${monthInvoices.length} invoice${monthInvoices.length!==1?'s':''} this month`;
+    document.getElementById('m-outstanding').textContent = fmt(totalOutstanding);
+    document.getElementById('m-outstanding-sub').textContent = `${unpaid.length} unpaid invoice${unpaid.length!==1?'s':''}`;
+
+    // EXPENSES THIS MONTH
+    const monthExp = expenses.filter(e => thisMonth(e.expense_date) || thisMonth(e.created_at));
+    const totalExp = monthExp.reduce((s,e) => s + parseFloat(e.amount||0), 0);
+    document.getElementById('m-expenses').textContent = fmt(totalExp);
+    document.getElementById('m-expenses-sub').textContent = `${monthExp.length} expense${monthExp.length!==1?'s':''} this month`;
+
+    // UNPAID INVOICE LIST
+    const invEl = document.getElementById('invoice-list');
+    if (unpaid.length === 0) {
+      invEl.innerHTML = `<div class="empty-state">✅ No outstanding invoices</div>`;
+    } else {
+      invEl.innerHTML = unpaid.slice(0,5).map(i => `
+        <div class="invoice-item">
+          <div><div class="invoice-name">${i.client_name||'Unknown client'}</div><div class="invoice-sub">#${i.invoice_number||'—'} · Due ${i.due_date||'—'}</div></div>
+          <div class="invoice-right"><div class="invoice-amt unpaid">${fmt(i.total)}</div><div style="font-size:10px;color:var(--red)"><span class="status-dot unpaid"></span>Unpaid</div></div>
+        </div>`).join('') + (unpaid.length > 5 ? `<div class="empty-state">+ ${unpaid.length-5} more unpaid</div>` : '');
+    }
+
+    // LEADS & FOLLOW-UPS
+    const leads = customers.filter(c => c.type === 'lead' || c.type === 'followup');
+    const leadsEl = document.getElementById('leads-list');
+    if (leads.length === 0) {
+      leadsEl.innerHTML = `<div class="empty-state">No active leads</div>`;
+    } else {
+      leadsEl.innerHTML = leads.slice(0,5).map(c => `
+        <div class="lead-item">
+          <div><div class="lead-name">${c.name}</div><div class="lead-sub">${c.job||'No job noted'}${c.suburb?' · '+c.suburb:''}</div></div>
+          <span class="badge badge-${c.type}">${c.type==='followup'?'Follow-up':'Lead'}</span>
+        </div>`).join('') + (leads.length > 5 ? `<div class="empty-state">+ ${leads.length-5} more</div>` : '');
+    }
+
+    // EXPENSE CHART
+    const cats = ['Materials','Fuel','Labour','Tools','Other'];
+    const catColors = {Materials:'#2a6049',Fuel:'#1a5276',Labour:'#884ea0',Tools:'#d35400',Other:'#7a7468'};
+    const catTotals = {};
+    cats.forEach(c => catTotals[c] = monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0));
+    const maxCat = Math.max(...Object.values(catTotals), 1);
+    const activeCats = cats.filter(c=>catTotals[c]>0);
+    const chartEl = document.getElementById('exp-chart');
+    if (activeCats.length === 0) {
+      chartEl.innerHTML = `<div class="empty-state">No expenses this month</div>`;
+    } else {
+      chartEl.innerHTML = activeCats.map(c=>`
+        <div class="exp-bar-row">
+          <div class="exp-bar-label">${c}</div>
+          <div class="exp-bar-track"><div class="exp-bar-fill" style="width:${(catTotals[c]/maxCat*100).toFixed(1)}%;background:${catColors[c]}"></div></div>
+          <div class="exp-bar-val" style="color:${catColors[c]}">${fmt(catTotals[c])}</div>
+        </div>`).join('');
+    }
+
+    setSyncStatus(true, `☁ Live data — ${new Date().toLocaleTimeString('en-AU', {hour:'2-digit',minute:'2-digit'})}`);
+  } catch(e) {
+    setSyncStatus(false, '⚠ Could not load data — check internet');
+  }
+}
+
+loadAll();
+</script>
+</body>
+</html>
