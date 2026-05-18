@@ -218,6 +218,7 @@
     <div class="pill active" onclick="togglePill(this,'labour')">👷 Extra Labour</div>
     <div class="pill active" onclick="togglePill(this,'bricklaying')">🧱 Bricklaying</div>
     <div class="pill active" onclick="togglePill(this,'footings')">🏗️ Concrete Footings</div>
+    <div class="pill active" onclick="togglePill(this,'maintenance')">🌿 Maintenance</div>
   </div>
 </div>
 
@@ -998,7 +999,22 @@
   </div>
 </div>
 
-<!-- EXTRA LABOUR -->
+<!-- MAINTENANCE -->
+<div class="section" id="sec-maintenance">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('maintenance')">
+      <div class="job-icon">🌿</div><div class="job-title">Maintenance</div>
+      <div class="job-badge" id="badge-maintenance"></div><div class="job-toggle open" id="toggle-maintenance">▾</div>
+    </div>
+    <div class="job-body open" id="body-maintenance">
+      <div id="maintenanceList"></div>
+      <button class="add-btn" onclick="addMaintenanceTask()">+ Add Task</button>
+      <div class="result-list" id="res-maintenance"></div>
+    </div>
+  </div>
+</div>
+  
+  <!-- EXTRA LABOUR -->
 <div class="section" id="sec-labour">
   <div class="job-section">
     <div class="job-header" onclick="toggleJob('labour')">
@@ -2668,7 +2684,114 @@ async function loadInvoiceById(id) {
   } catch(e) { showToast('⚠ Could not load invoice'); console.error(e); }
 }
 
-// ==================== BRICKLAYING ====================
+// ==================== MAINTENANCE ====================
+var MAINTENANCE_TASKS = [
+  { label: '🌿 Mowing & Lawn Care', unit: 'hrs', rate: 75 },
+  { label: '✂️ Pruning & Hedging', unit: 'hrs', rate: 75 },
+  { label: '🍂 Garden Cleanup & Weeding', unit: 'hrs', rate: 75 },
+  { label: '🗑️ Waste Disposal / Green Waste', unit: 'loads', rate: 80 },
+  { label: '🌱 Fertilising & Treatments', unit: 'm²', rate: 3 },
+  { label: '🧹 Hard Surface Cleaning', unit: 'hrs', rate: 75 }
+];
+
+var maintenanceTasks = [];
+
+function addMaintenanceTask() {
+  maintenanceTasks.push({ type: 0, qty: 1, rate: MAINTENANCE_TASKS[0].rate });
+  renderMaintenanceTasks();
+  setTimeout(function() { var s = document.querySelectorAll('.maint-select'); if(s.length) s[s.length-1].focus(); }, 50);
+}
+
+function renderMaintenanceTasks() {
+  var el = document.getElementById('maintenanceList');
+  if (!el) return;
+  el.innerHTML = '';
+  maintenanceTasks.forEach(function(t, i) {
+    var task = MAINTENANCE_TASKS[t.type];
+    var row = document.createElement('div');
+    row.style.cssText = 'background:#f7f9f6;border:0.5px solid #c5d4c0;border-radius:8px;padding:12px;margin-bottom:10px';
+
+    var typeLabel = document.createElement('div');
+    typeLabel.style.cssText = 'font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px';
+    typeLabel.textContent = 'Task Type';
+
+    var sel = document.createElement('select');
+    sel.className = 'maint-select';
+    sel.style.cssText = 'width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-primary);font-family:Barlow,sans-serif;font-size:14px;padding:9px 11px;margin-bottom:10px;-webkit-appearance:none';
+    MAINTENANCE_TASKS.forEach(function(mt, ti) {
+      var opt = document.createElement('option');
+      opt.value = ti; opt.textContent = mt.label;
+      if (ti === t.type) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.onchange = (function(idx) { return function() {
+      maintenanceTasks[idx].type = parseInt(this.value);
+      maintenanceTasks[idx].rate = MAINTENANCE_TASKS[parseInt(this.value)].rate;
+      renderMaintenanceTasks(); calcMaintenance();
+    }; })(i);
+
+    var grid = document.createElement('div');
+    grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end';
+
+    // Qty
+    var qtyWrap = document.createElement('div');
+    var qtyLabel = document.createElement('div');
+    qtyLabel.style.cssText = 'font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px';
+    qtyLabel.textContent = task.unit === 'hrs' ? 'Hours' : task.unit === 'loads' ? 'Loads' : 'm²';
+    var qtyInp = document.createElement('input');
+    qtyInp.type = 'number'; qtyInp.min = '0'; qtyInp.step = task.unit === 'hrs' ? '0.5' : '1';
+    qtyInp.value = t.qty;
+    qtyInp.style.cssText = 'background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-primary);font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:600;padding:8px 10px;width:100%';
+    qtyInp.oninput = (function(idx) { return function() { maintenanceTasks[idx].qty = parseFloat(this.value)||0; calcMaintenance(); }; })(i);
+    qtyWrap.appendChild(qtyLabel); qtyWrap.appendChild(qtyInp);
+
+    // Rate
+    var rateWrap = document.createElement('div');
+    var rateLabel = document.createElement('div');
+    rateLabel.style.cssText = 'font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px';
+    rateLabel.textContent = task.unit === 'hrs' ? '$/hr' : task.unit === 'loads' ? '$/load' : '$/m²';
+    var rateInp = document.createElement('input');
+    rateInp.type = 'number'; rateInp.min = '0';
+    rateInp.value = t.rate;
+    rateInp.style.cssText = 'background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-primary);font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:600;padding:8px 10px;width:100%';
+    rateInp.oninput = (function(idx) { return function() { maintenanceTasks[idx].rate = parseFloat(this.value)||0; calcMaintenance(); }; })(i);
+    rateWrap.appendChild(rateLabel); rateWrap.appendChild(rateInp);
+
+    // Total
+    var totalWrap = document.createElement('div');
+    var totalLabel = document.createElement('div');
+    totalLabel.style.cssText = 'font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px';
+    totalLabel.textContent = 'Total';
+    var totalVal = document.createElement('div');
+    totalVal.style.cssText = 'font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:700;color:var(--green-bright);padding:8px 0';
+    totalVal.textContent = '$' + (t.qty * t.rate).toFixed(2);
+    totalWrap.appendChild(totalLabel); totalWrap.appendChild(totalVal);
+
+    grid.appendChild(qtyWrap); grid.appendChild(rateWrap); grid.appendChild(totalWrap);
+
+    var removeBtn = document.createElement('button');
+    removeBtn.style.cssText = 'background:transparent;border:none;color:var(--text-secondary);font-size:12px;cursor:pointer;margin-top:8px;padding:4px 0;text-align:left';
+    removeBtn.textContent = '× Remove task';
+    removeBtn.onclick = (function(idx) { return function() { maintenanceTasks.splice(idx,1); renderMaintenanceTasks(); calcMaintenance(); }; })(i);
+
+    row.appendChild(typeLabel); row.appendChild(sel); row.appendChild(grid); row.appendChild(removeBtn);
+    el.appendChild(row);
+  });
+  calcMaintenance();
+}
+
+function calcMaintenance() {
+  if (maintenanceTasks.length === 0) { showResults('maintenance', []); return; }
+  var items = maintenanceTasks.filter(function(t) { return t.qty > 0; }).map(function(t) {
+    var task = MAINTENANCE_TASKS[t.type];
+    var unit = task.unit === 'hrs' ? t.qty + ' hrs' : task.unit === 'loads' ? t.qty + ' loads' : t.qty + ' m²';
+    return { name: task.label, qty: unit, qty_num: t.qty, total: t.qty * t.rate };
+  });
+  if (!items.length) { showResults('maintenance', []); return; }
+  showResults('maintenance', items, 0, 0);
+}
+  
+  // ==================== BRICKLAYING ====================
 function calcBricklaying() {
   var len = v('bl-length'), h = v('bl-height');
   if (len <= 0) { showResults('bricklaying', []); return; }
