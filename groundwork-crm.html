@@ -4,267 +4,248 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Groundwork Gardens — CRM</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #0f0f0f;
-    --paper: #f5f2eb;
-    --card: #fffdf8;
-    --accent: #2a6049;
-    --accent2: #d4500a;
-    --lead: #c8860a;
-    --border: #d8d3c8;
-    --muted: #7a7468;
-    --danger: #c0392b;
+    --black: #0a0a0a; --border: #2a2a2a;
+    --cream: #d4c9a8; --cream-dim: #9e9278; --green: #4a7c3f;
+    --green-bright: #5d9e50; --green-leaf: #3d6b34; --white: #f0ece0;
+    --orange: #c07a2f; --bg-page: #f5f5f5; --text-primary: #1a2e17; --text-secondary: #4a5e45;
+    --red: #c0392b; --gold: #b8860b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Mono', monospace; background: var(--paper); color: var(--ink); min-height: 100vh; font-size: 13px; }
-  header { background: var(--ink); color: var(--paper); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-  header h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
-  header h1 span { color: #6dbe9a; }
-  .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
-  .stat { background: var(--card); padding: 10px 16px; text-align: center; }
-  .stat-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; line-height: 1; }
-  .stat-label { color: var(--muted); font-size: 10px; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .stat-num.c { color: var(--accent); } .stat-num.l { color: var(--lead); } .stat-num.f { color: var(--accent2); }
-  .toolbar { padding: 12px 16px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--border); background: var(--card); flex-wrap: wrap; }
-  .search-wrap { flex: 1; min-width: 160px; position: relative; }
-  .search-wrap input { width: 100%; padding: 8px 10px 8px 32px; border: 1px solid var(--border); background: var(--paper); font-family: 'DM Mono', monospace; font-size: 12px; border-radius: 4px; color: var(--ink); }
-  .search-wrap::before { content: '⌕'; position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; pointer-events: none; }
-  .filter-tabs { display: flex; gap: 4px; }
-  .tab { padding: 7px 12px; border: 1px solid var(--border); background: var(--paper); font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; border-radius: 4px; color: var(--muted); transition: all 0.15s; }
-  .tab.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-  .btn { padding: 8px 14px; border: none; font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; border-radius: 4px; font-weight: 500; transition: opacity 0.15s; }
-  .btn:active { opacity: 0.7; } .btn-primary { background: var(--accent); color: white; } .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--ink); } .btn-sm { padding: 5px 10px; font-size: 11px; } .btn-danger { background: var(--danger); color: white; }
-  .list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
-  .card:hover { border-color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
-  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-  .card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
-  .badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
-  .badge-customer { background: #d4f0e4; color: var(--accent); } .badge-lead { background: #fdefd3; color: var(--lead); } .badge-followup { background: #fde8df; color: var(--accent2); }
-  .card-detail { color: var(--muted); font-size: 11px; margin-bottom: 2px; }
-  .card-note { font-size: 11px; margin-top: 6px; color: var(--ink); border-top: 1px dashed var(--border); padding-top: 6px; }
-  .card-footer { display: flex; gap: 6px; margin-top: 10px; }
-  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; align-items: flex-end; justify-content: center; }
-  .overlay.open { display: flex; }
-  .modal { background: var(--card); width: 100%; max-width: 520px; border-radius: 12px 12px 0 0; padding: 20px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.25s ease; }
-  @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .modal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-  .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); }
-  .field { margin-bottom: 12px; }
-  .field label { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .field input, .field select, .field textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--border); background: var(--paper); font-family: 'DM Mono', monospace; font-size: 13px; border-radius: 4px; color: var(--ink); }
-  .field textarea { resize: vertical; min-height: 70px; }
-  .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
-  .modal-actions .btn { flex: 1; padding: 12px; }
-  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
-  .empty-icon { font-size: 36px; margin-bottom: 8px; }
-  .empty-text { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-  .sync-bar { background: #e8f5ee; border-bottom: 1px solid #b8ddc8; padding: 6px 16px; font-size: 11px; color: var(--accent); display: flex; align-items: center; gap: 6px; }
-  .sync-bar.error { background: #fde8df; border-color: #f5c0a8; color: var(--accent2); }
-  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  body { background: var(--bg-page); color: var(--text-primary); font-family: 'Barlow', sans-serif; font-weight: 300; min-height: 100vh; padding-bottom: 80px; }
+
+  .main-header { background: #1a2e17; border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 14px; }
+  .main-header img { height: 44px; width: auto; object-fit: contain; }
+  .main-header .app-name { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-dim); }
+
+  .tab-bar { display: flex; background: #1a2e17; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+  .tab-btn { flex: 1; padding: 14px 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; text-align: center; cursor: pointer; color: var(--cream-dim); border-bottom: 2px solid transparent; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+  .tab-btn:hover { color: var(--cream); }
+  .tab-btn.active { color: var(--white); border-bottom: 2px solid var(--green-bright); }
+
+  .sync-bar { background: #e8f5ee; border-bottom: 1px solid #b8ddc8; padding: 7px 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 1px; color: var(--green); display: flex; align-items: center; gap: 8px; }
+  .sync-bar.error { background: #fde8df; border-color: #f5c0a8; color: var(--orange); }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-bright); animation: pulse 2s infinite; flex-shrink: 0; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .stats-bar { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: #c5d4c0; border-bottom: 1px solid #c5d4c0; }
+  .stat { background: #ffffff; padding: 12px 16px; text-align: center; }
+  .stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; line-height: 1; }
+  .stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); margin-top: 2px; }
+  .stat-num.c { color: var(--green-leaf); } .stat-num.l { color: var(--gold); } .stat-num.f { color: var(--orange); }
+
+  .toolbar { padding: 12px 16px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid #c5d4c0; background: #ffffff; flex-wrap: wrap; }
+  .search-wrap { flex: 1; min-width: 160px; position: relative; }
+  .search-wrap input { width: 100%; padding: 9px 11px 9px 34px; border: 0.5px solid #c5d4c0; background: var(--bg-page); font-family: 'Barlow', sans-serif; font-size: 13px; border-radius: 6px; color: var(--text-primary); }
+  .search-wrap input:focus { outline: none; border-color: var(--green); }
+  .search-wrap::before { content: '⌕'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 17px; pointer-events: none; }
+  .filter-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .ftab { padding: 6px 12px; border: 0.5px solid #c5d4c0; background: var(--bg-page); font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 20px; color: var(--text-secondary); transition: all 0.2s; }
+  .ftab.active { background: var(--green); border-color: var(--green); color: var(--white); }
+  .add-fab { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 6px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 2px; padding: 9px 16px; text-transform: uppercase; transition: background 0.2s; white-space: nowrap; }
+  .add-fab:hover { background: var(--green); }
+
+  .list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .contact-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .contact-card:hover { border-color: var(--green); box-shadow: 0 2px 8px rgba(74,124,63,0.15); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .card-name { font-family: 'Barlow Condensed', sans-serif; font-size: 19px; font-weight: 700; color: var(--text-primary); }
+  .badge { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 3px 9px; border-radius: 10px; font-weight: 600; text-transform: uppercase; }
+  .badge-customer { background: rgba(74,124,63,0.15); color: var(--green-leaf); }
+  .badge-lead { background: rgba(184,134,11,0.15); color: var(--gold); }
+  .badge-followup { background: rgba(192,122,47,0.15); color: var(--orange); }
+  .card-detail { color: var(--text-secondary); font-size: 13px; margin-bottom: 2px; }
+  .card-note { font-size: 12px; margin-top: 8px; color: var(--text-primary); border-top: 1px solid #e8f0e6; padding-top: 8px; }
+  .card-footer { display: flex; gap: 6px; margin-top: 10px; }
+  .btn-sm { padding: 6px 12px; border: 0.5px solid #c5d4c0; background: var(--bg-page); font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 6px; color: var(--text-primary); text-decoration: none; display: inline-block; transition: all 0.2s; }
+  .btn-sm:hover { border-color: var(--green); color: var(--green); }
+
+  .overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .overlay.show { display: flex; }
+  .modal { background: #ffffff; border-radius: 12px; padding: 20px; width: calc(100% - 32px); max-width: 480px; max-height: 88vh; overflow-y: auto; }
+  .modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-secondary); }
+
+  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .field label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); }
+  .field input, .field select, .field textarea { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; color: var(--text-primary); font-family: 'Barlow', sans-serif; font-size: 14px; padding: 9px 11px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--green); }
+  .field textarea { resize: vertical; min-height: 70px; }
+
+  .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .gen-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 6px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 2px; padding: 13px; text-transform: uppercase; flex: 1; transition: background 0.2s; }
+  .gen-btn:hover { background: var(--green); }
+  .gen-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .clear-btn { background: transparent; border: 1px solid #c5d4c0; border-radius: 6px; color: var(--cream-dim); cursor: pointer; font-family: 'Barlow', sans-serif; font-size: 13px; padding: 13px 20px; transition: all 0.2s; }
+  .clear-btn:hover { border-color: var(--red); color: var(--red); }
+  .danger-btn { background: var(--red); border: none; border-radius: 6px; color: white; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; letter-spacing: 1px; padding: 13px; text-transform: uppercase; flex: 1; }
+
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .detail-field .dl { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 3px; }
+  .detail-field .dv { font-size: 14px; font-weight: 400; color: var(--text-primary); }
+
+  .empty { text-align: center; padding: 48px 20px; color: var(--text-secondary); }
+  .empty-icon { font-size: 40px; margin-bottom: 10px; }
+  .empty-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 4px; color: var(--text-primary); }
+
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; padding: 14px 24px; border-radius: 8px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
-<header>
-  <h1>GG <span>//</span> Customers & Leads</h1>
-  <button class="btn btn-primary btn-sm" onclick="openAdd()">+ Add</button>
-</header>
+
+<div class="main-header">
+  <img src="data:image/png;base64,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" alt="GG Logo">
+  <span class="app-name">Customers &amp; Leads</span>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active">👥 CRM</button>
+  <a href="groundwork-dashboard.html" class="tab-btn">📊 Dashboard</a>
+  <a href="groundwork-expenses.html" class="tab-btn">💸 Expenses</a>
+  <a href="groundwork-gardens-tools.html" class="tab-btn">🧮 Tools</a>
+</div>
+
 <div class="sync-bar" id="syncBar"><div class="sync-dot"></div><span id="syncMsg">Connecting to cloud...</span></div>
+
 <div class="stats-bar">
   <div class="stat"><div class="stat-num c" id="stat-c">0</div><div class="stat-label">Customers</div></div>
   <div class="stat"><div class="stat-num l" id="stat-l">0</div><div class="stat-label">Leads</div></div>
   <div class="stat"><div class="stat-num f" id="stat-f">0</div><div class="stat-label">Follow-ups</div></div>
 </div>
+
 <div class="toolbar">
   <div class="search-wrap"><input type="text" id="search" placeholder="Search name, phone, suburb..." oninput="render()"></div>
   <div class="filter-tabs">
-    <button class="tab active" onclick="setTab('all',this)">All</button>
-    <button class="tab" onclick="setTab('customer',this)">Customers</button>
-    <button class="tab" onclick="setTab('lead',this)">Leads</button>
-    <button class="tab" onclick="setTab('followup',this)">Follow-up</button>
+    <div class="ftab active" onclick="setTab('all',this)">All</div>
+    <div class="ftab" onclick="setTab('customer',this)">Customers</div>
+    <div class="ftab" onclick="setTab('lead',this)">Leads</div>
+    <div class="ftab" onclick="setTab('followup',this)">Follow-up</div>
   </div>
+  <button class="add-fab" onclick="openAdd()">+ Add</button>
 </div>
-<div class="list" id="list"><div class="empty"><div class="empty-icon">🌿</div><div class="empty-text">Loading...</div></div></div>
 
-<!-- ADD/EDIT MODAL -->
+<div class="list" id="list"><div class="empty"><div class="empty-icon">🌿</div><div class="empty-title">Loading...</div></div></div>
+
 <div class="overlay" id="addOverlay">
   <div class="modal">
-    <div class="modal-title"><span id="modalTitle">New Contact</span><button class="close-btn" onclick="closeAdd()">✕</button></div>
+    <div class="modal-title"><span id="modalTitle">New Contact</span><button class="modal-close" onclick="closeAdd()">✕</button></div>
     <div class="field"><label>Full Name *</label><input id="f-name" type="text" placeholder="John Smith"></div>
     <div class="field"><label>Type</label><select id="f-type"><option value="lead">Lead</option><option value="customer">Customer</option><option value="followup">Follow-up needed</option></select></div>
     <div class="field"><label>Phone</label><input id="f-phone" type="tel" placeholder="04xx xxx xxx"></div>
     <div class="field"><label>Email</label><input id="f-email" type="email" placeholder="john@email.com"></div>
     <div class="field"><label>Suburb / Location</label><input id="f-suburb" type="text" placeholder="Suburb or area"></div>
-    <div class="field"><label>Job Type</label><input id="f-job" type="text" placeholder="e.g. Garden bed, Retaining wall"></div>
+    <div class="field"><label>Job Type</label><input id="f-job" type="text" placeholder="e.g. Garden bed, Retaining wall, Turf"></div>
     <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Details, source of lead, follow-up info..."></textarea></div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeAdd()">Cancel</button>
-      <button class="btn btn-primary" id="saveBtn" onclick="saveContact()">Save Contact</button>
+      <button class="clear-btn" onclick="closeAdd()">Cancel</button>
+      <button class="gen-btn" id="saveBtn" onclick="saveContact()">Save Contact</button>
     </div>
   </div>
 </div>
 
-<!-- DETAIL MODAL -->
-<div class="overlay" id="detailOverlay">
-  <div class="modal" id="detailContent"></div>
-</div>
+<div class="overlay" id="detailOverlay"><div class="modal" id="detailContent"></div></div>
+<div class="toast" id="toast"></div>
 
 <script>
-const SUPABASE_URL = 'https://vgegsaarmzuqpacisbrl.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
+const SB_URL = 'https://vgegsaarmzuqpacisbrl.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
 
 async function db(path, method='GET', body=null) {
-  const opts = { method, headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': method==='POST' ? 'return=representation' : '' }};
+  const opts = { method, headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer '+SB_KEY, 'Content-Type': 'application/json', 'Prefer': method==='POST'?'return=representation':'' }};
   if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, opts);
+  const res = await fetch(SB_URL+'/rest/v1/'+path, opts);
   if (!res.ok) throw new Error(await res.text());
-  return method === 'DELETE' ? null : res.json();
+  return method==='DELETE' ? null : res.json();
 }
 
-let contacts = [];
-let currentTab = 'all';
-let editId = null;
+let contacts=[], currentTab='all', editId=null;
 
-function setSyncStatus(ok, msg) {
-  const bar = document.getElementById('syncBar');
-  const msgEl = document.getElementById('syncMsg');
-  bar.className = 'sync-bar' + (ok ? '' : ' error');
-  msgEl.textContent = msg;
-}
+function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function setSyncStatus(ok,msg) { const b=document.getElementById('syncBar'); b.className='sync-bar'+(ok?'':' error'); document.getElementById('syncMsg').textContent=msg; }
 
 async function loadContacts() {
-  try {
-    contacts = await db('customers?order=created_at.desc');
-    setSyncStatus(true, '☁ Synced to Groundwork Gardens cloud');
-    updateStats();
-    render();
-  } catch(e) {
-    setSyncStatus(false, '⚠ Could not connect — check internet');
-    render();
-  }
+  try { contacts=await db('customers?order=created_at.desc'); setSyncStatus(true,'☁ Synced to Groundwork Gardens cloud'); updateStats(); render(); }
+  catch(e) { setSyncStatus(false,'⚠ Could not connect — check internet'); }
 }
 
 function updateStats() {
-  document.getElementById('stat-c').textContent = contacts.filter(c=>c.type==='customer').length;
-  document.getElementById('stat-l').textContent = contacts.filter(c=>c.type==='lead').length;
-  document.getElementById('stat-f').textContent = contacts.filter(c=>c.type==='followup').length;
+  document.getElementById('stat-c').textContent=contacts.filter(c=>c.type==='customer').length;
+  document.getElementById('stat-l').textContent=contacts.filter(c=>c.type==='lead').length;
+  document.getElementById('stat-f').textContent=contacts.filter(c=>c.type==='followup').length;
 }
 
-function setTab(tab, el) {
-  currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  render();
-}
+function setTab(tab,el) { currentTab=tab; document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); render(); }
 
 function render() {
-  const q = document.getElementById('search').value.toLowerCase();
-  let list = contacts.filter(c => {
-    const match = (c.name+c.phone+c.suburb+c.job+c.notes||'').toLowerCase().includes(q);
-    return currentTab === 'all' ? match : match && c.type === currentTab;
+  const q=document.getElementById('search').value.toLowerCase();
+  let list=contacts.filter(c=>{
+    const match=(c.name+' '+c.phone+' '+c.suburb+' '+c.job+' '+(c.notes||'')).toLowerCase().includes(q);
+    return currentTab==='all'?match:match&&c.type===currentTab;
   });
-  const el = document.getElementById('list');
-  if (list.length === 0) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No contacts yet</div><div style="font-size:12px;color:var(--muted)">Tap + Add to get started</div></div>`;
-    return;
-  }
-  el.innerHTML = list.map(c => {
-    const bc = c.type==='customer'?'badge-customer':c.type==='followup'?'badge-followup':'badge-lead';
-    const bl = c.type==='customer'?'Customer':c.type==='followup'?'Follow-up':'Lead';
-    return `<div class="card" onclick="openDetail('${c.id}')">
+  const el=document.getElementById('list');
+  if(!list.length){el.innerHTML=`<div class="empty"><div class="empty-icon">📋</div><div class="empty-title">No contacts yet</div><div style="font-size:13px;color:var(--text-secondary)">Tap + Add to get started</div></div>`;return;}
+  el.innerHTML=list.map(c=>{
+    const bc=c.type==='customer'?'badge-customer':c.type==='followup'?'badge-followup':'badge-lead';
+    const bl=c.type==='customer'?'Customer':c.type==='followup'?'Follow-up':'Lead';
+    return `<div class="contact-card" onclick="openDetail('${c.id}')">
       <div class="card-top"><div class="card-name">${c.name}</div><span class="badge ${bc}">${bl}</span></div>
       ${c.phone?`<div class="card-detail">📞 ${c.phone}</div>`:''}
       ${c.suburb?`<div class="card-detail">📍 ${c.suburb}</div>`:''}
       ${c.job?`<div class="card-detail">🌿 ${c.job}</div>`:''}
-      ${c.notes?`<div class="card-note">💬 ${c.notes.substring(0,80)}${c.notes.length>80?'...':''}</div>`:''}
+      ${c.notes?`<div class="card-note">💬 ${c.notes.substring(0,90)}${c.notes.length>90?'...':''}</div>`:''}
       <div class="card-footer">
-        ${c.phone?`<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="btn btn-ghost btn-sm">Call</a>`:''}
-        ${c.phone?`<a href="sms:${c.phone}" onclick="event.stopPropagation()" class="btn btn-ghost btn-sm">Text</a>`:''}
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEdit('${c.id}')">Edit</button>
-      </div>
-    </div>`;
+        ${c.phone?`<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="btn-sm">📞 Call</a>`:''}
+        ${c.phone?`<a href="sms:${c.phone}" onclick="event.stopPropagation()" class="btn-sm">💬 Text</a>`:''}
+        <button class="btn-sm" onclick="event.stopPropagation();openEdit('${c.id}')">Edit</button>
+      </div></div>`;
   }).join('');
 }
 
-function openAdd() {
-  editId = null;
-  document.getElementById('modalTitle').textContent = 'New Contact';
-  ['name','phone','email','suburb','job','notes'].forEach(f=>document.getElementById('f-'+f).value='');
-  document.getElementById('f-type').value = 'lead';
-  document.getElementById('addOverlay').classList.add('open');
+function openAdd(){editId=null;document.getElementById('modalTitle').textContent='New Contact';['name','phone','email','suburb','job','notes'].forEach(f=>document.getElementById('f-'+f).value='');document.getElementById('f-type').value='lead';document.getElementById('addOverlay').classList.add('show');}
+function openEdit(id){const c=contacts.find(x=>x.id===id);if(!c)return;editId=id;document.getElementById('modalTitle').textContent='Edit Contact';document.getElementById('f-name').value=c.name||'';document.getElementById('f-type').value=c.type||'lead';document.getElementById('f-phone').value=c.phone||'';document.getElementById('f-email').value=c.email||'';document.getElementById('f-suburb').value=c.suburb||'';document.getElementById('f-job').value=c.job||'';document.getElementById('f-notes').value=c.notes||'';document.getElementById('addOverlay').classList.add('show');}
+function closeAdd(){document.getElementById('addOverlay').classList.remove('show');}
+
+async function saveContact(){
+  const name=document.getElementById('f-name').value.trim();if(!name){alert('Name is required');return;}
+  const btn=document.getElementById('saveBtn');btn.textContent='Saving...';btn.disabled=true;
+  const data={name,type:document.getElementById('f-type').value,phone:document.getElementById('f-phone').value.trim(),email:document.getElementById('f-email').value.trim(),suburb:document.getElementById('f-suburb').value.trim(),job:document.getElementById('f-job').value.trim(),notes:document.getElementById('f-notes').value.trim()};
+  try{if(editId){await db(`customers?id=eq.${editId}`,'PATCH',data);showToast('Contact updated');}else{await db('customers','POST',data);showToast('Contact saved');}closeAdd();await loadContacts();}
+  catch(e){alert('Save failed: '+e.message);}
+  btn.textContent='Save Contact';btn.disabled=false;
 }
 
-function openEdit(id) {
-  const c = contacts.find(x=>x.id===id);
-  if (!c) return;
-  editId = id;
-  document.getElementById('modalTitle').textContent = 'Edit Contact';
-  document.getElementById('f-name').value = c.name||'';
-  document.getElementById('f-type').value = c.type||'lead';
-  document.getElementById('f-phone').value = c.phone||'';
-  document.getElementById('f-email').value = c.email||'';
-  document.getElementById('f-suburb').value = c.suburb||'';
-  document.getElementById('f-job').value = c.job||'';
-  document.getElementById('f-notes').value = c.notes||'';
-  document.getElementById('addOverlay').classList.add('open');
-}
-
-function closeAdd() { document.getElementById('addOverlay').classList.remove('open'); }
-
-async function saveContact() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { alert('Name is required'); return; }
-  const btn = document.getElementById('saveBtn');
-  btn.textContent = 'Saving...'; btn.disabled = true;
-  const data = { name, type: document.getElementById('f-type').value, phone: document.getElementById('f-phone').value.trim(), email: document.getElementById('f-email').value.trim(), suburb: document.getElementById('f-suburb').value.trim(), job: document.getElementById('f-job').value.trim(), notes: document.getElementById('f-notes').value.trim() };
-  try {
-    if (editId) {
-      await db(`customers?id=eq.${editId}`, 'PATCH', data);
-    } else {
-      await db('customers', 'POST', data);
-    }
-    closeAdd();
-    await loadContacts();
-  } catch(e) {
-    alert('Save failed: ' + e.message);
-  }
-  btn.textContent = 'Save Contact'; btn.disabled = false;
-}
-
-function openDetail(id) {
-  const c = contacts.find(x=>x.id===id);
-  if (!c) return;
-  const bc = c.type==='customer'?'badge-customer':c.type==='followup'?'badge-followup':'badge-lead';
-  const bl = c.type==='customer'?'Customer':c.type==='followup'?'Follow-up':'Lead';
-  document.getElementById('detailContent').innerHTML = `
-    <div class="modal-title"><span>${c.name}</span><button class="close-btn" onclick="document.getElementById('detailOverlay').classList.remove('open')">✕</button></div>
-    <span class="badge ${bc}" style="margin-bottom:14px;display:inline-block">${bl}</span>
-    ${c.phone?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Phone</div><div style="font-weight:500">${c.phone}</div></div>`:''}
-    ${c.email?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Email</div><div style="font-weight:500">${c.email}</div></div>`:''}
-    ${c.suburb?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Location</div><div style="font-weight:500">${c.suburb}</div></div>`:''}
-    ${c.job?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Job Type</div><div style="font-weight:500">${c.job}</div></div>`:''}
-    ${c.notes?`<div style="margin-bottom:8px"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Notes</div><div style="font-size:13px;line-height:1.5">${c.notes}</div></div>`:''}
-    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
-      ${c.phone?`<a href="tel:${c.phone}" class="btn btn-primary" style="flex:1;text-align:center;text-decoration:none">📞 Call</a>`:''}
-      ${c.phone?`<a href="sms:${c.phone}" class="btn btn-ghost" style="flex:1;text-align:center;text-decoration:none">💬 Text</a>`:''}
+function openDetail(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  const bc=c.type==='customer'?'badge-customer':c.type==='followup'?'badge-followup':'badge-lead';
+  const bl=c.type==='customer'?'Customer':c.type==='followup'?'Follow-up':'Lead';
+  document.getElementById('detailContent').innerHTML=`
+    <div class="modal-title"><span>${c.name}</span><button class="modal-close" onclick="document.getElementById('detailOverlay').classList.remove('show')">✕</button></div>
+    <span class="badge ${bc}" style="margin-bottom:16px;display:inline-block">${bl}</span>
+    <div class="detail-grid">
+      ${c.phone?`<div class="detail-field"><div class="dl">Phone</div><div class="dv">${c.phone}</div></div>`:''}
+      ${c.email?`<div class="detail-field"><div class="dl">Email</div><div class="dv">${c.email}</div></div>`:''}
+      ${c.suburb?`<div class="detail-field"><div class="dl">Location</div><div class="dv">${c.suburb}</div></div>`:''}
+      ${c.job?`<div class="detail-field"><div class="dl">Job Type</div><div class="dv">${c.job}</div></div>`:''}
+    </div>
+    ${c.notes?`<div style="background:var(--bg-page);border:0.5px solid #c5d4c0;border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.6;margin-bottom:16px">${c.notes}</div>`:''}
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+      ${c.phone?`<a href="tel:${c.phone}" class="gen-btn" style="text-align:center;text-decoration:none">📞 Call</a>`:''}
+      ${c.phone?`<a href="sms:${c.phone}" class="gen-btn" style="text-align:center;text-decoration:none;background:var(--orange);border-color:var(--orange)">💬 Text</a>`:''}
     </div>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn btn-ghost" style="flex:1" onclick="document.getElementById('detailOverlay').classList.remove('open');openEdit('${c.id}')">Edit</button>
-      <button class="btn btn-danger" style="flex:1" onclick="deleteContact('${c.id}')">Delete</button>
+      <button class="clear-btn" style="flex:1" onclick="document.getElementById('detailOverlay').classList.remove('show');openEdit('${c.id}')">Edit</button>
+      <button class="danger-btn" onclick="deleteContact('${c.id}')">Delete</button>
     </div>`;
-  document.getElementById('detailOverlay').classList.add('open');
+  document.getElementById('detailOverlay').classList.add('show');
 }
 
-async function deleteContact(id) {
-  if (!confirm('Delete this contact?')) return;
-  try {
-    await db(`customers?id=eq.${id}`, 'DELETE');
-    document.getElementById('detailOverlay').classList.remove('open');
-    await loadContacts();
-  } catch(e) { alert('Delete failed: ' + e.message); }
+async function deleteContact(id){
+  if(!confirm('Delete this contact?'))return;
+  try{await db(`customers?id=eq.${id}`,'DELETE');document.getElementById('detailOverlay').classList.remove('show');showToast('Contact deleted');await loadContacts();}
+  catch(e){alert('Delete failed: '+e.message);}
 }
 
 loadContacts();
