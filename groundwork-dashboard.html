@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Groundwork Gardens — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root {
     --black: #0a0a0a; --border: #2a2a2a;
@@ -86,6 +87,16 @@
   .bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
   .bar-val { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; width: 60px; text-align: right; flex-shrink: 0; }
 
+  /* EXPORT SECTION */
+  .export-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+  .export-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 8px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; padding: 14px 10px; text-transform: uppercase; transition: background 0.2s; text-align: center; }
+  .export-btn:hover { background: var(--green); }
+  .export-btn.orange { background: var(--orange); border-color: var(--orange); }
+  .export-btn.orange:hover { background: #a86728; }
+  .export-btn.blue { background: #2e6da4; border-color: #2e6da4; }
+  .export-btn.blue:hover { background: #245a8c; }
+  .export-btn span { display: block; font-size: 18px; margin-bottom: 4px; }
+
   .shortcuts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 16px; }
   .shortcut { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px; text-decoration: none; color: var(--text-primary); display: flex; align-items: center; gap: 10px; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .shortcut:hover { border-color: var(--green); box-shadow: 0 2px 8px rgba(74,124,63,0.15); }
@@ -96,6 +107,9 @@
   .empty-state { text-align: center; padding: 16px; color: var(--text-secondary); font-size: 13px; }
   .empty-state.good { color: var(--green-bright); }
   .divider { height: 1px; background: #c5d4c0; margin: 16px 16px 0; }
+
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; padding: 14px 24px; border-radius: 8px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
@@ -151,7 +165,7 @@
 
 <div class="divider"></div>
 
-<!-- ALL INVOICES -->
+<!-- INVOICES -->
 <div class="section">
   <div class="section-title">🧾 Invoices</div>
   <div id="invoice-list"><div class="empty-state">Loading...</div></div>
@@ -159,7 +173,7 @@
 
 <div class="divider"></div>
 
-<!-- RECENT QUOTES -->
+<!-- QUOTES -->
 <div class="section">
   <div class="section-title">📄 Recent Quotes</div>
   <div id="quotes-list"><div class="empty-state">Loading...</div></div>
@@ -167,7 +181,7 @@
 
 <div class="divider"></div>
 
-<!-- LEADS & FOLLOW-UPS -->
+<!-- LEADS -->
 <div class="section">
   <div class="section-title">👥 Leads & Follow-ups</div>
   <div id="leads-list"><div class="empty-state">Loading...</div></div>
@@ -175,12 +189,34 @@
 
 <div class="divider"></div>
 
-<!-- EXPENSE BREAKDOWN -->
+<!-- EXPENSE CHART -->
 <div class="section">
   <div class="section-title">📊 Expenses by Category</div>
   <div class="money-card" style="margin-bottom:4px">
     <div id="exp-chart"><div class="empty-state">Loading...</div></div>
   </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- EXPORT -->
+<div class="section">
+  <div class="section-title">📥 Export to Spreadsheet</div>
+  <div class="export-grid">
+    <button class="export-btn" onclick="exportInvoices()">
+      <span>🧾</span>Export Invoices
+    </button>
+    <button class="export-btn orange" onclick="exportExpenses()">
+      <span>💸</span>Export Expenses
+    </button>
+    <button class="export-btn blue" onclick="exportMonthlyReport()">
+      <span>📊</span>Monthly Report
+    </button>
+    <button class="export-btn blue" onclick="exportFullReport()">
+      <span>📋</span>Full Summary
+    </button>
+  </div>
+  <div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:10px 0 4px">Downloads as Excel (.xlsx) — open in Numbers or Excel</div>
 </div>
 
 <div class="divider"></div>
@@ -208,9 +244,14 @@
   </a>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
 const SB_URL='https://vgegsaarmzuqpacisbrl.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
+
+// Global data store for exports
+var _invoices=[], _expenses=[], _quotes=[];
 
 async function db(path){
   const res=await fetch(SB_URL+'/rest/v1/'+path,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
@@ -219,9 +260,10 @@ async function db(path){
 }
 
 function fmt(n){return '$'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function fmtNum(n){return Number(n||0).toFixed(2);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 function setSyncStatus(ok,msg){const b=document.getElementById('syncBar');b.className='sync-bar'+(ok?'':' error');document.getElementById('syncMsg').textContent=msg;}
 
-// Date & greeting
 const now=new Date();
 const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -235,21 +277,16 @@ function thisMonth(dateStr){
   return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();
 }
 
-// Extract total from data JSON
 function getTotal(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    // Try to sum items array first
     if(d.items&&d.items.length){
-      return d.items.reduce(function(s,item){
-        return s+(parseFloat(item.price)||0)*(parseFloat(item.qty)||1);
-      },0)*1.10; // inc GST
+      return d.items.reduce((s,item)=>s+(parseFloat(item.price)||0)*(parseFloat(item.qty)||1),0)*1.10;
     }
-    return parseFloat(d.total||d.grandTotal||d.amount||d.totalCost||0);
+    return parseFloat(d.total||d.grandTotal||d.amount||0);
   }catch(e){return 0;}
 }
 
-// Extract payment status from data JSON
 function getStatus(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
@@ -257,15 +294,13 @@ function getStatus(record){
   }catch(e){return 'unpaid';}
 }
 
-// Extract invoice number
 function getInvNum(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return d.num||d.number||d.invoiceNum||record.id||'—';
+    return d.num||d.number||record.id||'—';
   }catch(e){return record.id||'—';}
 }
 
-// Extract due date
 function getDueDate(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
@@ -273,7 +308,20 @@ function getDueDate(record){
   }catch(e){return '—';}
 }
 
-// Get client name from name field
+function getIssueDate(record){
+  try{
+    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
+    return d.date||record.updated_at?.substring(0,10)||'—';
+  }catch(e){return '—';}
+}
+
+function getDesc(record){
+  try{
+    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
+    return d.desc||d.jobTitle||'—';
+  }catch(e){return '—';}
+}
+
 function getClientName(record){
   if(record.name){
     const parts=record.name.split(' — ');
@@ -289,20 +337,19 @@ async function loadAll(){
   setSyncStatus(true,'Refreshing...');
   try{
     const [ggQuotes,expenses,customers]=await Promise.all([
-      db('gg_quotes?order=updated_at.desc&limit=50'),
+      db('gg_quotes?order=updated_at.desc&limit=100'),
       db('expenses?order=expense_date.desc'),
       db('customers?order=created_at.desc')
     ]);
 
-    // Split invoices and quotes
-    const invoices=ggQuotes.filter(r=>r.id&&r.id.startsWith('invoice_'));
-    const quotes=ggQuotes.filter(r=>r.id&&r.id.startsWith('quote_'));
+    _invoices=ggQuotes.filter(r=>r.id&&r.id.startsWith('invoice_'));
+    _quotes=ggQuotes.filter(r=>r.id&&r.id.startsWith('quote_'));
+    _expenses=expenses;
 
-    // Calculate totals using items array
-    const unpaidInvoices=invoices.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
-    const paidInvoices=invoices.filter(r=>getStatus(r)==='paid');
+    const unpaidInvoices=_invoices.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
+    const paidInvoices=_invoices.filter(r=>getStatus(r)==='paid');
+    const monthInvoices=_invoices.filter(r=>thisMonth(r.updated_at));
 
-    const monthInvoices=invoices.filter(r=>thisMonth(r.updated_at));
     const totalInvoiced=monthInvoices.reduce((s,r)=>s+getTotal(r),0);
     const totalOutstanding=unpaidInvoices.reduce((s,r)=>s+getTotal(r),0);
     const totalPaid=paidInvoices.reduce((s,r)=>s+getTotal(r),0);
@@ -314,18 +361,17 @@ async function loadAll(){
     document.getElementById('m-paid').textContent=fmt(totalPaid);
     document.getElementById('m-paid-sub').textContent=paidInvoices.length+' paid';
 
-    // Expenses this month
     const monthExp=expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
     const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
     document.getElementById('m-expenses').textContent=fmt(totalExp);
     document.getElementById('m-expenses-sub').textContent=monthExp.length+' expense'+(monthExp.length!==1?'s':'')+' this month';
 
-    // Invoice list — show all, sorted unpaid first
+    // Invoice list
     const invEl=document.getElementById('invoice-list');
-    if(!invoices.length){
+    if(!_invoices.length){
       invEl.innerHTML=`<div class="empty-state">No invoices yet</div>`;
     } else {
-      const sorted=[...unpaidInvoices,...invoices.filter(r=>getStatus(r)==='partial'),...paidInvoices];
+      const sorted=[...unpaidInvoices,..._invoices.filter(r=>getStatus(r)==='partial'),...paidInvoices];
       const unique=[...new Map(sorted.map(r=>[r.id,r])).values()];
       invEl.innerHTML=unique.slice(0,8).map(r=>{
         const status=getStatus(r);
@@ -341,25 +387,25 @@ async function loadAll(){
             <span class="status-pill ${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span>
           </div>
         </div>`;
-      }).join('')+(invoices.length>8?`<div class="empty-state">+ ${invoices.length-8} more invoices</div>`:'');
+      }).join('')+(_invoices.length>8?`<div class="empty-state">+ ${_invoices.length-8} more invoices</div>`:'');
     }
 
-    // Recent quotes
+    // Quotes
     const quotesEl=document.getElementById('quotes-list');
-    if(!quotes.length){
+    if(!_quotes.length){
       quotesEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;
     } else {
-      quotesEl.innerHTML=quotes.slice(0,5).map(r=>`
+      quotesEl.innerHTML=_quotes.slice(0,5).map(r=>`
         <div class="quote-item">
           <div>
             <div class="quote-name">${getClientName(r)}</div>
             <div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div>
           </div>
           <div class="quote-amt">${fmt(getTotal(r))}</div>
-        </div>`).join('')+(quotes.length>5?`<div class="empty-state">+ ${quotes.length-5} more quotes</div>`:'');
+        </div>`).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more quotes</div>`:'');
     }
 
-    // Leads & follow-ups
+    // Leads
     const leads=customers.filter(c=>c.type==='lead'||c.type==='followup');
     const leadsEl=document.getElementById('leads-list');
     if(!leads.length){
@@ -399,6 +445,184 @@ async function loadAll(){
     setSyncStatus(false,'⚠ Could not load data — check internet');
     console.error(e);
   }
+}
+
+// ==================== EXPORT FUNCTIONS ====================
+
+function styleHeader(ws, range, color) {
+  // Header styling is handled by SheetJS — basic export
+}
+
+function exportInvoices() {
+  if(!_invoices.length){ showToast('⚠ No invoices to export'); return; }
+
+  const rows=[['Groundwork Gardens — Invoice Report'],['Generated: '+new Date().toLocaleDateString('en-AU')],[''],
+    ['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']
+  ];
+
+  _invoices.forEach(r=>{
+    const total=getTotal(r);
+    rows.push([
+      getInvNum(r),
+      getClientName(r),
+      getDesc(r),
+      getIssueDate(r),
+      getDueDate(r),
+      parseFloat(fmtNum(total)),
+      getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)
+    ]);
+  });
+
+  // Totals
+  const paid=_invoices.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+  const unpaid=_invoices.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
+  rows.push(['']);
+  rows.push(['','','','','Total Paid:',parseFloat(fmtNum(paid)),'']);
+  rows.push(['','','','','Total Outstanding:',parseFloat(fmtNum(unpaid)),'']);
+  rows.push(['','','','','Grand Total:',parseFloat(fmtNum(paid+unpaid)),'']);
+
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:15},{wch:28},{wch:35},{wch:14},{wch:14},{wch:18},{wch:12}];
+
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,'Invoices',ws);
+
+  const month=months[now.getMonth()]+' '+now.getFullYear();
+  XLSX.writeFile(wb,'GG-Invoices-'+month.replace(' ','-')+'.xlsx');
+  showToast('✓ Invoices exported!');
+}
+
+function exportExpenses() {
+  if(!_expenses.length){ showToast('⚠ No expenses to export'); return; }
+
+  const rows=[['Groundwork Gardens — Expense Report'],['Generated: '+new Date().toLocaleDateString('en-AU')],[''],
+    ['Date','Description','Category','Job / Reference','Amount','Paid Via']
+  ];
+
+  _expenses.forEach(e=>{
+    rows.push([
+      e.expense_date||'',
+      e.description||'',
+      e.category||'',
+      e.job_ref||'',
+      parseFloat(fmtNum(e.amount||0)),
+      e.payment_method||''
+    ]);
+  });
+
+  // Category totals
+  const cats=['Materials','Fuel','Labour','Tools','Other'];
+  rows.push(['']);
+  rows.push(['TOTALS BY CATEGORY','','','','','']);
+  cats.forEach(cat=>{
+    const total=_expenses.filter(e=>e.category===cat).reduce((s,e)=>s+parseFloat(e.amount||0),0);
+    if(total>0) rows.push([cat,'','','',parseFloat(fmtNum(total)),'']);
+  });
+  const grandTotal=_expenses.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+  rows.push(['Grand Total','','','',parseFloat(fmtNum(grandTotal)),'']);
+
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:14},{wch:32},{wch:14},{wch:22},{wch:12},{wch:16}];
+
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,'Expenses',ws);
+
+  const month=months[now.getMonth()]+' '+now.getFullYear();
+  XLSX.writeFile(wb,'GG-Expenses-'+month.replace(' ','-')+'.xlsx');
+  showToast('✓ Expenses exported!');
+}
+
+function exportMonthlyReport() {
+  const monthName=months[now.getMonth()]+' '+now.getFullYear();
+  const monthInvoices=_invoices.filter(r=>thisMonth(r.updated_at));
+  const monthExp=_expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
+
+  const wb=XLSX.utils.book_new();
+
+  // SUMMARY SHEET
+  const totalInvoiced=monthInvoices.reduce((s,r)=>s+getTotal(r),0);
+  const totalPaid=monthInvoices.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+  const totalOutstanding=monthInvoices.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
+  const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+  const profit=totalPaid-totalExp;
+
+  const summaryRows=[
+    ['GROUNDWORK GARDENS'],
+    ['Monthly Report — '+monthName],
+    ['Generated: '+new Date().toLocaleDateString('en-AU')],
+    [''],
+    ['INCOME SUMMARY',''],
+    ['Total Invoiced (inc GST)',parseFloat(fmtNum(totalInvoiced))],
+    ['Total Collected (Paid)',parseFloat(fmtNum(totalPaid))],
+    ['Outstanding (Unpaid)',parseFloat(fmtNum(totalOutstanding))],
+    [''],
+    ['EXPENSE SUMMARY',''],
+    ['Total Expenses',parseFloat(fmtNum(totalExp))],
+    [''],
+    ['NET POSITION',''],
+    ['Revenue Collected',parseFloat(fmtNum(totalPaid))],
+    ['Less Expenses',parseFloat(fmtNum(totalExp))],
+    ['Profit (approx)',parseFloat(fmtNum(profit))],
+  ];
+
+  const ws1=XLSX.utils.aoa_to_sheet(summaryRows);
+  ws1['!cols']=[{wch:28},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,'Summary',ws1);
+
+  // INVOICES SHEET
+  const invRows=[['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']];
+  monthInvoices.forEach(r=>{
+    invRows.push([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),parseFloat(fmtNum(getTotal(r))),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
+  });
+  const ws2=XLSX.utils.aoa_to_sheet(invRows);
+  ws2['!cols']=[{wch:15},{wch:28},{wch:32},{wch:14},{wch:14},{wch:18},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,'Invoices',ws2);
+
+  // EXPENSES SHEET
+  const expRows=[['Date','Description','Category','Job / Reference','Amount','Paid Via']];
+  monthExp.forEach(e=>{
+    expRows.push([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',parseFloat(fmtNum(e.amount||0)),e.payment_method||'']);
+  });
+  const ws3=XLSX.utils.aoa_to_sheet(expRows);
+  ws3['!cols']=[{wch:14},{wch:32},{wch:14},{wch:22},{wch:12},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,'Expenses',ws3);
+
+  XLSX.writeFile(wb,'GG-Monthly-Report-'+monthName.replace(' ','-')+'.xlsx');
+  showToast('✓ Monthly report exported!');
+}
+
+function exportFullReport() {
+  const wb=XLSX.utils.book_new();
+
+  // ALL INVOICES
+  const invRows=[['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']];
+  _invoices.forEach(r=>{
+    invRows.push([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),parseFloat(fmtNum(getTotal(r))),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
+  });
+  const ws1=XLSX.utils.aoa_to_sheet(invRows);
+  ws1['!cols']=[{wch:15},{wch:28},{wch:32},{wch:14},{wch:14},{wch:18},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,'All Invoices',ws1);
+
+  // ALL EXPENSES
+  const expRows=[['Date','Description','Category','Job / Reference','Amount','Paid Via']];
+  _expenses.forEach(e=>{
+    expRows.push([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',parseFloat(fmtNum(e.amount||0)),e.payment_method||'']);
+  });
+  const ws2=XLSX.utils.aoa_to_sheet(expRows);
+  ws2['!cols']=[{wch:14},{wch:32},{wch:14},{wch:22},{wch:12},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,'All Expenses',ws2);
+
+  // ALL QUOTES
+  const qRows=[['Quote ID','Client','Date','Amount (inc GST)']];
+  _quotes.forEach(r=>{
+    qRows.push([r.id,getClientName(r),r.updated_at?r.updated_at.substring(0,10):'',parseFloat(fmtNum(getTotal(r)))]);
+  });
+  const ws3=XLSX.utils.aoa_to_sheet(qRows);
+  ws3['!cols']=[{wch:16},{wch:28},{wch:14},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,'All Quotes',ws3);
+
+  XLSX.writeFile(wb,'GG-Full-Report-'+new Date().toLocaleDateString('en-AU').replace(/\//g,'-')+'.xlsx');
+  showToast('✓ Full report exported!');
 }
 
 loadAll();
