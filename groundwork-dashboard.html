@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Groundwork Gardens — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
 <style>
   :root {
     --black: #0a0a0a; --border: #2a2a2a;
@@ -87,15 +86,15 @@
   .bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
   .bar-val { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; width: 60px; text-align: right; flex-shrink: 0; }
 
-  /* EXPORT SECTION */
   .export-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
-  .export-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 8px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; padding: 14px 10px; text-transform: uppercase; transition: background 0.2s; text-align: center; }
+  .export-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 8px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; padding: 14px 10px; text-transform: uppercase; transition: background 0.2s; text-align: center; width: 100%; }
   .export-btn:hover { background: var(--green); }
+  .export-btn:active { opacity: 0.8; }
   .export-btn.orange { background: var(--orange); border-color: var(--orange); }
   .export-btn.orange:hover { background: #a86728; }
   .export-btn.blue { background: #2e6da4; border-color: #2e6da4; }
   .export-btn.blue:hover { background: #245a8c; }
-  .export-btn span { display: block; font-size: 18px; margin-bottom: 4px; }
+  .export-btn span { display: block; font-size: 20px; margin-bottom: 4px; }
 
   .shortcuts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 16px; }
   .shortcut { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px; text-decoration: none; color: var(--text-primary); display: flex; align-items: center; gap: 10px; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
@@ -136,7 +135,6 @@
   <div class="today" id="todayDate"></div>
 </div>
 
-<!-- THIS MONTH -->
 <div class="section" style="margin-top:16px">
   <div class="section-title">💰 This Month</div>
   <div class="money-grid">
@@ -165,7 +163,6 @@
 
 <div class="divider"></div>
 
-<!-- INVOICES -->
 <div class="section">
   <div class="section-title">🧾 Invoices</div>
   <div id="invoice-list"><div class="empty-state">Loading...</div></div>
@@ -173,7 +170,6 @@
 
 <div class="divider"></div>
 
-<!-- QUOTES -->
 <div class="section">
   <div class="section-title">📄 Recent Quotes</div>
   <div id="quotes-list"><div class="empty-state">Loading...</div></div>
@@ -181,7 +177,6 @@
 
 <div class="divider"></div>
 
-<!-- LEADS -->
 <div class="section">
   <div class="section-title">👥 Leads & Follow-ups</div>
   <div id="leads-list"><div class="empty-state">Loading...</div></div>
@@ -189,7 +184,6 @@
 
 <div class="divider"></div>
 
-<!-- EXPENSE CHART -->
 <div class="section">
   <div class="section-title">📊 Expenses by Category</div>
   <div class="money-card" style="margin-bottom:4px">
@@ -199,29 +193,19 @@
 
 <div class="divider"></div>
 
-<!-- EXPORT -->
 <div class="section">
   <div class="section-title">📥 Export to Spreadsheet</div>
   <div class="export-grid">
-    <button class="export-btn" onclick="exportInvoices()">
-      <span>🧾</span>Export Invoices
-    </button>
-    <button class="export-btn orange" onclick="exportExpenses()">
-      <span>💸</span>Export Expenses
-    </button>
-    <button class="export-btn blue" onclick="exportMonthlyReport()">
-      <span>📊</span>Monthly Report
-    </button>
-    <button class="export-btn blue" onclick="exportFullReport()">
-      <span>📋</span>Full Summary
-    </button>
+    <button class="export-btn" onclick="exportInvoices()"><span>🧾</span>Invoices CSV</button>
+    <button class="export-btn orange" onclick="exportExpenses()"><span>💸</span>Expenses CSV</button>
+    <button class="export-btn blue" onclick="exportMonthly()"><span>📊</span>This Month</button>
+    <button class="export-btn blue" onclick="exportAll()"><span>📋</span>Full Export</button>
   </div>
-  <div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:10px 0 4px">Downloads as Excel (.xlsx) — open in Numbers or Excel</div>
+  <div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:10px 0 4px">Downloads as CSV — opens in Excel, Numbers & Google Sheets</div>
 </div>
 
 <div class="divider"></div>
 
-<!-- QUICK LAUNCH -->
 <div class="section" style="padding-bottom:0">
   <div class="section-title">🚀 Quick Launch</div>
 </div>
@@ -250,7 +234,6 @@
 const SB_URL='https://vgegsaarmzuqpacisbrl.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
 
-// Global data store for exports
 var _invoices=[], _expenses=[], _quotes=[];
 
 async function db(path){
@@ -261,8 +244,19 @@ async function db(path){
 
 function fmt(n){return '$'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
 function fmtNum(n){return Number(n||0).toFixed(2);}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-function setSyncStatus(ok,msg){const b=document.getElementById('syncBar');b.className='sync-bar'+(ok?'':' error');document.getElementById('syncMsg').textContent=msg;}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function setSyncStatus(ok,msg){
+  const b=document.getElementById('syncBar');
+  b.className='sync-bar'+(ok?'':' error');
+  document.getElementById('syncMsg').textContent=msg;
+}
 
 const now=new Date();
 const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -297,29 +291,29 @@ function getStatus(record){
 function getInvNum(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return d.num||d.number||record.id||'—';
-  }catch(e){return record.id||'—';}
+    return d.num||d.number||record.id||'';
+  }catch(e){return record.id||'';}
 }
 
 function getDueDate(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return d.due||d.dueDate||'—';
-  }catch(e){return '—';}
+    return d.due||d.dueDate||'';
+  }catch(e){return '';}
 }
 
 function getIssueDate(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return d.date||record.updated_at?.substring(0,10)||'—';
-  }catch(e){return '—';}
+    return d.date||record.updated_at?.substring(0,10)||'';
+  }catch(e){return '';}
 }
 
 function getDesc(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return d.desc||d.jobTitle||'—';
-  }catch(e){return '—';}
+    return d.desc||d.jobTitle||'';
+  }catch(e){return '';}
 }
 
 function getClientName(record){
@@ -333,6 +327,150 @@ function getClientName(record){
   return 'Unknown';
 }
 
+// ==================== CSV EXPORT ====================
+function csvEscape(val){
+  if(val===null||val===undefined)return '';
+  const str=String(val);
+  if(str.includes(',')||str.includes('"')||str.includes('\n')){
+    return '"'+str.replace(/"/g,'""')+'"';
+  }
+  return str;
+}
+
+function csvRow(arr){
+  return arr.map(csvEscape).join(',')+'\n';
+}
+
+function downloadCSV(filename, csvContent){
+  const blob=new Blob([csvContent],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportInvoices(){
+  if(!_invoices.length){showToast('⚠ No invoices to export — refresh first');return;}
+  let csv='Groundwork Gardens — Invoice Export\n';
+  csv+='Generated: '+new Date().toLocaleDateString('en-AU')+'\n\n';
+  csv+=csvRow(['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']);
+  _invoices.forEach(r=>{
+    csv+=csvRow([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),fmtNum(getTotal(r)),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
+  });
+  csv+='\n';
+  const paid=_invoices.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+  const unpaid=_invoices.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
+  csv+=csvRow(['','','','','Total Paid',fmtNum(paid),'']);
+  csv+=csvRow(['','','','','Total Outstanding',fmtNum(unpaid),'']);
+  csv+=csvRow(['','','','','Grand Total',fmtNum(paid+unpaid),'']);
+  const month=months[now.getMonth()]+'-'+now.getFullYear();
+  downloadCSV('GG-Invoices-'+month+'.csv',csv);
+  showToast('✓ Invoices exported!');
+}
+
+function exportExpenses(){
+  if(!_expenses.length){showToast('⚠ No expenses to export — refresh first');return;}
+  let csv='Groundwork Gardens — Expense Export\n';
+  csv+='Generated: '+new Date().toLocaleDateString('en-AU')+'\n\n';
+  csv+=csvRow(['Date','Description','Category','Job / Reference','Amount','Paid Via']);
+  _expenses.forEach(e=>{
+    csv+=csvRow([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',fmtNum(e.amount||0),e.payment_method||'']);
+  });
+  csv+='\n';
+  const cats=['Materials','Fuel','Labour','Tools','Other'];
+  csv+='TOTALS BY CATEGORY\n';
+  cats.forEach(cat=>{
+    const total=_expenses.filter(e=>e.category===cat).reduce((s,e)=>s+parseFloat(e.amount||0),0);
+    if(total>0)csv+=csvRow([cat,'','','',fmtNum(total),'']);
+  });
+  const grand=_expenses.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+  csv+=csvRow(['GRAND TOTAL','','','',fmtNum(grand),'']);
+  const month=months[now.getMonth()]+'-'+now.getFullYear();
+  downloadCSV('GG-Expenses-'+month+'.csv',csv);
+  showToast('✓ Expenses exported!');
+}
+
+function exportMonthly(){
+  const monthName=months[now.getMonth()]+' '+now.getFullYear();
+  const monthInv=_invoices.filter(r=>thisMonth(r.updated_at));
+  const monthExp=_expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
+
+  const totalInv=monthInv.reduce((s,r)=>s+getTotal(r),0);
+  const totalPaid=monthInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+  const totalUnpaid=monthInv.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
+  const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+
+  let csv='GROUNDWORK GARDENS — MONTHLY REPORT\n';
+  csv+=monthName+'\n';
+  csv+='Generated: '+new Date().toLocaleDateString('en-AU')+'\n\n';
+
+  csv+='=== INCOME SUMMARY ===\n';
+  csv+=csvRow(['Total Invoiced (inc GST)',fmtNum(totalInv)]);
+  csv+=csvRow(['Total Collected (Paid)',fmtNum(totalPaid)]);
+  csv+=csvRow(['Outstanding (Unpaid)',fmtNum(totalUnpaid)]);
+  csv+='\n';
+
+  csv+='=== EXPENSE SUMMARY ===\n';
+  csv+=csvRow(['Total Expenses',fmtNum(totalExp)]);
+  csv+='\n';
+
+  csv+='=== NET POSITION ===\n';
+  csv+=csvRow(['Revenue Collected',fmtNum(totalPaid)]);
+  csv+=csvRow(['Less Expenses',fmtNum(totalExp)]);
+  csv+=csvRow(['Profit (approx)',fmtNum(totalPaid-totalExp)]);
+  csv+='\n\n';
+
+  csv+='=== INVOICES THIS MONTH ===\n';
+  csv+=csvRow(['Invoice #','Client','Description','Issue Date','Due Date','Amount','Status']);
+  monthInv.forEach(r=>{
+    csv+=csvRow([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),fmtNum(getTotal(r)),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
+  });
+  csv+='\n';
+
+  csv+='=== EXPENSES THIS MONTH ===\n';
+  csv+=csvRow(['Date','Description','Category','Job / Reference','Amount','Paid Via']);
+  monthExp.forEach(e=>{
+    csv+=csvRow([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',fmtNum(e.amount||0),e.payment_method||'']);
+  });
+
+  const fn='GG-Monthly-'+monthName.replace(' ','-')+'.csv';
+  downloadCSV(fn,csv);
+  showToast('✓ Monthly report exported!');
+}
+
+function exportAll(){
+  let csv='GROUNDWORK GARDENS — FULL EXPORT\n';
+  csv+='Generated: '+new Date().toLocaleDateString('en-AU')+'\n\n';
+
+  csv+='=== ALL INVOICES ===\n';
+  csv+=csvRow(['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']);
+  _invoices.forEach(r=>{
+    csv+=csvRow([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),fmtNum(getTotal(r)),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
+  });
+  csv+='\n';
+
+  csv+='=== ALL EXPENSES ===\n';
+  csv+=csvRow(['Date','Description','Category','Job / Reference','Amount','Paid Via']);
+  _expenses.forEach(e=>{
+    csv+=csvRow([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',fmtNum(e.amount||0),e.payment_method||'']);
+  });
+  csv+='\n';
+
+  csv+='=== ALL QUOTES ===\n';
+  csv+=csvRow(['Quote ID','Client','Date','Amount (inc GST)']);
+  _quotes.forEach(r=>{
+    csv+=csvRow([r.id,getClientName(r),r.updated_at?r.updated_at.substring(0,10):'',fmtNum(getTotal(r))]);
+  });
+
+  downloadCSV('GG-Full-Export-'+new Date().toLocaleDateString('en-AU').replace(/\//g,'-')+'.csv',csv);
+  showToast('✓ Full export downloaded!');
+}
+
+// ==================== LOAD DATA ====================
 async function loadAll(){
   setSyncStatus(true,'Refreshing...');
   try{
@@ -350,20 +488,15 @@ async function loadAll(){
     const paidInvoices=_invoices.filter(r=>getStatus(r)==='paid');
     const monthInvoices=_invoices.filter(r=>thisMonth(r.updated_at));
 
-    const totalInvoiced=monthInvoices.reduce((s,r)=>s+getTotal(r),0);
-    const totalOutstanding=unpaidInvoices.reduce((s,r)=>s+getTotal(r),0);
-    const totalPaid=paidInvoices.reduce((s,r)=>s+getTotal(r),0);
-
-    document.getElementById('m-invoiced').textContent=fmt(totalInvoiced);
+    document.getElementById('m-invoiced').textContent=fmt(monthInvoices.reduce((s,r)=>s+getTotal(r),0));
     document.getElementById('m-invoiced-sub').textContent=monthInvoices.length+' invoice'+(monthInvoices.length!==1?'s':'')+' this month';
-    document.getElementById('m-outstanding').textContent=fmt(totalOutstanding);
+    document.getElementById('m-outstanding').textContent=fmt(unpaidInvoices.reduce((s,r)=>s+getTotal(r),0));
     document.getElementById('m-outstanding-sub').textContent=unpaidInvoices.length+' unpaid';
-    document.getElementById('m-paid').textContent=fmt(totalPaid);
+    document.getElementById('m-paid').textContent=fmt(paidInvoices.reduce((s,r)=>s+getTotal(r),0));
     document.getElementById('m-paid-sub').textContent=paidInvoices.length+' paid';
 
     const monthExp=expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
-    const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-    document.getElementById('m-expenses').textContent=fmt(totalExp);
+    document.getElementById('m-expenses').textContent=fmt(monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0));
     document.getElementById('m-expenses-sub').textContent=monthExp.length+' expense'+(monthExp.length!==1?'s':'')+' this month';
 
     // Invoice list
@@ -375,19 +508,17 @@ async function loadAll(){
       const unique=[...new Map(sorted.map(r=>[r.id,r])).values()];
       invEl.innerHTML=unique.slice(0,8).map(r=>{
         const status=getStatus(r);
-        const total=getTotal(r);
-        const due=getDueDate(r);
         return `<div class="inv-item">
           <div>
             <div class="inv-name">${getClientName(r)}</div>
-            <div class="inv-sub">#${getInvNum(r)}${due&&due!=='—'?' · Due '+due:''}</div>
+            <div class="inv-sub">#${getInvNum(r)}${getDueDate(r)&&getDueDate(r)!==''?' · Due '+getDueDate(r):''}</div>
           </div>
           <div class="inv-right">
-            <div class="inv-amt ${status}">${fmt(total)}</div>
+            <div class="inv-amt ${status}">${fmt(getTotal(r))}</div>
             <span class="status-pill ${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span>
           </div>
         </div>`;
-      }).join('')+(_invoices.length>8?`<div class="empty-state">+ ${_invoices.length-8} more invoices</div>`:'');
+      }).join('')+(_invoices.length>8?`<div class="empty-state">+ ${_invoices.length-8} more</div>`:'');
     }
 
     // Quotes
@@ -402,7 +533,7 @@ async function loadAll(){
             <div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div>
           </div>
           <div class="quote-amt">${fmt(getTotal(r))}</div>
-        </div>`).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more quotes</div>`:'');
+        </div>`).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more</div>`:'');
     }
 
     // Leads
@@ -445,184 +576,6 @@ async function loadAll(){
     setSyncStatus(false,'⚠ Could not load data — check internet');
     console.error(e);
   }
-}
-
-// ==================== EXPORT FUNCTIONS ====================
-
-function styleHeader(ws, range, color) {
-  // Header styling is handled by SheetJS — basic export
-}
-
-function exportInvoices() {
-  if(!_invoices.length){ showToast('⚠ No invoices to export'); return; }
-
-  const rows=[['Groundwork Gardens — Invoice Report'],['Generated: '+new Date().toLocaleDateString('en-AU')],[''],
-    ['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']
-  ];
-
-  _invoices.forEach(r=>{
-    const total=getTotal(r);
-    rows.push([
-      getInvNum(r),
-      getClientName(r),
-      getDesc(r),
-      getIssueDate(r),
-      getDueDate(r),
-      parseFloat(fmtNum(total)),
-      getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)
-    ]);
-  });
-
-  // Totals
-  const paid=_invoices.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
-  const unpaid=_invoices.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
-  rows.push(['']);
-  rows.push(['','','','','Total Paid:',parseFloat(fmtNum(paid)),'']);
-  rows.push(['','','','','Total Outstanding:',parseFloat(fmtNum(unpaid)),'']);
-  rows.push(['','','','','Grand Total:',parseFloat(fmtNum(paid+unpaid)),'']);
-
-  const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:15},{wch:28},{wch:35},{wch:14},{wch:14},{wch:18},{wch:12}];
-
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,'Invoices',ws);
-
-  const month=months[now.getMonth()]+' '+now.getFullYear();
-  XLSX.writeFile(wb,'GG-Invoices-'+month.replace(' ','-')+'.xlsx');
-  showToast('✓ Invoices exported!');
-}
-
-function exportExpenses() {
-  if(!_expenses.length){ showToast('⚠ No expenses to export'); return; }
-
-  const rows=[['Groundwork Gardens — Expense Report'],['Generated: '+new Date().toLocaleDateString('en-AU')],[''],
-    ['Date','Description','Category','Job / Reference','Amount','Paid Via']
-  ];
-
-  _expenses.forEach(e=>{
-    rows.push([
-      e.expense_date||'',
-      e.description||'',
-      e.category||'',
-      e.job_ref||'',
-      parseFloat(fmtNum(e.amount||0)),
-      e.payment_method||''
-    ]);
-  });
-
-  // Category totals
-  const cats=['Materials','Fuel','Labour','Tools','Other'];
-  rows.push(['']);
-  rows.push(['TOTALS BY CATEGORY','','','','','']);
-  cats.forEach(cat=>{
-    const total=_expenses.filter(e=>e.category===cat).reduce((s,e)=>s+parseFloat(e.amount||0),0);
-    if(total>0) rows.push([cat,'','','',parseFloat(fmtNum(total)),'']);
-  });
-  const grandTotal=_expenses.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-  rows.push(['Grand Total','','','',parseFloat(fmtNum(grandTotal)),'']);
-
-  const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:14},{wch:32},{wch:14},{wch:22},{wch:12},{wch:16}];
-
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,'Expenses',ws);
-
-  const month=months[now.getMonth()]+' '+now.getFullYear();
-  XLSX.writeFile(wb,'GG-Expenses-'+month.replace(' ','-')+'.xlsx');
-  showToast('✓ Expenses exported!');
-}
-
-function exportMonthlyReport() {
-  const monthName=months[now.getMonth()]+' '+now.getFullYear();
-  const monthInvoices=_invoices.filter(r=>thisMonth(r.updated_at));
-  const monthExp=_expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
-
-  const wb=XLSX.utils.book_new();
-
-  // SUMMARY SHEET
-  const totalInvoiced=monthInvoices.reduce((s,r)=>s+getTotal(r),0);
-  const totalPaid=monthInvoices.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
-  const totalOutstanding=monthInvoices.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
-  const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-  const profit=totalPaid-totalExp;
-
-  const summaryRows=[
-    ['GROUNDWORK GARDENS'],
-    ['Monthly Report — '+monthName],
-    ['Generated: '+new Date().toLocaleDateString('en-AU')],
-    [''],
-    ['INCOME SUMMARY',''],
-    ['Total Invoiced (inc GST)',parseFloat(fmtNum(totalInvoiced))],
-    ['Total Collected (Paid)',parseFloat(fmtNum(totalPaid))],
-    ['Outstanding (Unpaid)',parseFloat(fmtNum(totalOutstanding))],
-    [''],
-    ['EXPENSE SUMMARY',''],
-    ['Total Expenses',parseFloat(fmtNum(totalExp))],
-    [''],
-    ['NET POSITION',''],
-    ['Revenue Collected',parseFloat(fmtNum(totalPaid))],
-    ['Less Expenses',parseFloat(fmtNum(totalExp))],
-    ['Profit (approx)',parseFloat(fmtNum(profit))],
-  ];
-
-  const ws1=XLSX.utils.aoa_to_sheet(summaryRows);
-  ws1['!cols']=[{wch:28},{wch:16}];
-  XLSX.utils.book_append_sheet(wb,'Summary',ws1);
-
-  // INVOICES SHEET
-  const invRows=[['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']];
-  monthInvoices.forEach(r=>{
-    invRows.push([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),parseFloat(fmtNum(getTotal(r))),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
-  });
-  const ws2=XLSX.utils.aoa_to_sheet(invRows);
-  ws2['!cols']=[{wch:15},{wch:28},{wch:32},{wch:14},{wch:14},{wch:18},{wch:12}];
-  XLSX.utils.book_append_sheet(wb,'Invoices',ws2);
-
-  // EXPENSES SHEET
-  const expRows=[['Date','Description','Category','Job / Reference','Amount','Paid Via']];
-  monthExp.forEach(e=>{
-    expRows.push([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',parseFloat(fmtNum(e.amount||0)),e.payment_method||'']);
-  });
-  const ws3=XLSX.utils.aoa_to_sheet(expRows);
-  ws3['!cols']=[{wch:14},{wch:32},{wch:14},{wch:22},{wch:12},{wch:16}];
-  XLSX.utils.book_append_sheet(wb,'Expenses',ws3);
-
-  XLSX.writeFile(wb,'GG-Monthly-Report-'+monthName.replace(' ','-')+'.xlsx');
-  showToast('✓ Monthly report exported!');
-}
-
-function exportFullReport() {
-  const wb=XLSX.utils.book_new();
-
-  // ALL INVOICES
-  const invRows=[['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']];
-  _invoices.forEach(r=>{
-    invRows.push([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),parseFloat(fmtNum(getTotal(r))),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
-  });
-  const ws1=XLSX.utils.aoa_to_sheet(invRows);
-  ws1['!cols']=[{wch:15},{wch:28},{wch:32},{wch:14},{wch:14},{wch:18},{wch:12}];
-  XLSX.utils.book_append_sheet(wb,'All Invoices',ws1);
-
-  // ALL EXPENSES
-  const expRows=[['Date','Description','Category','Job / Reference','Amount','Paid Via']];
-  _expenses.forEach(e=>{
-    expRows.push([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',parseFloat(fmtNum(e.amount||0)),e.payment_method||'']);
-  });
-  const ws2=XLSX.utils.aoa_to_sheet(expRows);
-  ws2['!cols']=[{wch:14},{wch:32},{wch:14},{wch:22},{wch:12},{wch:16}];
-  XLSX.utils.book_append_sheet(wb,'All Expenses',ws2);
-
-  // ALL QUOTES
-  const qRows=[['Quote ID','Client','Date','Amount (inc GST)']];
-  _quotes.forEach(r=>{
-    qRows.push([r.id,getClientName(r),r.updated_at?r.updated_at.substring(0,10):'',parseFloat(fmtNum(getTotal(r)))]);
-  });
-  const ws3=XLSX.utils.aoa_to_sheet(qRows);
-  ws3['!cols']=[{wch:16},{wch:28},{wch:14},{wch:16}];
-  XLSX.utils.book_append_sheet(wb,'All Quotes',ws3);
-
-  XLSX.writeFile(wb,'GG-Full-Report-'+new Date().toLocaleDateString('en-AU').replace(/\//g,'-')+'.xlsx');
-  showToast('✓ Full report exported!');
 }
 
 loadAll();
