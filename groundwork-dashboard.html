@@ -19,7 +19,6 @@
 
   .main-header { background: #1a2e17; border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 14px; }
   .main-header img { height: 44px; width: auto; object-fit: contain; }
-  .main-header .app-name { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-dim); }
 
   .tab-bar { display: flex; background: #1a2e17; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
   .tab-btn { flex: 1; padding: 14px 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; text-align: center; cursor: pointer; color: var(--cream-dim); border-bottom: 2px solid transparent; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; text-decoration: none; display: flex; align-items: center; justify-content: center; }
@@ -50,6 +49,7 @@
   .money-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 26px; line-height: 1; color: var(--text-primary); }
   .money-val.red { color: var(--red); }
   .money-val.gold { color: var(--gold); }
+  .money-val.green { color: var(--green-leaf); }
   .money-card.highlight .money-val { color: var(--white); }
   .money-sub { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
   .money-card.highlight .money-sub { color: rgba(240,236,224,0.6); }
@@ -58,8 +58,14 @@
   .inv-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
   .inv-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
   .inv-right { text-align: right; flex-shrink: 0; margin-left: 10px; }
-  .inv-amt { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px; color: var(--red); }
-  .status-pill { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 2px 7px; border-radius: 8px; text-transform: uppercase; display: inline-block; margin-top: 3px; background: rgba(192,57,43,0.12); color: var(--red); }
+  .inv-amt { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px; }
+  .inv-amt.unpaid { color: var(--red); }
+  .inv-amt.paid { color: var(--green-leaf); }
+  .inv-amt.partial { color: var(--gold); }
+  .status-pill { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 2px 7px; border-radius: 8px; text-transform: uppercase; display: inline-block; margin-top: 3px; }
+  .status-pill.unpaid { background: rgba(192,57,43,0.12); color: var(--red); }
+  .status-pill.paid { background: rgba(74,124,63,0.12); color: var(--green-leaf); }
+  .status-pill.partial { background: rgba(184,134,11,0.12); color: var(--gold); }
 
   .quote-item { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
   .quote-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
@@ -90,16 +96,13 @@
   .empty-state { text-align: center; padding: 16px; color: var(--text-secondary); font-size: 13px; }
   .empty-state.good { color: var(--green-bright); }
   .divider { height: 1px; background: #c5d4c0; margin: 16px 16px 0; }
-
-  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; padding: 14px 24px; border-radius: 8px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-  .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
 <div class="main-header">
-<img src="logo.png" alt="GG Logo" style="height:44px;width:auto;object-fit:contain">
-<span class="app-name">Dashboard</span>
+  <img src="logo.png" alt="GG Logo" style="height:44px;width:auto;object-fit:contain">
+  <a href="groundwork-gardens-tools.html" style="margin-left:auto;display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--cream-dim);font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;" onmouseover="this.style.color='#d4c9a8'" onmouseout="this.style.color='#9e9278'">🧮 Tools</a>
 </div>
 
 <div class="tab-bar">
@@ -133,19 +136,24 @@
       <div class="money-val red" id="m-expenses">—</div>
       <div class="money-sub" id="m-expenses-sub">Loading...</div>
     </div>
-    <div class="money-card full">
-      <div class="money-label">Total Quoted This Month</div>
-      <div class="money-val gold" id="m-quoted">—</div>
-      <div class="money-sub" id="m-quoted-sub">Loading...</div>
+    <div class="money-card">
+      <div class="money-label">Outstanding</div>
+      <div class="money-val gold" id="m-outstanding">—</div>
+      <div class="money-sub" id="m-outstanding-sub">Unpaid invoices</div>
+    </div>
+    <div class="money-card">
+      <div class="money-label">Collected</div>
+      <div class="money-val green" id="m-paid">—</div>
+      <div class="money-sub" id="m-paid-sub">Paid invoices</div>
     </div>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<!-- RECENT INVOICES -->
+<!-- ALL INVOICES -->
 <div class="section">
-  <div class="section-title">🧾 Recent Invoices</div>
+  <div class="section-title">🧾 Invoices</div>
   <div id="invoice-list"><div class="empty-state">Loading...</div></div>
 </div>
 
@@ -171,7 +179,7 @@
 <div class="section">
   <div class="section-title">📊 Expenses by Category</div>
   <div class="money-card" style="margin-bottom:4px">
-    <div id="exp-chart"><div class="empty-state">No expenses this month</div></div>
+    <div id="exp-chart"><div class="empty-state">Loading...</div></div>
   </div>
 </div>
 
@@ -210,7 +218,7 @@ async function db(path){
   return res.json();
 }
 
-function fmt(n){return '$'+Number(n||0).toFixed(2);}
+function fmt(n){return '$'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
 function setSyncStatus(ok,msg){const b=document.getElementById('syncBar');b.className='sync-bar'+(ok?'':' error');document.getElementById('syncMsg').textContent=msg;}
 
 // Date & greeting
@@ -227,15 +235,29 @@ function thisMonth(dateStr){
   return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();
 }
 
-// Extract total from the data JSON field
+// Extract total from data JSON
 function getTotal(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
+    // Try to sum items array first
+    if(d.items&&d.items.length){
+      return d.items.reduce(function(s,item){
+        return s+(parseFloat(item.price)||0)*(parseFloat(item.qty)||1);
+      },0)*1.10; // inc GST
+    }
     return parseFloat(d.total||d.grandTotal||d.amount||d.totalCost||0);
   }catch(e){return 0;}
 }
 
-// Extract invoice number from data
+// Extract payment status from data JSON
+function getStatus(record){
+  try{
+    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
+    return (d.status||'unpaid').toLowerCase();
+  }catch(e){return 'unpaid';}
+}
+
+// Extract invoice number
 function getInvNum(record){
   try{
     const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
@@ -243,15 +265,22 @@ function getInvNum(record){
   }catch(e){return record.id||'—';}
 }
 
-// Get client name - stored in the name field directly
+// Extract due date
+function getDueDate(record){
+  try{
+    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
+    return d.due||d.dueDate||'—';
+  }catch(e){return '—';}
+}
+
+// Get client name from name field
 function getClientName(record){
   if(record.name){
-    // name field is like "Ben - 54 Ronald St..." - take first part before " - "
     const parts=record.name.split(' — ');
     if(parts.length>1)return parts[0].trim();
     const parts2=record.name.split(' - ');
     if(parts2.length>1)return parts2[0].trim();
-    return record.name.split(' ').slice(0,2).join(' ');
+    return record.name.split(' ').slice(0,3).join(' ');
   }
   return 'Unknown';
 }
@@ -259,7 +288,7 @@ function getClientName(record){
 async function loadAll(){
   setSyncStatus(true,'Refreshing...');
   try{
-    const [ggQuotes, expenses, customers]=await Promise.all([
+    const [ggQuotes,expenses,customers]=await Promise.all([
       db('gg_quotes?order=updated_at.desc&limit=50'),
       db('expenses?order=expense_date.desc'),
       db('customers?order=created_at.desc')
@@ -269,16 +298,21 @@ async function loadAll(){
     const invoices=ggQuotes.filter(r=>r.id&&r.id.startsWith('invoice_'));
     const quotes=ggQuotes.filter(r=>r.id&&r.id.startsWith('quote_'));
 
-    // This month
+    // Calculate totals using items array
+    const unpaidInvoices=invoices.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
+    const paidInvoices=invoices.filter(r=>getStatus(r)==='paid');
+
     const monthInvoices=invoices.filter(r=>thisMonth(r.updated_at));
-    const monthQuotes=quotes.filter(r=>thisMonth(r.updated_at));
     const totalInvoiced=monthInvoices.reduce((s,r)=>s+getTotal(r),0);
-    const totalQuoted=monthQuotes.reduce((s,r)=>s+getTotal(r),0);
+    const totalOutstanding=unpaidInvoices.reduce((s,r)=>s+getTotal(r),0);
+    const totalPaid=paidInvoices.reduce((s,r)=>s+getTotal(r),0);
 
     document.getElementById('m-invoiced').textContent=fmt(totalInvoiced);
     document.getElementById('m-invoiced-sub').textContent=monthInvoices.length+' invoice'+(monthInvoices.length!==1?'s':'')+' this month';
-    document.getElementById('m-quoted').textContent=fmt(totalQuoted);
-    document.getElementById('m-quoted-sub').textContent=monthQuotes.length+' quote'+(monthQuotes.length!==1?'s':'')+' this month';
+    document.getElementById('m-outstanding').textContent=fmt(totalOutstanding);
+    document.getElementById('m-outstanding-sub').textContent=unpaidInvoices.length+' unpaid';
+    document.getElementById('m-paid').textContent=fmt(totalPaid);
+    document.getElementById('m-paid-sub').textContent=paidInvoices.length+' paid';
 
     // Expenses this month
     const monthExp=expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
@@ -286,25 +320,31 @@ async function loadAll(){
     document.getElementById('m-expenses').textContent=fmt(totalExp);
     document.getElementById('m-expenses-sub').textContent=monthExp.length+' expense'+(monthExp.length!==1?'s':'')+' this month';
 
-    // Recent invoices list
+    // Invoice list — show all, sorted unpaid first
     const invEl=document.getElementById('invoice-list');
     if(!invoices.length){
       invEl.innerHTML=`<div class="empty-state">No invoices yet</div>`;
     } else {
-      invEl.innerHTML=invoices.slice(0,5).map(r=>`
-        <div class="inv-item">
+      const sorted=[...unpaidInvoices,...invoices.filter(r=>getStatus(r)==='partial'),...paidInvoices];
+      const unique=[...new Map(sorted.map(r=>[r.id,r])).values()];
+      invEl.innerHTML=unique.slice(0,8).map(r=>{
+        const status=getStatus(r);
+        const total=getTotal(r);
+        const due=getDueDate(r);
+        return `<div class="inv-item">
           <div>
             <div class="inv-name">${getClientName(r)}</div>
-            <div class="inv-sub">${getInvNum(r)} · ${r.updated_at?r.updated_at.substring(0,10):''}</div>
+            <div class="inv-sub">#${getInvNum(r)}${due&&due!=='—'?' · Due '+due:''}</div>
           </div>
           <div class="inv-right">
-            <div class="inv-amt">${fmt(getTotal(r))}</div>
-            <span class="status-pill">Invoice</span>
+            <div class="inv-amt ${status}">${fmt(total)}</div>
+            <span class="status-pill ${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span>
           </div>
-        </div>`).join('')+(invoices.length>5?`<div class="empty-state">+ ${invoices.length-5} more invoices</div>`:'');
+        </div>`;
+      }).join('')+(invoices.length>8?`<div class="empty-state">+ ${invoices.length-8} more invoices</div>`:'');
     }
 
-    // Recent quotes list
+    // Recent quotes
     const quotesEl=document.getElementById('quotes-list');
     if(!quotes.length){
       quotesEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;
