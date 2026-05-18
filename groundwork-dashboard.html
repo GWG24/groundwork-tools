@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Groundwork Gardens — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
   :root {
     --black: #0a0a0a; --border: #2a2a2a;
@@ -42,7 +44,6 @@
 
   .money-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
   .money-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
-  .money-card.full { grid-column: 1/-1; }
   .money-card.highlight { background: var(--green-leaf); border-color: var(--green); }
   .money-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 4px; }
   .money-card.highlight .money-label { color: rgba(240,236,224,0.7); }
@@ -67,13 +68,13 @@
   .status-pill.paid { background: rgba(74,124,63,0.12); color: var(--green-leaf); }
   .status-pill.partial { background: rgba(184,134,11,0.12); color: var(--gold); }
 
-  .quote-item { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .quote-item { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
   .quote-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
   .quote-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
   .quote-amt { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px; color: var(--green-leaf); flex-shrink: 0; margin-left: 10px; }
 
-  .lead-item { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 11px 16px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-  .lead-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
+  .lead-item { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 11px 16px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+  .lead-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; }
   .lead-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
   .badge { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 3px 9px; border-radius: 10px; font-weight: 600; text-transform: uppercase; flex-shrink: 0; margin-left: 8px; }
   .badge-lead { background: rgba(184,134,11,0.15); color: var(--gold); }
@@ -83,28 +84,25 @@
   .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .bar-label { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); width: 72px; text-align: right; flex-shrink: 0; }
   .bar-track { flex: 1; background: #e8f0e6; border-radius: 2px; height: 8px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+  .bar-fill { height: 100%; border-radius: 2px; }
   .bar-val { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; width: 60px; text-align: right; flex-shrink: 0; }
 
   .export-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
-  .export-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 8px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; padding: 14px 10px; text-transform: uppercase; transition: background 0.2s; text-align: center; width: 100%; }
+  .export-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 8px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; padding: 16px 10px; text-transform: uppercase; transition: background 0.2s; text-align: center; width: 100%; }
   .export-btn:hover { background: var(--green); }
   .export-btn:active { opacity: 0.8; }
   .export-btn.orange { background: var(--orange); border-color: var(--orange); }
   .export-btn.orange:hover { background: #a86728; }
-  .export-btn.blue { background: #2e6da4; border-color: #2e6da4; }
-  .export-btn.blue:hover { background: #245a8c; }
-  .export-btn span { display: block; font-size: 20px; margin-bottom: 4px; }
+  .export-btn span { display: block; font-size: 22px; margin-bottom: 5px; }
 
   .shortcuts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 16px; }
   .shortcut { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px; text-decoration: none; color: var(--text-primary); display: flex; align-items: center; gap: 10px; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
-  .shortcut:hover { border-color: var(--green); box-shadow: 0 2px 8px rgba(74,124,63,0.15); }
+  .shortcut:hover { border-color: var(--green); }
   .shortcut-icon { font-size: 24px; flex-shrink: 0; }
-  .shortcut-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.5px; line-height: 1.2; color: var(--text-primary); }
+  .shortcut-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; line-height: 1.2; }
   .shortcut-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
 
   .empty-state { text-align: center; padding: 16px; color: var(--text-secondary); font-size: 13px; }
-  .empty-state.good { color: var(--green-bright); }
   .divider { height: 1px; background: #c5d4c0; margin: 16px 16px 0; }
 
   .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; padding: 14px 24px; border-radius: 8px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
@@ -194,14 +192,16 @@
 <div class="divider"></div>
 
 <div class="section">
-  <div class="section-title">📥 Export to Spreadsheet</div>
+  <div class="section-title">📄 Generate Reports</div>
   <div class="export-grid">
-    <button class="export-btn" onclick="exportInvoices()"><span>🧾</span>Invoices CSV</button>
-    <button class="export-btn orange" onclick="exportExpenses()"><span>💸</span>Expenses CSV</button>
-    <button class="export-btn blue" onclick="exportMonthly()"><span>📊</span>This Month</button>
-    <button class="export-btn blue" onclick="exportAll()"><span>📋</span>Full Export</button>
+    <button class="export-btn" onclick="generateMonthlyReport()">
+      <span>📊</span>Monthly Report
+    </button>
+    <button class="export-btn orange" onclick="generateFullReport()">
+      <span>📋</span>Full Report
+    </button>
   </div>
-  <div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:10px 0 4px">Downloads as CSV — opens in Excel, Numbers & Google Sheets</div>
+  <div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:10px 0 4px">Downloads as a branded PDF — ready to email to your accountant</div>
 </div>
 
 <div class="divider"></div>
@@ -243,20 +243,9 @@ async function db(path){
 }
 
 function fmt(n){return '$'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
-function fmtNum(n){return Number(n||0).toFixed(2);}
-
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
-}
-
-function setSyncStatus(ok,msg){
-  const b=document.getElementById('syncBar');
-  b.className='sync-bar'+(ok?'':' error');
-  document.getElementById('syncMsg').textContent=msg;
-}
+function fmtN(n){return Number(n||0).toFixed(2);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function setSyncStatus(ok,msg){const b=document.getElementById('syncBar');b.className='sync-bar'+(ok?'':' error');document.getElementById('syncMsg').textContent=msg;}
 
 const now=new Date();
 const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -265,209 +254,279 @@ const hour=now.getHours();
 document.getElementById('greeting').textContent=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
 document.getElementById('todayDate').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
 
-function thisMonth(dateStr){
-  if(!dateStr)return false;
-  const d=new Date(dateStr);
-  return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();
-}
+function thisMonth(d){if(!d)return false;const x=new Date(d);return x.getFullYear()===now.getFullYear()&&x.getMonth()===now.getMonth();}
 
-function getTotal(record){
+function getTotal(r){
   try{
-    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    if(d.items&&d.items.length){
-      return d.items.reduce((s,item)=>s+(parseFloat(item.price)||0)*(parseFloat(item.qty)||1),0)*1.10;
-    }
+    const d=typeof r.data==='string'?JSON.parse(r.data):r.data;
+    if(d.items&&d.items.length) return d.items.reduce((s,i)=>s+(parseFloat(i.price)||0)*(parseFloat(i.qty)||1),0)*1.10;
     return parseFloat(d.total||d.grandTotal||d.amount||0);
   }catch(e){return 0;}
 }
-
-function getStatus(record){
-  try{
-    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return (d.status||'unpaid').toLowerCase();
-  }catch(e){return 'unpaid';}
-}
-
-function getInvNum(record){
-  try{
-    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return d.num||d.number||record.id||'';
-  }catch(e){return record.id||'';}
-}
-
-function getDueDate(record){
-  try{
-    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return d.due||d.dueDate||'';
-  }catch(e){return '';}
-}
-
-function getIssueDate(record){
-  try{
-    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return d.date||record.updated_at?.substring(0,10)||'';
-  }catch(e){return '';}
-}
-
-function getDesc(record){
-  try{
-    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
-    return d.desc||d.jobTitle||'';
-  }catch(e){return '';}
-}
-
-function getClientName(record){
-  if(record.name){
-    const parts=record.name.split(' — ');
-    if(parts.length>1)return parts[0].trim();
-    const parts2=record.name.split(' - ');
-    if(parts2.length>1)return parts2[0].trim();
-    return record.name.split(' ').slice(0,3).join(' ');
+function getStatus(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return(d.status||'unpaid').toLowerCase();}catch(e){return 'unpaid';}}
+function getInvNum(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.num||d.number||r.id||'';}catch(e){return r.id||'';}}
+function getDue(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.due||d.dueDate||'';}catch(e){return '';}}
+function getDate(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.date||r.updated_at?.substring(0,10)||'';}catch(e){return '';}}
+function getDesc(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.desc||d.jobTitle||'';}catch(e){return '';}}
+function getClient(r){
+  if(r.name){
+    const p=r.name.split(' — ');if(p.length>1)return p[0].trim();
+    const p2=r.name.split(' - ');if(p2.length>1)return p2[0].trim();
+    return r.name.split(' ').slice(0,3).join(' ');
   }
   return 'Unknown';
 }
 
-// ==================== CSV EXPORT ====================
-function csvEscape(val){
-  if(val===null||val===undefined)return '';
-  const str=String(val);
-  if(str.includes(',')||str.includes('"')||str.includes('\n')){
-    return '"'+str.replace(/"/g,'""')+'"';
-  }
-  return str;
+// ==================== PDF REPORT ====================
+const LOGO_B64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASMAAAB4CAYAAAC5HpStAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAABueUlEQVR42u19eXxdR3X/98zMvfft2mzH2XcnsR2vygptJLaEEJaQSGVp+QElMYWwlaUtLTw9WtaWhABJSFgDhVIJCIGSEKCVAiEhiWQ7tiQnzr7Hm6S3v3vvzJzfH/c9WbYlb1lIy/vmc2Nbeu/euTNzzpz9EP7vg3p6IAYWg5GDrf8Ir1hz+oluvHQmUO628FcZy6eytIIQ/QcAlpkhLanKvGJ6+9JjBgYGJgAQAEYTTTTxnEL9n2dCAzADAzAAcNHfrFxWik++nkO8jOnxTuP6KRYEyxrGaBAkwDs5DQPWS0Cyrt4yMLB4qqcHsnGvJppo4vlhRtTTA7H7L7cuBgHnAEPAggW38sAA7P8GqaDBNAYGYN533pXeo8d+43XanVhTpsdfjrgFewY2NDAhLEgwM0hACSIBCwYhBFkFCAIZCWXbvgvkLNAjgYHmrmmiiedDejjgbzDonD7IBeN48TGnLEQWQC4H29NzZrx6+Lb3agouhRucaJSPMCAoC80EIoaY1scAMBgEApMBswCzYuGGEH5qorV0yvED1/0m31TRmmjieWZGr33X8iWcKn7Gt2WWsAQIWFi21v2Di7RvQ7GV2Ny3IL7wgeuvvHVqFymkHxIDwB+bMfX09MiBgQEDEF675uTeMD71cSR5eWjKsKG1gGIBGelh9WESRbyIeeewiTQMJ6ApNImYknbHvM/9+ppN/9DT3yMHegeaKloTTTyfzOgNaxafHs7bcqfPBopomqMQAGKCNQJWA8TYSuzeL2389zZQt6W3H/nbgYHf5Bs3OycLdWsfDOgFZUrU0w8x0AtzwV+tPsp0THyJYtULQ/ZhQ6stSCjrCBDDiAA0QxudjRmBAQ2XpSqzW5uXd8rHn/Lzb/7P1vp02OaWaaKJ54sZMejSNZeqh2K/WM+J4iLyXWspkBYCgoiJLSyYAAhIQUJSxLAMAb7zpGJ5M1dTv5z8fdvgH8b/MNGQlgZ6XwBJqa5ZAcBr1ix/q049cwV5tfm+T5rYCgEhLHHEgJhgye5iGNuTGTEEAz6kjicCJbfP++xNX3vk4+dkoW7NQTe3SxNNPH+Q5wDqJ5eP6BNOP6RG8dqF1lgIlhLCCqIIghBEJIiIyIJhYa221loL9kwL4nqV9MJe9+jSxYvOmB9buXz14wN//9BUpDpBjo8/Pwwpm4W4tRt85pkfip/6xq2X29SOzxsRJE1AmgiKiAiEnWYh4j0MZA1mtAtvZmWFownlzBPOxIK3v/mip2vX55oSURNNPO/M6NFbwQBo1dH/796qd9+7oKop1g6ILQEGDDFTwIkkpOgiGGKrrQmsz3B1h/D0K0Pa9o5TTlvQccopy+/+yQ8erWazELcOAcg9t4woMlKvbnEXrb1FZwoXl23JyDBGECyfjaBoiE1cCSmLHZf94voNf1iwAGJ8vMmMmmji+YYAwOdkIQcGrqg6fuobMeWQETVrhQOQAFEkQcx2CQIJVkrCk1ZL6/tG+06lNUxPfTRsf2D4/L854S9zObIg8DnnPDcxTTsZUU9L8fCtt+iWbWeHVRu6Oi0hQno2mqFla9wYKy62/Pym6zb9e2QUb8YVNdHECyIZAcCjt0ae7ZU/PXF9FZU36ZhtAYMldtVjGkxohiABJgaEBZEhIiuYJWsDwyqcJ2L6jSesatuy+Lilv//VLx7Pn5OFevTWZyFlZCFuzcG+oqenJTz0rluQmjwjqEitIBzR4Bl0INEKBMseJNVAVrB1waoWz7eak88fveuh0vjYOHBr05XfRBMvGDMCgHMAddMVT5RPWH3klEpVLjQ6NAIk9k3OqCdQiPoFEvXYgJBDKxPhUo6X3nrKsmMe/9UXt27s6YccHzgIAmdQdgh0zDGvb6nNu/sWpEpnhFWppSDFxGCazQa0P/woBLMDCGFcEVMoJt984zUjwz3jkONXN9WzJpp4wZnRo7eCe3ogF3oXjhb1Q90iER5jjDQEFgd1Z4qYkq+VDmKFjFC1nsVLj8vf8Pfb7shmIW699cDudg4gr8+RWfhn1V+KTP4lfo1CEtrZyRIPUk9lQiARxmJwwieTX/j1tx7+ak8/5ECuqZ410cQLbTOalj0WLwZfd911Ydw/8RJZTddIhlFo8kGCIaDIKllLWB+BsfO3XHH+35z01VwOtqe/bgTfD5yThbw1B/3q9xz1ZcoUzqlVZUjEDkPCgmCB6etAOaaFCNOOdGhH5kf//d3H/m5GWEITTTTxR2JGyOVgz8lC/eS6W+9FLfmPsVhMMrEWdlpTOnDxCBoOjBAmLspBLUTbtvee+96TrhroFeacLOS+GFJPf8SIzr3s6DejpfK+wGcNsGMb6tUBjimKNLIgZlggdBLWQaHlRzdf80hvTw+/MPFRTTTRxN6ZEQDcmoM5J3uOuama+64It2Vu9jzhaBHqiLEcqMBgAUhYIpAISBnXqfocyrbt73n1ew+78tYcdJ0hzYpsFmKgB/ZVb19yJBx7TaADy8yCiQF2AQoOmG8IZlgoaMFhPGYdUWj50S+++mAvskQD/U1G1EQTLxpmBACLxQJpkkNDWZ89JgKTY0NnZGQLZgzs56yoaWz43CAPEEp6QnLpl2bK3ThKRFuTdmEykqVQuM5F95fCv+1saZW93V6qo3q9+bw4fZiYppAYUCBChDnzfzc8wzh4xTfgMBTtn4cMeS0QcUOK+cjWsgEI31AZEuhMAVj/0mz3c38oypI2Kyc2fD9EoTLf7NZcUwqRMMuXB8mE5zdioyEVrmtrL6p73ExGPHDe5f9KR9ErsVFhrGaQTdPT966/6h97eAdPb22s4CxEVM+OmJNTEi9dmFP1RXZSIyRa/jEAJzwXjwRkSjm2oXnPdZGaMSjabFdTba+644weHkHriZX61ZFOpQ0SIlpumxRylflwNzfvY1kwmnVrgm8luAD8d6osa9M1Jb9IK5qwYGoLo6+unqLne00REPLbus8sCHQCCZaDdAPP8rQc7KWEoax7IKhLEbMAsY8BuHeMazEQAJEVYn4PgQJ9F0Ox5LpAPHzPOvE8nMtUfFiYnjHDVZaO3//LKJavPnQTW7OUOxwAAjHFvtKryl7Ax1KpVTrv4zCMbv7Koqo64nE65cCNyvQDqUeBdkXra3P5NvOiYEXM5atUSySEgSGdvDGdv6AJEDrAd8eppqQTSQUnYfDmohXLhb+tqAcngyPXlcPOOuHTblLBQstoN4KddXZitV940yoiX6+PYZSz3rv3mq9OJp19eLVWCVLrNqRXjty5f+P7q4GDpoJrRWSsVCeUwN+rmM8/OSAih1TCwCzb+4ZvLrapIoZUB3J3Myqmx53bQU9vFg93dvaX5YzO7kxIEadjQgRVhx/im9/Y7i774aEyJIzMxr33K3/h5ovMu2dtYj0kHhrNZ8fvK0bc4FNy/oE2fODGhg2qtItNt4dvDUvmtD45/7g5C4t8LweE3rlgReSN3D65sookXBTNSjQhrMEAGFnIP4htb+6MTvVjFC0qYFgBcN4VyUAqXn/6u+6aZUZ2hsCm+XpFl9hzhhzy6bPkFDzGDhoay8vjO3vy96z73P7F4pqdaqUBAnjc8zA5Wk2ZmwrRLHju1G2ZqMZXl43d99ykSmtiWTown7YKKj8WO88S7dEWQEFKEBmRZ/CsR2cHBA6sp3Cg4PzY2sIN9e7/rukuZ7ZymFSkFyiXfegKvQ2z764gBKK73g6szNsPwXIF5raluAEPzeyB2MlwGrANYgoB0envJ3Hv3lR9QicxPq1NVE4/pt6/9w5VXrDzjA5vG7rLSc2azmT3FWA28lN5Q3Lz+yr8oVZ3r582Tp04Vi8hPGF9R0Uk5yT+Hl/9ztoV/eXDjlTeU/PRVyzvfuXFmdHkTTbwobEYaAIOmExoazeBGpg22BLJbb4yJZzYq+fQG19uy0Ys9vRHikY3pZH70wXv+/dTotO2X6Oozg4OsiMpnhdUaeW4M1ibuZM6qR4ay3jFRS21lTNvvpQOEoTaOY45NOt88LnLt901LDlaYetMJwZJ86WHbLY77xEZHPr2hNV36cSZRvmZhuvw+J0Dci9dkLDlPTZbSH128+n139Pf3y66u3EER2rZtZUFA1AyFdmUuu6ho9aZ2LjESbgFxr4C4U0FchdNXUlUR9wqAKsxuMwJAFIIsawA4+bT3/yxfwh+8BCjuSpVw6ONEYCFlfXn2LGEWeceyYtGKD6x7YOvyP58st1yuReaJdKvnJROeKFQqXJgIA2XMgtZUcU1rYsddG+786lvnii5vook/os1oLoxMSyeSSumUlwcFLjEBYRgCKNu4l1LFQM8DgOOOmxREZDYP/+RoV6kTappohUmRsvN+TPRBPdMe9OBw/w2F8rZ/IxDSMeFsnQheAuC+oSGIrp1yRUR8LCGoAsc1ECRgiBAEBL9iQ5AmqTLCt/G780X3U8tOe+9NM3PTDmQyduaB/bjNiqeOD8IaHM/b+wRKi1C7+apOPcNksbunTljPuuWMQJiKklrH57pTg+ERB7j2U+wFN5UntUnES70bh6/MBurQZySznJ6TWdToyJXfPQXgw5s23dZXqo69wZqJv1aOPCuZkG6pVMHUdgpcNx9ra/G/t2ndd54ievtgY76a5NDEH50ZEQmiGac/11MNVhcP5QaBat32zcma85ZAWysQppUwh8G4bHScrZEaADJbawIAQvnYWa1x4xVK0hSrVVj11MqN6794pGstQWiGlajSwzFHm7JLblqiBunE/hzAt4Chuq4HwIqo+Z3QCJFkvxZ/lAVCDQVFfmvCK833A0cnUyS2TCRuWXbaZTeNjmZdWtobPJtJCUPfkjIhsfSwFweUMRbxVEJszydvWLz6Q+/IZo3K5eQcNipb50VL9kr0w8PXOstXvfvm0ZF/HWqL+12eG8qKX/un7ZPLL4m3/oL2Np6d8UMDguilRQDfA/C9h+756Uk7So/8taeCd3uuTfsVN8zEtFM2+cv7mTuBvqaLv4kXh5pmrfK1FiYymhDIcmKmHQUAlpxxSd9nf/tnS05a+benhNR+WSKZhhXasvRJkx9RyAmNbwXnSGEgWbJEFem4/8V5Sf/61lT4nbY4rm9L2us7EuZah8O0tUDgaxDXzurvH3W7um41Oyv0SMASGJYsxUxVnvSyk1d89KSBFR86mXnh6YFun4o7LKpTvp7XWvrk+Pp/u2Dp0lzAsySaHgiSESMk1J2JjLlvJ1hEXflg0dXVVWc6s137h8zWUQEwhFnwvgBsSvnQeo7+f/My37mYWO6QUhHtw+7VCJOIenFBHLf8DfedvOKDHwtKi/7M6ORjTkzLckUb16kuPmHdD45rSFVNcmjij86MKvHOe6s1WxAknCDQEGxWg0GYYXPp7++X1176eQsiFiZkggZZBcE7db0TT5wIBwdZSeizAx+AscLzEkKQgDQ+mA0YGowQEhbxeExY0qLmE7uOPva44+45jgg8NrZNTA+OLIgJgjUcZ5sFEb92ZI08ZeU7HvGD1PvdeFpoaIauwmO+YnBwMIaexXxwMTVRgKF0KyclY14crAOlBABvXaSGvmJPgiULyEY4ZtezXpAn4+2GuUcuPv1to+Wa++NUiyMEh/BoW5+AiVkbxZvvCw2mlMvBZrNZwZuv9E668033VGr4QTqZFJah4zHhOnbiuOgbS5oxSE38cZkRMyh8JgyZxIRyBEK/DCJ9wtp1/fMARqPLZW9vrxkaWrzXFAKinJ2X/uHRnqTjfT+0KiZE1bfjk2X1o8mq/PFUhX40WZE/mqyIH09UxI+KVXGX6xEsaZ3wlBMT5aUAsC05NuspHQSSANBDD01aHsyqJaev+d6OvPeLllbHqRXht7bYE+a3jfxdlDLSdxDS0XxiBgkKVsRiWghoC3jQ1nnohVyUgYGo6oHkef9SCKTRWrPrFE8S0u+wLMyBZnHkcjmLEw/Vg4NZRTI+HoYMkCGGgSDTTJJt4kUiGQ2dI7u7u2uwsTvduGJr4bem3LTDj55HRNzVhenctHT6MGJmEMSc1KCcwpJE3HhsrHYTaQ6x8J8Wr/y7npNWfvLik1f+U8/JKz/ec/LKf7z45JUf7+Ha/PcJGWfLgl1p4FJlFQB4T2f2Rm08NraY0QXLDAqdIz5S8mMl4ShVrkzZmPA/sHbtTfO7uvrMwEDPrExtOlcsfRhFEdL9kgezCtjGRGBC9R1hLYQRrEpVy1K0/w4AVj/UZvd2v/r87C03bb+4SBT/0yNO6XznxnIt/uOWTEpwqEMyOvLuzTaGbFYwD6rBwayKoq13vR4ZGnO6u3PaGn+pUgSwZGIH5CSb6lkTLwqoIXQBuBUCiR+G1r7FiKLw/Sp7Tuyz4+M3/2bx4lc/PSMSMQTWYHz46jCi2ihnTM8MmtbV1Y4ksIAoFUO4pO9n7pcDA2Nyfr31dL3dM0/56jGu2KJLKhNqDXB1FQDMm/fIPo0sRDnLg1m1rPvie0dH/vVrh7V5H9kxGdba20Wbnhx9P9H5n2CeJZ2FLASpRk7dHklq9677Yl86iRXlUhjGk54slNVo1S4arZdamWVcBCVj4c77rXlOpaN7N6T+pVybeKNgRxoCEzSAPT18lMtZ5PYamGrW3fEfx8TjT76lWJligutWqqacSiys+/d6mhHZTfxxmVF3d1SyFHjXL+4buXy4LZXpLJWqQTzhHB7Y0ds2rb/8p8FH/Y+ZStdCryJr5GmSj88zTAAkAAU1I0JAiGBlGBKEIlkL5FM1dfzDJM414F190sygvr7s1rdeGH844dDyamDBbJcMD/8sceKJr60CX4Gwe/c29w1F9pBafOHl+cKTlzpKpoqlsvVE8j133vlfVwGv2bJrSDeBjQZ0LHnHHTce0uJowVXbHuuoHKtr5Q5H+RfHnfCCWrlkCMzJ2DyxoxT7TGdnZxgVgNvTEs2WUc7XFt5xx42HtLS4Ip+fnPGZMoAFAIAkknjf33/F//znvxsAqGhjaF/SEff3yFN612wcH/7ijw9p1X8xUQq1NI2ySpFAc//97RKAXrv2u2cfdQhfuGX7jieUDR6gRgQnEfkAXJ0+xXGe/ltXhAurtVjYkjJyooTxc1/zoe39/T1yF3dqE008MZhRdAqPU28vmY1rr3pPzdJdrfHQzVdLoePycZlk2zcnio/6KqO1K5gSNsHS+qparDGxIWEdG9U/AwZHB1M2/MPSIKjCdVwKtXx8xYpzy7PWKhroEblczrzlDV/cLJRdZioVdqTXTuWt84no0frwmDmYM1ool8vZehGyp8dHrvj6gnb74fyEqba2O+21wv1/RUT/ygy64/GI/UkpUSpYVlR5S7t370XEAKXCeMJxhJAEcIBiuaxjJFRrR4t8YkJeuXTVmv+MiHX3uKX6/Uo1m0rSBUkx/iBVHXR4PpgMpmtr8zYYYtOWScqrLv+zTy5d/ZErAEBJycz7yJrv6Wdmog13HPLpgv/oxQogG4XJT/PF7du1AIA4VV7S5umPBE4ZUirQtBDHsCAoUUa1OoVaFdpxyJHxNFBp++wDDzxAk5MvE9gZ6NREE38km1HjFOasOHXVe+8u+N65JZG4N9nS6giRRL5YsK4se45TS3qykog725JKlj1HCfKSpJxkShjRUi8Z8pQjybRbbeC6EoxwA4B61cfdCW1xlPUFeiAWc4hhg0TMJlq8yeN3Dk44jgIx17P3Z8UYMzPV6PBvVcoKSthYtVpix5Te+fDDgzEicHHiAQFGDKRhwHBETcXVRDKmCklJVRFWawj0BGrWIpZpVRzvKDy9I/kvJ6+87IPoy9KsOVyMGMGAwXClRlwWknG1PRmTtWRc2GScTDJONhmTtaTL5XTSKScl/HkN6ZAEC9cVhL28GxFZDPSL5Wf/5cZKNdPf3hKXYKujz/NuC+nkq1WLMAxQrlRRLFVMqVQ1pVLVVEs1M5UvmBBAPJNS7CVKT2xLfOaklZfewMz+mjV7b0nVRBMvGDOatsFwVpy68r2/uvOJlWeWai1/q436LYm0b0ycwzDBftjOVd1qQ9HCGvHHarrt5nyh5RITpO5hZqpYE4ATj7JoQ2hTsOxu34uSFQXokf+bYtV7BtQqSKbgi7ZTgSj731j1RLkWn2LZQhoJBmKz2o7Q10erVvWO+2V5pYq3lCt+3Dpu5uTCjkdWAICvq2wRH9XIQJOL0CZRC9u4qlvYcIJ16Gw0JnmXDpO/8P2ODxfsUZ0nrnrvJ5izgnK5PTjFZK3GFt5oyGkYSiDkNHzdxjXdylUT56pxuWqjq2LiHKJNV8MWtoiHjXcLrVus+u5jrFoo5CTMLO8WMe0xZs4K13R8ulBRj7NoUaFNwkbRUDjLTWkACKvpH22ZoJxPyd9aim2HSglNnjAUl4Y9QTIlBKcfC2ru9aWpE85Ytvp9/xhFbFMz4LGJFwX+PySY6tbhSbxLAAAAAElFTkSuQmCC";
+
+function pdfHeader(doc, title, subtitle){
+  const pw=210, margin=15;
+  let y=12;
+  doc.addImage(LOGO_B64,'PNG',margin,y,60,14);
+  doc.setFontSize(8);doc.setTextColor(100,100,100);doc.setFont('helvetica','normal');
+  doc.text('Joffre Road, Pascoe Vale VIC 3044',pw-margin,y+5,{align:'right'});
+  doc.text('Phone: 0408 165 409',pw-margin,y+10,{align:'right'});
+  doc.text('groundworkgardens.email@gmail.com',pw-margin,y+15,{align:'right'});
+  y+=24;
+  doc.setDrawColor(61,107,52);doc.setLineWidth(0.8);doc.line(margin,y,pw-margin,y);y+=8;
+  doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(26,46,23);doc.text(title,margin,y);
+  if(subtitle){y+=6;doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(74,124,63);doc.text(subtitle,margin,y);}
+  y+=4;doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(120,120,120);
+  doc.text('ABN: 28 594 108 955',margin,y+5);
+  doc.text('Generated: '+new Date().toLocaleDateString('en-AU'),pw-margin,y+5,{align:'right'});
+  return y+14;
 }
 
-function csvRow(arr){
-  return arr.map(csvEscape).join(',')+'\n';
+function pdfSectionTitle(doc,title,y){
+  const margin=15,pw=210;
+  doc.setFillColor(240,247,238);doc.setDrawColor(74,124,63);doc.setLineWidth(0.3);
+  doc.rect(margin,y,pw-margin*2,7,'FD');
+  doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(61,107,52);
+  doc.text(title,margin+3,y+5);
+  return y+10;
 }
 
-function downloadCSV(filename, csvContent){
-  const blob=new Blob([csvContent],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download=filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+function pdfSummaryRow(doc,label,value,y,bold){
+  const margin=15,pw=210;
+  doc.setFont('helvetica',bold?'bold':'normal');
+  doc.setFontSize(10);doc.setTextColor(50,50,50);
+  doc.text(label,margin+3,y);
+  doc.setFont('helvetica',bold?'bold':'normal');
+  doc.text(value,pw-margin-3,y,{align:'right'});
+  return y+6;
 }
 
-function exportInvoices(){
-  if(!_invoices.length){showToast('⚠ No invoices to export — refresh first');return;}
-  let csv='Groundwork Gardens — Invoice Export\n';
-  csv+='Generated: '+new Date().toLocaleDateString('en-AU')+'\n\n';
-  csv+=csvRow(['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']);
-  _invoices.forEach(r=>{
-    csv+=csvRow([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),fmtNum(getTotal(r)),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
-  });
-  csv+='\n';
-  const paid=_invoices.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
-  const unpaid=_invoices.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
-  csv+=csvRow(['','','','','Total Paid',fmtNum(paid),'']);
-  csv+=csvRow(['','','','','Total Outstanding',fmtNum(unpaid),'']);
-  csv+=csvRow(['','','','','Grand Total',fmtNum(paid+unpaid),'']);
-  const month=months[now.getMonth()]+'-'+now.getFullYear();
-  downloadCSV('GG-Invoices-'+month+'.csv',csv);
-  showToast('✓ Invoices exported!');
+function generateMonthlyReport(){
+  showToast('Generating report...');
+  setTimeout(()=>{
+    try{
+      const jsPDF=window.jspdf.jsPDF;
+      const doc=new jsPDF({unit:'mm',format:'a4'});
+      const pw=210,margin=15,cw=pw-margin*2;
+      const monthName=months[now.getMonth()]+' '+now.getFullYear();
+
+      const monthInv=_invoices.filter(r=>thisMonth(r.updated_at));
+      const monthExp=_expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
+      const totalInv=monthInv.reduce((s,r)=>s+getTotal(r),0);
+      const totalPaid=monthInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+      const totalUnpaid=monthInv.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
+      const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+      const profit=totalPaid-totalExp;
+
+      let y=pdfHeader(doc,'Monthly Business Report',monthName);
+
+      // SUMMARY BOX
+      y=pdfSectionTitle(doc,'FINANCIAL SUMMARY',y);
+      doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
+      doc.rect(margin,y,cw,36,'FD');
+      y+=6;
+      y=pdfSummaryRow(doc,'Total Invoiced (inc GST)',fmt(totalInv),y,false);
+      y=pdfSummaryRow(doc,'Total Collected — Paid',fmt(totalPaid),y,false);
+      y=pdfSummaryRow(doc,'Outstanding — Unpaid',fmt(totalUnpaid),y,false);
+      y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);
+      doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
+      y=pdfSummaryRow(doc,'Estimated Profit (Collected − Expenses)',fmt(profit),y,true);
+      y+=6;
+
+      // INVOICES TABLE
+      if(monthInv.length){
+        if(y>220){doc.addPage();y=20;}
+        y=pdfSectionTitle(doc,'INVOICES THIS MONTH',y);
+        doc.autoTable({
+          startY:y,
+          head:[['Invoice #','Client','Description','Issue Date','Due Date','Amount','Status']],
+          body:monthInv.map(r=>{
+            const status=getStatus(r);
+            return [getInvNum(r),getClient(r),getDesc(r)||'—',getDate(r),getDue(r)||'—',fmt(getTotal(r)),status.charAt(0).toUpperCase()+status.slice(1)];
+          }),
+          theme:'plain',
+          headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+          bodyStyles:{fontSize:8,cellPadding:3,textColor:[50,50,50]},
+          columnStyles:{
+            0:{cellWidth:22},1:{cellWidth:38},2:{cellWidth:45},
+            3:{cellWidth:20,halign:'center'},4:{cellWidth:20,halign:'center'},
+            5:{cellWidth:22,halign:'right',fontStyle:'bold'},6:{cellWidth:18,halign:'center'}
+          },
+          didDrawCell:function(data){
+            if(data.section==='body'&&data.column.index===6){
+              const status=data.cell.raw.toLowerCase();
+              if(status==='paid'){doc.setTextColor(61,107,52);}
+              else if(status==='unpaid'){doc.setTextColor(192,57,43);}
+              else{doc.setTextColor(184,134,11);}
+            }
+          },
+          margin:{left:margin,right:margin}
+        });
+        y=doc.lastAutoTable.finalY+8;
+      }
+
+      // EXPENSES TABLE
+      if(monthExp.length){
+        if(y>200){doc.addPage();y=20;}
+        y=pdfSectionTitle(doc,'EXPENSES THIS MONTH',y);
+        doc.autoTable({
+          startY:y,
+          head:[['Date','Description','Category','Job / Reference','Amount','Paid Via']],
+          body:monthExp.map(e=>[e.expense_date||'—',e.description||'—',e.category||'—',e.job_ref||'—',fmt(e.amount||0),e.payment_method||'—']),
+          theme:'plain',
+          headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+          bodyStyles:{fontSize:8,cellPadding:3,textColor:[50,50,50]},
+          columnStyles:{0:{cellWidth:22},1:{cellWidth:50},2:{cellWidth:22},3:{cellWidth:38},4:{cellWidth:20,halign:'right'},5:{cellWidth:23}},
+          margin:{left:margin,right:margin}
+        });
+        y=doc.lastAutoTable.finalY+8;
+
+        // Category totals
+        if(y>230){doc.addPage();y=20;}
+        y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);
+        const cats=['Materials','Fuel','Labour','Tools','Other'];
+        const catTotals=cats.map(c=>({cat:c,total:monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
+        doc.autoTable({
+          startY:y,
+          head:[['Category','Total']],
+          body:[...catTotals.map(x=>[x.cat,fmt(x.total)]),['TOTAL',fmt(totalExp)]],
+          theme:'plain',
+          headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+          bodyStyles:{fontSize:9,cellPadding:3,textColor:[50,50,50]},
+          columnStyles:{0:{cellWidth:80},1:{cellWidth:40,halign:'right',fontStyle:'bold'}},
+          didDrawRow:function(data){if(data.row.index===catTotals.length)doc.setFont('helvetica','bold');},
+          margin:{left:margin,right:margin}
+        });
+        y=doc.lastAutoTable.finalY+6;
+      }
+
+      // Footer
+      if(y>255){doc.addPage();y=15;}
+      doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,y+6,pw-margin,y+6);
+      doc.setFontSize(7);doc.setTextColor(180,180,180);doc.setFont('helvetica','normal');
+      doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM',pw/2,y+11,{align:'center'});
+
+      doc.save('GG-Monthly-Report-'+monthName.replace(' ','-')+'.pdf');
+      showToast('✓ Monthly report downloaded!');
+    }catch(err){console.error(err);showToast('⚠ Error generating report');}
+  },100);
 }
 
-function exportExpenses(){
-  if(!_expenses.length){showToast('⚠ No expenses to export — refresh first');return;}
-  let csv='Groundwork Gardens — Expense Export\n';
-  csv+='Generated: '+new Date().toLocaleDateString('en-AU')+'\n\n';
-  csv+=csvRow(['Date','Description','Category','Job / Reference','Amount','Paid Via']);
-  _expenses.forEach(e=>{
-    csv+=csvRow([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',fmtNum(e.amount||0),e.payment_method||'']);
-  });
-  csv+='\n';
-  const cats=['Materials','Fuel','Labour','Tools','Other'];
-  csv+='TOTALS BY CATEGORY\n';
-  cats.forEach(cat=>{
-    const total=_expenses.filter(e=>e.category===cat).reduce((s,e)=>s+parseFloat(e.amount||0),0);
-    if(total>0)csv+=csvRow([cat,'','','',fmtNum(total),'']);
-  });
-  const grand=_expenses.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-  csv+=csvRow(['GRAND TOTAL','','','',fmtNum(grand),'']);
-  const month=months[now.getMonth()]+'-'+now.getFullYear();
-  downloadCSV('GG-Expenses-'+month+'.csv',csv);
-  showToast('✓ Expenses exported!');
-}
+function generateFullReport(){
+  showToast('Generating full report...');
+  setTimeout(()=>{
+    try{
+      const jsPDF=window.jspdf.jsPDF;
+      const doc=new jsPDF({unit:'mm',format:'a4'});
+      const pw=210,margin=15;
 
-function exportMonthly(){
-  const monthName=months[now.getMonth()]+' '+now.getFullYear();
-  const monthInv=_invoices.filter(r=>thisMonth(r.updated_at));
-  const monthExp=_expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
+      let y=pdfHeader(doc,'Full Business Report','All Invoices, Expenses & Quotes');
 
-  const totalInv=monthInv.reduce((s,r)=>s+getTotal(r),0);
-  const totalPaid=monthInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
-  const totalUnpaid=monthInv.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
-  const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+      // INVOICE SUMMARY
+      const totalPaidAll=_invoices.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+      const totalUnpaidAll=_invoices.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
+      const totalExpAll=_expenses.reduce((s,e)=>s+parseFloat(e.amount||0),0);
 
-  let csv='GROUNDWORK GARDENS — MONTHLY REPORT\n';
-  csv+=monthName+'\n';
-  csv+='Generated: '+new Date().toLocaleDateString('en-AU')+'\n\n';
+      y=pdfSectionTitle(doc,'OVERALL SUMMARY',y);
+      const cw=pw-margin*2;
+      doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
+      doc.rect(margin,y,cw,24,'FD');y+=6;
+      y=pdfSummaryRow(doc,'Total Revenue Collected (Paid Invoices)',fmt(totalPaidAll),y,false);
+      y=pdfSummaryRow(doc,'Total Outstanding (Unpaid)',fmt(totalUnpaidAll),y,false);
+      y=pdfSummaryRow(doc,'Total Expenses (All Time)',fmt(totalExpAll),y,false);
+      y+=4;
 
-  csv+='=== INCOME SUMMARY ===\n';
-  csv+=csvRow(['Total Invoiced (inc GST)',fmtNum(totalInv)]);
-  csv+=csvRow(['Total Collected (Paid)',fmtNum(totalPaid)]);
-  csv+=csvRow(['Outstanding (Unpaid)',fmtNum(totalUnpaid)]);
-  csv+='\n';
+      // ALL INVOICES
+      if(_invoices.length){
+        if(y>200){doc.addPage();y=20;}
+        y=pdfSectionTitle(doc,'ALL INVOICES',y);
+        doc.autoTable({
+          startY:y,
+          head:[['Invoice #','Client','Description','Date','Due','Amount','Status']],
+          body:_invoices.map(r=>{
+            const status=getStatus(r);
+            return [getInvNum(r),getClient(r),getDesc(r)||'—',getDate(r),getDue(r)||'—',fmt(getTotal(r)),status.charAt(0).toUpperCase()+status.slice(1)];
+          }),
+          theme:'plain',
+          headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+          bodyStyles:{fontSize:7.5,cellPadding:2.5,textColor:[50,50,50]},
+          columnStyles:{0:{cellWidth:22},1:{cellWidth:36},2:{cellWidth:46},3:{cellWidth:19,halign:'center'},4:{cellWidth:19,halign:'center'},5:{cellWidth:22,halign:'right'},6:{cellWidth:18,halign:'center'}},
+          didDrawCell:function(data){
+            if(data.section==='body'&&data.column.index===6){
+              const s=data.cell.raw.toLowerCase();
+              if(s==='paid')doc.setTextColor(61,107,52);
+              else if(s==='unpaid')doc.setTextColor(192,57,43);
+              else doc.setTextColor(184,134,11);
+            }
+          },
+          margin:{left:margin,right:margin}
+        });
+        y=doc.lastAutoTable.finalY+8;
+      }
 
-  csv+='=== EXPENSE SUMMARY ===\n';
-  csv+=csvRow(['Total Expenses',fmtNum(totalExp)]);
-  csv+='\n';
+      // ALL EXPENSES
+      if(_expenses.length){
+        if(y>200){doc.addPage();y=20;}
+        y=pdfSectionTitle(doc,'ALL EXPENSES',y);
+        doc.autoTable({
+          startY:y,
+          head:[['Date','Description','Category','Job / Reference','Amount','Paid Via']],
+          body:_expenses.map(e=>[e.expense_date||'—',e.description||'—',e.category||'—',e.job_ref||'—',fmt(e.amount||0),e.payment_method||'—']),
+          theme:'plain',
+          headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+          bodyStyles:{fontSize:7.5,cellPadding:2.5,textColor:[50,50,50]},
+          columnStyles:{0:{cellWidth:22},1:{cellWidth:50},2:{cellWidth:22},3:{cellWidth:38},4:{cellWidth:20,halign:'right'},5:{cellWidth:23}},
+          margin:{left:margin,right:margin}
+        });
+        y=doc.lastAutoTable.finalY+8;
+      }
 
-  csv+='=== NET POSITION ===\n';
-  csv+=csvRow(['Revenue Collected',fmtNum(totalPaid)]);
-  csv+=csvRow(['Less Expenses',fmtNum(totalExp)]);
-  csv+=csvRow(['Profit (approx)',fmtNum(totalPaid-totalExp)]);
-  csv+='\n\n';
+      // ALL QUOTES
+      if(_quotes.length){
+        if(y>200){doc.addPage();y=20;}
+        y=pdfSectionTitle(doc,'ALL QUOTES',y);
+        doc.autoTable({
+          startY:y,
+          head:[['Quote ID','Client','Date','Amount (inc GST)']],
+          body:_quotes.map(r=>[r.id,getClient(r),r.updated_at?r.updated_at.substring(0,10):'—',fmt(getTotal(r))]),
+          theme:'plain',
+          headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+          bodyStyles:{fontSize:8,cellPadding:3,textColor:[50,50,50]},
+          columnStyles:{0:{cellWidth:35},1:{cellWidth:70},2:{cellWidth:30,halign:'center'},3:{cellWidth:35,halign:'right'}},
+          margin:{left:margin,right:margin}
+        });
+        y=doc.lastAutoTable.finalY+6;
+      }
 
-  csv+='=== INVOICES THIS MONTH ===\n';
-  csv+=csvRow(['Invoice #','Client','Description','Issue Date','Due Date','Amount','Status']);
-  monthInv.forEach(r=>{
-    csv+=csvRow([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),fmtNum(getTotal(r)),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
-  });
-  csv+='\n';
+      // Footer
+      const pageCount=doc.internal.getNumberOfPages();
+      for(let i=1;i<=pageCount;i++){
+        doc.setPage(i);
+        doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);
+        doc.setFontSize(7);doc.setTextColor(180,180,180);
+        doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  Page '+i+' of '+pageCount,pw/2,292,{align:'center'});
+      }
 
-  csv+='=== EXPENSES THIS MONTH ===\n';
-  csv+=csvRow(['Date','Description','Category','Job / Reference','Amount','Paid Via']);
-  monthExp.forEach(e=>{
-    csv+=csvRow([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',fmtNum(e.amount||0),e.payment_method||'']);
-  });
-
-  const fn='GG-Monthly-'+monthName.replace(' ','-')+'.csv';
-  downloadCSV(fn,csv);
-  showToast('✓ Monthly report exported!');
-}
-
-function exportAll(){
-  let csv='GROUNDWORK GARDENS — FULL EXPORT\n';
-  csv+='Generated: '+new Date().toLocaleDateString('en-AU')+'\n\n';
-
-  csv+='=== ALL INVOICES ===\n';
-  csv+=csvRow(['Invoice #','Client','Description','Issue Date','Due Date','Amount (inc GST)','Status']);
-  _invoices.forEach(r=>{
-    csv+=csvRow([getInvNum(r),getClientName(r),getDesc(r),getIssueDate(r),getDueDate(r),fmtNum(getTotal(r)),getStatus(r).charAt(0).toUpperCase()+getStatus(r).slice(1)]);
-  });
-  csv+='\n';
-
-  csv+='=== ALL EXPENSES ===\n';
-  csv+=csvRow(['Date','Description','Category','Job / Reference','Amount','Paid Via']);
-  _expenses.forEach(e=>{
-    csv+=csvRow([e.expense_date||'',e.description||'',e.category||'',e.job_ref||'',fmtNum(e.amount||0),e.payment_method||'']);
-  });
-  csv+='\n';
-
-  csv+='=== ALL QUOTES ===\n';
-  csv+=csvRow(['Quote ID','Client','Date','Amount (inc GST)']);
-  _quotes.forEach(r=>{
-    csv+=csvRow([r.id,getClientName(r),r.updated_at?r.updated_at.substring(0,10):'',fmtNum(getTotal(r))]);
-  });
-
-  downloadCSV('GG-Full-Export-'+new Date().toLocaleDateString('en-AU').replace(/\//g,'-')+'.csv',csv);
-  showToast('✓ Full export downloaded!');
+      doc.save('GG-Full-Report-'+new Date().toLocaleDateString('en-AU').replace(/\//g,'-')+'.pdf');
+      showToast('✓ Full report downloaded!');
+    }catch(err){console.error(err);showToast('⚠ Error generating report');}
+  },100);
 }
 
 // ==================== LOAD DATA ====================
@@ -484,98 +543,55 @@ async function loadAll(){
     _quotes=ggQuotes.filter(r=>r.id&&r.id.startsWith('quote_'));
     _expenses=expenses;
 
-    const unpaidInvoices=_invoices.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
-    const paidInvoices=_invoices.filter(r=>getStatus(r)==='paid');
-    const monthInvoices=_invoices.filter(r=>thisMonth(r.updated_at));
-
-    document.getElementById('m-invoiced').textContent=fmt(monthInvoices.reduce((s,r)=>s+getTotal(r),0));
-    document.getElementById('m-invoiced-sub').textContent=monthInvoices.length+' invoice'+(monthInvoices.length!==1?'s':'')+' this month';
-    document.getElementById('m-outstanding').textContent=fmt(unpaidInvoices.reduce((s,r)=>s+getTotal(r),0));
-    document.getElementById('m-outstanding-sub').textContent=unpaidInvoices.length+' unpaid';
-    document.getElementById('m-paid').textContent=fmt(paidInvoices.reduce((s,r)=>s+getTotal(r),0));
-    document.getElementById('m-paid-sub').textContent=paidInvoices.length+' paid';
-
+    const unpaidInv=_invoices.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
+    const paidInv=_invoices.filter(r=>getStatus(r)==='paid');
+    const monthInv=_invoices.filter(r=>thisMonth(r.updated_at));
     const monthExp=expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
+
+    document.getElementById('m-invoiced').textContent=fmt(monthInv.reduce((s,r)=>s+getTotal(r),0));
+    document.getElementById('m-invoiced-sub').textContent=monthInv.length+' invoice'+(monthInv.length!==1?'s':'')+' this month';
+    document.getElementById('m-outstanding').textContent=fmt(unpaidInv.reduce((s,r)=>s+getTotal(r),0));
+    document.getElementById('m-outstanding-sub').textContent=unpaidInv.length+' unpaid';
+    document.getElementById('m-paid').textContent=fmt(paidInv.reduce((s,r)=>s+getTotal(r),0));
+    document.getElementById('m-paid-sub').textContent=paidInv.length+' paid';
     document.getElementById('m-expenses').textContent=fmt(monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0));
     document.getElementById('m-expenses-sub').textContent=monthExp.length+' expense'+(monthExp.length!==1?'s':'')+' this month';
 
-    // Invoice list
+    // Invoices list
     const invEl=document.getElementById('invoice-list');
-    if(!_invoices.length){
-      invEl.innerHTML=`<div class="empty-state">No invoices yet</div>`;
-    } else {
-      const sorted=[...unpaidInvoices,..._invoices.filter(r=>getStatus(r)==='partial'),...paidInvoices];
+    if(!_invoices.length){invEl.innerHTML=`<div class="empty-state">No invoices yet</div>`;}
+    else{
+      const sorted=[...unpaidInv,..._invoices.filter(r=>getStatus(r)==='partial'),...paidInv];
       const unique=[...new Map(sorted.map(r=>[r.id,r])).values()];
       invEl.innerHTML=unique.slice(0,8).map(r=>{
-        const status=getStatus(r);
-        return `<div class="inv-item">
-          <div>
-            <div class="inv-name">${getClientName(r)}</div>
-            <div class="inv-sub">#${getInvNum(r)}${getDueDate(r)&&getDueDate(r)!==''?' · Due '+getDueDate(r):''}</div>
-          </div>
-          <div class="inv-right">
-            <div class="inv-amt ${status}">${fmt(getTotal(r))}</div>
-            <span class="status-pill ${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span>
-          </div>
-        </div>`;
+        const s=getStatus(r);
+        return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span></div></div>`;
       }).join('')+(_invoices.length>8?`<div class="empty-state">+ ${_invoices.length-8} more</div>`:'');
     }
 
     // Quotes
-    const quotesEl=document.getElementById('quotes-list');
-    if(!_quotes.length){
-      quotesEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;
-    } else {
-      quotesEl.innerHTML=_quotes.slice(0,5).map(r=>`
-        <div class="quote-item">
-          <div>
-            <div class="quote-name">${getClientName(r)}</div>
-            <div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div>
-          </div>
-          <div class="quote-amt">${fmt(getTotal(r))}</div>
-        </div>`).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more</div>`:'');
-    }
+    const qEl=document.getElementById('quotes-list');
+    if(!_quotes.length){qEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;}
+    else{qEl.innerHTML=_quotes.slice(0,5).map(r=>`<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-amt">${fmt(getTotal(r))}</div></div>`).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more</div>`:'');}
 
     // Leads
     const leads=customers.filter(c=>c.type==='lead'||c.type==='followup');
-    const leadsEl=document.getElementById('leads-list');
-    if(!leads.length){
-      leadsEl.innerHTML=`<div class="empty-state">No active leads right now</div>`;
-    } else {
-      leadsEl.innerHTML=leads.slice(0,5).map(c=>`
-        <div class="lead-item">
-          <div>
-            <div class="lead-name">${c.name}</div>
-            <div class="lead-sub">${c.job||'No job noted'}${c.suburb?' · '+c.suburb:''}</div>
-          </div>
-          <span class="badge badge-${c.type}">${c.type==='followup'?'Follow-up':'Lead'}</span>
-        </div>`).join('')+(leads.length>5?`<div class="empty-state">+ ${leads.length-5} more</div>`:'');
-    }
+    const lEl=document.getElementById('leads-list');
+    if(!leads.length){lEl.innerHTML=`<div class="empty-state">No active leads</div>`;}
+    else{lEl.innerHTML=leads.slice(0,5).map(c=>`<div class="lead-item"><div><div class="lead-name">${c.name}</div><div class="lead-sub">${c.job||'No job noted'}${c.suburb?' · '+c.suburb:''}</div></div><span class="badge badge-${c.type}">${c.type==='followup'?'Follow-up':'Lead'}</span></div>`).join('')+(leads.length>5?`<div class="empty-state">+ ${leads.length-5} more</div>`:'');}
 
     // Expense chart
     const cats=['Materials','Fuel','Labour','Tools','Other'];
     const catColors={Materials:'var(--cat-materials)',Fuel:'var(--cat-fuel)',Labour:'var(--cat-labour)',Tools:'var(--cat-tools)',Other:'var(--cat-other)'};
-    const catTotals={};
-    cats.forEach(c=>catTotals[c]=monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0));
+    const catTotals={};cats.forEach(c=>catTotals[c]=monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0));
     const maxCat=Math.max(...Object.values(catTotals),1);
     const activeCats=cats.filter(c=>catTotals[c]>0);
     const chartEl=document.getElementById('exp-chart');
-    if(!activeCats.length){
-      chartEl.innerHTML=`<div class="empty-state">No expenses recorded this month</div>`;
-    } else {
-      chartEl.innerHTML=`<div class="bar-chart">`+activeCats.map(c=>`
-        <div class="bar-row">
-          <div class="bar-label">${c}</div>
-          <div class="bar-track"><div class="bar-fill" style="width:${(catTotals[c]/maxCat*100).toFixed(1)}%;background:${catColors[c]}"></div></div>
-          <div class="bar-val" style="color:${catColors[c]}">${fmt(catTotals[c])}</div>
-        </div>`).join('')+`</div>`;
-    }
+    if(!activeCats.length){chartEl.innerHTML=`<div class="empty-state">No expenses this month</div>`;}
+    else{chartEl.innerHTML=`<div class="bar-chart">`+activeCats.map(c=>`<div class="bar-row"><div class="bar-label">${c}</div><div class="bar-track"><div class="bar-fill" style="width:${(catTotals[c]/maxCat*100).toFixed(1)}%;background:${catColors[c]}"></div></div><div class="bar-val" style="color:${catColors[c]}">${fmt(catTotals[c])}</div></div>`).join('')+`</div>`;}
 
     setSyncStatus(true,'☁ Live data · '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}));
-  } catch(e){
-    setSyncStatus(false,'⚠ Could not load data — check internet');
-    console.error(e);
-  }
+  }catch(e){setSyncStatus(false,'⚠ Could not load data');console.error(e);}
 }
 
 loadAll();
