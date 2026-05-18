@@ -33,17 +33,14 @@
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
   .refresh-btn { background: none; border: none; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 1px; color: var(--green); cursor: pointer; text-decoration: underline; text-transform: uppercase; }
 
-  /* DATE BANNER */
   .date-banner { background: #1a2e17; padding: 10px 20px 14px; }
   .date-banner .greeting { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 2px; }
   .date-banner .today { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: var(--white); letter-spacing: 1px; }
 
-  /* SECTION */
   .section { padding: 16px 16px 0; }
   .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--green); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
   .section-title::after { content: ''; flex: 1; height: 1px; background: #c5d4c0; }
 
-  /* MONEY GRID */
   .money-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
   .money-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .money-card.full { grid-column: 1/-1; }
@@ -51,34 +48,31 @@
   .money-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 4px; }
   .money-card.highlight .money-label { color: rgba(240,236,224,0.7); }
   .money-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 26px; line-height: 1; color: var(--text-primary); }
-  .money-val.green { color: var(--green-leaf); }
   .money-val.red { color: var(--red); }
   .money-val.gold { color: var(--gold); }
   .money-card.highlight .money-val { color: var(--white); }
   .money-sub { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
   .money-card.highlight .money-sub { color: rgba(240,236,224,0.6); }
 
-  /* INVOICE LIST */
   .inv-item { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
   .inv-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
   .inv-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-  .inv-right { text-align: right; }
-  .inv-amt { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px; }
-  .inv-amt.unpaid { color: var(--red); }
-  .inv-amt.partial { color: var(--gold); }
-  .status-pill { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 2px 7px; border-radius: 8px; text-transform: uppercase; display: inline-block; margin-top: 3px; }
-  .status-pill.unpaid { background: rgba(192,57,43,0.12); color: var(--red); }
-  .status-pill.partial { background: rgba(184,134,11,0.12); color: var(--gold); }
+  .inv-right { text-align: right; flex-shrink: 0; margin-left: 10px; }
+  .inv-amt { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px; color: var(--red); }
+  .status-pill { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 2px 7px; border-radius: 8px; text-transform: uppercase; display: inline-block; margin-top: 3px; background: rgba(192,57,43,0.12); color: var(--red); }
 
-  /* LEADS */
+  .quote-item { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .quote-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
+  .quote-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .quote-amt { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px; color: var(--green-leaf); flex-shrink: 0; margin-left: 10px; }
+
   .lead-item { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 11px 16px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
   .lead-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
   .lead-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-  .badge { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 3px 9px; border-radius: 10px; font-weight: 600; text-transform: uppercase; }
+  .badge { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 3px 9px; border-radius: 10px; font-weight: 600; text-transform: uppercase; flex-shrink: 0; margin-left: 8px; }
   .badge-lead { background: rgba(184,134,11,0.15); color: var(--gold); }
   .badge-followup { background: rgba(192,122,47,0.15); color: var(--orange); }
 
-  /* BAR CHART */
   .bar-chart { padding: 4px 0 8px; }
   .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .bar-label { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); width: 72px; text-align: right; flex-shrink: 0; }
@@ -86,7 +80,6 @@
   .bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
   .bar-val { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; width: 60px; text-align: right; flex-shrink: 0; }
 
-  /* SHORTCUTS */
   .shortcuts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 16px; }
   .shortcut { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px; text-decoration: none; color: var(--text-primary); display: flex; align-items: center; gap: 10px; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .shortcut:hover { border-color: var(--green); box-shadow: 0 2px 8px rgba(74,124,63,0.15); }
@@ -94,9 +87,12 @@
   .shortcut-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.5px; line-height: 1.2; color: var(--text-primary); }
   .shortcut-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
 
-  .empty-state { text-align: center; padding: 16px; color: var(--text-secondary); font-size: 13px; font-family: 'Barlow', sans-serif; }
+  .empty-state { text-align: center; padding: 16px; color: var(--text-secondary); font-size: 13px; }
   .empty-state.good { color: var(--green-bright); }
   .divider { height: 1px; background: #c5d4c0; margin: 16px 16px 0; }
+
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; padding: 14px 24px; border-radius: 8px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
@@ -119,11 +115,11 @@
 </div>
 
 <div class="date-banner">
-  <div class="greeting">Good morning</div>
+  <div class="greeting" id="greeting">Good morning</div>
   <div class="today" id="todayDate"></div>
 </div>
 
-<!-- MONEY THIS MONTH -->
+<!-- THIS MONTH -->
 <div class="section" style="margin-top:16px">
   <div class="section-title">💰 This Month</div>
   <div class="money-grid">
@@ -138,19 +134,27 @@
       <div class="money-sub" id="m-expenses-sub">Loading...</div>
     </div>
     <div class="money-card full">
-      <div class="money-label">Outstanding Invoices</div>
-      <div class="money-val gold" id="m-outstanding">—</div>
-      <div class="money-sub" id="m-outstanding-sub">Loading...</div>
+      <div class="money-label">Total Quoted This Month</div>
+      <div class="money-val gold" id="m-quoted">—</div>
+      <div class="money-sub" id="m-quoted-sub">Loading...</div>
     </div>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<!-- UNPAID INVOICES -->
+<!-- RECENT INVOICES -->
 <div class="section">
-  <div class="section-title">🧾 Unpaid Invoices</div>
+  <div class="section-title">🧾 Recent Invoices</div>
   <div id="invoice-list"><div class="empty-state">Loading...</div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- RECENT QUOTES -->
+<div class="section">
+  <div class="section-title">📄 Recent Quotes</div>
+  <div id="quotes-list"><div class="empty-state">Loading...</div></div>
 </div>
 
 <div class="divider"></div>
@@ -167,7 +171,7 @@
 <div class="section">
   <div class="section-title">📊 Expenses by Category</div>
   <div class="money-card" style="margin-bottom:4px">
-    <div id="exp-chart"><div class="empty-state">Loading...</div></div>
+    <div id="exp-chart"><div class="empty-state">No expenses this month</div></div>
   </div>
 </div>
 
@@ -209,13 +213,12 @@ async function db(path){
 function fmt(n){return '$'+Number(n||0).toFixed(2);}
 function setSyncStatus(ok,msg){const b=document.getElementById('syncBar');b.className='sync-bar'+(ok?'':' error');document.getElementById('syncMsg').textContent=msg;}
 
-// Set date and greeting
+// Date & greeting
 const now=new Date();
 const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const hour=now.getHours();
-const greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
-document.querySelector('.greeting').textContent=greeting;
+document.getElementById('greeting').textContent=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
 document.getElementById('todayDate').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
 
 function thisMonth(dateStr){
@@ -224,50 +227,96 @@ function thisMonth(dateStr){
   return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();
 }
 
+// Extract total from the data JSON field
+function getTotal(record){
+  try{
+    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
+    return parseFloat(d.total||d.grandTotal||d.amount||d.totalCost||0);
+  }catch(e){return 0;}
+}
+
+// Extract invoice number from data
+function getInvNum(record){
+  try{
+    const d=typeof record.data==='string'?JSON.parse(record.data):record.data;
+    return d.num||d.number||d.invoiceNum||record.id||'—';
+  }catch(e){return record.id||'—';}
+}
+
+// Get client name - stored in the name field directly
+function getClientName(record){
+  if(record.name){
+    // name field is like "Ben - 54 Ronald St..." - take first part before " - "
+    const parts=record.name.split(' — ');
+    if(parts.length>1)return parts[0].trim();
+    const parts2=record.name.split(' - ');
+    if(parts2.length>1)return parts2[0].trim();
+    return record.name.split(' ').slice(0,2).join(' ');
+  }
+  return 'Unknown';
+}
+
 async function loadAll(){
   setSyncStatus(true,'Refreshing...');
   try{
-    const [invoices,expenses,customers]=await Promise.all([
-      db('invoices?order=created_at.desc'),
+    const [ggQuotes, expenses, customers]=await Promise.all([
+      db('gg_quotes?order=updated_at.desc&limit=50'),
       db('expenses?order=expense_date.desc'),
       db('customers?order=created_at.desc')
     ]);
 
-    // This month invoices
-    const monthInv=invoices.filter(i=>thisMonth(i.issue_date)||thisMonth(i.created_at));
-    const totalInvoiced=monthInv.reduce((s,i)=>s+parseFloat(i.total||0),0);
-    const unpaid=invoices.filter(i=>i.payment_status==='Unpaid'||i.payment_status==='Partial');
-    const totalOutstanding=unpaid.reduce((s,i)=>s+parseFloat(i.total||0),0);
-    document.getElementById('m-invoiced').textContent=fmt(totalInvoiced);
-    document.getElementById('m-invoiced-sub').textContent=monthInv.length+' invoice'+(monthInv.length!==1?'s':'')+' this month';
-    document.getElementById('m-outstanding').textContent=fmt(totalOutstanding);
-    document.getElementById('m-outstanding-sub').textContent=unpaid.length+' unpaid invoice'+(unpaid.length!==1?'s':'');
+    // Split invoices and quotes
+    const invoices=ggQuotes.filter(r=>r.id&&r.id.startsWith('invoice_'));
+    const quotes=ggQuotes.filter(r=>r.id&&r.id.startsWith('quote_'));
 
-    // This month expenses
+    // This month
+    const monthInvoices=invoices.filter(r=>thisMonth(r.updated_at));
+    const monthQuotes=quotes.filter(r=>thisMonth(r.updated_at));
+    const totalInvoiced=monthInvoices.reduce((s,r)=>s+getTotal(r),0);
+    const totalQuoted=monthQuotes.reduce((s,r)=>s+getTotal(r),0);
+
+    document.getElementById('m-invoiced').textContent=fmt(totalInvoiced);
+    document.getElementById('m-invoiced-sub').textContent=monthInvoices.length+' invoice'+(monthInvoices.length!==1?'s':'')+' this month';
+    document.getElementById('m-quoted').textContent=fmt(totalQuoted);
+    document.getElementById('m-quoted-sub').textContent=monthQuotes.length+' quote'+(monthQuotes.length!==1?'s':'')+' this month';
+
+    // Expenses this month
     const monthExp=expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
     const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
     document.getElementById('m-expenses').textContent=fmt(totalExp);
     document.getElementById('m-expenses-sub').textContent=monthExp.length+' expense'+(monthExp.length!==1?'s':'')+' this month';
 
-    // Unpaid invoice list
+    // Recent invoices list
     const invEl=document.getElementById('invoice-list');
-    const unpaidOnly=invoices.filter(i=>i.payment_status==='Unpaid');
-    const partialOnly=invoices.filter(i=>i.payment_status==='Partial');
-    const showInv=[...unpaidOnly,...partialOnly].slice(0,5);
-    if(!showInv.length){
-      invEl.innerHTML=`<div class="empty-state good">✅ No outstanding invoices — you're all clear!</div>`;
+    if(!invoices.length){
+      invEl.innerHTML=`<div class="empty-state">No invoices yet</div>`;
     } else {
-      invEl.innerHTML=showInv.map(i=>`
+      invEl.innerHTML=invoices.slice(0,5).map(r=>`
         <div class="inv-item">
           <div>
-            <div class="inv-name">${i.client_name||'Unknown client'}</div>
-            <div class="inv-sub">#${i.invoice_number||'—'} · Due ${i.due_date||'—'}</div>
+            <div class="inv-name">${getClientName(r)}</div>
+            <div class="inv-sub">${getInvNum(r)} · ${r.updated_at?r.updated_at.substring(0,10):''}</div>
           </div>
           <div class="inv-right">
-            <div class="inv-amt ${i.payment_status==='Partial'?'partial':'unpaid'}">${fmt(i.total)}</div>
-            <span class="status-pill ${i.payment_status==='Partial'?'partial':'unpaid'}">${i.payment_status}</span>
+            <div class="inv-amt">${fmt(getTotal(r))}</div>
+            <span class="status-pill">Invoice</span>
           </div>
-        </div>`).join('')+(unpaidOnly.length+partialOnly.length>5?`<div class="empty-state">+ ${unpaidOnly.length+partialOnly.length-5} more</div>`:'');
+        </div>`).join('')+(invoices.length>5?`<div class="empty-state">+ ${invoices.length-5} more invoices</div>`:'');
+    }
+
+    // Recent quotes list
+    const quotesEl=document.getElementById('quotes-list');
+    if(!quotes.length){
+      quotesEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;
+    } else {
+      quotesEl.innerHTML=quotes.slice(0,5).map(r=>`
+        <div class="quote-item">
+          <div>
+            <div class="quote-name">${getClientName(r)}</div>
+            <div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div>
+          </div>
+          <div class="quote-amt">${fmt(getTotal(r))}</div>
+        </div>`).join('')+(quotes.length>5?`<div class="empty-state">+ ${quotes.length-5} more quotes</div>`:'');
     }
 
     // Leads & follow-ups
@@ -308,6 +357,7 @@ async function loadAll(){
     setSyncStatus(true,'☁ Live data · '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}));
   } catch(e){
     setSyncStatus(false,'⚠ Could not load data — check internet');
+    console.error(e);
   }
 }
 
