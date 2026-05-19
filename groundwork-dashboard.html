@@ -8,6 +8,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
+  /* PIN LOCK */
+  .pin-overlay { display: none; position: fixed; inset: 0; background: #1a2e17; z-index: 999; flex-direction: column; align-items: center; justify-content: center; }
+  .pin-overlay.show { display: flex; }
+  .pin-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; color: var(--cream); letter-spacing: 3px; margin-bottom: 4px; }
+  .pin-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 40px; }
+  .pin-dots { display: flex; gap: 16px; margin-bottom: 36px; }
+  .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--cream-dim); background: transparent; transition: all 0.15s; }
+  .pin-dot.filled { background: var(--cream); border-color: var(--cream); }
+  .pin-dot.error { background: var(--red); border-color: var(--red); }
+  .pin-grid { display: grid; grid-template-columns: repeat(3, 72px); gap: 12px; }
+  .pin-key { width: 72px; height: 72px; border-radius: 50%; border: 1.5px solid rgba(212,201,168,0.25); background: rgba(255,255,255,0.06); font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 600; color: var(--cream); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+  .pin-key:active { background: rgba(255,255,255,0.18); transform: scale(0.93); }
+  .pin-key.del { font-size: 20px; }
+  .pin-key.empty { border: none; background: transparent; cursor: default; }
+  .pin-error-msg { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: 2px; color: var(--red); margin-top: 20px; opacity: 0; transition: opacity 0.2s; }
+  .pin-error-msg.show { opacity: 1; }
+
   :root {
     --black: #0a0a0a; --border: #2a2a2a;
     --cream: #d4c9a8; --cream-dim: #9e9278; --green: #4a7c3f;
@@ -141,6 +158,33 @@
 </style>
 </head>
 <body>
+
+<!-- PIN LOCK SCREEN -->
+<div class="pin-overlay show" id="pinOverlay">
+  <div class="pin-logo">🌿 GROUNDWORK</div>
+  <div class="pin-sub">Gardens — Dashboard</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-grid">
+    <button class="pin-key" onclick="pinPress('1')">1</button>
+    <button class="pin-key" onclick="pinPress('2')">2</button>
+    <button class="pin-key" onclick="pinPress('3')">3</button>
+    <button class="pin-key" onclick="pinPress('4')">4</button>
+    <button class="pin-key" onclick="pinPress('5')">5</button>
+    <button class="pin-key" onclick="pinPress('6')">6</button>
+    <button class="pin-key" onclick="pinPress('7')">7</button>
+    <button class="pin-key" onclick="pinPress('8')">8</button>
+    <button class="pin-key" onclick="pinPress('9')">9</button>
+    <button class="pin-key empty"></button>
+    <button class="pin-key" onclick="pinPress('0')">0</button>
+    <button class="pin-key del" onclick="pinDelete()">⌫</button>
+  </div>
+  <div class="pin-error-msg" id="pinError">Incorrect PIN — try again</div>
+</div>
 
 <div class="main-header">
   <img src="logo.png" alt="GG Logo" style="height:44px;width:auto;object-fit:contain">
@@ -282,6 +326,56 @@
 </div>
 
 <script>
+// ==================== PIN LOCK ====================
+const PIN = '2577';
+let pinEntry = '';
+
+function pinPress(digit){
+  if(pinEntry.length >= 4) return;
+  pinEntry += digit;
+  updatePinDots();
+  if(pinEntry.length === 4){
+    setTimeout(()=>{
+      if(pinEntry === PIN){
+        document.getElementById('pinOverlay').classList.remove('show');
+        sessionStorage.setItem('gg_unlocked','1');
+      } else {
+        document.querySelectorAll('.pin-dot').forEach(d=>d.classList.add('error'));
+        document.getElementById('pinError').classList.add('show');
+        setTimeout(()=>{
+          pinEntry='';
+          updatePinDots();
+          document.querySelectorAll('.pin-dot').forEach(d=>d.classList.remove('error'));
+          document.getElementById('pinError').classList.remove('show');
+        }, 900);
+      }
+    }, 150);
+  }
+}
+
+function pinDelete(){
+  pinEntry = pinEntry.slice(0,-1);
+  updatePinDots();
+}
+
+function updatePinDots(){
+  for(let i=0;i<4;i++){
+    document.getElementById('pd'+i).classList.toggle('filled', i < pinEntry.length);
+  }
+}
+
+// Check if already unlocked this session
+if(sessionStorage.getItem('gg_unlocked')==='1'){
+  document.getElementById('pinOverlay').classList.remove('show');
+}
+
+// Keyboard support
+document.addEventListener('keydown', function(e){
+  if(!document.getElementById('pinOverlay').classList.contains('show')) return;
+  if(e.key>='0'&&e.key<='9') pinPress(e.key);
+  if(e.key==='Backspace') pinDelete();
+});
+
 const SB_URL='https://vgegsaarmzuqpacisbrl.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
 
