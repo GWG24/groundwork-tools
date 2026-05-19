@@ -736,7 +736,14 @@ async function loadAll(){
     // Quotes
     const qEl=document.getElementById('quotes-list');
     if(!_quotes.length){qEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;}
-    else{qEl.innerHTML=_quotes.slice(0,5).map(r=>`<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-right"><div class="quote-amt">${fmt(getTotal(r))}</div><button class="approval-btn pending" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)">⏳ Pending</button></div></div>`).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more</div>`:'')+`<div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap Pending to mark a quote as approved</div>`;}
+    else{
+      qEl.innerHTML=_quotes.slice(0,5).map(r=>{
+        let approval='pending';
+        try{ const d=typeof r.data==='string'?JSON.parse(r.data):r.data; approval=d.approval||'pending'; }catch(e){}
+        const isApproved=approval==='approved';
+        return `<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-right"><div class="quote-amt">${fmt(getTotal(r))}</div><button class="approval-btn ${isApproved?'approved':'pending'}" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)">${isApproved?'✓ Approved':'⏳ Pending'}</button></div></div>`;
+      }).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more</div>`:'')+`<div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap to mark a quote as approved</div>`;
+    }
 
     // Leads
     const leads=customers.filter(c=>c.type==='lead'||c.type==='followup');
@@ -761,11 +768,30 @@ async function loadAll(){
 loadAll();
 
 // ==================== QUOTE APPROVAL ====================
-function toggleApproval(id, btn){
+async function toggleApproval(id, btn){
   const isApproved = btn.classList.contains('approved');
+  const newStatus = isApproved ? 'pending' : 'approved';
+
+  // Update UI immediately
   btn.classList.toggle('approved', !isApproved);
   btn.classList.toggle('pending', isApproved);
   btn.textContent = isApproved ? '⏳ Pending' : '✓ Approved';
+
+  // Save to Supabase — fetch current data, update approval field, patch back
+  try{
+    const res = await fetch(SB_URL+'/rest/v1/gg_quotes?id=eq.'+id+'&select=data', {
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    const rows = await res.json();
+    if(!rows.length) return;
+    const d = typeof rows[0].data==='string' ? JSON.parse(rows[0].data) : rows[0].data;
+    d.approval = newStatus;
+    await fetch(SB_URL+'/rest/v1/gg_quotes?id=eq.'+id, {
+      method:'PATCH',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({data:d})
+    });
+  }catch(e){ console.error('Approval save failed',e); }
 }
 
 // ==================== JOB NOTES ====================
