@@ -667,16 +667,62 @@ const JOB_COLORS = ['#3d6b34','#1a5276','#6c3483','#c07a2f','#c0392b','#1a7a6e',
 let jobNotes = [];
 let saveTimers = {};
 
-function loadJobNotes(){
+async function loadJobNotes(){
   try{
-    const stored = localStorage.getItem('gg_job_notes');
-    jobNotes = stored ? JSON.parse(stored) : [];
+    const data = await db('gg_job_notes?order=created_at.desc');
+    jobNotes = data.map(r=>({id:r.id, name:r.name, notes:r.notes||'', colorIdx:r.color_idx||0, date:r.created_at?new Date(r.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):''}));
   }catch(e){ jobNotes = []; }
   renderJobNotes();
 }
 
-function saveJobNotes(){
-  try{ localStorage.setItem('gg_job_notes', JSON.stringify(jobNotes)); }catch(e){}
+async function saveNoteForJob(id){
+  const ta = document.getElementById('notes-'+id);
+  if(!ta) return;
+  const job = jobNotes.find(j=>j.id===id);
+  if(!job) return;
+  job.notes = ta.value;
+  try{
+    await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+id, {
+      method:'PATCH',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({notes:job.notes, updated_at:new Date().toISOString()})
+    });
+    const saved = document.getElementById('saved-'+id);
+    if(saved){ saved.classList.add('show'); setTimeout(()=>saved.classList.remove('show'),2000); }
+  }catch(e){ console.error(e); }
+}
+
+async function deleteJobNote(id){
+  if(!confirm('Remove this job note?')) return;
+  try{
+    await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+id, {
+      method:'DELETE',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    jobNotes = jobNotes.filter(j=>j.id!==id);
+    renderJobNotes();
+    showToast('Job removed');
+  }catch(e){ showToast('⚠ Could not remove job'); }
+}
+
+async function saveNewJob(){
+  const name = document.getElementById('job-name-input').value.trim();
+  if(!name){ document.getElementById('job-name-input').focus(); return; }
+  const id = 'job_'+Date.now();
+  const colorIdx = jobNotes.length % JOB_COLORS.length;
+  const date = new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+  try{
+    await fetch(SB_URL+'/rest/v1/gg_job_notes', {
+      method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({id, name, notes:'', color_idx:colorIdx})
+    });
+    jobNotes.unshift({id, name, notes:'', colorIdx, date});
+    renderJobNotes();
+    closeAddJob();
+    showToast('✓ Job added!');
+    setTimeout(()=>toggleJobNote(id), 200);
+  }catch(e){ showToast('⚠ Could not save job'); }
 }
 
 function renderJobNotes(){
@@ -685,7 +731,7 @@ function renderJobNotes(){
     el.innerHTML = '<div class="empty-state">No jobs yet — tap + Add Job to start</div>';
     return;
   }
-  el.innerHTML = jobNotes.map((job, i) => {
+  el.innerHTML = jobNotes.map((job) => {
     const color = JOB_COLORS[job.colorIdx % JOB_COLORS.length];
     return `<div class="job-note-card" id="job-card-${job.id}">
       <div class="job-note-header" style="background:${color}" onclick="toggleJobNote('${job.id}')">
@@ -713,7 +759,6 @@ function toggleJobNote(id){
   const body = document.getElementById('body-'+id);
   const arrow = document.getElementById('arrow-'+id);
   const isOpen = body.classList.contains('open');
-  // Close all others first
   document.querySelectorAll('.job-note-body').forEach(b => b.classList.remove('open'));
   document.querySelectorAll('.job-note-arrow').forEach(a => a.classList.remove('open'));
   if(!isOpen){
@@ -728,22 +773,6 @@ function scheduleNoteSave(id){
   saveTimers[id] = setTimeout(()=>{ saveNoteForJob(id); }, 800);
 }
 
-function saveNoteForJob(id){
-  const ta = document.getElementById('notes-'+id);
-  if(!ta) return;
-  const job = jobNotes.find(j=>j.id===id);
-  if(job){ job.notes = ta.value; saveJobNotes(); }
-  const saved = document.getElementById('saved-'+id);
-  if(saved){ saved.classList.add('show'); setTimeout(()=>saved.classList.remove('show'),2000); }
-}
-
-function deleteJobNote(id){
-  if(!confirm('Remove this job note?')) return;
-  jobNotes = jobNotes.filter(j=>j.id!==id);
-  saveJobNotes();
-  renderJobNotes();
-}
-
 function openAddJob(){
   document.getElementById('job-name-input').value='';
   document.getElementById('jobOverlay').classList.add('show');
@@ -754,21 +783,6 @@ function closeAddJob(){
   document.getElementById('jobOverlay').classList.remove('show');
 }
 
-function saveNewJob(){
-  const name = document.getElementById('job-name-input').value.trim();
-  if(!name){ document.getElementById('job-name-input').focus(); return; }
-  const id = 'job_'+Date.now();
-  const colorIdx = jobNotes.length % JOB_COLORS.length;
-  const date = new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
-  jobNotes.unshift({id, name, date, notes:'', colorIdx});
-  saveJobNotes();
-  renderJobNotes();
-  closeAddJob();
-  showToast('✓ Job added!');
-  setTimeout(()=>toggleJobNote(id), 200);
-}
-
-// Allow Enter key to save job
 document.getElementById('job-name-input').addEventListener('keydown', function(e){
   if(e.key==='Enter') saveNewJob();
 });
