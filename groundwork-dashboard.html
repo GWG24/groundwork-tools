@@ -72,6 +72,10 @@
   .quote-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
   .quote-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
   .quote-amt { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px; color: var(--green-leaf); flex-shrink: 0; margin-left: 10px; }
+  .quote-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; margin-left: 10px; }
+  .approval-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; padding: 3px 10px; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
+  .approval-btn.pending { background: rgba(184,134,11,0.12); color: var(--gold); }
+  .approval-btn.approved { background: rgba(74,124,63,0.15); color: var(--green-leaf); }
 
   .lead-item { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 11px 16px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
   .lead-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; }
@@ -638,7 +642,7 @@ async function loadAll(){
     // Quotes
     const qEl=document.getElementById('quotes-list');
     if(!_quotes.length){qEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;}
-    else{qEl.innerHTML=_quotes.slice(0,5).map(r=>`<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-amt">${fmt(getTotal(r))}</div></div>`).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more</div>`:'');}
+    else{qEl.innerHTML=_quotes.slice(0,5).map(r=>`<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-right"><div class="quote-amt">${fmt(getTotal(r))}</div><button class="approval-btn pending" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)">⏳ Pending</button></div></div>`).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more</div>`:'')+`<div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap Pending to mark a quote as approved</div>`;}
 
     // Leads
     const leads=customers.filter(c=>c.type==='lead'||c.type==='followup');
@@ -661,6 +665,14 @@ async function loadAll(){
 }
 
 loadAll();
+
+// ==================== QUOTE APPROVAL ====================
+function toggleApproval(id, btn){
+  const isApproved = btn.classList.contains('approved');
+  btn.classList.toggle('approved', !isApproved);
+  btn.classList.toggle('pending', isApproved);
+  btn.textContent = isApproved ? '⏳ Pending' : '✓ Approved';
+}
 
 // ==================== JOB NOTES ====================
 const JOB_COLORS = ['#3d6b34','#1a5276','#6c3483','#c07a2f','#c0392b','#1a7a6e','#7d3c3c','#2e6da4','#7d6608','#4a4a8a'];
