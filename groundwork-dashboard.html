@@ -104,6 +104,33 @@
 
   .empty-state { text-align: center; padding: 16px; color: var(--text-secondary); font-size: 13px; }
   .divider { height: 1px; background: #c5d4c0; margin: 16px 16px 0; }
+  .job-note-card { border-radius: 10px; margin-bottom: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .job-note-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; cursor: pointer; user-select: none; }
+  .job-note-left { display: flex; align-items: center; gap: 10px; }
+  .job-note-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; background: rgba(255,255,255,0.4); }
+  .job-note-name { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: #ffffff; }
+  .job-note-date { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 1px; }
+  .job-note-arrow { font-size: 16px; color: rgba(255,255,255,0.7); transition: transform 0.2s; }
+  .job-note-arrow.open { transform: rotate(180deg); }
+  .job-note-body { display: none; background: #ffffff; border-top: 2px solid rgba(0,0,0,0.1); padding: 12px; }
+  .job-note-body.open { display: block; }
+  .job-note-textarea { width: 100%; min-height: 100px; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 10px; font-family: 'Barlow', sans-serif; font-size: 14px; color: var(--text-primary); resize: vertical; outline: none; background: #f9fbf8; }
+  .job-note-textarea:focus { border-color: var(--green); background: #fff; }
+  .job-note-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .job-note-saved { font-size: 11px; color: var(--green); opacity: 0; transition: opacity 0.3s; }
+  .job-note-saved.show { opacity: 1; }
+  .job-note-delete { background: none; border: none; font-size: 11px; color: #c0392b; cursor: pointer; padding: 4px 0; }
+  .add-job-btn { width: 100%; background: #ffffff; border: 1.5px dashed #c5d4c0; border-radius: 10px; padding: 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1px; color: var(--text-secondary); cursor: pointer; text-align: center; transition: all 0.2s; margin-top: 4px; }
+  .add-job-btn:hover { border-color: var(--green); color: var(--green); background: #f0f7ee; }
+  .job-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; justify-content: center; }
+  .job-overlay.show { display: flex; }
+  .job-modal { background: #fff; border-radius: 18px 18px 0 0; padding: 24px 20px 36px; width: 100%; max-width: 600px; }
+  .job-modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
+  .job-modal input { width: 100%; background: #f5f5f5; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 12px 14px; font-family: 'Barlow', sans-serif; font-size: 15px; color: var(--text-primary); outline: none; margin-bottom: 14px; }
+  .job-modal input:focus { border-color: var(--green); background: #fff; }
+  .job-modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .job-modal-cancel { background: #f0f0f0; border: none; border-radius: 8px; padding: 13px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1px; color: var(--text-secondary); cursor: pointer; }
+  .job-modal-save { background: var(--green-leaf); border: none; border-radius: 8px; padding: 13px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1px; color: #fff; cursor: pointer; }
 
   .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; padding: 14px 24px; border-radius: 8px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
   .toast.show { transform: translateX(-50%) translateY(0); }
@@ -176,6 +203,14 @@
 <div class="divider"></div>
 
 <div class="section">
+  <div class="section-title">📋 Job Notes</div>
+  <div id="job-notes-list"></div>
+  <button class="add-job-btn" onclick="openAddJob()">+ Add Job</button>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
   <div class="section-title">👥 Leads & Follow-ups</div>
   <div id="leads-list"><div class="empty-state">Loading...</div></div>
 </div>
@@ -230,6 +265,18 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- ADD JOB MODAL -->
+<div class="job-overlay" id="jobOverlay">
+  <div class="job-modal">
+    <div class="job-modal-title">New Job</div>
+    <input id="job-name-input" type="text" placeholder="e.g. Ben — Paving, Pascoe Vale" maxlength="60">
+    <div class="job-modal-btns">
+      <button class="job-modal-cancel" onclick="closeAddJob()">Cancel</button>
+      <button class="job-modal-save" onclick="saveNewJob()">Add Job</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SB_URL='https://vgegsaarmzuqpacisbrl.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
@@ -259,7 +306,21 @@ function thisMonth(d){if(!d)return false;const x=new Date(d);return x.getFullYea
 function getTotal(r){
   try{
     const d=typeof r.data==='string'?JSON.parse(r.data):r.data;
-    if(d.items&&d.items.length) return d.items.reduce((s,i)=>s+(parseFloat(i.price)||0)*(parseFloat(i.qty)||1),0)*1.10;
+    // Invoice format
+    if(d.items&&d.items.length){
+      return d.items.reduce((s,i)=>s+(parseFloat(i.price)||0)*(parseFloat(i.qty)||1),0)*1.10;
+    }
+    // Quote format: wage x hours + materials + overheads +/- margin
+    if(d.wage!==undefined||d.hours!==undefined){
+      const labour=(parseFloat(d.wage)||0)*(parseFloat(d.hours)||0);
+      const mats=d.materials&&d.materials.length?d.materials.reduce((s,m)=>s+(parseFloat(m.price)||0)*(parseFloat(m.qty)||1),0):0;
+      const overheads=parseFloat(d.overheads)||0;
+      const subtotal=labour+mats+overheads;
+      const margin=parseFloat(d.margin)||0;
+      let total=subtotal;
+      if(margin>0){total=d.markup?subtotal*(1+margin/100):subtotal/(1-margin/100);}
+      return isFinite(total)&&total>0?total*1.10:subtotal*1.10;
+    }
     return parseFloat(d.total||d.grandTotal||d.amount||0);
   }catch(e){return 0;}
 }
@@ -600,6 +661,119 @@ async function loadAll(){
 }
 
 loadAll();
+
+// ==================== JOB NOTES ====================
+const JOB_COLORS = ['#3d6b34','#1a5276','#6c3483','#c07a2f','#c0392b','#1a7a6e','#7d3c3c','#2e6da4','#7d6608','#4a4a8a'];
+let jobNotes = [];
+let saveTimers = {};
+
+function loadJobNotes(){
+  try{
+    const stored = localStorage.getItem('gg_job_notes');
+    jobNotes = stored ? JSON.parse(stored) : [];
+  }catch(e){ jobNotes = []; }
+  renderJobNotes();
+}
+
+function saveJobNotes(){
+  try{ localStorage.setItem('gg_job_notes', JSON.stringify(jobNotes)); }catch(e){}
+}
+
+function renderJobNotes(){
+  const el = document.getElementById('job-notes-list');
+  if(!jobNotes.length){
+    el.innerHTML = '<div class="empty-state">No jobs yet — tap + Add Job to start</div>';
+    return;
+  }
+  el.innerHTML = jobNotes.map((job, i) => {
+    const color = JOB_COLORS[job.colorIdx % JOB_COLORS.length];
+    return `<div class="job-note-card" id="job-card-${job.id}">
+      <div class="job-note-header" style="background:${color}" onclick="toggleJobNote('${job.id}')">
+        <div class="job-note-left">
+          <div class="job-note-dot"></div>
+          <div>
+            <div class="job-note-name">${job.name}</div>
+            <div class="job-note-date">Added ${job.date}</div>
+          </div>
+        </div>
+        <div class="job-note-arrow" id="arrow-${job.id}">▾</div>
+      </div>
+      <div class="job-note-body" id="body-${job.id}">
+        <textarea class="job-note-textarea" id="notes-${job.id}" placeholder="Add your job notes here..." oninput="scheduleNoteSave('${job.id}')">${job.notes||''}</textarea>
+        <div class="job-note-footer">
+          <span class="job-note-saved" id="saved-${job.id}">✓ Saved</span>
+          <button class="job-note-delete" onclick="deleteJobNote('${job.id}')">× Remove job</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleJobNote(id){
+  const body = document.getElementById('body-'+id);
+  const arrow = document.getElementById('arrow-'+id);
+  const isOpen = body.classList.contains('open');
+  // Close all others first
+  document.querySelectorAll('.job-note-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.job-note-arrow').forEach(a => a.classList.remove('open'));
+  if(!isOpen){
+    body.classList.add('open');
+    arrow.classList.add('open');
+    setTimeout(()=>{ const ta=document.getElementById('notes-'+id); if(ta) ta.focus(); },100);
+  }
+}
+
+function scheduleNoteSave(id){
+  clearTimeout(saveTimers[id]);
+  saveTimers[id] = setTimeout(()=>{ saveNoteForJob(id); }, 800);
+}
+
+function saveNoteForJob(id){
+  const ta = document.getElementById('notes-'+id);
+  if(!ta) return;
+  const job = jobNotes.find(j=>j.id===id);
+  if(job){ job.notes = ta.value; saveJobNotes(); }
+  const saved = document.getElementById('saved-'+id);
+  if(saved){ saved.classList.add('show'); setTimeout(()=>saved.classList.remove('show'),2000); }
+}
+
+function deleteJobNote(id){
+  if(!confirm('Remove this job note?')) return;
+  jobNotes = jobNotes.filter(j=>j.id!==id);
+  saveJobNotes();
+  renderJobNotes();
+}
+
+function openAddJob(){
+  document.getElementById('job-name-input').value='';
+  document.getElementById('jobOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('job-name-input').focus(),100);
+}
+
+function closeAddJob(){
+  document.getElementById('jobOverlay').classList.remove('show');
+}
+
+function saveNewJob(){
+  const name = document.getElementById('job-name-input').value.trim();
+  if(!name){ document.getElementById('job-name-input').focus(); return; }
+  const id = 'job_'+Date.now();
+  const colorIdx = jobNotes.length % JOB_COLORS.length;
+  const date = new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+  jobNotes.unshift({id, name, date, notes:'', colorIdx});
+  saveJobNotes();
+  renderJobNotes();
+  closeAddJob();
+  showToast('✓ Job added!');
+  setTimeout(()=>toggleJobNote(id), 200);
+}
+
+// Allow Enter key to save job
+document.getElementById('job-name-input').addEventListener('keydown', function(e){
+  if(e.key==='Enter') saveNewJob();
+});
+
+loadJobNotes();
 </script>
 </body>
 </html>
