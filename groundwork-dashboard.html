@@ -814,14 +814,21 @@ async function saveNoteForJob(id){
   if(!job) return;
   job.notes = ta.value;
   try{
-    await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+id, {
+    const encodedId = encodeURIComponent(id);
+    const res = await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+encodedId, {
       method:'PATCH',
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
       body:JSON.stringify({notes:job.notes, updated_at:new Date().toISOString()})
     });
-    const saved = document.getElementById('saved-'+id);
-    if(saved){ saved.classList.add('show'); setTimeout(()=>saved.classList.remove('show'),2000); }
-  }catch(e){ console.error(e); }
+    if(res.ok){
+      const saved = document.getElementById('saved-'+id);
+      if(saved){ saved.classList.add('show'); setTimeout(()=>saved.classList.remove('show'),2000); }
+    } else {
+      const err = await res.text();
+      console.error('Save notes failed:', res.status, err);
+      showToast('⚠ Could not save notes');
+    }
+  }catch(e){ console.error('Save notes error:',e); showToast('⚠ Could not save notes'); }
 }
 
 async function deleteJobNote(id){
@@ -840,21 +847,27 @@ async function deleteJobNote(id){
 async function saveNewJob(){
   const name = document.getElementById('job-name-input').value.trim();
   if(!name){ document.getElementById('job-name-input').focus(); return; }
-  const id = 'job_'+Date.now();
+  const id = 'jn'+Date.now();
   const colorIdx = jobNotes.length % JOB_COLORS.length;
   const date = new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
   try{
-    await fetch(SB_URL+'/rest/v1/gg_job_notes', {
+    const res = await fetch(SB_URL+'/rest/v1/gg_job_notes', {
       method:'POST',
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
       body:JSON.stringify({id, name, notes:'', color_idx:colorIdx})
     });
+    if(!res.ok){
+      const err = await res.text();
+      console.error('Add job failed:', res.status, err);
+      showToast('⚠ Could not add job');
+      return;
+    }
     jobNotes.unshift({id, name, notes:'', colorIdx, date});
     renderJobNotes();
     closeAddJob();
     showToast('✓ Job added!');
     setTimeout(()=>toggleJobNote(id), 200);
-  }catch(e){ showToast('⚠ Could not save job'); }
+  }catch(e){ console.error('Add job error:',e); showToast('⚠ Could not add job'); }
 }
 
 function renderJobNotes(){
