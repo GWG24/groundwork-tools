@@ -922,6 +922,7 @@ async function loadAll(){
     if(!_quotes.length){qEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;}
     else{
       window._qEl = qEl;
+      window._allQuotes = _quotes;
       renderQuoteList(5);
     }
 
