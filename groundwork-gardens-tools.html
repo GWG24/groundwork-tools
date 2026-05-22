@@ -300,11 +300,8 @@
       <div class="job-badge" id="badge-garden"></div><div class="job-toggle open" id="toggle-garden">▾</div>
     </div>
     <div class="job-body open" id="body-garden">
-      <div class="input-grid three">
-        <div class="field"><label>Area (m²)</label><input type="number" id="g-area" placeholder="0" oninput="calcGarden()"></div>
-        <div class="field"><label>Soil depth (mm)</label><input type="number" id="g-soil" value="300" oninput="calcGarden()"></div>
-        <div class="field"><label>Mulch depth (mm)</label><input type="number" id="g-mulch" value="75" oninput="calcGarden()"></div>
-      </div>
+<div id="gardenBedList"></div>
+      <button class="add-btn" onclick="addGardenBed()">+ Add Garden Bed</button>
       <div class="input-grid">
         <div class="field"><label>Garden edging (lm)</label><input type="number" id="g-edging" placeholder="0" oninput="calcGarden()"></div>
         <div class="field"><label>Weed mat (m²)</label><input type="number" id="g-weedmat" placeholder="0" oninput="calcGarden()"></div>
