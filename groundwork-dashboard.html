@@ -616,32 +616,35 @@ function generateQuarterlyReport(){
       const totalUnpaid=qInv.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
       const totalExp=qExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
 
+      // Cash basis - paid only
+      const qPaidInv=qInv.filter(r=>getStatus(r)==='paid');
+      const qTotalReceived=qPaidInv.reduce((s,r)=>s+getTotal(r),0);
+
       let y=pdfHeader(doc,'Quarterly Business Report',qName);
-      y=pdfSectionTitle(doc,'FINANCIAL SUMMARY',y);
+      y=pdfSectionTitle(doc,'FINANCIAL SUMMARY (CASH BASIS)',y);
       doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
-      doc.rect(margin,y,cw,30,'FD');y+=6;
-      y=pdfSummaryRow(doc,'Total Invoiced (inc GST)',fmt(totalInv),y,false);
-      y=pdfSummaryRow(doc,'Total Collected - Paid',fmt(totalPaid),y,false);
-      y=pdfSummaryRow(doc,'Outstanding - Unpaid',fmt(totalUnpaid),y,false);
+      doc.rect(margin,y,cw,24,'FD');y+=6;
+      y=pdfSummaryRow(doc,'Revenue Received (Paid Invoices inc GST)',fmt(qTotalReceived),y,false);
+      y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);
       doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
-      y=pdfSummaryRow(doc,'Estimated Profit',fmt(totalPaid-totalExp),y,true);
+      y=pdfSummaryRow(doc,'Net Profit (Revenue - Expenses)',fmt(qTotalReceived-totalExp),y,true);
       y+=8;
 
-      // Monthly breakdown within quarter
-      y=pdfSectionTitle(doc,'MONTHLY BREAKDOWN',y);
-      qMonths.forEach(m=>{
-        const mInv=_invoices.filter(r=>{const d=new Date(r.updated_at);return d.getFullYear()===now.getFullYear()&&d.getMonth()===m;});
-        const mExp=_expenses.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d.getFullYear()===now.getFullYear()&&d.getMonth()===m;});
-        const mRev=mInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
-        const mExp2=mExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-        if(y>250){doc.addPage();y=20;}
-        doc.autoTable({startY:y,head:[[months[m]+' '+now.getFullYear(),'Invoices','Revenue (Paid)','Expenses','Profit']],
-          body:[[mInv.length+' invoices',fmt(mInv.reduce((s,r)=>s+getTotal(r),0)),fmt(mRev),fmt(mExp2),fmt(mRev-mExp2)]],
+      // Revenue summary
+      if(qPaidInv.length){
+        if(y>220){doc.addPage();y=20;}
+        y=pdfSectionTitle(doc,'REVENUE RECEIVED THIS QUARTER',y);
+        doc.autoTable({startY:y,head:[['Month','Paid Invoices','Revenue (inc GST)']],
+          body:qMonths.map(m=>{
+            const mPaid=qInv.filter(r=>getStatus(r)==='paid'&&new Date(r.updated_at).getMonth()===m);
+            return [months[m]+' '+now.getFullYear(), mPaid.length, fmt(mPaid.reduce((s,r)=>s+getTotal(r),0))];
+          }),
           theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
-          bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:40},1:{cellWidth:30,halign:'right'},2:{cellWidth:35,halign:'right'},3:{cellWidth:30,halign:'right'},4:{cellWidth:30,halign:'right',fontStyle:'bold'}},
+          bodyStyles:{fontSize:9,cellPadding:3,textColor:[61,107,52]},
+          columnStyles:{0:{cellWidth:60},1:{cellWidth:40,halign:'center'},2:{cellWidth:70,halign:'right',fontStyle:'bold'}},
           margin:{left:margin,right:margin}});
-        y=doc.lastAutoTable.finalY+6;
-      });
+        y=doc.lastAutoTable.finalY+8;
+      }
 
       // Expenses by category
       if(y>200){doc.addPage();y=20;}
@@ -682,31 +685,34 @@ function generateYearlyReport(){
       const totalUnpaid=yrInv.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
       const totalExp=yrExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
 
+      // Cash basis - paid only
+      const yrPaidInv=yrInv.filter(r=>getStatus(r)==='paid');
+      const yrTotalReceived=yrPaidInv.reduce((s,r)=>s+getTotal(r),0);
+
       let y=pdfHeader(doc,'Yearly Business Report',String(yr));
-      y=pdfSectionTitle(doc,'ANNUAL SUMMARY',y);
+      y=pdfSectionTitle(doc,'ANNUAL SUMMARY (CASH BASIS)',y);
       doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
-      doc.rect(margin,y,cw,30,'FD');y+=6;
-      y=pdfSummaryRow(doc,'Total Invoiced (inc GST)',fmt(totalInv),y,false);
-      y=pdfSummaryRow(doc,'Total Collected - Paid',fmt(totalPaid),y,false);
-      y=pdfSummaryRow(doc,'Outstanding - Unpaid',fmt(totalUnpaid),y,false);
+      doc.rect(margin,y,cw,24,'FD');y+=6;
+      y=pdfSummaryRow(doc,'Revenue Received (Paid Invoices inc GST)',fmt(yrTotalReceived),y,false);
+      y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);
       doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
-      y=pdfSummaryRow(doc,'Estimated Annual Profit',fmt(totalPaid-totalExp),y,true);
+      y=pdfSummaryRow(doc,'Net Annual Profit (Revenue - Expenses)',fmt(yrTotalReceived-totalExp),y,true);
       y+=8;
 
-      // Monthly breakdown for full year
+      // Monthly revenue breakdown
       if(y>180){doc.addPage();y=20;}
-      y=pdfSectionTitle(doc,'MONTHLY BREAKDOWN — '+yr,y);
+      y=pdfSectionTitle(doc,'MONTHLY REVENUE BREAKDOWN — '+yr,y);
       const mRows=[];
       for(let m=0;m<12;m++){
-        const mInv=yrInv.filter(r=>new Date(r.updated_at).getMonth()===m);
+        const mPaid=yrPaidInv.filter(r=>new Date(r.updated_at).getMonth()===m);
         const mExp=yrExp.filter(e=>new Date(e.expense_date||e.created_at).getMonth()===m);
-        const mRev=mInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+        const mRev=mPaid.reduce((s,r)=>s+getTotal(r),0);
         const mExpT=mExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-        if(mInv.length||mExp.length) mRows.push([months[m],mInv.length,fmt(mInv.reduce((s,r)=>s+getTotal(r),0)),fmt(mRev),fmt(mExpT),fmt(mRev-mExpT)]);
+        if(mPaid.length||mExp.length) mRows.push([months[m],mPaid.length,fmt(mRev),fmt(mExpT),fmt(mRev-mExpT)]);
       }
-      doc.autoTable({startY:y,head:[['Month','Invoices','Invoiced','Collected','Expenses','Profit']],body:mRows,
+      doc.autoTable({startY:y,head:[['Month','Paid Invoices','Revenue','Expenses','Profit']],body:mRows,
         theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
-        bodyStyles:{fontSize:8,cellPadding:2.5},columnStyles:{0:{cellWidth:28},1:{cellWidth:18,halign:'center'},2:{cellWidth:30,halign:'right'},3:{cellWidth:30,halign:'right'},4:{cellWidth:30,halign:'right'},5:{cellWidth:30,halign:'right',fontStyle:'bold'}},
+        bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:35},1:{cellWidth:25,halign:'center'},2:{cellWidth:40,halign:'right'},3:{cellWidth:40,halign:'right'},4:{cellWidth:40,halign:'right',fontStyle:'bold'}},
         margin:{left:margin,right:margin}});
       y=doc.lastAutoTable.finalY+8;
 
