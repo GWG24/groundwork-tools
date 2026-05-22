@@ -510,88 +510,69 @@ function generateMonthlyReport(){
       const pw=210,margin=15,cw=pw-margin*2;
       const monthName=months[now.getMonth()]+' '+now.getFullYear();
 
-      const monthInv=_invoices.filter(r=>thisMonth(r.updated_at));
+      // Cash basis - only paid invoices
+      const monthPaidInv=_invoices.filter(r=>getStatus(r)==='paid'&&thisMonth(r.updated_at));
       const monthExp=_expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
-      const totalInv=monthInv.reduce((s,r)=>s+getTotal(r),0);
-      const totalPaid=monthInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
-      const totalUnpaid=monthInv.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
+      const totalReceived=monthPaidInv.reduce((s,r)=>s+getTotal(r),0);
       const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-      const profit=totalPaid-totalExp;
+      const profit=totalReceived-totalExp;
 
       let y=pdfHeader(doc,'Monthly Business Report',monthName);
 
       // SUMMARY BOX
-      y=pdfSectionTitle(doc,'FINANCIAL SUMMARY',y);
+      y=pdfSectionTitle(doc,'FINANCIAL SUMMARY (CASH BASIS)',y);
       doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
-      doc.rect(margin,y,cw,36,'FD');
+      doc.rect(margin,y,cw,30,'FD');
       y+=6;
-      y=pdfSummaryRow(doc,'Total Invoiced (inc GST)',fmt(totalInv),y,false);
-      y=pdfSummaryRow(doc,'Total Collected — Paid',fmt(totalPaid),y,false);
-      y=pdfSummaryRow(doc,'Outstanding — Unpaid',fmt(totalUnpaid),y,false);
+      y=pdfSummaryRow(doc,'Revenue Received (Paid Invoices inc GST)',fmt(totalReceived),y,false);
       y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);
       doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
-      y=pdfSummaryRow(doc,'Estimated Profit (Collected − Expenses)',fmt(profit),y,true);
+      y=pdfSummaryRow(doc,'Net Profit (Revenue - Expenses)',fmt(profit),y,true);
       y+=6;
 
-      // INVOICE TOTALS SUMMARY
-      if(monthInv.length){
+      // INVOICE SUMMARY - PAID ONLY
+      if(monthPaidInv.length){
         if(y>220){doc.addPage();y=20;}
-        y=pdfSectionTitle(doc,'INVOICE SUMMARY THIS MONTH',y);
-        const paidInv=monthInv.filter(r=>getStatus(r)==='paid');
-        const unpaidInv=monthInv.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
+        y=pdfSectionTitle(doc,'REVENUE RECEIVED THIS MONTH',y);
         doc.autoTable({
           startY:y,
-          head:[['','Count','Total Amount']],
-          body:[
-            ['Total Invoices',monthInv.length,fmt(totalInv)],
-            ['Paid',paidInv.length,fmt(totalPaid)],
-            ['Unpaid / Outstanding',unpaidInv.length,fmt(totalUnpaid)],
-          ],
+          head:[['','Count','Total (inc GST)']],
+          body:[['Paid Invoices',monthPaidInv.length,fmt(totalReceived)]],
           theme:'plain',
           headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
-          bodyStyles:{fontSize:9,cellPadding:3,textColor:[50,50,50]},
-          columnStyles:{0:{cellWidth:100},1:{cellWidth:30,halign:'center'},2:{cellWidth:40,halign:'right',fontStyle:'bold'}},
-          didDrawCell:function(data){
-            if(data.section==='body'&&data.column.index===2){
-              if(data.row.index===1) doc.setTextColor(61,107,52);
-              else if(data.row.index===2) doc.setTextColor(192,57,43);
-            }
-          },
+          bodyStyles:{fontSize:10,cellPadding:4,textColor:[61,107,52],fontStyle:'bold'},
+          columnStyles:{0:{cellWidth:100},1:{cellWidth:30,halign:'center'},2:{cellWidth:40,halign:'right'}},
           margin:{left:margin,right:margin}
         });
         y=doc.lastAutoTable.finalY+8;
+      } else {
+        if(y>220){doc.addPage();y=20;}
+        y=pdfSectionTitle(doc,'REVENUE RECEIVED THIS MONTH',y);
+        doc.setFontSize(9);doc.setTextColor(150,150,150);
+        doc.text('No paid invoices recorded this month.',margin+3,y+5);
+        y+=14;
       }
 
-      // EXPENSES TABLE
+      // EXPENSES BY CATEGORY ONLY
       if(monthExp.length){
         if(y>200){doc.addPage();y=20;}
         y=pdfSectionTitle(doc,'EXPENSES THIS MONTH',y);
-        doc.autoTable({
-          startY:y,
-          head:[['Date','Description','Category','Job / Reference','Amount','Paid Via']],
-          body:monthExp.map(e=>[e.expense_date||'—',e.description||'—',e.category||'—',e.job_ref||'—',fmt(e.amount||0),e.payment_method||'—']),
-          theme:'plain',
-          headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
-          bodyStyles:{fontSize:8,cellPadding:3,textColor:[50,50,50]},
-          columnStyles:{0:{cellWidth:22},1:{cellWidth:50},2:{cellWidth:22},3:{cellWidth:38},4:{cellWidth:20,halign:'right'},5:{cellWidth:23}},
-          margin:{left:margin,right:margin}
-        });
-        y=doc.lastAutoTable.finalY+8;
-
-        // Category totals
-        if(y>230){doc.addPage();y=20;}
-        y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);
         const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
         const catTotals=cats.map(c=>({cat:c,total:monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
         doc.autoTable({
           startY:y,
           head:[['Category','Total']],
-          body:[...catTotals.map(x=>[x.cat,fmt(x.total)]),['TOTAL',fmt(totalExp)]],
+          body:[...catTotals.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],
           theme:'plain',
           headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
-          bodyStyles:{fontSize:9,cellPadding:3,textColor:[50,50,50]},
-          columnStyles:{0:{cellWidth:80},1:{cellWidth:40,halign:'right',fontStyle:'bold'}},
-          didDrawRow:function(data){if(data.row.index===catTotals.length)doc.setFont('helvetica','bold');},
+          bodyStyles:{fontSize:10,cellPadding:4,textColor:[50,50,50]},
+          columnStyles:{0:{cellWidth:120},1:{cellWidth:55,halign:'right',fontStyle:'bold'}},
+          didDrawRow:function(data){
+            if(data.row.index===catTotals.length){
+              doc.setFont('helvetica','bold');
+              doc.setFontSize(11);
+            }
+          },
           margin:{left:margin,right:margin}
         });
         y=doc.lastAutoTable.finalY+6;
@@ -639,8 +620,8 @@ function generateQuarterlyReport(){
       doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
       doc.rect(margin,y,cw,30,'FD');y+=6;
       y=pdfSummaryRow(doc,'Total Invoiced (inc GST)',fmt(totalInv),y,false);
-      y=pdfSummaryRow(doc,'Total Collected — Paid',fmt(totalPaid),y,false);
-      y=pdfSummaryRow(doc,'Outstanding — Unpaid',fmt(totalUnpaid),y,false);
+      y=pdfSummaryRow(doc,'Total Collected - Paid',fmt(totalPaid),y,false);
+      y=pdfSummaryRow(doc,'Outstanding - Unpaid',fmt(totalUnpaid),y,false);
       doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
       y=pdfSummaryRow(doc,'Estimated Profit',fmt(totalPaid-totalExp),y,true);
       y+=8;
@@ -705,8 +686,8 @@ function generateYearlyReport(){
       doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
       doc.rect(margin,y,cw,30,'FD');y+=6;
       y=pdfSummaryRow(doc,'Total Invoiced (inc GST)',fmt(totalInv),y,false);
-      y=pdfSummaryRow(doc,'Total Collected — Paid',fmt(totalPaid),y,false);
-      y=pdfSummaryRow(doc,'Outstanding — Unpaid',fmt(totalUnpaid),y,false);
+      y=pdfSummaryRow(doc,'Total Collected - Paid',fmt(totalPaid),y,false);
+      y=pdfSummaryRow(doc,'Outstanding - Unpaid',fmt(totalUnpaid),y,false);
       doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
       y=pdfSummaryRow(doc,'Estimated Annual Profit',fmt(totalPaid-totalExp),y,true);
       y+=8;
