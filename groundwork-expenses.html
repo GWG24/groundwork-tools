@@ -214,7 +214,12 @@ function render(){
   let filtered=currentCat==='all'?me:me.filter(e=>e.category===currentCat);
   const el=document.getElementById('list');
   if(!filtered.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🧾</div><div class="empty-title">No expenses</div><div style="font-size:13px;color:var(--text-secondary)">Tap + to log one</div></div>`;return;}
-  el.innerHTML=filtered.map(e=>`<div class="expense-card" onclick="openDetail('${e.id}')"><div class="cat-dot ${e.category}"></div><div class="expense-info"><div class="expense-desc">${e.description}</div><div class="expense-sub">${e.category}${e.job_ref?' · '+e.job_ref:''} · ${e.expense_date||''} · ${e.payment_method}</div></div><div class="expense-amount">${fmt(e.amount)}</div></div>`).join('');
+  el.innerHTML=filtered.map(e=>{
+    const isTravel = e.category==='Travel';
+    const km = isTravel ? Math.round(parseFloat(e.amount)/ATO_RATE) : 0;
+    const amtDisplay = isTravel ? `<span style="font-size:13px;font-weight:700;color:var(--cat-travel)">${km} km</span><span style="font-size:10px;color:#aaa;display:block">${fmt(e.amount)}</span>` : fmt(e.amount);
+    return `<div class="expense-card" onclick="openDetail('${e.id}')"><div class="cat-dot ${e.category}"></div><div class="expense-info"><div class="expense-desc">${e.description}</div><div class="expense-sub">${e.category}${e.job_ref?' · '+e.job_ref:''} · ${e.expense_date||''} · ${e.payment_method}</div></div><div class="expense-amount" style="text-align:right">${amtDisplay}</div></div>`;
+  }).join('');
 }
 function openAdd(){editId=null;document.getElementById('modalTitle').textContent='New Expense';document.getElementById('f-desc').value='';document.getElementById('f-amount').value='';document.getElementById('f-cat').value='Materials';document.getElementById('f-job').value='';document.getElementById('f-date').value=new Date().toISOString().split('T')[0];document.getElementById('f-pay').value='Card';document.getElementById('travel-fields').style.display='none';document.getElementById('f-amount').closest('.field').style.display='flex';document.getElementById('addOverlay').classList.add('show');}
 function closeAdd(){document.getElementById('addOverlay').classList.remove('show');}
@@ -231,7 +236,8 @@ function openDetail(id){
   const e=expenses.find(x=>x.id===id);if(!e)return;
   document.getElementById('detailContent').innerHTML=`
     <div class="modal-title"><span>${e.description}</span><button class="modal-close" onclick="document.getElementById('detailOverlay').classList.remove('show')">✕</button></div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--red);margin-bottom:16px">${fmt(e.amount)}</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--red);margin-bottom:4px">${e.category==='Travel'?Math.round(parseFloat(e.amount)/ATO_RATE)+' km':fmt(e.amount)}</div>
+    ${e.category==='Travel'?`<div style="font-size:13px;color:#aaa;margin-bottom:12px">${fmt(e.amount)} (ATO rate)</div>`:''}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
       <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Category</div><div style="font-size:15px;font-weight:500">${e.category}</div></div>
       <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Date</div><div style="font-size:15px;font-weight:500">${e.expense_date||''}</div></div>
