@@ -559,10 +559,11 @@ function generateMonthlyReport(){
         y=pdfSectionTitle(doc,'EXPENSES THIS MONTH',y);
         const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
         const catTotals=cats.map(c=>({cat:c,total:monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
+        const travelKm=Math.round(monthExp.filter(e=>e.category==='Travel').reduce((s,e)=>s+parseFloat(e.amount||0),0)/0.88);
         doc.autoTable({
           startY:y,
           head:[['Category','Total']],
-          body:[...catTotals.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],
+          body:[...catTotals.map(x=>[x.cat==='Travel'?'Travel ('+travelKm+' km)':x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],
           theme:'plain',
           headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
           bodyStyles:{fontSize:10,cellPadding:4,textColor:[50,50,50]},
