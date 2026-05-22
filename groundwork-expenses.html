@@ -56,7 +56,7 @@
   .expense-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .expense-card:hover { border-color: var(--green); }
   .cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .cat-dot.Materials { background: var(--cat-materials); } .cat-dot.Fuel { background: var(--cat-fuel); } .cat-dot.Labour { background: var(--cat-labour); } .cat-dot.Tools { background: var(--cat-tools); } .cat-dot.Other { background: var(--cat-other); } .cat-dot.Travel { background: var(--cat-travel); }
+  .cat-dot.Materials { background: var(--cat-materials); } .cat-dot.Fuel { background: var(--cat-fuel); } .cat-dot.Labour { background: var(--cat-labour); } .cat-dot.Tools { background: var(--cat-tools); } .cat-dot.Other { background: var(--cat-other); } .cat-dot.Travel { background: var(--cat-travel); } .cat-dot.Work\\20Clothes { background: #7d6608; } .cat-dot.Insurance { background: #1a7a6e; } .cat-dot.Vehicle { background: #2e6da4; } .cat-dot.Phone\\20\\26\\20Internet { background: #6c3483; } .cat-dot.Software { background: #4a4a8a; } .cat-dot.Tip { background: #7d3c3c; }
   .cat-pill.active.Travel { background: var(--cat-travel); }
   .expense-info { flex: 1; }
   .expense-desc { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
@@ -135,17 +135,14 @@
   <div class="cat-pill" onclick="setCat('Labour',this)">👷 Labour</div>
   <div class="cat-pill" onclick="setCat('Tools',this)">🔧 Tools</div>
   <div class="cat-pill" onclick="setCat('Travel',this)">🚗 Travel</div>
+  <div class="cat-pill" onclick="setCat('CityLink',this)">🛣️ CityLink</div>
+  <div class="cat-pill" onclick="setCat('Work Clothes',this)">👕 Work Clothes</div>
+  <div class="cat-pill" onclick="setCat('Insurance',this)">🛡️ Insurance</div>
+  <div class="cat-pill" onclick="setCat('Vehicle',this)">🚘 Vehicle</div>
+  <div class="cat-pill" onclick="setCat('Phone & Internet',this)">📱 Phone & Internet</div>
+  <div class="cat-pill" onclick="setCat('Software',this)">💻 Software</div>
+  <div class="cat-pill" onclick="setCat('Tip',this)">🗑️ Tip</div>
   <div class="cat-pill" onclick="setCat('Other',this)">Other</div>
-  <div class="cat-pill" style="border-left:1px solid #c5d4c0;margin-left:4px;padding-left:10px" onclick="quickAdd('Diesel','Fuel')">⛽ Diesel</div>
-  <div class="cat-pill" onclick="quickAdd('CityLink Toll','Travel')">🛣️ CityLink</div>
-  <div class="cat-pill" onclick="quickAdd('Work Clothes','Other')">👕 Work Clothes</div>
-  <div class="cat-pill" onclick="quickAdd('Equipment Hire','Tools')">🏗️ Equipment</div>
-  <div class="cat-pill" onclick="quickAdd('Tip / Waste Disposal','Other')">🗑️ Tip</div>
-  <div class="cat-pill" onclick="quickAdd('Insurance','Other')">🛡️ Insurance</div>
-  <div class="cat-pill" onclick="quickAdd('Car & Rego','Other')">🚘 Car</div>
-  <div class="cat-pill" onclick="quickAdd('Phone Bill','Other')">📱 Phone Bill</div>
-  <div class="cat-pill" onclick="quickAdd('Computer Software','Other')">💻 Software</div>
-  <div class="cat-pill" onclick="quickAdd('Internet','Other')">🌐 Internet</div>
 </div>
 
 <div class="list" id="list"><div class="empty"><div class="empty-icon">🌿</div><div class="empty-title">Loading...</div></div></div>
@@ -157,7 +154,19 @@
     <div class="modal-title"><span id="modalTitle">New Expense</span><button class="modal-close" onclick="closeAdd()">✕</button></div>
     <div class="field"><label>Description *</label><input id="f-desc" type="text" placeholder="e.g. Topsoil, Diesel, Mulch"></div>
     <div class="field"><label>Amount ($) *</label><input id="f-amount" type="number" step="0.01" placeholder="0.00"></div>
-    <div class="field"><label>Category</label><select id="f-cat" onchange="onCatChange()"><option value="Materials">Materials</option><option value="Fuel">Fuel</option><option value="Labour">Labour / Sub</option><option value="Tools">Tools & Equipment</option><option value="Travel">🚗 Travel</option><option value="Other">Other</option></select></div>
+    <div class="field"><label>Category</label><select id="f-cat" onchange="onCatChange()"><option value="Materials">Materials</option>
+<option value="Fuel">Fuel / Diesel</option>
+<option value="Labour">Labour / Sub</option>
+<option value="Tools">Tools & Equipment</option>
+<option value="Travel">🚗 Travel (km)</option>
+<option value="CityLink">🛣️ CityLink</option>
+<option value="Work Clothes">Work Clothes</option>
+<option value="Insurance">Insurance</option>
+<option value="Vehicle">Vehicle & Rego</option>
+<option value="Phone & Internet">Phone & Internet</option>
+<option value="Software">Software & Programs</option>
+<option value="Tip">Tip / Waste Disposal</option>
+<option value="Other">Other</option></select></div>
     <div id="travel-fields" style="display:none">
       <div class="field"><label>Distance (km)</label><input id="f-km" type="number" step="1" min="0" placeholder="e.g. 45" oninput="calcTravel()"></div>
       <div id="travel-calc" style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--text-secondary);padding:4px 2px 10px">ATO rate: 88c/km — enter km above</div>
@@ -246,8 +255,8 @@ function render(){
   const me=monthExpenses(),total=me.reduce((s,e)=>s+parseFloat(e.amount||0),0);
   document.getElementById('total-spent').textContent=fmt(total);
   document.getElementById('total-count').textContent=me.length;
-  const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
-  const catColors={Materials:'var(--cat-materials)',Fuel:'var(--cat-fuel)',Labour:'var(--cat-labour)',Tools:'var(--cat-tools)',Travel:'var(--cat-travel)',Other:'var(--cat-other)'};
+  const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];
+  const catColors={Materials:'var(--cat-materials)',Fuel:'var(--cat-fuel)',Labour:'var(--cat-labour)',Tools:'var(--cat-tools)',Travel:'var(--cat-travel)',CityLink:'#c0392b','Work Clothes':'#7d6608',Insurance:'#1a7a6e',Vehicle:'#2e6da4','Phone & Internet':'#6c3483',Software:'#4a4a8a',Tip:'#7d3c3c',Other:'var(--cat-other)'};
   const catTotals={};cats.forEach(c=>catTotals[c]=me.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0));
   const maxCat=Math.max(...Object.values(catTotals),1);
   const active=cats.filter(c=>catTotals[c]>0);
