@@ -565,7 +565,7 @@ function generateMonthlyReport(){
           body:[...catTotals.map(x=>[x.cat==='Travel'?'Travel ('+travelKm+' km)':x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],
           theme:'plain',
           headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
-          bodyStyles:{fontSize:10,cellPadding:4,textColor:[50,50,50]},
+          bodyStyles:{fontSize:10,cellPadding:2,textColor:[50,50,50]},
           columnStyles:{0:{cellWidth:120},1:{cellWidth:55,halign:'right',fontStyle:'bold'}},
           didDrawRow:function(data){
             if(data.row.index===catTotals.length){
