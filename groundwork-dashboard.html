@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0064)file:///C:/Users/marcu/Downloads/groundwork-dashboard%20(3).html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Groundwork Gardens — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<link href="./Groundwork Gardens — Dashboard_files/css2" rel="stylesheet">
+<script src="./Groundwork Gardens — Dashboard_files/jspdf.umd.min.js.download"></script>
+<script src="./Groundwork Gardens — Dashboard_files/jspdf.plugin.autotable.min.js.download"></script>
 <style>
   /* PIN LOCK */
   .pin-overlay { display: none; position: fixed; inset: 0; background: #1a2e17; z-index: 999; flex-direction: column; align-items: center; justify-content: center; }
@@ -31,7 +31,7 @@
     --green-bright: #5d9e50; --green-leaf: #3d6b34; --white: #f0ece0;
     --orange: #c07a2f; --bg-page: #f5f5f5; --text-primary: #1a2e17; --text-secondary: #4a5e45;
     --red: #c0392b; --gold: #b8860b;
-    --cat-materials: #3d6b34; --cat-fuel: #1a5276; --cat-labour: #6c3483; --cat-tools: #c07a2f; --cat-other: #4a5e45;
+    --cat-materials: #3d6b34; --cat-fuel: #1a5276; --cat-labour: #6c3483; --cat-tools: #c07a2f; --cat-other: #4a5e45; --cat-travel: #c0392b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg-page); color: var(--text-primary); font-family: 'Barlow', sans-serif; font-weight: 300; min-height: 100vh; padding-bottom: 40px; }
@@ -141,6 +141,19 @@
   .job-note-saved { font-size: 11px; color: var(--green); opacity: 0; transition: opacity 0.3s; }
   .job-note-saved.show { opacity: 1; }
   .job-note-delete { background: none; border: none; font-size: 11px; color: #c0392b; cursor: pointer; padding: 4px 0; }
+  .checklist-wrap { padding: 4px 0; }
+  .checklist-item { display: flex; align-items: flex-start; gap: 10px; padding: 7px 4px; border-bottom: 0.5px solid #e8f0e6; }
+  .checklist-item:last-child { border-bottom: none; }
+  .checklist-cb { width: 20px; height: 20px; border-radius: 5px; border: 2px solid #c5d4c0; cursor: pointer; flex-shrink: 0; appearance: none; -webkit-appearance: none; margin-top: 1px; background: #fff; transition: all 0.15s; }
+  .checklist-cb:checked { background: var(--green-leaf); border-color: var(--green-leaf); background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13.485 1.431a1.473 1.473 0 0 0-2.084 0l-6.26 6.26-2.028-2.029a1.473 1.473 0 1 0-2.083 2.084l3.07 3.07a1.473 1.473 0 0 0 2.083 0l7.302-7.302a1.473 1.473 0 0 0 0-2.083z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; background-size: 12px; }
+  .checklist-text { font-size: 14px; color: var(--text-primary); flex: 1; line-height: 1.4; transition: all 0.2s; padding-top: 1px; }
+  .checklist-text.done { text-decoration: line-through; color: #aaa; }
+  .checklist-add { display: flex; gap: 8px; margin-top: 10px; }
+  .checklist-input { flex: 1; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 9px 12px; font-family: 'Barlow', sans-serif; font-size: 14px; color: var(--text-primary); background: #f9fbf8; outline: none; }
+  .checklist-input:focus { border-color: var(--green); background: #fff; }
+  .checklist-add-btn { background: var(--green-leaf); border: none; border-radius: 8px; padding: 9px 16px; color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
+  .see-more-btn { width: 100%; background: none; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; color: var(--green); cursor: pointer; margin-top: 4px; text-transform: uppercase; transition: all 0.2s; }
+  .see-more-btn:hover { background: #f0f7ee; }
   .add-job-btn { width: 100%; background: #ffffff; border: 1.5px dashed #c5d4c0; border-radius: 10px; padding: 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1px; color: var(--text-secondary); cursor: pointer; text-align: center; transition: all 0.2s; margin-top: 4px; }
   .add-job-btn:hover { border-color: var(--green); color: var(--green); background: #f0f7ee; }
   .job-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; justify-content: center; }
@@ -170,42 +183,42 @@
     <div class="pin-dot" id="pd3"></div>
   </div>
   <div class="pin-grid">
-    <button class="pin-key" onclick="pinPress('1')">1</button>
-    <button class="pin-key" onclick="pinPress('2')">2</button>
-    <button class="pin-key" onclick="pinPress('3')">3</button>
-    <button class="pin-key" onclick="pinPress('4')">4</button>
-    <button class="pin-key" onclick="pinPress('5')">5</button>
-    <button class="pin-key" onclick="pinPress('6')">6</button>
-    <button class="pin-key" onclick="pinPress('7')">7</button>
-    <button class="pin-key" onclick="pinPress('8')">8</button>
-    <button class="pin-key" onclick="pinPress('9')">9</button>
+    <button class="pin-key" onclick="pinPress(&#39;1&#39;)">1</button>
+    <button class="pin-key" onclick="pinPress(&#39;2&#39;)">2</button>
+    <button class="pin-key" onclick="pinPress(&#39;3&#39;)">3</button>
+    <button class="pin-key" onclick="pinPress(&#39;4&#39;)">4</button>
+    <button class="pin-key" onclick="pinPress(&#39;5&#39;)">5</button>
+    <button class="pin-key" onclick="pinPress(&#39;6&#39;)">6</button>
+    <button class="pin-key" onclick="pinPress(&#39;7&#39;)">7</button>
+    <button class="pin-key" onclick="pinPress(&#39;8&#39;)">8</button>
+    <button class="pin-key" onclick="pinPress(&#39;9&#39;)">9</button>
     <button class="pin-key empty"></button>
-    <button class="pin-key" onclick="pinPress('0')">0</button>
+    <button class="pin-key" onclick="pinPress(&#39;0&#39;)">0</button>
     <button class="pin-key del" onclick="pinDelete()">⌫</button>
   </div>
   <div class="pin-error-msg" id="pinError">Incorrect PIN — try again</div>
 </div>
 
 <div class="main-header">
-  <img src="logo.png" alt="GG Logo" style="height:44px;width:auto;object-fit:contain">
-  <a href="groundwork-gardens-tools.html" style="margin-left:auto;display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--cream-dim);font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;" onmouseover="this.style.color='#d4c9a8'" onmouseout="this.style.color='#9e9278'">🧮 Tools</a>
+  <img src="./Groundwork Gardens — Dashboard_files/logo.png" alt="GG Logo" style="height:44px;width:auto;object-fit:contain">
+  <a href="file:///C:/Users/marcu/Downloads/groundwork-gardens-tools.html" style="margin-left:auto;display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--cream-dim);font-family:&#39;Barlow Condensed&#39;,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;" onmouseover="this.style.color=&#39;#d4c9a8&#39;" onmouseout="this.style.color=&#39;#9e9278&#39;">🧮 Tools</a>
 </div>
 
 <div class="tab-bar">
-  <a href="groundwork-crm.html" class="tab-btn">👥 CRM</a>
+  <a href="file:///C:/Users/marcu/Downloads/groundwork-crm.html" class="tab-btn">👥 CRM</a>
   <button class="tab-btn active">📊 Dashboard</button>
-  <a href="groundwork-expenses.html" class="tab-btn">💸 Expenses</a>
-  <a href="groundwork-gardens-tools.html" class="tab-btn">🧮 Tools</a>
+  <a href="file:///C:/Users/marcu/Downloads/groundwork-expenses.html" class="tab-btn">💸 Expenses</a>
+  <a href="file:///C:/Users/marcu/Downloads/groundwork-gardens-tools.html" class="tab-btn">🧮 Tools</a>
 </div>
 
 <div class="sync-bar" id="syncBar">
-  <div class="sync-left"><div class="sync-dot"></div><span id="syncMsg">Loading your data...</span></div>
+  <div class="sync-left"><div class="sync-dot"></div><span id="syncMsg">☁ Live data · 01:18 pm</span></div>
   <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
 </div>
 
 <div class="date-banner">
-  <div class="greeting" id="greeting">Good morning</div>
-  <div class="today" id="todayDate"></div>
+  <div class="greeting" id="greeting">Good afternoon</div>
+  <div class="today" id="todayDate">Friday, 22 May 2026</div>
 </div>
 
 <div class="section" style="margin-top:16px">
@@ -213,23 +226,23 @@
   <div class="money-grid">
     <div class="money-card highlight">
       <div class="money-label">Invoiced</div>
-      <div class="money-val" id="m-invoiced">—</div>
-      <div class="money-sub" id="m-invoiced-sub">Loading...</div>
+      <div class="money-val" id="m-invoiced">$17,705.70</div>
+      <div class="money-sub" id="m-invoiced-sub">7 invoices this month</div>
     </div>
     <div class="money-card">
       <div class="money-label">Expenses</div>
-      <div class="money-val red" id="m-expenses">—</div>
-      <div class="money-sub" id="m-expenses-sub">Loading...</div>
+      <div class="money-val red" id="m-expenses">$3,857.95</div>
+      <div class="money-sub" id="m-expenses-sub">9 expenses this month</div>
     </div>
     <div class="money-card">
       <div class="money-label">Outstanding</div>
-      <div class="money-val gold" id="m-outstanding">—</div>
-      <div class="money-sub" id="m-outstanding-sub">Unpaid invoices</div>
+      <div class="money-val gold" id="m-outstanding">$1,747.43</div>
+      <div class="money-sub" id="m-outstanding-sub">2 unpaid</div>
     </div>
     <div class="money-card">
       <div class="money-label">Collected</div>
-      <div class="money-val green" id="m-paid">—</div>
-      <div class="money-sub" id="m-paid-sub">Paid invoices</div>
+      <div class="money-val green" id="m-paid">$15,958.27</div>
+      <div class="money-sub" id="m-paid-sub">5 paid</div>
     </div>
   </div>
 </div>
@@ -238,29 +251,51 @@
 
 <div class="section">
   <div class="section-title">🧾 Invoices</div>
-  <div id="invoice-list"><div class="empty-state">Loading...</div></div>
+  <div id="invoice-list"><div class="inv-item"><div><div class="inv-name">Mike - 0412 052 991</div><div class="inv-sub">#INV-193 · Due 2026-06-02</div></div><div class="inv-right"><div class="inv-amt unpaid">$647.43</div><span class="status-pill unpaid">Unpaid</span></div></div><div class="inv-item"><div><div class="inv-name">Daniel - 0451461157</div><div class="inv-sub">#INV-191 · Due 2026-06-01</div></div><div class="inv-right"><div class="inv-amt unpaid">$1,100.00</div><span class="status-pill unpaid">Unpaid</span></div></div><div class="inv-item"><div><div class="inv-name">Paul Ferma</div><div class="inv-sub">#INV-199 · Due 2026-06-02</div></div><div class="inv-right"><div class="inv-amt paid">$6,671.50</div><span class="status-pill paid">Paid</span></div></div><div class="inv-item"><div><div class="inv-name">Samantha - 0439410704</div><div class="inv-sub">#INV-209 · Due 2026-06-03</div></div><div class="inv-right"><div class="inv-amt paid">$616.57</div><span class="status-pill paid">Paid</span></div></div><div class="inv-item"><div><div class="inv-name">Christian - 19 Linda St Coburg - 0438 315 772</div><div class="inv-sub">#INV-2026-204 · Due 2026-05-20</div></div><div class="inv-right"><div class="inv-amt paid">$3,599.20</div><span class="status-pill paid">Paid</span></div></div><button class="see-more-btn" onclick="renderInvList(15)">Show More Invoices (2 remaining)</button></div>
 </div>
 
 <div class="divider"></div>
 
 <div class="section">
   <div class="section-title">📄 Recent Quotes</div>
-  <div id="quotes-list"><div class="empty-state">Loading...</div></div>
+  <div id="quotes-list"><div class="quote-item"><div><div class="quote-name">Vince Mock up quote</div><div class="quote-sub">quote_1779373670655 · 2026-05-21</div></div><div class="quote-right"><div class="quote-amt">$10,090.08</div><button class="approval-btn pending" id="appr-quote_1779373670655" onclick="toggleApproval(&#39;quote_1779373670655&#39;,this)">⏳ Pending</button></div></div><div class="quote-item"><div><div class="quote-name">Vince - 0403274200</div><div class="quote-sub">quote_215 · 2026-05-20</div></div><div class="quote-right"><div class="quote-amt">$2,177.34</div><button class="approval-btn pending" id="appr-quote_215" onclick="toggleApproval(&#39;quote_215&#39;,this)">⏳ Pending</button></div></div><div class="quote-item"><div><div class="quote-name">Mark - 0402228144</div><div class="quote-sub">quote_214 · 2026-05-20</div></div><div class="quote-right"><div class="quote-amt">$2,224.20</div><button class="approval-btn pending" id="appr-quote_214" onclick="toggleApproval(&#39;quote_214&#39;,this)">⏳ Pending</button></div></div><div class="quote-item"><div><div class="quote-name">Jules - 0433618626</div><div class="quote-sub">quote_213 · 2026-05-20</div></div><div class="quote-right"><div class="quote-amt">$10,446.48</div><button class="approval-btn pending" id="appr-quote_213" onclick="toggleApproval(&#39;quote_213&#39;,this)">⏳ Pending</button></div></div><div class="quote-item"><div><div class="quote-name">Len - 0419600184</div><div class="quote-sub">quote_212 · 2026-05-20</div></div><div class="quote-right"><div class="quote-amt">$8,174.23</div><button class="approval-btn pending" id="appr-quote_212" onclick="toggleApproval(&#39;quote_212&#39;,this)">⏳ Pending</button></div></div><button class="see-more-btn" onclick="renderQuoteList(15)">Show More Quotes (14 remaining)</button><div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap to mark a quote as approved</div></div>
 </div>
 
 <div class="divider"></div>
 
 <div class="section">
   <div class="section-title">📋 Job Notes</div>
-  <div id="job-notes-list"></div>
+  <div id="job-notes-list"><div class="job-note-card" id="job-card-jn1779275900264">
+      <div class="job-note-header" style="background:#3d6b34" onclick="toggleJobNote(&#39;jn1779275900264&#39;)">
+        <div class="job-note-left">
+          <div class="job-note-dot"></div>
+          <div>
+            <div class="job-note-name">Michelle - 2 Gezireh St Pascoe Vale 0/0</div>
+            <div class="job-note-date">Added 20 May 2026</div>
+          </div>
+        </div>
+        <div class="job-note-arrow" id="arrow-jn1779275900264">▾</div>
+      </div>
+      <div class="job-note-body" id="body-jn1779275900264">
+        <div class="checklist-wrap" id="cl-jn1779275900264"><div style="font-size:13px;color:#aaa;padding:8px 4px">No tasks yet — add one below</div></div>
+        <div class="checklist-add">
+          <input class="checklist-input" id="clinput-jn1779275900264" type="text" placeholder="Add a task..." maxlength="120" onkeydown="if(event.key===&#39;Enter&#39;)addCheckItem(&#39;jn1779275900264&#39;)">
+          <button class="checklist-add-btn" onclick="addCheckItem(&#39;jn1779275900264&#39;)">+ Add</button>
+        </div>
+        <div class="job-note-footer">
+          <span class="job-note-saved" id="saved-jn1779275900264">✓ Saved</span>
+          <button class="job-note-delete" onclick="deleteJobNote(&#39;jn1779275900264&#39;)">× Remove job</button>
+        </div>
+      </div>
+    </div></div>
   <button class="add-job-btn" onclick="openAddJob()">+ Add Job</button>
 </div>
 
 <div class="divider"></div>
 
 <div class="section">
-  <div class="section-title">👥 Leads & Follow-ups</div>
-  <div id="leads-list"><div class="empty-state">Loading...</div></div>
+  <div class="section-title">👥 Leads &amp; Follow-ups</div>
+  <div id="leads-list"><div class="lead-item"><div><div class="lead-name">Marisa</div><div class="lead-sub">Hi Pages - Re lay brick pavers · Fitzroy North</div></div><span class="badge badge-lead">Lead</span></div><div class="lead-item"><div><div class="lead-name">Tung Phan</div><div class="lead-sub">Hi Pages - Re laying pavers · Preston</div></div><span class="badge badge-lead">Lead</span></div><div class="lead-item"><div><div class="lead-name">Leah</div><div class="lead-sub">Back yard renovation · Pascoe Vale</div></div><span class="badge badge-lead">Lead</span></div><div class="lead-item"><div><div class="lead-name">Ayesha</div><div class="lead-sub">Replace Cracked Concrete · Fawkner</div></div><span class="badge badge-lead">Lead</span></div></div>
 </div>
 
 <div class="divider"></div>
@@ -268,7 +303,7 @@
 <div class="section">
   <div class="section-title">📊 Expenses by Category</div>
   <div class="money-card" style="margin-bottom:4px">
-    <div id="exp-chart"><div class="empty-state">Loading...</div></div>
+    <div id="exp-chart"><div class="bar-chart"><div class="bar-row"><div class="bar-label">Materials</div><div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--cat-materials)"></div></div><div class="bar-val" style="color:var(--cat-materials)">$1,641.00</div></div><div class="bar-row"><div class="bar-label">Labour</div><div class="bar-track"><div class="bar-fill" style="width:52.3%;background:var(--cat-labour)"></div></div><div class="bar-val" style="color:var(--cat-labour)">$858.00</div></div><div class="bar-row"><div class="bar-label">Tools</div><div class="bar-track"><div class="bar-fill" style="width:72.3%;background:var(--cat-tools)"></div></div><div class="bar-val" style="color:var(--cat-tools)">$1,186.68</div></div><div class="bar-row"><div class="bar-label">Travel</div><div class="bar-track"><div class="bar-fill" style="width:3.9%;background:#c0392b"></div></div><div class="bar-val" style="color:#c0392b">$63.27</div></div><div class="bar-row"><div class="bar-label">Other</div><div class="bar-track"><div class="bar-fill" style="width:6.6%;background:var(--cat-other)"></div></div><div class="bar-val" style="color:var(--cat-other)">$109.00</div></div></div></div>
   </div>
 </div>
 
@@ -280,8 +315,14 @@
     <button class="export-btn" onclick="generateMonthlyReport()">
       <span>📊</span>Monthly Report
     </button>
-    <button class="export-btn orange" onclick="generateFullReport()">
-      <span>📋</span>Full Report
+    <button class="export-btn orange" onclick="generateQuarterlyReport()">
+      <span>📅</span>Quarterly Report
+    </button>
+    <button class="export-btn blue" onclick="generateYearlyReport()">
+      <span>📋</span>Yearly Report
+    </button>
+    <button class="export-btn blue" onclick="generateFullReport()">
+      <span>📁</span>Full Export
     </button>
   </div>
   <div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:10px 0 4px">Downloads as a branded PDF — ready to email to your accountant</div>
@@ -293,21 +334,21 @@
   <div class="section-title">🚀 Quick Launch</div>
 </div>
 <div class="shortcuts">
-  <a class="shortcut" href="groundwork-gardens-tools.html">
+  <a class="shortcut" href="file:///C:/Users/marcu/Downloads/groundwork-gardens-tools.html">
     <div class="shortcut-icon">🧮</div>
-    <div><div class="shortcut-label">Calculator & Quotes</div><div class="shortcut-sub">Build & save quotes</div></div>
+    <div><div class="shortcut-label">Calculator &amp; Quotes</div><div class="shortcut-sub">Build &amp; save quotes</div></div>
   </a>
-  <a class="shortcut" href="groundwork-crm.html">
+  <a class="shortcut" href="file:///C:/Users/marcu/Downloads/groundwork-crm.html">
     <div class="shortcut-icon">👥</div>
-    <div><div class="shortcut-label">Customers & Leads</div><div class="shortcut-sub">CRM & contacts</div></div>
+    <div><div class="shortcut-label">Customers &amp; Leads</div><div class="shortcut-sub">CRM &amp; contacts</div></div>
   </a>
-  <a class="shortcut" href="groundwork-expenses.html">
+  <a class="shortcut" href="file:///C:/Users/marcu/Downloads/groundwork-expenses.html">
     <div class="shortcut-icon">💸</div>
     <div><div class="shortcut-label">Expenses</div><div class="shortcut-sub">Track spending</div></div>
   </a>
-  <a class="shortcut" href="groundwork-gardens-tools.html">
+  <a class="shortcut" href="file:///C:/Users/marcu/Downloads/groundwork-gardens-tools.html">
     <div class="shortcut-icon">🧾</div>
-    <div><div class="shortcut-label">Invoices</div><div class="shortcut-sub">Create & send</div></div>
+    <div><div class="shortcut-label">Invoices</div><div class="shortcut-sub">Create &amp; send</div></div>
   </a>
 </div>
 
@@ -564,7 +605,7 @@ function generateMonthlyReport(){
         // Category totals
         if(y>230){doc.addPage();y=20;}
         y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);
-        const cats=['Materials','Fuel','Labour','Tools','Other'];
+        const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
         const catTotals=cats.map(c=>({cat:c,total:monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
         doc.autoTable({
           startY:y,
@@ -588,6 +629,150 @@ function generateMonthlyReport(){
 
       doc.save('GG-Monthly-Report-'+monthName.replace(' ','-')+'.pdf');
       showToast('✓ Monthly report downloaded!');
+    }catch(err){console.error(err);showToast('⚠ Error generating report');}
+  },100);
+}
+
+function getCurrentQuarter(){
+  const m = now.getMonth();
+  return Math.floor(m/3)+1;
+}
+
+function generateQuarterlyReport(){
+  showToast('Generating quarterly report...');
+  setTimeout(()=>{
+    try{
+      const jsPDF=window.jspdf.jsPDF;
+      const doc=new jsPDF({unit:'mm',format:'a4'});
+      const pw=210, margin=15, cw=pw-margin*2;
+      const q=getCurrentQuarter();
+      const qStart=(q-1)*3;
+      const qMonths=[qStart,qStart+1,qStart+2];
+      const qName='Q'+q+' '+now.getFullYear()+' ('+months[qStart]+' – '+months[qStart+2]+')';
+
+      const qInv=_invoices.filter(r=>{const d=new Date(r.updated_at);return d.getFullYear()===now.getFullYear()&&qMonths.includes(d.getMonth());});
+      const qExp=_expenses.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d.getFullYear()===now.getFullYear()&&qMonths.includes(d.getMonth());});
+
+      const totalInv=qInv.reduce((s,r)=>s+getTotal(r),0);
+      const totalPaid=qInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+      const totalUnpaid=qInv.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
+      const totalExp=qExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+
+      let y=pdfHeader(doc,'Quarterly Business Report',qName);
+      y=pdfSectionTitle(doc,'FINANCIAL SUMMARY',y);
+      doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
+      doc.rect(margin,y,cw,30,'FD');y+=6;
+      y=pdfSummaryRow(doc,'Total Invoiced (inc GST)',fmt(totalInv),y,false);
+      y=pdfSummaryRow(doc,'Total Collected — Paid',fmt(totalPaid),y,false);
+      y=pdfSummaryRow(doc,'Outstanding — Unpaid',fmt(totalUnpaid),y,false);
+      doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
+      y=pdfSummaryRow(doc,'Estimated Profit',fmt(totalPaid-totalExp),y,true);
+      y+=8;
+
+      // Monthly breakdown within quarter
+      y=pdfSectionTitle(doc,'MONTHLY BREAKDOWN',y);
+      qMonths.forEach(m=>{
+        const mInv=_invoices.filter(r=>{const d=new Date(r.updated_at);return d.getFullYear()===now.getFullYear()&&d.getMonth()===m;});
+        const mExp=_expenses.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d.getFullYear()===now.getFullYear()&&d.getMonth()===m;});
+        const mRev=mInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+        const mExp2=mExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+        if(y>250){doc.addPage();y=20;}
+        doc.autoTable({startY:y,head:[[months[m]+' '+now.getFullYear(),'Invoices','Revenue (Paid)','Expenses','Profit']],
+          body:[[mInv.length+' invoices',fmt(mInv.reduce((s,r)=>s+getTotal(r),0)),fmt(mRev),fmt(mExp2),fmt(mRev-mExp2)]],
+          theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+          bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:40},1:{cellWidth:30,halign:'right'},2:{cellWidth:35,halign:'right'},3:{cellWidth:30,halign:'right'},4:{cellWidth:30,halign:'right',fontStyle:'bold'}},
+          margin:{left:margin,right:margin}});
+        y=doc.lastAutoTable.finalY+6;
+      });
+
+      // Expenses by category
+      if(y>200){doc.addPage();y=20;}
+      y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);
+      const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
+      const catRows=cats.map(c=>({cat:c,total:qExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
+      doc.autoTable({startY:y,head:[['Category','Total']],
+        body:[...catRows.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],
+        theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+        bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:80},1:{cellWidth:40,halign:'right',fontStyle:'bold'}},
+        margin:{left:margin,right:margin}});
+      y=doc.lastAutoTable.finalY+6;
+
+      // Footer
+      doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);
+      doc.setFontSize(7);doc.setTextColor(180,180,180);
+      doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955',pw/2,292,{align:'center'});
+
+      doc.save('GG-Quarterly-Report-'+qName.replace(/[^a-z0-9]/gi,'-')+'.pdf');
+      showToast('✓ Quarterly report downloaded!');
+    }catch(err){console.error(err);showToast('⚠ Error generating report');}
+  },100);
+}
+
+function generateYearlyReport(){
+  showToast('Generating yearly report...');
+  setTimeout(()=>{
+    try{
+      const jsPDF=window.jspdf.jsPDF;
+      const doc=new jsPDF({unit:'mm',format:'a4'});
+      const pw=210, margin=15, cw=pw-margin*2;
+      const yr=now.getFullYear();
+
+      const yrInv=_invoices.filter(r=>new Date(r.updated_at).getFullYear()===yr);
+      const yrExp=_expenses.filter(e=>new Date(e.expense_date||e.created_at).getFullYear()===yr);
+      const totalInv=yrInv.reduce((s,r)=>s+getTotal(r),0);
+      const totalPaid=yrInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+      const totalUnpaid=yrInv.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
+      const totalExp=yrExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+
+      let y=pdfHeader(doc,'Yearly Business Report',String(yr));
+      y=pdfSectionTitle(doc,'ANNUAL SUMMARY',y);
+      doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
+      doc.rect(margin,y,cw,30,'FD');y+=6;
+      y=pdfSummaryRow(doc,'Total Invoiced (inc GST)',fmt(totalInv),y,false);
+      y=pdfSummaryRow(doc,'Total Collected — Paid',fmt(totalPaid),y,false);
+      y=pdfSummaryRow(doc,'Outstanding — Unpaid',fmt(totalUnpaid),y,false);
+      doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
+      y=pdfSummaryRow(doc,'Estimated Annual Profit',fmt(totalPaid-totalExp),y,true);
+      y+=8;
+
+      // Monthly breakdown for full year
+      if(y>180){doc.addPage();y=20;}
+      y=pdfSectionTitle(doc,'MONTHLY BREAKDOWN — '+yr,y);
+      const mRows=[];
+      for(let m=0;m<12;m++){
+        const mInv=yrInv.filter(r=>new Date(r.updated_at).getMonth()===m);
+        const mExp=yrExp.filter(e=>new Date(e.expense_date||e.created_at).getMonth()===m);
+        const mRev=mInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
+        const mExpT=mExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+        if(mInv.length||mExp.length) mRows.push([months[m],mInv.length,fmt(mInv.reduce((s,r)=>s+getTotal(r),0)),fmt(mRev),fmt(mExpT),fmt(mRev-mExpT)]);
+      }
+      doc.autoTable({startY:y,head:[['Month','Invoices','Invoiced','Collected','Expenses','Profit']],body:mRows,
+        theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+        bodyStyles:{fontSize:8,cellPadding:2.5},columnStyles:{0:{cellWidth:28},1:{cellWidth:18,halign:'center'},2:{cellWidth:30,halign:'right'},3:{cellWidth:30,halign:'right'},4:{cellWidth:30,halign:'right'},5:{cellWidth:30,halign:'right',fontStyle:'bold'}},
+        margin:{left:margin,right:margin}});
+      y=doc.lastAutoTable.finalY+8;
+
+      // Expenses by category
+      if(y>200){doc.addPage();y=20;}
+      y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);
+      const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
+      const catRows=cats.map(c=>({cat:c,total:yrExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
+      doc.autoTable({startY:y,head:[['Category','Total']],
+        body:[...catRows.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],
+        theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
+        bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:80},1:{cellWidth:40,halign:'right',fontStyle:'bold'}},
+        margin:{left:margin,right:margin}});
+
+      const pageCount=doc.internal.getNumberOfPages();
+      for(let i=1;i<=pageCount;i++){
+        doc.setPage(i);
+        doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);
+        doc.setFontSize(7);doc.setTextColor(180,180,180);
+        doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  Page '+i+' of '+pageCount,pw/2,292,{align:'center'});
+      }
+
+      doc.save('GG-Yearly-Report-'+yr+'.pdf');
+      showToast('✓ Yearly report downloaded!');
     }catch(err){console.error(err);showToast('⚠ Error generating report');}
   },100);
 }
@@ -727,22 +912,32 @@ async function loadAll(){
     else{
       const sorted=[...unpaidInv,..._invoices.filter(r=>getStatus(r)==='partial'),...paidInv];
       const unique=[...new Map(sorted.map(r=>[r.id,r])).values()];
-      invEl.innerHTML=unique.slice(0,8).map(r=>{
-        const s=getStatus(r);
-        return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span></div></div>`;
-      }).join('')+(_invoices.length>8?`<div class="empty-state">+ ${_invoices.length-8} more</div>`:'');
+      const invLimit = 5;
+      window._allInvoices = unique;
+      function renderInvList(limit){
+        const shown = unique.slice(0, limit);
+        invEl.innerHTML = shown.map(r=>{
+          const s=getStatus(r);
+          return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span></div></div>`;
+        }).join('') + (unique.length > limit ? `<button class="see-more-btn" onclick="renderInvList(${limit+10})">Show More Invoices (${unique.length - limit} remaining)</button>` : '');
+      }
+      renderInvList(invLimit);
     }
 
     // Quotes
     const qEl=document.getElementById('quotes-list');
     if(!_quotes.length){qEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;}
     else{
-      qEl.innerHTML=_quotes.slice(0,5).map(r=>{
-        let approval='pending';
-        try{ const d=typeof r.data==='string'?JSON.parse(r.data):r.data; approval=d.approval||'pending'; }catch(e){}
-        const isApproved=approval==='approved';
-        return `<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-right"><div class="quote-amt">${fmt(getTotal(r))}</div><button class="approval-btn ${isApproved?'approved':'pending'}" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)">${isApproved?'✓ Approved':'⏳ Pending'}</button></div></div>`;
-      }).join('')+(_quotes.length>5?`<div class="empty-state">+ ${_quotes.length-5} more</div>`:'')+`<div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap to mark a quote as approved</div>`;
+      window._allQuotes = _quotes;
+      function renderQuoteList(limit){
+        qEl.innerHTML = _quotes.slice(0, limit).map(r=>{
+          let approval='pending';
+          try{ const d=typeof r.data==='string'?JSON.parse(r.data):r.data; approval=d.approval||'pending'; }catch(e){}
+          const isApproved=approval==='approved';
+          return `<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-right"><div class="quote-amt">${fmt(getTotal(r))}</div><button class="approval-btn ${isApproved?'approved':'pending'}" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)">${isApproved?'✓ Approved':'⏳ Pending'}</button></div></div>`;
+        }).join('') + (_quotes.length > limit ? `<button class="see-more-btn" onclick="renderQuoteList(${limit+10})">Show More Quotes (${_quotes.length - limit} remaining)</button>` : '') + `<div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap to mark a quote as approved</div>`;
+      }
+      renderQuoteList(5);
     }
 
     // Leads
@@ -752,8 +947,8 @@ async function loadAll(){
     else{lEl.innerHTML=leads.slice(0,5).map(c=>`<div class="lead-item"><div><div class="lead-name">${c.name}</div><div class="lead-sub">${c.job||'No job noted'}${c.suburb?' · '+c.suburb:''}</div></div><span class="badge badge-${c.type}">${c.type==='followup'?'Follow-up':'Lead'}</span></div>`).join('')+(leads.length>5?`<div class="empty-state">+ ${leads.length-5} more</div>`:'');}
 
     // Expense chart
-    const cats=['Materials','Fuel','Labour','Tools','Other'];
-    const catColors={Materials:'var(--cat-materials)',Fuel:'var(--cat-fuel)',Labour:'var(--cat-labour)',Tools:'var(--cat-tools)',Other:'var(--cat-other)'};
+    const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
+    const catColors={Materials:'var(--cat-materials)',Fuel:'var(--cat-fuel)',Labour:'var(--cat-labour)',Tools:'var(--cat-tools)',Travel:'#c0392b',Other:'var(--cat-other)'};
     const catTotals={};cats.forEach(c=>catTotals[c]=monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0));
     const maxCat=Math.max(...Object.values(catTotals),1);
     const activeCats=cats.filter(c=>catTotals[c]>0);
@@ -802,7 +997,11 @@ let saveTimers = {};
 async function loadJobNotes(){
   try{
     const data = await db('gg_job_notes?order=created_at.desc');
-    jobNotes = data.map(r=>({id:r.id, name:r.name, notes:r.notes||'', colorIdx:r.color_idx||0, date:r.created_at?new Date(r.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):''}));
+    jobNotes = data.map(r=>{
+      let items = [];
+      try{ if(r.notes) items = JSON.parse(r.notes); }catch(e){ items = []; }
+      return {id:r.id, name:r.name, items, colorIdx:r.color_idx||0, date:r.created_at?new Date(r.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):''};
+    });
   }catch(e){ jobNotes = []; }
   renderJobNotes();
 }
@@ -878,19 +1077,30 @@ function renderJobNotes(){
   }
   el.innerHTML = jobNotes.map((job) => {
     const color = JOB_COLORS[job.colorIdx % JOB_COLORS.length];
+    const items = job.items || [];
+    const checklistHtml = items.length ? items.map((item, i) => `
+      <div class="checklist-item" id="ci-${job.id}-${i}">
+        <input type="checkbox" class="checklist-cb" ${item.done?'checked':''} onchange="toggleCheckItem('${job.id}',${i},this)">
+        <span class="checklist-text ${item.done?'done':''}" id="ct-${job.id}-${i}">${item.text}</span>
+      </div>`).join('') : '<div style="font-size:13px;color:#aaa;padding:8px 4px">No tasks yet — add one below</div>';
     return `<div class="job-note-card" id="job-card-${job.id}">
       <div class="job-note-header" style="background:${color}" onclick="toggleJobNote('${job.id}')">
         <div class="job-note-left">
           <div class="job-note-dot"></div>
           <div>
-            <div class="job-note-name">${job.name}</div>
+            <div class="job-note-name">${job.name} ${items.filter(i=>i.done).length}/${items.length}</div>
             <div class="job-note-date">Added ${job.date}</div>
           </div>
         </div>
         <div class="job-note-arrow" id="arrow-${job.id}">▾</div>
       </div>
       <div class="job-note-body" id="body-${job.id}">
-        <textarea class="job-note-textarea" id="notes-${job.id}" placeholder="Add your job notes here..." oninput="scheduleNoteSave('${job.id}')">${job.notes||''}</textarea>
+        <div class="checklist-wrap" id="cl-${job.id}">${checklistHtml}</div>
+        <div class="checklist-add">
+          <input class="checklist-input" id="clinput-${job.id}" type="text" placeholder="Add a task..." maxlength="120"
+            onkeydown="if(event.key==='Enter')addCheckItem('${job.id}')">
+          <button class="checklist-add-btn" onclick="addCheckItem('${job.id}')">+ Add</button>
+        </div>
         <div class="job-note-footer">
           <span class="job-note-saved" id="saved-${job.id}">✓ Saved</span>
           <button class="job-note-delete" onclick="deleteJobNote('${job.id}')">× Remove job</button>
@@ -909,13 +1119,70 @@ function toggleJobNote(id){
   if(!isOpen){
     body.classList.add('open');
     arrow.classList.add('open');
-    setTimeout(()=>{ const ta=document.getElementById('notes-'+id); if(ta) ta.focus(); },100);
+    setTimeout(()=>{ const inp=document.getElementById('clinput-'+id); if(inp) inp.focus(); },100);
   }
 }
 
 function scheduleNoteSave(id){
   clearTimeout(saveTimers[id]);
-  saveTimers[id] = setTimeout(()=>{ saveNoteForJob(id); }, 800);
+  saveTimers[id] = setTimeout(()=>{ saveJobItems(id); }, 800);
+}
+
+function addCheckItem(id){
+  const inp = document.getElementById('clinput-'+id);
+  if(!inp) return;
+  const text = inp.value.trim();
+  if(!text) return;
+  const job = jobNotes.find(j=>j.id===id);
+  if(!job) return;
+  if(!job.items) job.items = [];
+  job.items.push({text, done: false});
+  inp.value = '';
+  renderJobNotes();
+  // Re-open the card
+  setTimeout(()=>{
+    const body = document.getElementById('body-'+id);
+    const arrow = document.getElementById('arrow-'+id);
+    if(body){ body.classList.add('open'); }
+    if(arrow){ arrow.classList.add('open'); }
+    const newInp = document.getElementById('clinput-'+id);
+    if(newInp) newInp.focus();
+  }, 50);
+  saveJobItems(id);
+}
+
+function toggleCheckItem(id, index, cb){
+  const job = jobNotes.find(j=>j.id===id);
+  if(!job||!job.items) return;
+  job.items[index].done = cb.checked;
+  const txt = document.getElementById('ct-'+id+'-'+index);
+  if(txt) txt.classList.toggle('done', cb.checked);
+  // Update progress in header
+  const header = document.querySelector('#job-card-'+id+' .job-note-name');
+  if(header){
+    const base = job.name;
+    const done = job.items.filter(i=>i.done).length;
+    header.textContent = base+' '+done+'/'+job.items.length;
+  }
+  saveJobItems(id);
+}
+
+async function saveJobItems(id){
+  const job = jobNotes.find(j=>j.id===id);
+  if(!job) return;
+  const notes = JSON.stringify(job.items||[]);
+  try{
+    const encodedId = encodeURIComponent(id);
+    const res = await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+encodedId, {
+      method:'PATCH',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({notes, updated_at:new Date().toISOString()})
+    });
+    if(res.ok){
+      const saved = document.getElementById('saved-'+id);
+      if(saved){ saved.classList.add('show'); setTimeout(()=>saved.classList.remove('show'),2000); }
+    }
+  }catch(e){ console.error(e); }
 }
 
 function openAddJob(){
@@ -934,5 +1201,6 @@ document.getElementById('job-name-input').addEventListener('keydown', function(e
 
 loadJobNotes();
 </script>
-</body>
-</html>
+
+
+</body></html>
