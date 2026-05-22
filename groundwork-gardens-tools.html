@@ -1637,23 +1637,58 @@ function calcConcrete() {
   showResults('concrete', items, Math.round(totalArea * 1.5), Math.round(totalArea * 2.5));
 }
 
+var gardenBeds = [];
+
+function addGardenBed() {
+  gardenBeds.push({ area: 0, soil: 300, mulch: 75 });
+  renderGardenBeds();
+  setTimeout(function() {
+    var inputs = document.querySelectorAll('.bed-area');
+    if (inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function renderGardenBeds() {
+  var el = document.getElementById('gardenBedList');
+  if (!el) return;
+  if (!gardenBeds.length) { el.innerHTML = ''; calcGarden(); return; }
+  el.innerHTML = gardenBeds.map(function(b, i) {
+    return '<div style="background:#f7f9f6;border:0.5px solid #c5d4c0;border-radius:8px;padding:12px;margin-bottom:10px">' +
+      '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px">Bed ' + (i+1) + '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 32px;gap:8px;align-items:end">' +
+      '<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px">Area (m²)</div>' +
+      '<input type="number" class="bed-area" value="' + (b.area||'') + '" placeholder="0" min="0" step="0.5" style="width:100%;background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:600;color:var(--text-primary)" oninput="gardenBeds[' + i + '].area=parseFloat(this.value)||0;calcGarden()"></div>' +
+      '<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px">Soil depth (mm)</div>' +
+      '<input type="number" class="bed-soil" value="' + (b.soil||300) + '" min="0" step="50" style="width:100%;background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:600;color:var(--text-primary)" oninput="gardenBeds[' + i + '].soil=parseFloat(this.value)||300;calcGarden()"></div>' +
+      '<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px">Mulch depth (mm)</div>' +
+      '<input type="number" class="bed-mulch" value="' + (b.mulch||75) + '" min="0" step="25" style="width:100%;background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:600;color:var(--text-primary)" oninput="gardenBeds[' + i + '].mulch=parseFloat(this.value)||75;calcGarden()"></div>' +
+      '<button onclick="gardenBeds.splice(' + i + ',1);renderGardenBeds()" style="background:none;border:none;font-size:18px;color:#c0392b;cursor:pointer;padding:0;margin-bottom:2px">×</button>' +
+      '</div></div>';
+  }).join('');
+  calcGarden();
+}
+
 function calcGarden() {
-  var area = v('g-area');
-  if (area <= 0) { showResults('garden', []); return; }
-  var soilM3 = Math.ceil(area * v('g-soil')/1000 * 1.1 * 10) / 10;
-  var mulchM3 = Math.ceil(area * v('g-mulch')/1000 * 1.1 * 10) / 10;
-  var compostBags = Math.ceil(area * 0.5);
+  if (!gardenBeds.length) { showResults('garden', []); return; }
   var edging = v('g-edging'), weedmat = v('g-weedmat');
+  var totalArea = 0, totalSoilM3 = 0, totalMulchM3 = 0, totalCompost = 0;
+  gardenBeds.forEach(function(b) {
+    var area = b.area || 0;
+    totalArea += area;
+    totalSoilM3 += Math.ceil(area * (b.soil||300)/1000 * 1.1 * 10) / 10;
+    totalMulchM3 += Math.ceil(area * (b.mulch||75)/1000 * 1.1 * 10) / 10;
+    totalCompost += Math.ceil(area * 0.5);
+  });
+  if (totalArea <= 0) { showResults('garden', []); return; }
   var items = [
-    { name: 'Premium garden soil', qty: soilM3 + ' m³', total: soilM3 * v('gp-soil'), note: 'incl. 10% compaction' },
-    { name: 'Mulch', qty: mulchM3 + ' m³', total: mulchM3 * v('gp-mulch') },
-    { name: 'Compost (25L bags)', qty: compostBags + ' bags', total: compostBags * v('gp-compost') }
+    { name: 'Premium garden soil', qty: totalSoilM3.toFixed(1) + ' m³', total: totalSoilM3 * v('gp-soil'), note: 'incl. 10% compaction' },
+    { name: 'Mulch', qty: totalMulchM3.toFixed(1) + ' m³', total: totalMulchM3 * v('gp-mulch') },
+    { name: 'Compost (25L bags)', qty: totalCompost + ' bags', total: totalCompost * v('gp-compost') }
   ];
   if (edging > 0) items.push({ name: 'Garden edging', qty: edging + ' lm', total: edging * v('gp-edging') });
   if (weedmat > 0) items.push({ name: 'Weed mat', qty: weedmat + ' m²', total: weedmat * v('gp-weedmat') });
-  showResults('garden', items, Math.round(area * 0.4), Math.round(area * 0.7));
+  showResults('garden', items, Math.round(totalArea * 0.4), Math.round(totalArea * 0.7));
 }
-
 function irrigationJobType() {
   var type = document.getElementById('i-jobtype').value;
   var installFields = document.getElementById('i-install-fields');
