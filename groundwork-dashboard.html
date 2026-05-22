@@ -472,7 +472,7 @@ function pdfHeader(doc, title, subtitle){
   doc.text('Phone: 0408 165 409',pw-margin,y+8,{align:'right'});
   doc.text('groundworkgardens.email@gmail.com',pw-margin,y+12,{align:'right'});
   y+=16;
-  doc.setDrawColor(61,107,52);doc.setLineWidth(0.8);doc.line(margin,y,pw-margin,y);y+=6;
+  doc.setDrawColor(61,107,52);doc.setLineWidth(0.8);doc.line(margin,y,pw-margin,y);y+=10;
   doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(26,46,23);doc.text(title,margin,y);
   if(subtitle){y+=6;doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(74,124,63);doc.text(subtitle,margin,y);}
   y+=4;doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(120,120,120);
