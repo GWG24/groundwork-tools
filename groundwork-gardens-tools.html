@@ -1582,25 +1582,62 @@ function calcQuick() {
   document.getElementById('qc-vol').textContent = vol.toFixed(3) + ' m³';
 }
 
+var slabs = [];
+
+function addSlab() {
+  slabs.push({ l: 0, w: 0, d: 100 });
+  renderSlabs();
+  setTimeout(function() {
+    var inputs = document.querySelectorAll('.slab-length');
+    if (inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function renderSlabs() {
+  var el = document.getElementById('slabList');
+  if (!el) return;
+  if (!slabs.length) { el.innerHTML = ''; calcConcrete(); return; }
+  el.innerHTML = slabs.map(function(s, i) {
+    return '<div style="background:#f7f9f6;border:0.5px solid #c5d4c0;border-radius:8px;padding:12px;margin-bottom:10px">' +
+      '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px">Slab ' + (i+1) + '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 32px;gap:8px;align-items:end">' +
+      '<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px">Length (m)</div>' +
+      '<input type="number" class="slab-length" value="' + (s.l||'') + '" placeholder="0" min="0" step="0.1" style="width:100%;background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:600;color:var(--text-primary)" oninput="slabs[' + i + '].l=parseFloat(this.value)||0;calcConcrete()"></div>' +
+      '<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px">Width (m)</div>' +
+      '<input type="number" class="slab-width" value="' + (s.w||'') + '" placeholder="0" min="0" step="0.1" style="width:100%;background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:600;color:var(--text-primary)" oninput="slabs[' + i + '].w=parseFloat(this.value)||0;calcConcrete()"></div>' +
+      '<div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px">Depth (mm)</div>' +
+      '<input type="number" class="slab-depth" value="' + (s.d||100) + '" min="0" step="10" style="width:100%;background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:600;color:var(--text-primary)" oninput="slabs[' + i + '].d=parseFloat(this.value)||100;calcConcrete()"></div>' +
+      '<button onclick="slabs.splice(' + i + ',1);renderSlabs()" style="background:none;border:none;font-size:18px;color:#c0392b;cursor:pointer;padding:0;margin-bottom:2px">×</button>' +
+      '</div></div>';
+  }).join('');
+  calcConcrete();
+}
+
 function calcConcrete() {
-  var l = v('c-length'), w = v('c-width'), d = v('c-depth')/1000, rock = v('c-rock')/1000;
-  var area = l * w;
-  if (area <= 0) { showResults('concrete', []); return; }
-  var concreteM3 = Math.ceil(area * d * 1.1 * 10) / 10;
-  var rockM3 = Math.ceil(area * rock * 1.1 * 10) / 10;
-  var perim = 2 * (l + w);
+  if (!slabs.length) { showResults('concrete', []); return; }
+  var rock = v('c-rock')/1000;
   var meshType = document.getElementById('c-mesh').value;
+  var totalArea = 0, totalConcreteM3 = 0, totalRockM3 = 0, totalPerim = 0;
+  slabs.forEach(function(s) {
+    var area = (s.l||0) * (s.w||0);
+    var d = (s.d||100)/1000;
+    totalArea += area;
+    totalConcreteM3 += Math.ceil(area * d * 1.1 * 10) / 10;
+    totalRockM3 += Math.ceil(area * rock * 1.1 * 10) / 10;
+    totalPerim += 2 * ((s.l||0) + (s.w||0));
+  });
+  if (totalArea <= 0) { showResults('concrete', []); return; }
   var items = [
-    { name: 'Concrete (ready mix)', qty: concreteM3 + ' m³', total: concreteM3 * v('cp-concrete'), note: 'incl. 10% waste' },
-    { name: 'Crushed rock base', qty: rockM3 + ' m³', total: rockM3 * v('cp-rock'), note: 'incl. 10% waste' },
-    { name: 'Formwork timber', qty: perim.toFixed(1) + ' lm', total: perim * v('cp-form') }
+    { name: 'Concrete (ready mix)', qty: totalConcreteM3.toFixed(1) + ' m³', total: totalConcreteM3 * v('cp-concrete'), note: 'incl. 10% waste' },
+    { name: 'Crushed rock base', qty: totalRockM3.toFixed(1) + ' m³', total: totalRockM3 * v('cp-rock'), note: 'incl. 10% waste' },
+    { name: 'Formwork timber', qty: totalPerim.toFixed(1) + ' lm', total: totalPerim * v('cp-form') }
   ];
   if (meshType !== 'none') {
-    var sheets = Math.ceil(area / 14.4) + 1;
+    var sheets = Math.ceil(totalArea / 14.4) + 1;
     var meshPrice = meshType === 'SL62' ? v('cp-mesh62') : meshType === 'SL72' ? v('cp-mesh72') : v('cp-mesh82');
     items.push({ name: meshType + ' mesh', qty: sheets + ' sheets', total: sheets * meshPrice, note: '2.4×6m sheets' });
   }
-  showResults('concrete', items, Math.round(area * 1.5), Math.round(area * 2.5));
+  showResults('concrete', items, Math.round(totalArea * 1.5), Math.round(totalArea * 2.5));
 }
 
 function calcGarden() {
