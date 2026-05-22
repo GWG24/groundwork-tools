@@ -557,7 +557,7 @@ function generateMonthlyReport(){
       if(monthExp.length){
         if(y>200){doc.addPage();y=20;}
         y=pdfSectionTitle(doc,'EXPENSES THIS MONTH',y);
-        const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
+        const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];
         const catTotals=cats.map(c=>({cat:c,total:monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
         const travelKm=Math.round(monthExp.filter(e=>e.category==='Travel').reduce((s,e)=>s+parseFloat(e.amount||0),0)/0.88);
         doc.autoTable({
@@ -646,7 +646,7 @@ function generateQuarterlyReport(){
       // Expenses by category
       if(y>200){doc.addPage();y=20;}
       y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);
-      const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
+      const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];
       const catRows=cats.map(c=>({cat:c,total:qExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
       doc.autoTable({startY:y,head:[['Category','Total']],
         body:[...catRows.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],
@@ -713,7 +713,7 @@ function generateYearlyReport(){
       // Expenses by category
       if(y>200){doc.addPage();y=20;}
       y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);
-      const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
+      const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];
       const catRows=cats.map(c=>({cat:c,total:yrExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
       doc.autoTable({startY:y,head:[['Category','Total']],
         body:[...catRows.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],
@@ -913,8 +913,8 @@ async function loadAll(){
     else{lEl.innerHTML=leads.slice(0,5).map(c=>`<div class="lead-item"><div><div class="lead-name">${c.name}</div><div class="lead-sub">${c.job||'No job noted'}${c.suburb?' · '+c.suburb:''}</div></div><span class="badge badge-${c.type}">${c.type==='followup'?'Follow-up':'Lead'}</span></div>`).join('')+(leads.length>5?`<div class="empty-state">+ ${leads.length-5} more</div>`:'');}
 
     // Expense chart
-    const cats=['Materials','Fuel','Labour','Tools','Travel','Other'];
-    const catColors={Materials:'var(--cat-materials)',Fuel:'var(--cat-fuel)',Labour:'var(--cat-labour)',Tools:'var(--cat-tools)',Travel:'#c0392b',Other:'var(--cat-other)'};
+    const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];
+    const catColors={Materials:'var(--cat-materials)',Fuel:'var(--cat-fuel)',Labour:'var(--cat-labour)',Tools:'var(--cat-tools)',Travel:'#c0392b',CityLink:'#e74c3c','Work Clothes':'#7d6608',Insurance:'#1a7a6e',Vehicle:'#2e6da4','Phone & Internet':'#6c3483',Software:'#4a4a8a',Tip:'#7d3c3c',Other:'var(--cat-other)'};
     const catTotals={};cats.forEach(c=>catTotals[c]=monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0));
     const maxCat=Math.max(...Object.values(catTotals),1);
     const activeCats=cats.filter(c=>catTotals[c]>0);
