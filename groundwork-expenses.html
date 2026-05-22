@@ -130,24 +130,19 @@
 
 <div class="cat-pills">
   <div class="cat-pill active all" onclick="setCat('all',this)">All</div>
-  <div class="cat-pill" onclick="setCat('Materials',this)">Materials</div>
-  <div class="cat-pill" onclick="setCat('Fuel',this)">Fuel</div>
-  <div class="cat-pill" onclick="setCat('Labour',this)">Labour</div>
-  <div class="cat-pill" onclick="setCat('Tools',this)">Tools</div>
-  <div class="cat-pill" onclick="setCat('Other',this)">Other</div>
+  <div class="cat-pill" onclick="setCat('Materials',this)">🪨 Materials</div>
+  <div class="cat-pill" onclick="setCat('Fuel',this)">⛽ Fuel</div>
+  <div class="cat-pill" onclick="setCat('Labour',this)">👷 Labour</div>
+  <div class="cat-pill" onclick="setCat('Tools',this)">🔧 Tools</div>
   <div class="cat-pill" onclick="setCat('Travel',this)">🚗 Travel</div>
-</div>
-<div style="padding:8px 16px 4px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text-secondary)">Quick Add</div>
-<div class="cat-pills" style="padding-bottom:8px">
-  <div class="cat-pill" onclick="quickAdd('Diesel','Fuel')">⛽ Diesel</div>
+  <div class="cat-pill" onclick="setCat('Other',this)">Other</div>
+  <div class="cat-pill" style="border-left:1px solid #c5d4c0;margin-left:4px;padding-left:10px" onclick="quickAdd('Diesel','Fuel')">⛽ Diesel</div>
   <div class="cat-pill" onclick="quickAdd('CityLink Toll','Travel')">🛣️ CityLink</div>
-  <div class="cat-pill" onclick="quickAdd('Tools & Equipment','Tools')">🔧 Tools</div>
   <div class="cat-pill" onclick="quickAdd('Work Clothes','Other')">👕 Work Clothes</div>
-  <div class="cat-pill" onclick="quickAdd('Materials','Materials')">🪨 Materials</div>
   <div class="cat-pill" onclick="quickAdd('Equipment Hire','Tools')">🏗️ Equipment</div>
   <div class="cat-pill" onclick="quickAdd('Tip / Waste Disposal','Other')">🗑️ Tip</div>
   <div class="cat-pill" onclick="quickAdd('Insurance','Other')">🛡️ Insurance</div>
-  <div class="cat-pill" onclick="quickAdd('Car & Rego','Other')">🚗 Car</div>
+  <div class="cat-pill" onclick="quickAdd('Car & Rego','Other')">🚘 Car</div>
   <div class="cat-pill" onclick="quickAdd('Phone Bill','Other')">📱 Phone Bill</div>
   <div class="cat-pill" onclick="quickAdd('Computer Software','Other')">💻 Software</div>
   <div class="cat-pill" onclick="quickAdd('Internet','Other')">🌐 Internet</div>
@@ -160,21 +155,6 @@
 <div class="overlay" id="addOverlay">
   <div class="modal">
     <div class="modal-title"><span id="modalTitle">New Expense</span><button class="modal-close" onclick="closeAdd()">✕</button></div>
-    <div class="preset-label">Quick Add</div>
-    <div class="preset-grid">
-      <button class="preset-btn" onclick="applyPreset('Diesel','Fuel')">⛽ Diesel</button>
-      <button class="preset-btn" onclick="applyPreset('CityLink Toll','Travel')">🛣️ CityLink</button>
-      <button class="preset-btn" onclick="applyPreset('Tools & Equipment','Tools')">🔧 Tools</button>
-      <button class="preset-btn" onclick="applyPreset('Work Clothes','Other')">👕 Work Clothes</button>
-      <button class="preset-btn" onclick="applyPreset('Materials','Materials')">🪨 Materials</button>
-      <button class="preset-btn" onclick="applyPreset('Equipment Hire','Tools')">🏗️ Equipment</button>
-      <button class="preset-btn" onclick="applyPreset('Tip / Waste Disposal','Other')">🗑️ Tip</button>
-      <button class="preset-btn" onclick="applyPreset('Insurance','Other')">🛡️ Insurance</button>
-      <button class="preset-btn" onclick="applyPreset('Car & Rego','Other')">🚗 Car</button>
-      <button class="preset-btn" onclick="applyPreset('Phone Bill','Other')">📱 Phone Bill</button>
-      <button class="preset-btn" onclick="applyPreset('Computer Programs / Software','Other')">💻 Software</button>
-      <button class="preset-btn" onclick="applyPreset('Internet','Other')">🌐 Internet</button>
-    </div>
     <div class="field"><label>Description *</label><input id="f-desc" type="text" placeholder="e.g. Topsoil, Diesel, Mulch"></div>
     <div class="field"><label>Amount ($) *</label><input id="f-amount" type="number" step="0.01" placeholder="0.00"></div>
     <div class="field"><label>Category</label><select id="f-cat" onchange="onCatChange()"><option value="Materials">Materials</option><option value="Fuel">Fuel</option><option value="Labour">Labour / Sub</option><option value="Tools">Tools & Equipment</option><option value="Travel">🚗 Travel</option><option value="Other">Other</option></select></div>
