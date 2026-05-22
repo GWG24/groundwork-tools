@@ -460,13 +460,14 @@ function getClient(r){
 function pdfHeader(doc, title, subtitle){
   const pw=210, margin=15;
   let y=12;
-  // Logo text instead of image
+  // Branded logo block
   doc.setFillColor(26,46,23);
-  doc.rect(margin,y,50,12,'F');
-  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(212,201,168);
-  doc.text('GROUNDWORK',margin+3,y+7);
-  doc.setFontSize(7);doc.setTextColor(157,146,120);
-  doc.text('GARDENS',margin+3,y+11);
+  doc.rect(margin,y,55,14,'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(13);doc.setTextColor(212,201,168);
+  doc.text('GROUNDWORK',margin+3,y+8);
+  doc.setFontSize(8);doc.setTextColor(157,146,120);
+  doc.text('G A R D E N S',margin+3,y+13);
   doc.setFontSize(8);doc.setTextColor(100,100,100);doc.setFont('helvetica','normal');
   doc.text('Joffre Road, Pascoe Vale VIC 3044',pw-margin,y+5,{align:'right'});
   doc.text('Phone: 0408 165 409',pw-margin,y+10,{align:'right'});
@@ -532,31 +533,28 @@ function generateMonthlyReport(){
       y=pdfSummaryRow(doc,'Estimated Profit (Collected − Expenses)',fmt(profit),y,true);
       y+=6;
 
-      // INVOICES TABLE
+      // INVOICE TOTALS SUMMARY
       if(monthInv.length){
         if(y>220){doc.addPage();y=20;}
-        y=pdfSectionTitle(doc,'INVOICES THIS MONTH',y);
+        y=pdfSectionTitle(doc,'INVOICE SUMMARY THIS MONTH',y);
+        const paidInv=monthInv.filter(r=>getStatus(r)==='paid');
+        const unpaidInv=monthInv.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
         doc.autoTable({
           startY:y,
-          head:[['Invoice #','Client','Description','Issue Date','Due Date','Amount','Status']],
-          body:monthInv.map(r=>{
-            const status=getStatus(r);
-            return [getInvNum(r),getClient(r),getDesc(r)||'—',getDate(r),getDue(r)||'—',fmt(getTotal(r)),status.charAt(0).toUpperCase()+status.slice(1)];
-          }),
+          head:[['','Count','Total Amount']],
+          body:[
+            ['Total Invoices',monthInv.length,fmt(totalInv)],
+            ['Paid',paidInv.length,fmt(totalPaid)],
+            ['Unpaid / Outstanding',unpaidInv.length,fmt(totalUnpaid)],
+          ],
           theme:'plain',
           headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
-          bodyStyles:{fontSize:8,cellPadding:3,textColor:[50,50,50]},
-          columnStyles:{
-            0:{cellWidth:22},1:{cellWidth:38},2:{cellWidth:45},
-            3:{cellWidth:20,halign:'center'},4:{cellWidth:20,halign:'center'},
-            5:{cellWidth:22,halign:'right',fontStyle:'bold'},6:{cellWidth:18,halign:'center'}
-          },
+          bodyStyles:{fontSize:9,cellPadding:3,textColor:[50,50,50]},
+          columnStyles:{0:{cellWidth:100},1:{cellWidth:30,halign:'center'},2:{cellWidth:40,halign:'right',fontStyle:'bold'}},
           didDrawCell:function(data){
-            if(data.section==='body'&&data.column.index===6){
-              const status=data.cell.raw.toLowerCase();
-              if(status==='paid'){doc.setTextColor(61,107,52);}
-              else if(status==='unpaid'){doc.setTextColor(192,57,43);}
-              else{doc.setTextColor(184,134,11);}
+            if(data.section==='body'&&data.column.index===2){
+              if(data.row.index===1) doc.setTextColor(61,107,52);
+              else if(data.row.index===2) doc.setTextColor(192,57,43);
             }
           },
           margin:{left:margin,right:margin}
