@@ -266,11 +266,8 @@
       <div class="job-badge" id="badge-concrete"></div><div class="job-toggle open" id="toggle-concrete">▾</div>
     </div>
     <div class="job-body open" id="body-concrete">
-      <div class="input-grid three">
-        <div class="field"><label>Length (m)</label><input type="number" id="c-length" placeholder="0" oninput="calcConcrete()"></div>
-        <div class="field"><label>Width (m)</label><input type="number" id="c-width" placeholder="0" oninput="calcConcrete()"></div>
-        <div class="field"><label>Depth (mm)</label><input type="number" id="c-depth" value="100" oninput="calcConcrete()"></div>
-      </div>
+      <div id="slabList"></div>
+      <button class="add-btn" onclick="addSlab()">+ Add Slab</button>
       <div class="input-grid">
         <div class="field"><label>Mesh type</label>
           <select id="c-mesh" onchange="calcConcrete()">
