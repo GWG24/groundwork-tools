@@ -94,6 +94,10 @@
   .empty-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 4px; }
   .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; padding: 14px 24px; border-radius: 8px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
   .toast.show { transform: translateX(-50%) translateY(0); }
+  .preset-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .preset-btn { background: #f0f7ee; border: 1px solid #c5d4c0; border-radius: 20px; padding: 6px 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-primary); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .preset-btn:hover { background: var(--green-leaf); color: #fff; border-color: var(--green-leaf); }
+  .preset-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -133,6 +137,21 @@
   <div class="cat-pill" onclick="setCat('Other',this)">Other</div>
   <div class="cat-pill" onclick="setCat('Travel',this)">🚗 Travel</div>
 </div>
+<div style="padding:8px 16px 4px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text-secondary)">Quick Add</div>
+<div class="cat-pills" style="padding-bottom:8px">
+  <div class="cat-pill" onclick="quickAdd('Diesel','Fuel')">⛽ Diesel</div>
+  <div class="cat-pill" onclick="quickAdd('CityLink Toll','Travel')">🛣️ CityLink</div>
+  <div class="cat-pill" onclick="quickAdd('Tools & Equipment','Tools')">🔧 Tools</div>
+  <div class="cat-pill" onclick="quickAdd('Work Clothes','Other')">👕 Work Clothes</div>
+  <div class="cat-pill" onclick="quickAdd('Materials','Materials')">🪨 Materials</div>
+  <div class="cat-pill" onclick="quickAdd('Equipment Hire','Tools')">🏗️ Equipment</div>
+  <div class="cat-pill" onclick="quickAdd('Tip / Waste Disposal','Other')">🗑️ Tip</div>
+  <div class="cat-pill" onclick="quickAdd('Insurance','Other')">🛡️ Insurance</div>
+  <div class="cat-pill" onclick="quickAdd('Car & Rego','Other')">🚗 Car</div>
+  <div class="cat-pill" onclick="quickAdd('Phone Bill','Other')">📱 Phone Bill</div>
+  <div class="cat-pill" onclick="quickAdd('Computer Software','Other')">💻 Software</div>
+  <div class="cat-pill" onclick="quickAdd('Internet','Other')">🌐 Internet</div>
+</div>
 
 <div class="list" id="list"><div class="empty"><div class="empty-icon">🌿</div><div class="empty-title">Loading...</div></div></div>
 <div style="height:80px"></div>
@@ -141,6 +160,21 @@
 <div class="overlay" id="addOverlay">
   <div class="modal">
     <div class="modal-title"><span id="modalTitle">New Expense</span><button class="modal-close" onclick="closeAdd()">✕</button></div>
+    <div class="preset-label">Quick Add</div>
+    <div class="preset-grid">
+      <button class="preset-btn" onclick="applyPreset('Diesel','Fuel')">⛽ Diesel</button>
+      <button class="preset-btn" onclick="applyPreset('CityLink Toll','Travel')">🛣️ CityLink</button>
+      <button class="preset-btn" onclick="applyPreset('Tools & Equipment','Tools')">🔧 Tools</button>
+      <button class="preset-btn" onclick="applyPreset('Work Clothes','Other')">👕 Work Clothes</button>
+      <button class="preset-btn" onclick="applyPreset('Materials','Materials')">🪨 Materials</button>
+      <button class="preset-btn" onclick="applyPreset('Equipment Hire','Tools')">🏗️ Equipment</button>
+      <button class="preset-btn" onclick="applyPreset('Tip / Waste Disposal','Other')">🗑️ Tip</button>
+      <button class="preset-btn" onclick="applyPreset('Insurance','Other')">🛡️ Insurance</button>
+      <button class="preset-btn" onclick="applyPreset('Car & Rego','Other')">🚗 Car</button>
+      <button class="preset-btn" onclick="applyPreset('Phone Bill','Other')">📱 Phone Bill</button>
+      <button class="preset-btn" onclick="applyPreset('Computer Programs / Software','Other')">💻 Software</button>
+      <button class="preset-btn" onclick="applyPreset('Internet','Other')">🌐 Internet</button>
+    </div>
     <div class="field"><label>Description *</label><input id="f-desc" type="text" placeholder="e.g. Topsoil, Diesel, Mulch"></div>
     <div class="field"><label>Amount ($) *</label><input id="f-amount" type="number" step="0.01" placeholder="0.00"></div>
     <div class="field"><label>Category</label><select id="f-cat" onchange="onCatChange()"><option value="Materials">Materials</option><option value="Fuel">Fuel</option><option value="Labour">Labour / Sub</option><option value="Tools">Tools & Equipment</option><option value="Travel">🚗 Travel</option><option value="Other">Other</option></select></div>
@@ -174,6 +208,33 @@ async function loadExpenses(){try{expenses=await db('expenses?order=expense_date
 function changeMonth(dir){viewMonth.setMonth(viewMonth.getMonth()+dir);render();}
 function setCat(cat,el){currentCat=cat;document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');render();}
 function monthExpenses(){const y=viewMonth.getFullYear(),m=viewMonth.getMonth()+1;return expenses.filter(e=>{if(!e.expense_date)return false;const[ey,em]=e.expense_date.split('-');return parseInt(ey)===y&&parseInt(em)===m;});}
+
+function quickAdd(desc, cat){
+  openAdd();
+  setTimeout(function(){
+    document.getElementById('f-desc').value = desc;
+    document.getElementById('f-cat').value = cat;
+    onCatChange();
+    const amtField = document.getElementById('f-amount');
+    if(cat === 'Travel'){
+      document.getElementById('f-km').focus();
+    } else {
+      amtField.focus();
+    }
+  }, 100);
+}
+
+function applyPreset(desc, cat){
+  document.getElementById('f-desc').value = desc;
+  document.getElementById('f-cat').value = cat;
+  onCatChange();
+  // Focus amount field
+  setTimeout(function(){ 
+    const amtField = document.getElementById('f-amount');
+    if(amtField && amtField.closest('.field').style.display !== 'none') amtField.focus();
+    else document.getElementById('f-km').focus();
+  }, 50);
+}
 
 function onCatChange(){
   const cat=document.getElementById('f-cat').value;
