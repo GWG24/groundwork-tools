@@ -857,6 +857,28 @@ function generateFullReport(){
 }
 
 // ==================== LOAD DATA ====================
+function renderInvList(limit){
+  const invEl = window._invEl;
+  const unique = window._allInvoices || [];
+  if(!invEl) return;
+  invEl.innerHTML = unique.slice(0, limit).map(r=>{
+    const s=getStatus(r);
+    return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span></div></div>`;
+  }).join('') + (unique.length > limit ? `<button class="see-more-btn" onclick="renderInvList(${limit+10})">Show More Invoices (${unique.length-limit} remaining)</button>` : '');
+}
+
+function renderQuoteList(limit){
+  const qEl = window._qEl;
+  const quotes = window._allQuotes || [];
+  if(!qEl) return;
+  qEl.innerHTML = quotes.slice(0, limit).map(r=>{
+    let approval='pending';
+    try{ const d=typeof r.data==='string'?JSON.parse(r.data):r.data; approval=d.approval||'pending'; }catch(e){}
+    const isApproved=approval==='approved';
+    return `<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-right"><div class="quote-amt">${fmt(getTotal(r))}</div><button class="approval-btn ${isApproved?'approved':'pending'}" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)">${isApproved?'✓ Approved':'⏳ Pending'}</button></div></div>`;
+  }).join('') + (quotes.length > limit ? `<button class="see-more-btn" onclick="renderQuoteList(${limit+10})">Show More Quotes (${quotes.length-limit} remaining)</button>` : '') + `<div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap to mark a quote as approved</div>`;
+}
+
 async function loadAll(){
   setSyncStatus(true,'Refreshing...');
   try{
@@ -890,31 +912,16 @@ async function loadAll(){
     else{
       const sorted=[...unpaidInv,..._invoices.filter(r=>getStatus(r)==='partial'),...paidInv];
       const unique=[...new Map(sorted.map(r=>[r.id,r])).values()];
-      const invLimit = 5;
       window._allInvoices = unique;
-      function renderInvList(limit){
-        const shown = unique.slice(0, limit);
-        invEl.innerHTML = shown.map(r=>{
-          const s=getStatus(r);
-          return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span></div></div>`;
-        }).join('') + (unique.length > limit ? `<button class="see-more-btn" onclick="renderInvList(${limit+10})">Show More Invoices (${unique.length - limit} remaining)</button>` : '');
-      }
-      renderInvList(invLimit);
+      window._invEl = invEl;
+      renderInvList(5);
     }
 
     // Quotes
     const qEl=document.getElementById('quotes-list');
     if(!_quotes.length){qEl.innerHTML=`<div class="empty-state">No quotes yet</div>`;}
     else{
-      window._allQuotes = _quotes;
-      function renderQuoteList(limit){
-        qEl.innerHTML = _quotes.slice(0, limit).map(r=>{
-          let approval='pending';
-          try{ const d=typeof r.data==='string'?JSON.parse(r.data):r.data; approval=d.approval||'pending'; }catch(e){}
-          const isApproved=approval==='approved';
-          return `<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-right"><div class="quote-amt">${fmt(getTotal(r))}</div><button class="approval-btn ${isApproved?'approved':'pending'}" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)">${isApproved?'✓ Approved':'⏳ Pending'}</button></div></div>`;
-        }).join('') + (_quotes.length > limit ? `<button class="see-more-btn" onclick="renderQuoteList(${limit+10})">Show More Quotes (${_quotes.length - limit} remaining)</button>` : '') + `<div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap to mark a quote as approved</div>`;
-      }
+      window._qEl = qEl;
       renderQuoteList(5);
     }
 
