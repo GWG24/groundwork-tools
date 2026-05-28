@@ -2310,6 +2310,7 @@ function generatePDF() {
     var markup = document.getElementById('markupToggle').checked ? matTotal*0.15 : 0;
     var subtotal = labour + matTotal + markup;
     var gst = subtotal * 0.10, total = subtotal + gst;
+    var priceOverrideVal = parseFloat(document.getElementById('priceOverride').value); if (!isNaN(priceOverrideVal) && priceOverrideVal > 0) { total = priceOverrideVal; }
     var depositPct = parseFloat(document.getElementById('depositPct').value)||0;
     var deposit = total * depositPct / 100;
     var showItemised = document.getElementById('itemiseToggle').checked;
