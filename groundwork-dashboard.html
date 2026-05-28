@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- saved from url=(0061)file:///C:/Users/marcu/Downloads/groundwork-dashboard_23.html -->
+<!-- saved from url=(0061)file:///C:/Users/marcu/Downloads/groundwork-dashboard_29.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Groundwork Gardens — Dashboard</title>
-<link href="./Groundwork Gardens — Dashboard7779997878787_files/css2" rel="stylesheet">
-<script src="./Groundwork Gardens — Dashboard7779997878787_files/jspdf.umd.min.js.download"></script>
-<script src="./Groundwork Gardens — Dashboard7779997878787_files/jspdf.plugin.autotable.min.js.download"></script>
+<link href="./Groundwork Gardens — DashboardNEWSTSSSS_files/css2" rel="stylesheet">
+<script src="./Groundwork Gardens — DashboardNEWSTSSSS_files/jspdf.umd.min.js.download"></script>
+<script src="./Groundwork Gardens — DashboardNEWSTSSSS_files/jspdf.plugin.autotable.min.js.download"></script>
 <style>
   /* PIN LOCK */
   .pin-overlay { display: none; position: fixed; inset: 0; background: #1a2e17; z-index: 999; flex-direction: column; align-items: center; justify-content: center; }
@@ -202,7 +202,7 @@
 </div>
 
 <div class="main-header">
-  <img src="./Groundwork Gardens — Dashboard7779997878787_files/logo.png" alt="GG Logo" style="height:44px;width:auto;object-fit:contain">
+  <img src="./Groundwork Gardens — DashboardNEWSTSSSS_files/logo.png" alt="GG Logo" style="height:44px;width:auto;object-fit:contain">
   <a href="https://gwg24.github.io/groundwork-tools/groundwork-gardens-tools.html" style="margin-left:auto;display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--cream-dim);font-family:&#39;Barlow Condensed&#39;,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;" onmouseover="this.style.color=&#39;#d4c9a8&#39;" onmouseout="this.style.color=&#39;#9e9278&#39;">🧮 Tools</a>
 </div>
 
@@ -214,7 +214,7 @@
 </div>
 
 <div class="sync-bar" id="syncBar">
-  <div class="sync-left"><div class="sync-dot"></div><span id="syncMsg">☁ Connecting...</span></div>
+  <div class="sync-left"><div class="sync-dot"></div><span id="syncMsg">☁ Live data · 01:58 pm</span></div>
   <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
 </div>
 
@@ -228,23 +228,23 @@
   <div class="money-grid">
     <div class="money-card highlight">
       <div class="money-label">Invoiced</div>
-      <div class="money-val" id="m-invoiced">—</div>
-      <div class="money-sub" id="m-invoiced-sub">Loading...</div>
+      <div class="money-val" id="m-invoiced">$17,705.70</div>
+      <div class="money-sub" id="m-invoiced-sub">7 invoices this month</div>
     </div>
     <div class="money-card">
       <div class="money-label">Expenses</div>
-      <div class="money-val red" id="m-expenses">—</div>
-      <div class="money-sub" id="m-expenses-sub">Loading...</div>
+      <div class="money-val red" id="m-expenses">$4,586.81</div>
+      <div class="money-sub" id="m-expenses-sub">19 expenses this month</div>
     </div>
     <div class="money-card">
       <div class="money-label">Outstanding</div>
-      <div class="money-val gold" id="m-outstanding">—</div>
-      <div class="money-sub" id="m-outstanding-sub">Loading...</div>
+      <div class="money-val gold" id="m-outstanding">$1,747.43</div>
+      <div class="money-sub" id="m-outstanding-sub">2 unpaid</div>
     </div>
     <div class="money-card">
       <div class="money-label">Collected</div>
-      <div class="money-val green" id="m-paid">—</div>
-      <div class="money-sub" id="m-paid-sub">Loading...</div>
+      <div class="money-val green" id="m-paid">$15,958.27</div>
+      <div class="money-sub" id="m-paid-sub">5 paid</div>
     </div>
   </div>
 </div>
@@ -253,21 +253,21 @@
 
 <div class="section">
   <div class="section-title">🧾 Invoices</div>
-  <div id="invoice-list"><div class="empty-state">Loading...</div></div>
+  <div id="invoice-list"><div class="inv-item"><div><div class="inv-name">Mike - 0412 052 991</div><div class="inv-sub">#INV-193 · Due 2026-06-02</div></div><div class="inv-right"><div class="inv-amt unpaid">$647.43</div><span class="status-pill unpaid">Unpaid</span></div></div><div class="inv-item"><div><div class="inv-name">Daniel - 0451461157</div><div class="inv-sub">#INV-191 · Due 2026-06-01</div></div><div class="inv-right"><div class="inv-amt unpaid">$1,100.00</div><span class="status-pill unpaid">Unpaid</span></div></div><div class="inv-item"><div><div class="inv-name">Paul Ferma</div><div class="inv-sub">#INV-199 · Due 2026-06-02</div></div><div class="inv-right"><div class="inv-amt paid">$6,671.50</div><span class="status-pill paid">Paid</span></div></div><div class="inv-item"><div><div class="inv-name">Samantha - 0439410704</div><div class="inv-sub">#INV-209 · Due 2026-06-03</div></div><div class="inv-right"><div class="inv-amt paid">$616.57</div><span class="status-pill paid">Paid</span></div></div><div class="inv-item"><div><div class="inv-name">Christian - 19 Linda St Coburg - 0438 315 772</div><div class="inv-sub">#INV-2026-204 · Due 2026-05-20</div></div><div class="inv-right"><div class="inv-amt paid">$3,599.20</div><span class="status-pill paid">Paid</span></div></div><button class="see-more-btn" onclick="renderInvList(15)">Show More Invoices (2 remaining)</button></div>
 </div>
 
 <div class="divider"></div>
 
 <div class="section">
   <div class="section-title">📄 Recent Quotes</div>
-  <div id="quotes-list"><div class="empty-state">Loading...</div></div>
+  <div id="quotes-list"><div class="quote-item"><div><div class="quote-name">Mike - 0412 052 991</div><div class="quote-sub">quote_218 · 2026-05-26</div></div><div class="quote-right"><div class="quote-amt">$6,063.42</div><button class="approval-btn pending" id="appr-quote_218" onclick="toggleApproval(&#39;quote_218&#39;,this)">⏳ Pending</button></div></div><div class="quote-item"><div><div class="quote-name">Steve - 0410441870</div><div class="quote-sub">quote_217 · 2026-05-25</div></div><div class="quote-right"><div class="quote-amt">$3,443.33</div><button class="approval-btn pending" id="appr-quote_217" onclick="toggleApproval(&#39;quote_217&#39;,this)">⏳ Pending</button></div></div><div class="quote-item"><div><div class="quote-name">Vince - 0403274200</div><div class="quote-sub">quote_215 · 2026-05-23</div></div><div class="quote-right"><div class="quote-amt">$8,834.76</div><button class="approval-btn pending" id="appr-quote_215" onclick="toggleApproval(&#39;quote_215&#39;,this)">⏳ Pending</button></div></div><div class="quote-item"><div><div class="quote-name">Vince - 0403274200</div><div class="quote-sub">quote_216 · 2026-05-23</div></div><div class="quote-right"><div class="quote-amt">$10,697.83</div><button class="approval-btn pending" id="appr-quote_216" onclick="toggleApproval(&#39;quote_216&#39;,this)">⏳ Pending</button></div></div><div class="quote-item"><div><div class="quote-name">Michelle Falzon - 0432063031</div><div class="quote-sub">quote_186 · 2026-05-22</div></div><div class="quote-right"><div class="quote-amt">$24,683.23</div><button class="approval-btn pending" id="appr-quote_186" onclick="toggleApproval(&#39;quote_186&#39;,this)">⏳ Pending</button></div></div><button class="see-more-btn" onclick="renderQuoteList(15)">Show More Quotes (17 remaining)</button><div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap to mark a quote as approved</div></div>
 </div>
 
 <div class="divider"></div>
 
 <div class="section">
   <div class="section-title">📋 Job Notes</div>
-  <div id="job-notes-list"><div class="empty-state">Loading...</div></div>
+  <div id="job-notes-list"><div class="job-note-card" id="job-card-jn1779692518281"><div class="job-note-header" style="background:#3d6b34" onclick="toggleJobNote(&#39;jn1779692518281&#39;)"><div class="job-note-left"><div class="job-note-dot"></div><div><div class="job-note-name">2 Gezireh St Pascoe Vale Sth 0/4</div><div class="job-note-date">Added 25 May 2026</div></div></div><div class="job-note-arrow" id="arrow-jn1779692518281">▾</div></div><div class="job-note-body" id="body-jn1779692518281"><div class="checklist-wrap" id="cl-jn1779692518281"><div class="checklist-item" id="ci-jn1779692518281-0"><input type="checkbox" class="checklist-cb" onchange="toggleCheckItem(&#39;jn1779692518281&#39;,0,this)"><span class="checklist-text " id="ct-jn1779692518281-0">Confirm materials &amp; plant orders</span></div><div class="checklist-item" id="ci-jn1779692518281-1"><input type="checkbox" class="checklist-cb" onchange="toggleCheckItem(&#39;jn1779692518281&#39;,1,this)"><span class="checklist-text " id="ct-jn1779692518281-1">Confirm access &amp; start date</span></div><div class="checklist-item" id="ci-jn1779692518281-2"><input type="checkbox" class="checklist-cb" onchange="toggleCheckItem(&#39;jn1779692518281&#39;,2,this)"><span class="checklist-text " id="ct-jn1779692518281-2">Organise machine hire &amp; deliveries</span></div><div class="checklist-item" id="ci-jn1779692518281-3"><input type="checkbox" class="checklist-cb" onchange="toggleCheckItem(&#39;jn1779692518281&#39;,3,this)"><span class="checklist-text " id="ct-jn1779692518281-3">Confirm pavers supplied on site</span></div></div><div class="checklist-add"><input class="checklist-input" id="clinput-jn1779692518281" type="text" placeholder="Add a task..." maxlength="120" onkeydown="if(event.key===&#39;Enter&#39;)addCheckItem(&#39;jn1779692518281&#39;)"><button class="checklist-add-btn" onclick="addCheckItem(&#39;jn1779692518281&#39;)">+ Add</button></div><div class="job-note-footer"><span class="job-note-saved" id="saved-jn1779692518281">✓ Saved</span><button class="job-note-delete" onclick="deleteJobNote(&#39;jn1779692518281&#39;)">× Remove job</button></div></div></div></div>
   <button class="add-job-btn" onclick="openAddJob()">+ Add Job</button>
 </div>
 
@@ -275,7 +275,7 @@
 
 <div class="section">
   <div class="section-title">👥 Leads &amp; Follow-ups</div>
-  <div id="leads-list"><div class="empty-state">Loading...</div></div>
+  <div id="leads-list"><div class="lead-item"><div><div class="lead-name">Marisa</div><div class="lead-sub">Hi Pages - Re lay brick pavers · Fitzroy North</div></div><span class="badge badge-lead">Lead</span></div><div class="lead-item"><div><div class="lead-name">Tung Phan</div><div class="lead-sub">Hi Pages - Re laying pavers · Preston</div></div><span class="badge badge-lead">Lead</span></div><div class="lead-item"><div><div class="lead-name">Leah</div><div class="lead-sub">Back yard renovation · Pascoe Vale</div></div><span class="badge badge-lead">Lead</span></div><div class="lead-item"><div><div class="lead-name">Ayesha</div><div class="lead-sub">Replace Cracked Concrete · Fawkner</div></div><span class="badge badge-lead">Lead</span></div></div>
 </div>
 
 <div class="divider"></div>
@@ -283,7 +283,7 @@
 <div class="section">
   <div class="section-title">📊 Expenses by Category</div>
   <div class="money-card" style="margin-bottom:4px">
-    <div id="exp-chart"><div class="empty-state">Loading...</div></div>
+    <div id="exp-chart"><div class="bar-chart"><div class="bar-row"><div class="bar-label">Materials</div><div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--cat-materials)"></div></div><div class="bar-val" style="color:var(--cat-materials)">$1,873.02</div></div><div class="bar-row"><div class="bar-label">Labour</div><div class="bar-track"><div class="bar-fill" style="width:45.8%;background:var(--cat-labour)"></div></div><div class="bar-val" style="color:var(--cat-labour)">$858.00</div></div><div class="bar-row"><div class="bar-label">Tools</div><div class="bar-track"><div class="bar-fill" style="width:9.9%;background:var(--cat-tools)"></div></div><div class="bar-val" style="color:var(--cat-tools)">$184.85</div></div><div class="bar-row"><div class="bar-label">Travel</div><div class="bar-track"><div class="bar-fill" style="width:6.6%;background:#c0392b"></div></div><div class="bar-val" style="color:#c0392b">$122.76</div></div><div class="bar-row"><div class="bar-label">Work Clothes</div><div class="bar-track"><div class="bar-fill" style="width:4.6%;background:#7d6608"></div></div><div class="bar-val" style="color:#7d6608">$86.68</div></div><div class="bar-row"><div class="bar-label">Vehicle</div><div class="bar-track"><div class="bar-fill" style="width:50.8%;background:#2e6da4"></div></div><div class="bar-val" style="color:#2e6da4">$951.50</div></div><div class="bar-row"><div class="bar-label">Phone &amp; Internet</div><div class="bar-track"><div class="bar-fill" style="width:15.0%;background:#6c3483"></div></div><div class="bar-val" style="color:#6c3483">$281.00</div></div><div class="bar-row"><div class="bar-label">Software</div><div class="bar-track"><div class="bar-fill" style="width:6.4%;background:#4a4a8a"></div></div><div class="bar-val" style="color:#4a4a8a">$120.00</div></div><div class="bar-row"><div class="bar-label">Tip</div><div class="bar-track"><div class="bar-fill" style="width:5.8%;background:#7d3c3c"></div></div><div class="bar-val" style="color:#7d3c3c">$109.00</div></div></div></div>
   </div>
 </div>
 
@@ -565,7 +565,7 @@ function generateQuarterlyReport(){
       if(qPaidInv.length){
         if(y>220){doc.addPage();y=20;}
         y=pdfSectionTitle(doc,'REVENUE RECEIVED THIS QUARTER',y);
-        doc.autoTable({startY:y,head:[['Month','Paid Invoices','Revenue (inc GST)']],body:qMonths.map(m=>{const mPaid=qInv.filter(r=>getStatus(r)==='paid'&&new Date(r.updated_at).getMonth()===m);return [months[m]+' '+now.getFullYear(),mPaid.length,fmt(mPaid.reduce((s,r)=>s+getTotal(r),0))];})theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3,textColor:[61,107,52]},columnStyles:{0:{cellWidth:60},1:{cellWidth:40,halign:'center'},2:{cellWidth:70,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});
+        doc.autoTable({startY:y,head:[['Month','Paid Invoices','Revenue (inc GST)']],body:qMonths.map(m=>{const mPaid=qInv.filter(r=>getStatus(r)==='paid'&&new Date(r.updated_at).getMonth()===m);return [months[m]+' '+now.getFullYear(),mPaid.length,fmt(mPaid.reduce((s,r)=>s+getTotal(r),0))];}),theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3,textColor:[61,107,52]},columnStyles:{0:{cellWidth:60},1:{cellWidth:40,halign:'center'},2:{cellWidth:70,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});
         y=doc.lastAutoTable.finalY+8;
       }
       if(y>200){doc.addPage();y=20;}
