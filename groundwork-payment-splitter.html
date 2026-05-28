@@ -208,20 +208,21 @@
 <div class="section">
   <div class="sec-title">Account Split %</div>
   <div class="card">
-    <div style="font-size:11px;color:var(--cream-dim);margin-bottom:12px">Adjust your split percentages. Must add to 100%.</div>
-    <div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:11px;color:var(--cream-dim);margin-bottom:12px">Adjust your split percentages. Must add to 100%.</div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px">
+  <div style="font-size:13px;color:var(--cream-dim);white-space:nowrap">Job Total ($)</div>
+  <input type="number" id="split-job-total" placeholder="e.g. 9500" min="0" step="1" oninput="updateSplitAmounts()" style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:8px 12px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;color:var(--cream);text-align:right">
+</div>
+<div style="font-size:11px;color:var(--cream-dim);margin-bottom:12px">    <div style="display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:10px"><div style="width:10px;height:10px;border-radius:50%;background:#c0392b"></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px">Tax / GST</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-tax" value="30" min="0" max="100" oninput="checkPcts()" class="split-pct-input"><span style="color:var(--cream-dim);font-size:12px">%</span></div>
-      </div>
+<div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-tax" value="30" min="0" max="100" oninput="checkPcts();updateSplitAmounts()" class="split-pct-input"><span style="color:var(--cream-dim);font-size:12px">%</span></div><div id="amt-tax" style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:var(--cream);min-width:80px;text-align:right">—</div>      </div>
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:10px"><div style="width:10px;height:10px;border-radius:50%;background:#4a90d9"></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px">Pay</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-pay" value="45" min="0" max="100" oninput="checkPcts()" class="split-pct-input"><span style="color:var(--cream-dim);font-size:12px">%</span></div>
-      </div>
+<div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-pay" value="45" min="0" max="100" oninput="checkPcts();updateSplitAmounts()" class="split-pct-input"><span style="color:var(--cream-dim);font-size:12px">%</span></div><div id="amt-pay" style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:var(--cream);min-width:80px;text-align:right">—</div>      </div>
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:10px"><div style="width:10px;height:10px;border-radius:50%;background:#9b59b6"></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px">Profit</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-profit" value="25" min="0" max="100" oninput="checkPcts()" class="split-pct-input"><span style="color:var(--cream-dim);font-size:12px">%</span></div>
-      </div>
+<div style="display:flex;align-items:center;gap:6px"><input type="number" id="pct-profit" value="25" min="0" max="100" oninput="checkPcts();updateSplitAmounts()" class="split-pct-input"><span style="color:var(--cream-dim);font-size:12px">%</span></div><div id="amt-profit" style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:var(--cream);min-width:80px;text-align:right">—</div>      </div>
       <div id="pctWarn" style="display:none;background:rgba(192,122,47,0.08);border:1px solid var(--orange);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--orange)">⚠ Percentages must add to 100% — currently <span id="pctTotal">100</span>%</div>
     </div>
   </div>
@@ -342,6 +343,15 @@ function checkPcts() {
   document.getElementById('pctTotal').textContent = total;
   document.getElementById('pctWarn').style.display = Math.abs(total - 100) > 0.1 ? 'block' : 'none';
   calcModalSplit();
+}
+  function updateSplitAmounts(){
+  var total = parseFloat(document.getElementById('split-job-total').value) || 0;
+  var tax = parseFloat(document.getElementById('pct-tax').value) || 0;
+  var pay = parseFloat(document.getElementById('pct-pay').value) || 0;
+  var profit = parseFloat(document.getElementById('pct-profit').value) || 0;
+  document.getElementById('amt-tax').textContent = total > 0 ? '$'+(total*tax/100).toFixed(2) : '—';
+  document.getElementById('amt-pay').textContent = total > 0 ? '$'+(total*pay/100).toFixed(2) : '—';
+  document.getElementById('amt-profit').textContent = total > 0 ? '$'+(total*profit/100).toFixed(2) : '—';
 }
 
 // ===== JOBS =====
