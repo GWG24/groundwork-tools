@@ -2106,22 +2106,23 @@ function recalc() {
   document.getElementById('markupRow').style.opacity = markup > 0 ? '1' : '0.3';
   document.getElementById('sSubtotal').textContent = fmt(subtotal);
   document.getElementById('sGST').textContent = fmt(gst);
-  document.getElementById('sTotal').textContent = fmt(total);
+document.getElementById('sTotal').textContent = fmt(total);
+document._calculatedTotal = total;
+document._depositPct = depositPct;  
   document.getElementById('depositLabel').textContent = depositPct + '% Deposit Required';
   document.getElementById('sDeposit').textContent = fmt(deposit);
 }
-  function applyPriceOverride() {
+function applyPriceOverride() {
   var input = document.getElementById('priceOverride');
   var override = parseFloat(input.value);
-  var calculated = parseFloat(document.getElementById('sTotal').textContent.replace(/[^0-9.]/g,''));
+  var calculated = document._calculatedTotal || 0;
+  var depositPct = document._depositPct || 50;
   if (!isNaN(override) && override > 0) {
     var diff = override - calculated;
-    var diffStr = (diff >= 0 ? '+' : '') + '$' + Math.abs(diff).toFixed(2);
+    var diffStr = (diff >= 0 ? '+' : '-') + '$' + Math.abs(diff).toFixed(2);
     document.getElementById('adjustRow').style.display = 'flex';
     document.getElementById('sAdjust').textContent = diffStr;
     document.getElementById('sTotal').textContent = '$' + override.toFixed(2);
-    // Recalculate deposit based on override
-    var depositPct = parseInt(document.getElementById('depositRange') ? document.getElementById('depositRange').value : 50) || 50;
     var deposit = override * depositPct / 100;
     document.getElementById('sDeposit').textContent = '$' + deposit.toFixed(2);
   } else {
