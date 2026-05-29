@@ -2366,10 +2366,7 @@ if (y > 240) { doc.addPage(); y = 15; }
       doc.text(wrapped, margin, y); y += wrapped.length * 5 + 2;
     });
     if (y > 250) { doc.addPage(); y = 15; }
-    doc.setFontSize(8); doc.setTextColor(100,100,100);
-    var closing = "I'd love the opportunity to complete this project for you. If you're happy to proceed, please let me know and I can lock in a time.";
-    var cw2 = doc.splitTextToSize(closing, cw); doc.text(cw2, margin, y); y += cw2.length * 4.5 + 6;
-    var filteredExcl = exclusions.filter(function(e){return e.trim();});
+       var filteredExcl = exclusions.filter(function(e){return e.trim();});
     if (filteredExcl.length > 0) {
       doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); y+=4;doc.text('EXCLUSIONS', margin, y); y+=5;
       filteredExcl.forEach(function(excl) {
