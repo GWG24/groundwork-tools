@@ -2376,7 +2376,7 @@ if (y > 240) { doc.addPage(); y = 15; }
     }
 
     // Table
-    if (y > 240) { doc.addPage(); y = 15; }
+    if (y > 200) { doc.addPage(); y = 15; }
     var tableBody = [];
     if (showItemised) {
       if (hours > 0) { tableBody.push([{content:'LABOUR',colSpan:5,styles:{fillColor:[240,237,230],textColor:[120,120,120],fontSize:7,fontStyle:'bold'}}]); tableBody.push([hours+' hrs @ '+fmt(rate)+'/hr','1',fmt(labour),'',fmt(labour)]); }
