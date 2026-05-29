@@ -2360,7 +2360,7 @@ function generatePDF() {
     doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(30,30,30); doc.text(jobTitle, margin, y); y+=8;
     doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); doc.text('SCOPE OF WORKS', margin, y); y+=5;
     scopeLines.filter(function(s){return s.trim();}).forEach(function(line) {
-      if (y > 260) { doc.addPage(); y = 15; }
+if (y > 240) { doc.addPage(); y = 15; }
       doc.setFontSize(9); doc.setTextColor(50,50,50);
       var wrapped = doc.splitTextToSize(line, cw);
       doc.text(wrapped, margin, y); y += wrapped.length * 5 + 2;
