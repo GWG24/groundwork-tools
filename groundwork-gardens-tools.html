@@ -2397,14 +2397,13 @@ function generatePDF() {
      if (y + (exclusions.filter(function(e){return e.trim();}).length * 5) + 50 > 270) { doc.addPage(); y = 15; }
       doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); doc.text('EXCLUSIONS', margin, y); y+=5;
       exclusions.filter(function(e){return e.trim();}).forEach(function(excl) {
-        if (y > 270) { doc.addPage(); y = 15; }
-       doc.setFontSize(9); doc.setTextColor(60,60,60); doc.text('\u2022 ' + excl.replace(/^[•\-\*\s]+/, ''), margin+2, y); y+=5;
+             doc.setFontSize(9); doc.setTextColor(60,60,60); doc.text('\u2022 ' + excl.replace(/^[•\-\*\s]+/, ''), margin+2, y); y+=5;
       }); y+=4;
     }
 
     // Deposit
     if (depositPct > 0) {
-      if (y > 255) { doc.addPage(); y = 15; }
+      if (y > 260) { doc.addPage(); y = 15; }
       doc.setDrawColor(74,124,63); doc.setLineWidth(0.4); doc.setFillColor(240,247,238);
       doc.roundedRect(margin, y, cw, 10, 1, 1, 'FD');
       doc.setFontSize(9); doc.setTextColor(45,90,36); doc.setFont('helvetica','normal'); doc.text(depositPct+'% deposit required to confirm booking', margin+4, y+6.5);
