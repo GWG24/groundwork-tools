@@ -2369,6 +2369,14 @@ if (y > 240) { doc.addPage(); y = 15; }
     doc.setFontSize(8); doc.setTextColor(100,100,100);
     var closing = "I'd love the opportunity to complete this project for you. If you're happy to proceed, please let me know and I can lock in a time.";
     var cw2 = doc.splitTextToSize(closing, cw); doc.text(cw2, margin, y); y += cw2.length * 4.5 + 6;
+    var filteredExcl = exclusions.filter(function(e){return e.trim();});
+    if (filteredExcl.length > 0) {
+      doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); doc.text('EXCLUSIONS', margin, y); y+=5;
+      filteredExcl.forEach(function(excl) {
+        if (y > 270) { doc.addPage(); y = 15; }
+        doc.setFontSize(9); doc.setTextColor(60,60,60); doc.text('\u2022 ' + excl.replace(/^[•\-\*\s]+/, ''), margin+2, y); y+=5;
+      }); y+=4;
+    }
 
     // Table
     if (y > 240) { doc.addPage(); y = 15; }
@@ -2391,15 +2399,6 @@ if (y > 240) { doc.addPage(); y = 15; }
     doc.setFillColor(61,107,52); doc.roundedRect(tx-4, y-1, pw-margin-tx+8, 11, 1, 1, 'F');
     doc.setFontSize(8); doc.setTextColor(200,220,200); doc.setFont('helvetica','normal'); doc.text('TOTAL', tx, y+7);
     doc.setFontSize(14); doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.text(fmt(total), pw-margin-2, y+7, {align:'right'}); y+=16;
-
-    // Exclusions
-    if (exclusions.filter(function(e){return e.trim();}).length > 0) {
-     if (y + (exclusions.filter(function(e){return e.trim();}).length * 5) + 50 > 270) { doc.addPage(); y = 15; }
-      doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); doc.text('EXCLUSIONS', margin, y); y+=5;
-      exclusions.filter(function(e){return e.trim();}).forEach(function(excl) {
-             doc.setFontSize(9); doc.setTextColor(60,60,60); doc.text('\u2022 ' + excl.replace(/^[•\-\*\s]+/, ''), margin+2, y); y+=5;
-      }); y+=4;
-    }
 
     // Deposit
     if (depositPct > 0) {
