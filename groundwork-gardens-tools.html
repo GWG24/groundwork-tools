@@ -2363,12 +2363,12 @@ function generatePDF() {
 if (y > 240) { doc.addPage(); y = 15; }
       doc.setFontSize(9); doc.setTextColor(50,50,50);
       var wrapped = doc.splitTextToSize(line, cw);
-      doc.text(wrapped, margin, y); y += wrapped.length * 5 + 2;
+      doc.text(wrapped, margin, y); y += wrapped.length * 5 + 1;
     });
     if (y > 250) { doc.addPage(); y = 15; }
        var filteredExcl = exclusions.filter(function(e){return e.trim();});
     if (filteredExcl.length > 0) {
-      doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); y+=4;doc.text('EXCLUSIONS', margin, y); y+=5;
+      doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); y+=1;doc.text('EXCLUSIONS', margin, y); y+=5;
       filteredExcl.forEach(function(excl) {
         if (y > 270) { doc.addPage(); y = 15; }
         doc.setFontSize(9); doc.setTextColor(60,60,60); doc.text('\u2022 ' + excl.replace(/^[•\-\*\s]+/, ''), margin+2, y); y+=5;
