@@ -2429,11 +2429,9 @@ doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAI
     y += 20;
 
     // Footer
-    if (y > 270) { doc.addPage(); y = 15; }
-    doc.setDrawColor(220,220,220); doc.line(margin, y, pw-margin, y); y+=5;
-    doc.setFontSize(7); doc.setTextColor(180,180,180);
-    doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, y, {align:'center'});
-
+   doc.setDrawColor(197,212,192); doc.setLineWidth(0.3); doc.line(margin, 284, pw-margin, 284);
+doc.setFontSize(7); doc.setTextColor(180,180,180); doc.setFont('helvetica','normal');
+doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, 289, {align:'center'});
     doc.save('Quote-' + quoteNum + '-Groundwork-Gardens.pdf');
     status.textContent = '✓ PDF downloaded!';
     btn.disabled = false;
