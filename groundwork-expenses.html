@@ -11,7 +11,7 @@
     --cream: #d4c9a8; --cream-dim: #9e9278; --green: #4a7c3f;
     --green-bright: #5d9e50; --green-leaf: #3d6b34; --white: #f0ece0;
     --orange: #c07a2f; --bg-page: #f5f5f5; --text-primary: #1a2e17; --text-secondary: #4a5e45;
-    --red: #c0392b;
+    --red: #c0392b; --blue: #1a5276; --purple: #6c3483;
     --cat-materials: #3d6b34; --cat-fuel: #1a5276; --cat-labour: #6c3483; --cat-tools: #c07a2f; --cat-other: #4a5e45; --cat-travel: #c0392b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,6 +31,13 @@
   .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-bright); animation: pulse 2s infinite; flex-shrink: 0; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
+  /* Page view toggle */
+  .view-toggle { display: flex; background: #ffffff; border-bottom: 1px solid #c5d4c0; }
+  .view-tab { flex: 1; padding: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; text-align: center; cursor: pointer; color: var(--text-secondary); border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; transition: all 0.2s; }
+  .view-tab.active { color: var(--text-primary); border-bottom: 2px solid var(--green-leaf); }
+
+  /* EXPENSES VIEW */
+  #expensesView {}
   .month-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #ffffff; border-bottom: 1px solid #c5d4c0; }
   .month-nav button { background: var(--bg-page); border: 0.5px solid #c5d4c0; width: 34px; height: 34px; border-radius: 6px; cursor: pointer; font-size: 14px; color: var(--text-primary); font-family: 'Barlow Condensed', sans-serif; }
   .month-label { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-primary); }
@@ -53,18 +60,70 @@
   .cat-pill.active.Other { background: var(--cat-other); }
 
   .list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-  .expense-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .expense-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .expense-card:hover { border-color: var(--green); }
+  .expense-card-main { display: flex; align-items: center; gap: 12px; flex: 1; cursor: pointer; }
   .cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .cat-dot.Materials { background: var(--cat-materials); } .cat-dot.Fuel { background: var(--cat-fuel); } .cat-dot.Labour { background: var(--cat-labour); } .cat-dot.Tools { background: var(--cat-tools); } .cat-dot.Other { background: var(--cat-other); } .cat-dot.Travel { background: var(--cat-travel); } .cat-dot.Work\\20Clothes { background: #7d6608; } .cat-dot.Insurance { background: #1a7a6e; } .cat-dot.Vehicle { background: #2e6da4; } .cat-dot.Phone\\20\\26\\20Internet { background: #6c3483; } .cat-dot.Software { background: #4a4a8a; } .cat-dot.Tip { background: #7d3c3c; }
+  .cat-dot.Materials { background: var(--cat-materials); } .cat-dot.Fuel { background: var(--cat-fuel); } .cat-dot.Labour { background: var(--cat-labour); } .cat-dot.Tools { background: var(--cat-tools); } .cat-dot.Other { background: var(--cat-other); } .cat-dot.Travel { background: var(--cat-travel); } .cat-dot.Work\ Clothes { background: #7d6608; } .cat-dot.Insurance { background: #1a7a6e; } .cat-dot.Vehicle { background: #2e6da4; } .cat-dot.Phone\ \&\ Internet { background: #6c3483; } .cat-dot.Software { background: #4a4a8a; } .cat-dot.Tip { background: #7d3c3c; }
   .cat-pill.active.Travel { background: var(--cat-travel); }
   .expense-info { flex: 1; }
   .expense-desc { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
   .expense-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
   .expense-amount { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 18px; color: var(--red); white-space: nowrap; }
 
+  /* GST Toggle */
+  .gst-toggle { display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0; }
+  .gst-toggle-label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
+  .toggle-switch { position: relative; width: 34px; height: 18px; cursor: pointer; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-track { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; border-radius: 18px; transition: background 0.2s; }
+  .toggle-thumb { position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background: white; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .toggle-switch input:checked + .toggle-track { background: var(--green-leaf); }
+  .toggle-switch input:checked ~ .toggle-thumb { transform: translateX(16px); }
+
   .fab { position: fixed; bottom: 24px; right: 20px; width: 54px; height: 54px; background: var(--green-leaf); color: white; border: 1px solid var(--green); border-radius: 50%; font-size: 26px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.25); z-index: 50; display: flex; align-items: center; justify-content: center; }
 
+  /* BAS VIEW */
+  #basView { display: none; }
+  .bas-quarter-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #ffffff; border-bottom: 1px solid #c5d4c0; }
+  .bas-quarter-nav button { background: var(--bg-page); border: 0.5px solid #c5d4c0; width: 34px; height: 34px; border-radius: 6px; cursor: pointer; font-size: 14px; color: var(--text-primary); font-family: 'Barlow Condensed', sans-serif; }
+  .bas-quarter-label { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-primary); text-align: center; }
+  .bas-quarter-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; text-align: center; margin-top: 2px; }
+
+  .bas-summary { padding: 14px 14px 0; display: flex; flex-direction: column; gap: 10px; }
+  .bas-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .bas-card.highlight { border-color: var(--green); background: #f0f7ee; }
+  .bas-card.alert { border-color: var(--red); background: #fdf0ee; }
+  .bas-card-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 4px; }
+  .bas-card-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 30px; line-height: 1; color: var(--text-primary); }
+  .bas-card-val.green { color: var(--green-leaf); }
+  .bas-card-val.red { color: var(--red); }
+  .bas-card-sub { font-size: 12px; color: var(--text-secondary); margin-top: 5px; }
+  .bas-card-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .bas-divider { border: none; border-top: 0.5px solid #c5d4c0; margin: 10px 0 6px; }
+  .bas-line { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
+  .bas-line-label { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: 0.5px; color: var(--text-secondary); }
+  .bas-line-val { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; }
+
+  .bas-section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-secondary); padding: 14px 14px 6px; }
+
+  .bas-invoice-list { padding: 0 14px; display: flex; flex-direction: column; gap: 6px; }
+  .bas-invoice-row { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .bas-invoice-name { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .bas-invoice-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .bas-invoice-amt { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; color: var(--green-leaf); }
+
+  .bas-expense-list { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .bas-expense-row { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .bas-expense-name { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .bas-expense-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .bas-expense-amt { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; color: var(--red); }
+  .bas-no-gst-badge { display: inline-block; font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; background: #f5e6d0; color: var(--orange); border-radius: 4px; padding: 1px 6px; margin-left: 6px; }
+
+  .bas-note { margin: 0 14px 14px; background: #fffbe6; border: 0.5px solid #e8d88a; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #7d6000; line-height: 1.5; }
+  .bas-note strong { font-weight: 500; }
+
+  /* Modals */
   .overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
   .overlay.show { display: flex; }
   .modal { background: #ffffff; border-radius: 12px; padding: 20px; width: calc(100% - 32px); max-width: 480px; max-height: 88vh; overflow-y: auto; }
@@ -94,10 +153,6 @@
   .empty-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 4px; }
   .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; padding: 14px 24px; border-radius: 8px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
   .toast.show { transform: translateX(-50%) translateY(0); }
-  .preset-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-  .preset-btn { background: #f0f7ee; border: 1px solid #c5d4c0; border-radius: 20px; padding: 6px 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-primary); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
-  .preset-btn:hover { background: var(--green-leaf); color: #fff; border-color: var(--green-leaf); }
-  .preset-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -116,64 +171,107 @@
 
 <div class="sync-bar" id="syncBar"><div class="sync-dot"></div><span id="syncMsg">Connecting to cloud...</span></div>
 
-<div class="month-nav">
-  <button onclick="changeMonth(-1)">◀</button>
-  <div class="month-label" id="monthLabel"></div>
-  <button onclick="changeMonth(1)">▶</button>
+<div class="view-toggle">
+  <button class="view-tab active" id="viewTabExpenses" onclick="switchView('expenses')">💸 Expenses</button>
+  <button class="view-tab" id="viewTabBAS" onclick="switchView('bas')">🏛️ BAS Summary</button>
 </div>
 
-<div class="summary-grid">
-  <div class="summary-card"><div class="summary-label">Total Spent</div><div class="summary-val red" id="total-spent">$0.00</div></div>
-  <div class="summary-card"><div class="summary-label">No. of Expenses</div><div class="summary-val" id="total-count">0</div></div>
-  <div class="summary-card full" id="chart-wrap"></div>
+<!-- EXPENSES VIEW -->
+<div id="expensesView">
+  <div class="month-nav">
+    <button onclick="changeMonth(-1)">◀</button>
+    <div class="month-label" id="monthLabel"></div>
+    <button onclick="changeMonth(1)">▶</button>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card"><div class="summary-label">Total Spent</div><div class="summary-val red" id="total-spent">$0.00</div></div>
+    <div class="summary-card"><div class="summary-label">No. of Expenses</div><div class="summary-val" id="total-count">0</div></div>
+    <div class="summary-card full" id="chart-wrap"></div>
+  </div>
+
+  <div class="cat-pills">
+    <div class="cat-pill active all" onclick="setCat('all',this)">All</div>
+    <div class="cat-pill" onclick="setCat('Materials',this)">🪨 Materials</div>
+    <div class="cat-pill" onclick="setCat('Fuel',this)">⛽ Fuel</div>
+    <div class="cat-pill" onclick="setCat('Labour',this)">👷 Labour</div>
+    <div class="cat-pill" onclick="setCat('Tools',this)">🔧 Tools</div>
+    <div class="cat-pill" onclick="setCat('Travel',this)">🚗 Travel</div>
+    <div class="cat-pill" onclick="setCat('CityLink',this)">🛣️ CityLink</div>
+    <div class="cat-pill" onclick="setCat('Work Clothes',this)">👕 Work Clothes</div>
+    <div class="cat-pill" onclick="setCat('Insurance',this)">🛡️ Insurance</div>
+    <div class="cat-pill" onclick="setCat('Vehicle',this)">🚘 Vehicle</div>
+    <div class="cat-pill" onclick="setCat('Phone & Internet',this)">📱 Phone & Internet</div>
+    <div class="cat-pill" onclick="setCat('Software',this)">💻 Software</div>
+    <div class="cat-pill" onclick="setCat('Tip',this)">🗑️ Tip</div>
+    <div class="cat-pill" onclick="setCat('Other',this)">Other</div>
+  </div>
+
+  <div class="list" id="list"><div class="empty"><div class="empty-icon">🌿</div><div class="empty-title">Loading...</div></div></div>
+  <div style="height:80px"></div>
+  <button class="fab" onclick="openAdd()">+</button>
 </div>
 
-<div class="cat-pills">
-  <div class="cat-pill active all" onclick="setCat('all',this)">All</div>
-  <div class="cat-pill" onclick="setCat('Materials',this)">🪨 Materials</div>
-  <div class="cat-pill" onclick="setCat('Fuel',this)">⛽ Fuel</div>
-  <div class="cat-pill" onclick="setCat('Labour',this)">👷 Labour</div>
-  <div class="cat-pill" onclick="setCat('Tools',this)">🔧 Tools</div>
-  <div class="cat-pill" onclick="setCat('Travel',this)">🚗 Travel</div>
-  <div class="cat-pill" onclick="setCat('CityLink',this)">🛣️ CityLink</div>
-  <div class="cat-pill" onclick="setCat('Work Clothes',this)">👕 Work Clothes</div>
-  <div class="cat-pill" onclick="setCat('Insurance',this)">🛡️ Insurance</div>
-  <div class="cat-pill" onclick="setCat('Vehicle',this)">🚘 Vehicle</div>
-  <div class="cat-pill" onclick="setCat('Phone & Internet',this)">📱 Phone & Internet</div>
-  <div class="cat-pill" onclick="setCat('Software',this)">💻 Software</div>
-  <div class="cat-pill" onclick="setCat('Tip',this)">🗑️ Tip</div>
-  <div class="cat-pill" onclick="setCat('Other',this)">Other</div>
+<!-- BAS VIEW -->
+<div id="basView">
+  <div class="bas-quarter-nav">
+    <button onclick="changeBASQuarter(-1)">◀</button>
+    <div>
+      <div class="bas-quarter-label" id="basQuarterLabel"></div>
+      <div class="bas-quarter-sub" id="basQuarterSub"></div>
+    </div>
+    <button onclick="changeBASQuarter(1)">▶</button>
+  </div>
+
+  <div class="bas-summary" id="basSummary">
+    <div class="empty"><div class="empty-icon">📊</div><div class="empty-title">Loading BAS data...</div></div>
+  </div>
 </div>
 
-<div class="list" id="list"><div class="empty"><div class="empty-icon">🌿</div><div class="empty-title">Loading...</div></div></div>
-<div style="height:80px"></div>
-<button class="fab" onclick="openAdd()">+</button>
-
+<!-- Add/Edit Expense Modal -->
 <div class="overlay" id="addOverlay">
   <div class="modal">
     <div class="modal-title"><span id="modalTitle">New Expense</span><button class="modal-close" onclick="closeAdd()">✕</button></div>
     <div class="field"><label>Description *</label><input id="f-desc" type="text" placeholder="e.g. Topsoil, Diesel, Mulch"></div>
     <div class="field"><label>Amount ($) *</label><input id="f-amount" type="number" step="0.01" placeholder="0.00"></div>
-    <div class="field"><label>Category</label><select id="f-cat" onchange="onCatChange()"><option value="Materials">Materials</option>
-<option value="Fuel">Fuel / Diesel</option>
-<option value="Labour">Labour / Sub</option>
-<option value="Tools">Tools & Equipment</option>
-<option value="Travel">🚗 Travel (km)</option>
-<option value="CityLink">🛣️ CityLink</option>
-<option value="Work Clothes">Work Clothes</option>
-<option value="Insurance">Insurance</option>
-<option value="Vehicle">Vehicle & Rego</option>
-<option value="Phone & Internet">Phone & Internet</option>
-<option value="Software">Software & Programs</option>
-<option value="Tip">Tip / Waste Disposal</option>
-<option value="Other">Other</option></select></div>
+    <div class="field"><label>Category</label><select id="f-cat" onchange="onCatChange()">
+      <option value="Materials">Materials</option>
+      <option value="Fuel">Fuel / Diesel</option>
+      <option value="Labour">Labour / Sub</option>
+      <option value="Tools">Tools & Equipment</option>
+      <option value="Travel">🚗 Travel (km)</option>
+      <option value="CityLink">🛣️ CityLink</option>
+      <option value="Work Clothes">Work Clothes</option>
+      <option value="Insurance">Insurance</option>
+      <option value="Vehicle">Vehicle & Rego</option>
+      <option value="Phone & Internet">Phone & Internet</option>
+      <option value="Software">Software & Programs</option>
+      <option value="Tip">Tip / Waste Disposal</option>
+      <option value="Other">Other</option>
+    </select></div>
     <div id="travel-fields" style="display:none">
       <div class="field"><label>Distance (km)</label><input id="f-km" type="number" step="1" min="0" placeholder="e.g. 45" oninput="calcTravel()"></div>
       <div id="travel-calc" style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--text-secondary);padding:4px 2px 10px">ATO rate: 88c/km — enter km above</div>
     </div>
     <div class="field"><label>Job / Reference</label><input id="f-job" type="text" placeholder="e.g. Smith garden, Invoice #12"></div>
     <div class="field"><label>Date</label><input id="f-date" type="date"></div>
-    <div class="field"><label>Paid via</label><select id="f-pay"><option value="Card">Card</option><option value="Cash">Cash</option><option value="Bank transfer">Bank transfer</option><option value="Account">Account / Invoice</option></select></div>
+    <div class="field"><label>Paid via</label><select id="f-pay">
+      <option value="Card">Card</option>
+      <option value="Cash">Cash</option>
+      <option value="Bank transfer">Bank transfer</option>
+      <option value="Account">Account / Invoice</option>
+    </select></div>
+    <div class="field" style="flex-direction:row;align-items:center;justify-content:space-between;background:#f0f7ee;border:0.5px solid #b8ddc8;border-radius:8px;padding:10px 14px;">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-secondary)">GST Included</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">Turn OFF for cash wages, no-GST items</div>
+      </div>
+      <label class="toggle-switch" style="position:relative;width:44px;height:24px;cursor:pointer;display:inline-block">
+        <input type="checkbox" id="f-gst" checked style="opacity:0;width:0;height:0;position:absolute">
+        <span style="position:absolute;top:0;left:0;right:0;bottom:0;background:#ccc;border-radius:24px;transition:background 0.2s" id="gstTrack"></span>
+        <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)" id="gstThumb"></span>
+      </label>
+    </div>
     <div class="modal-actions">
       <button class="clear-btn" onclick="closeAdd()">Cancel</button>
       <button class="gen-btn" id="saveBtn" onclick="saveExpense()">Save Expense</button>
@@ -187,68 +285,279 @@
 <script>
 const SB_URL='https://vgegsaarmzuqpacisbrl.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
-async function db(path,method='GET',body=null){const opts={method,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':'return=minimal'}};if(body)opts.body=JSON.stringify(body);const res=await fetch(SB_URL+'/rest/v1/'+path,opts);if(!res.ok)throw new Error(await res.text());if(method==='DELETE'||method==='PATCH')return null;const txt=await res.text();return txt?JSON.parse(txt):null;}
-let expenses=[],currentCat='all',editId=null,viewMonth=new Date();viewMonth.setDate(1);
+
+async function db(path,method='GET',body=null){
+  const opts={method,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':'return=minimal'}};
+  if(body)opts.body=JSON.stringify(body);
+  const res=await fetch(SB_URL+'/rest/v1/'+path,opts);
+  if(!res.ok)throw new Error(await res.text());
+  if(method==='DELETE'||method==='PATCH')return null;
+  const txt=await res.text();
+  return txt?JSON.parse(txt):null;
+}
+
+let expenses=[],quotes=[],currentCat='all',editId=null,viewMonth=new Date(),currentView='expenses';
+viewMonth.setDate(1);
+
+// Australian FY quarters: Q1=Jul-Sep, Q2=Oct-Dec, Q3=Jan-Mar, Q4=Apr-Jun
+// basQuarter: {fy: 2026, q: 1} means Q1 of FY2026 = Jul-Sep 2025
+let basQuarter = getCurrentAUQuarter();
+
+function getCurrentAUQuarter() {
+  const now = new Date();
+  const m = now.getMonth() + 1; // 1-12
+  const y = now.getFullYear();
+  // AU FY: Jul-Jun. FY2026 = Jul 2025 - Jun 2026
+  if (m >= 7) return { fy: y + 1, q: m >= 10 ? 2 : 1 };
+  if (m <= 3) return { fy: y, q: 3 };
+  return { fy: y, q: 4 };
+}
+
+function getQuarterMonths(fy, q) {
+  // Returns [{year, month}] for the quarter
+  const map = {
+    1: [{y: fy-1, m: 7}, {y: fy-1, m: 8}, {y: fy-1, m: 9}],
+    2: [{y: fy-1, m: 10}, {y: fy-1, m: 11}, {y: fy-1, m: 12}],
+    3: [{y: fy, m: 1}, {y: fy, m: 2}, {y: fy, m: 3}],
+    4: [{y: fy, m: 4}, {y: fy, m: 5}, {y: fy, m: 6}]
+  };
+  return map[q];
+}
+
+function getQuarterDateRange(fy, q) {
+  const months = getQuarterMonths(fy, q);
+  const first = months[0];
+  const last = months[2];
+  const endDay = new Date(last.y, last.m, 0).getDate();
+  return {
+    start: `${first.y}-${String(first.m).padStart(2,'0')}-01`,
+    end: `${last.y}-${String(last.m).padStart(2,'0')}-${endDay}`
+  };
+}
+
+function quarterLabel(fy, q) {
+  const names = ['', 'Q1 (Jul–Sep)', 'Q2 (Oct–Dec)', 'Q3 (Jan–Mar)', 'Q4 (Apr–Jun)'];
+  const range = getQuarterDateRange(fy, q);
+  const months = getQuarterMonths(fy, q);
+  const monthNames = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return {
+    label: `FY${fy} ${names[q]}`,
+    sub: `${monthNames[months[0].m]} ${months[0].y} – ${monthNames[months[2].m]} ${months[2].y}`
+  };
+}
+
 const ATO_RATE=0.88;
 function fmt(n){return '$'+Number(n||0).toFixed(2);}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function showToast(msg,col){const t=document.getElementById('toast');t.textContent=msg;t.style.background=col||'var(--green)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function setSyncStatus(ok,msg){const b=document.getElementById('syncBar');b.className='sync-bar'+(ok?'':' error');document.getElementById('syncMsg').textContent=msg;}
-async function loadExpenses(){try{expenses=await db('expenses?order=expense_date.desc');setSyncStatus(true,'☁ Synced to Groundwork Gardens cloud');render();}catch(e){setSyncStatus(false,'⚠ Could not connect — check internet');}}
-function changeMonth(dir){viewMonth.setMonth(viewMonth.getMonth()+dir);render();}
-function setCat(cat,el){currentCat=cat;document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');render();}
-function monthExpenses(){const y=viewMonth.getFullYear(),m=viewMonth.getMonth()+1;return expenses.filter(e=>{if(!e.expense_date)return false;const[ey,em]=e.expense_date.split('-');return parseInt(ey)===y&&parseInt(em)===m;});}
 
-function quickAdd(desc, cat){
-  openAdd();
-  setTimeout(function(){
-    document.getElementById('f-desc').value = desc;
-    document.getElementById('f-cat').value = cat;
-    onCatChange();
-    const amtField = document.getElementById('f-amount');
-    if(cat === 'Travel'){
-      document.getElementById('f-km').focus();
-    } else {
-      amtField.focus();
-    }
-  }, 100);
-}
-
-function applyPreset(desc, cat){
-  document.getElementById('f-desc').value = desc;
-  document.getElementById('f-cat').value = cat;
-  onCatChange();
-  // Focus amount field
-  setTimeout(function(){ 
-    const amtField = document.getElementById('f-amount');
-    if(amtField && amtField.closest('.field').style.display !== 'none') amtField.focus();
-    else document.getElementById('f-km').focus();
-  }, 50);
-}
-
-function onCatChange(){
-  const cat=document.getElementById('f-cat').value;
-  const travelFields=document.getElementById('travel-fields');
-  const amountField=document.getElementById('f-amount').closest('.field');
-  if(cat==='Travel'){
-    travelFields.style.display='block';
-    amountField.style.display='none';
-    document.getElementById('f-km').value='';
-    document.getElementById('travel-calc').textContent='ATO rate: 88c/km — enter km above';
-    document.getElementById('f-amount').value='';
-    if(!document.getElementById('f-desc').value) document.getElementById('f-desc').value='Travel — ';
-  } else {
-    travelFields.style.display='none';
-    amountField.style.display='flex';
-    if(document.getElementById('f-desc').value==='Travel — ') document.getElementById('f-desc').value='';
+async function loadAll(){
+  try {
+    [expenses, quotes] = await Promise.all([
+      db('expenses?order=expense_date.desc'),
+      db('gg_quotes?select=id,name,data&order=updated_at.desc')
+    ]);
+    setSyncStatus(true,'☁ Synced to Groundwork Gardens cloud');
+    render();
+    if(currentView==='bas') renderBAS();
+  } catch(e) {
+    setSyncStatus(false,'⚠ Could not connect — check internet');
   }
 }
 
-function calcTravel(){
-  const km=parseFloat(document.getElementById('f-km').value)||0;
-  const amount=(km*ATO_RATE);
-  document.getElementById('f-amount').value=amount.toFixed(2);
-  document.getElementById('travel-calc').textContent=km>0?km+' km × $'+ATO_RATE.toFixed(2)+'/km = '+fmt(amount):'ATO rate: 88c/km — enter km above';
+// GST toggle in the add modal
+document.getElementById('f-gst').addEventListener('change', function() {
+  document.getElementById('gstTrack').style.background = this.checked ? 'var(--green-leaf)' : '#ccc';
+  document.getElementById('gstThumb').style.transform = this.checked ? 'translateX(20px)' : 'translateX(0)';
+});
+
+function switchView(view) {
+  currentView = view;
+  document.getElementById('expensesView').style.display = view === 'expenses' ? 'block' : 'none';
+  document.getElementById('basView').style.display = view === 'bas' ? 'block' : 'none';
+  document.getElementById('viewTabExpenses').classList.toggle('active', view === 'expenses');
+  document.getElementById('viewTabBAS').classList.toggle('active', view === 'bas');
+  // Hide FAB on BAS view
+  document.querySelector('.fab').style.display = view === 'expenses' ? 'flex' : 'none';
+  if (view === 'bas') renderBAS();
 }
+
+function changeMonth(dir){viewMonth.setMonth(viewMonth.getMonth()+dir);render();}
+function setCat(cat,el){currentCat=cat;document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');render();}
+
+function changeBASQuarter(dir) {
+  let {fy, q} = basQuarter;
+  q += dir;
+  if (q < 1) { q = 4; fy--; }
+  if (q > 4) { q = 1; fy++; }
+  basQuarter = {fy, q};
+  renderBAS();
+}
+
+function monthExpenses(){
+  const y=viewMonth.getFullYear(),m=viewMonth.getMonth()+1;
+  return expenses.filter(e=>{
+    if(!e.expense_date)return false;
+    const[ey,em]=e.expense_date.split('-');
+    return parseInt(ey)===y&&parseInt(em)===m;
+  });
+}
+
+function invoiceTotal(inv) {
+  const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
+  if (!d || !d.items) return 0;
+  return d.items.reduce((s, item) => s + parseFloat(item.price || 0), 0);
+}
+
+function quarterExpenses(fy, q) {
+  const months = getQuarterMonths(fy, q);
+  return expenses.filter(e => {
+    if (!e.expense_date) return false;
+    const [ey, em] = e.expense_date.split('-');
+    return months.some(m => m.y === parseInt(ey) && m.m === parseInt(em));
+  });
+}
+
+function quarterPaidInvoices(fy, q) {
+  const months = getQuarterMonths(fy, q);
+  return quotes.filter(inv => {
+    if (!inv.id.startsWith('invoice_')) return false;
+    const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
+    if (!d || d.status !== 'paid') return false;
+    // Use invoice date from data
+    const dateStr = d.date || d.due || '';
+    if (!dateStr) return false;
+    const [ey, em] = dateStr.split('-');
+    return months.some(m => m.y === parseInt(ey) && m.m === parseInt(em));
+  });
+}
+
+function renderBAS() {
+  const {fy, q} = basQuarter;
+  const lbl = quarterLabel(fy, q);
+  document.getElementById('basQuarterLabel').textContent = lbl.label;
+  document.getElementById('basQuarterSub').textContent = lbl.sub;
+
+  const paidInvoices = quarterPaidInvoices(fy, q);
+  const qExpenses = quarterExpenses(fy, q);
+  const gstExpenses = qExpenses.filter(e => e.gst_applicable !== false);
+  const noGstExpenses = qExpenses.filter(e => e.gst_applicable === false);
+
+  const totalIncome = paidInvoices.reduce((s, inv) => s + invoiceTotal(inv), 0);
+  const gstCollected = totalIncome / 11;
+
+  const totalGstExpenses = gstExpenses.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
+  const gstCredits = totalGstExpenses / 11;
+
+  const netPayable = gstCollected - gstCredits;
+
+  const totalExpenses = qExpenses.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
+
+  const el = document.getElementById('basSummary');
+
+  el.innerHTML = `
+    <div class="bas-card" style="background:#f0f7ee;border-color:var(--green)">
+      <div class="bas-card-label">GST Collected (from invoices paid)</div>
+      <div class="bas-card-val green">${fmt(gstCollected)}</div>
+      <div class="bas-card-sub">${fmt(totalIncome)} total income ÷ 11 &nbsp;·&nbsp; ${paidInvoices.length} paid invoice${paidInvoices.length !== 1 ? 's' : ''}</div>
+    </div>
+
+    <div class="bas-card" style="background:#fdf5f0;border-color:#e8c4a8">
+      <div class="bas-card-label">GST Credits (from expenses)</div>
+      <div class="bas-card-val" style="color:var(--orange)">${fmt(gstCredits)}</div>
+      <div class="bas-card-sub">${fmt(totalGstExpenses)} GST-applicable expenses ÷ 11 &nbsp;·&nbsp; ${gstExpenses.length} expense${gstExpenses.length !== 1 ? 's' : ''}</div>
+      ${noGstExpenses.length > 0 ? `<div style="font-size:12px;color:var(--text-secondary);margin-top:4px">${noGstExpenses.length} expense${noGstExpenses.length !== 1 ? 's' : ''} excluded (no GST) — ${fmt(noGstExpenses.reduce((s,e)=>s+parseFloat(e.amount||0),0))}</div>` : ''}
+    </div>
+
+    <div class="bas-card ${netPayable > 0 ? 'alert' : 'highlight'}">
+      <div class="bas-card-label">Net GST Payable to ATO</div>
+      <div class="bas-card-val ${netPayable > 0 ? 'red' : 'green'}">${fmt(Math.abs(netPayable))}</div>
+      <div class="bas-card-sub">${netPayable > 0 ? '⬆ Amount owing to ATO' : netPayable < 0 ? '⬇ ATO owes you a refund' : 'Nil balance'}</div>
+      <hr class="bas-divider">
+      <div class="bas-line"><span class="bas-line-label">GST Collected</span><span class="bas-line-val" style="color:var(--green-leaf)">${fmt(gstCollected)}</span></div>
+      <div class="bas-line"><span class="bas-line-label">− GST Credits</span><span class="bas-line-val" style="color:var(--orange)">− ${fmt(gstCredits)}</span></div>
+      <div class="bas-line" style="border-top:0.5px solid #c5d4c0;padding-top:6px;margin-top:2px"><span class="bas-line-label" style="font-weight:600;color:var(--text-primary)">= Net Payable</span><span class="bas-line-val ${netPayable > 0 ? '' : ''}" style="color:${netPayable > 0 ? 'var(--red)' : 'var(--green-leaf)'};font-size:16px">${netPayable >= 0 ? '' : '− '}${fmt(Math.abs(netPayable))}</span></div>
+    </div>
+
+    <div class="bas-card" style="background:#f5f5f5">
+      <div class="bas-card-label">Quarter Overview</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px">
+        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Total Income</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--green-leaf)">${fmt(totalIncome)}</div></div>
+        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Total Expenses</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--red)">${fmt(totalExpenses)}</div></div>
+      </div>
+    </div>
+  `;
+
+  // Paid invoices list
+  let invoiceHTML = `<div class="bas-section-title">📋 Paid Invoices This Quarter</div><div class="bas-invoice-list">`;
+  if (paidInvoices.length === 0) {
+    invoiceHTML += `<div style="text-align:center;padding:20px;color:var(--text-secondary);font-size:13px">No paid invoices found for this quarter</div>`;
+  } else {
+    paidInvoices.forEach(inv => {
+      const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
+      const total = invoiceTotal(inv);
+      const gst = total / 11;
+      const name = d.client || inv.name || inv.id;
+      const num = d.num || inv.id;
+      const date = d.date || '';
+      invoiceHTML += `<div class="bas-invoice-row">
+        <div>
+          <div class="bas-invoice-name">${name}</div>
+          <div class="bas-invoice-sub">${num} · ${date}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="bas-invoice-amt">${fmt(total)}</div>
+          <div style="font-size:11px;color:var(--text-secondary)">GST: ${fmt(gst)}</div>
+        </div>
+      </div>`;
+    });
+  }
+  invoiceHTML += `</div>`;
+
+  // GST expenses list
+  let expenseHTML = `<div class="bas-section-title">💸 GST-Applicable Expenses</div><div class="bas-expense-list">`;
+  if (gstExpenses.length === 0) {
+    expenseHTML += `<div style="text-align:center;padding:20px;color:var(--text-secondary);font-size:13px">No GST-applicable expenses for this quarter</div>`;
+  } else {
+    gstExpenses.forEach(e => {
+      const gst = parseFloat(e.amount || 0) / 11;
+      expenseHTML += `<div class="bas-expense-row">
+        <div>
+          <div class="bas-expense-name">${e.description}</div>
+          <div class="bas-expense-sub">${e.category} · ${e.expense_date || ''}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="bas-expense-amt">${fmt(e.amount)}</div>
+          <div style="font-size:11px;color:var(--text-secondary)">GST: ${fmt(gst)}</div>
+        </div>
+      </div>`;
+    });
+  }
+  expenseHTML += `</div>`;
+
+  // No-GST expenses
+  let noGstHTML = '';
+  if (noGstExpenses.length > 0) {
+    noGstHTML = `<div class="bas-section-title">🚫 No-GST Expenses (excluded)</div><div class="bas-expense-list">`;
+    noGstExpenses.forEach(e => {
+      noGstHTML += `<div class="bas-expense-row" style="opacity:0.6">
+        <div>
+          <div class="bas-expense-name">${e.description}<span class="bas-no-gst-badge">NO GST</span></div>
+          <div class="bas-expense-sub">${e.category} · ${e.expense_date || ''}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="bas-expense-amt">${fmt(e.amount)}</div>
+        </div>
+      </div>`;
+    });
+    noGstHTML += `</div>`;
+  }
+
+  const noteHTML = `<div class="bas-note"><strong>ℹ️ Note:</strong> This is an estimate based on your recorded data. GST Collected = paid invoice totals ÷ 11. GST Credits = GST-applicable expense totals ÷ 11. Always review with your accountant before lodging your BAS.</div>`;
+
+  el.innerHTML += invoiceHTML + expenseHTML + noGstHTML + noteHTML;
+}
+
 function render(){
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
   document.getElementById('monthLabel').textContent=months[viewMonth.getMonth()]+' '+viewMonth.getFullYear();
@@ -268,22 +577,131 @@ function render(){
     const isTravel = e.category==='Travel';
     const km = isTravel ? Math.round(parseFloat(e.amount)/ATO_RATE) : 0;
     const amtDisplay = isTravel ? `<span style="font-size:13px;font-weight:700;color:var(--cat-travel)">${km} km</span><span style="font-size:10px;color:#aaa;display:block">${fmt(e.amount)}</span>` : fmt(e.amount);
-    return `<div class="expense-card" onclick="openDetail('${e.id}')"><div class="cat-dot ${e.category}"></div><div class="expense-info"><div class="expense-desc">${e.description}</div><div class="expense-sub">${e.category}${e.job_ref?' · '+e.job_ref:''} · ${e.expense_date||''} · ${e.payment_method}</div></div><div class="expense-amount" style="text-align:right">${amtDisplay}</div></div>`;
+    const gstOn = e.gst_applicable !== false;
+    const gstBadge = gstOn
+      ? `<span style="font-size:10px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;color:var(--green-leaf);background:#e8f5ee;padding:2px 7px;border-radius:4px;border:0.5px solid #b8ddc8">GST</span>`
+      : `<span style="font-size:10px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;color:var(--orange);background:#fdf0e8;padding:2px 7px;border-radius:4px;border:0.5px solid #e8c4a8">NO GST</span>`;
+    return `<div class="expense-card">
+      <div class="expense-card-main" onclick="openDetail('${e.id}')">
+        <div class="cat-dot ${e.category}"></div>
+        <div class="expense-info">
+          <div class="expense-desc">${e.description}</div>
+          <div class="expense-sub">${e.category}${e.job_ref?' · '+e.job_ref:''} · ${e.expense_date||''} · ${e.payment_method}</div>
+        </div>
+        <div class="expense-amount" style="text-align:right">${amtDisplay}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-left:8px;border-left:0.5px solid #e0e8dc">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">GST</div>
+        <label style="position:relative;width:36px;height:20px;cursor:pointer;display:inline-block" onclick="event.stopPropagation()">
+          <input type="checkbox" ${gstOn ? 'checked' : ''} onchange="toggleGST('${e.id}', this.checked)" style="opacity:0;width:0;height:0;position:absolute">
+          <span style="position:absolute;top:0;left:0;right:0;bottom:0;background:${gstOn ? 'var(--green-leaf)' : '#ccc'};border-radius:20px;transition:background 0.2s"></span>
+          <span style="position:absolute;top:2px;left:${gstOn ? '16px' : '2px'};width:16px;height:16px;background:white;border-radius:50%;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>
+        </label>
+      </div>
+    </div>`;
   }).join('');
 }
-function openAdd(){editId=null;document.getElementById('modalTitle').textContent='New Expense';document.getElementById('f-desc').value='';document.getElementById('f-amount').value='';document.getElementById('f-cat').value='Materials';document.getElementById('f-job').value='';document.getElementById('f-date').value=new Date().toISOString().split('T')[0];document.getElementById('f-pay').value='Card';document.getElementById('travel-fields').style.display='none';document.getElementById('f-amount').closest('.field').style.display='flex';document.getElementById('addOverlay').classList.add('show');}
+
+async function toggleGST(id, value) {
+  // Optimistic update
+  const exp = expenses.find(e => e.id === id);
+  if (exp) exp.gst_applicable = value;
+  render();
+  try {
+    await db(`expenses?id=eq.${id}`, 'PATCH', {gst_applicable: value});
+    showToast(value ? 'GST on' : 'GST off', value ? 'var(--green-leaf)' : 'var(--orange)');
+  } catch(err) {
+    // Revert
+    if (exp) exp.gst_applicable = !value;
+    render();
+    showToast('Failed to update GST');
+  }
+}
+
+function onCatChange(){
+  const cat=document.getElementById('f-cat').value;
+  const travelFields=document.getElementById('travel-fields');
+  const amountField=document.getElementById('f-amount').closest('.field');
+  if(cat==='Travel'){
+    travelFields.style.display='block';
+    amountField.style.display='none';
+    document.getElementById('f-km').value='';
+    document.getElementById('travel-calc').textContent='ATO rate: 88c/km — enter km above';
+    document.getElementById('f-amount').value='';
+    if(!document.getElementById('f-desc').value) document.getElementById('f-desc').value='Travel — ';
+    // Travel has no GST
+    document.getElementById('f-gst').checked = false;
+    document.getElementById('gstTrack').style.background = '#ccc';
+    document.getElementById('gstThumb').style.transform = 'translateX(0)';
+  } else if(cat==='Labour') {
+    travelFields.style.display='none';
+    amountField.style.display='flex';
+    // Labour (cash wages) default no GST
+    document.getElementById('f-gst').checked = false;
+    document.getElementById('gstTrack').style.background = '#ccc';
+    document.getElementById('gstThumb').style.transform = 'translateX(0)';
+    if(document.getElementById('f-desc').value==='Travel — ') document.getElementById('f-desc').value='';
+  } else {
+    travelFields.style.display='none';
+    amountField.style.display='flex';
+    // Default GST on
+    document.getElementById('f-gst').checked = true;
+    document.getElementById('gstTrack').style.background = 'var(--green-leaf)';
+    document.getElementById('gstThumb').style.transform = 'translateX(20px)';
+    if(document.getElementById('f-desc').value==='Travel — ') document.getElementById('f-desc').value='';
+  }
+}
+
+function calcTravel(){
+  const km=parseFloat(document.getElementById('f-km').value)||0;
+  const amount=(km*ATO_RATE);
+  document.getElementById('f-amount').value=amount.toFixed(2);
+  document.getElementById('travel-calc').textContent=km>0?km+' km × $'+ATO_RATE.toFixed(2)+'/km = '+fmt(amount):'ATO rate: 88c/km — enter km above';
+}
+
+function openAdd(){
+  editId=null;
+  document.getElementById('modalTitle').textContent='New Expense';
+  document.getElementById('f-desc').value='';
+  document.getElementById('f-amount').value='';
+  document.getElementById('f-cat').value='Materials';
+  document.getElementById('f-job').value='';
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('f-pay').value='Card';
+  document.getElementById('travel-fields').style.display='none';
+  document.getElementById('f-amount').closest('.field').style.display='flex';
+  document.getElementById('f-gst').checked=true;
+  document.getElementById('gstTrack').style.background='var(--green-leaf)';
+  document.getElementById('gstThumb').style.transform='translateX(20px)';
+  document.getElementById('addOverlay').classList.add('show');
+}
+
 function closeAdd(){document.getElementById('addOverlay').classList.remove('show');}
+
 async function saveExpense(){
   const desc=document.getElementById('f-desc').value.trim(),amount=parseFloat(document.getElementById('f-amount').value);
   if(!desc||isNaN(amount)||amount<=0){alert('Please enter a description and valid amount');return;}
   const btn=document.getElementById('saveBtn');btn.textContent='Saving...';btn.disabled=true;
-  const data={description:desc,amount,category:document.getElementById('f-cat').value,job_ref:document.getElementById('f-job').value.trim(),expense_date:document.getElementById('f-date').value,payment_method:document.getElementById('f-pay').value};
-  try{if(editId){await db(`expenses?id=eq.${editId}`,'PATCH',data);showToast('Expense updated');}else{await db('expenses','POST',data);showToast('Expense saved');}closeAdd();await loadExpenses();}
-  catch(e){alert('Save failed: '+e.message);}
+  const data={
+    description:desc,
+    amount,
+    category:document.getElementById('f-cat').value,
+    job_ref:document.getElementById('f-job').value.trim(),
+    expense_date:document.getElementById('f-date').value,
+    payment_method:document.getElementById('f-pay').value,
+    gst_applicable:document.getElementById('f-gst').checked
+  };
+  try{
+    if(editId){await db(`expenses?id=eq.${editId}`,'PATCH',data);showToast('Expense updated');}
+    else{await db('expenses','POST',data);showToast('Expense saved');}
+    closeAdd();await loadAll();
+  } catch(e){alert('Save failed: '+e.message);}
   btn.textContent='Save Expense';btn.disabled=false;
 }
+
 function openDetail(id){
   const e=expenses.find(x=>x.id===id);if(!e)return;
+  const gstOn = e.gst_applicable !== false;
   document.getElementById('detailContent').innerHTML=`
     <div class="modal-title"><span>${e.description}</span><button class="modal-close" onclick="document.getElementById('detailOverlay').classList.remove('show')">✕</button></div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--red);margin-bottom:4px">${e.category==='Travel'?Math.round(parseFloat(e.amount)/ATO_RATE)+' km':fmt(e.amount)}</div>
@@ -292,7 +710,9 @@ function openDetail(id){
       <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Category</div><div style="font-size:15px;font-weight:500">${e.category}</div></div>
       <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Date</div><div style="font-size:15px;font-weight:500">${e.expense_date||''}</div></div>
       <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Paid via</div><div style="font-size:15px;font-weight:500">${e.payment_method}</div></div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">GST</div><div style="font-size:15px;font-weight:500">${gstOn ? '✅ Included' : '🚫 Excluded'}</div></div>
       ${e.job_ref?`<div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Job</div><div style="font-size:15px;font-weight:500">${e.job_ref}</div></div>`:''}
+      ${gstOn?`<div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">GST Credit</div><div style="font-size:15px;font-weight:500;color:var(--orange)">${fmt(parseFloat(e.amount)/11)}</div></div>`:''}
     </div>
     <div style="display:flex;gap:8px">
       <button class="clear-btn" style="flex:1" onclick="document.getElementById('detailOverlay').classList.remove('show');editExpense('${e.id}')">Edit</button>
@@ -300,9 +720,45 @@ function openDetail(id){
     </div>`;
   document.getElementById('detailOverlay').classList.add('show');
 }
-function editExpense(id){const e=expenses.find(x=>x.id===id);if(!e)return;editId=id;document.getElementById('modalTitle').textContent='Edit Expense';document.getElementById('f-desc').value=e.description;document.getElementById('f-amount').value=e.amount;document.getElementById('f-cat').value=e.category;document.getElementById('f-job').value=e.job_ref||'';document.getElementById('f-date').value=e.expense_date||'';document.getElementById('f-pay').value=e.payment_method;if(e.category==='Travel'){document.getElementById('travel-fields').style.display='block';document.getElementById('f-amount').closest('.field').style.display='none';const km=Math.round(parseFloat(e.amount)/ATO_RATE);document.getElementById('f-km').value=km;document.getElementById('travel-calc').textContent=km+' km × $'+ATO_RATE.toFixed(2)+'/km = '+fmt(e.amount);}else{document.getElementById('travel-fields').style.display='none';document.getElementById('f-amount').closest('.field').style.display='flex';}document.getElementById('addOverlay').classList.add('show');}
-async function deleteExpense(id){if(!confirm('Delete this expense?'))return;try{await db(`expenses?id=eq.${id}`,'DELETE');document.getElementById('detailOverlay').classList.remove('show');showToast('Expense deleted');await loadExpenses();}catch(e){alert('Delete failed: '+e.message);}}
-loadExpenses();
+
+function editExpense(id){
+  const e=expenses.find(x=>x.id===id);if(!e)return;
+  editId=id;
+  document.getElementById('modalTitle').textContent='Edit Expense';
+  document.getElementById('f-desc').value=e.description;
+  document.getElementById('f-amount').value=e.amount;
+  document.getElementById('f-cat').value=e.category;
+  document.getElementById('f-job').value=e.job_ref||'';
+  document.getElementById('f-date').value=e.expense_date||'';
+  document.getElementById('f-pay').value=e.payment_method;
+  const gstOn = e.gst_applicable !== false;
+  document.getElementById('f-gst').checked = gstOn;
+  document.getElementById('gstTrack').style.background = gstOn ? 'var(--green-leaf)' : '#ccc';
+  document.getElementById('gstThumb').style.transform = gstOn ? 'translateX(20px)' : 'translateX(0)';
+  if(e.category==='Travel'){
+    document.getElementById('travel-fields').style.display='block';
+    document.getElementById('f-amount').closest('.field').style.display='none';
+    const km=Math.round(parseFloat(e.amount)/ATO_RATE);
+    document.getElementById('f-km').value=km;
+    document.getElementById('travel-calc').textContent=km+' km × $'+ATO_RATE.toFixed(2)+'/km = '+fmt(e.amount);
+  } else {
+    document.getElementById('travel-fields').style.display='none';
+    document.getElementById('f-amount').closest('.field').style.display='flex';
+  }
+  document.getElementById('addOverlay').classList.add('show');
+}
+
+async function deleteExpense(id){
+  if(!confirm('Delete this expense?'))return;
+  try{
+    await db(`expenses?id=eq.${id}`,'DELETE');
+    document.getElementById('detailOverlay').classList.remove('show');
+    showToast('Expense deleted');
+    await loadAll();
+  } catch(e){alert('Delete failed: '+e.message);}
+}
+
+loadAll();
 </script>
 </body>
 </html>
