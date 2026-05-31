@@ -8,14 +8,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
-  /* PIN LOCK */
   .pin-overlay { display: none; position: fixed; inset: 0; background: #1a2e17; z-index: 999; flex-direction: column; align-items: center; justify-content: center; }
   .pin-overlay.show { display: flex; }
-  .pin-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 40px; }
-  .pin-logo-leaf { font-size: 38px; line-height: 1; margin-bottom: -4px; margin-left: 4px; }
-  .pin-logo-text { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 700; color: var(--cream); letter-spacing: 3px; line-height: 1; }
-  .pin-logo-line { width: 100%; height: 2px; background: var(--cream-dim); margin: 3px 0; }
-  .pin-logo-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: 3px; color: var(--cream); }
   .pin-dots { display: flex; gap: 16px; margin-bottom: 36px; }
   .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--cream-dim); background: transparent; transition: all 0.15s; }
   .pin-dot.filled { background: var(--cream); border-color: var(--cream); }
@@ -61,6 +55,25 @@
   .section { padding: 16px 16px 0; }
   .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--green); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
   .section-title::after { content: ''; flex: 1; height: 1px; background: #c5d4c0; }
+
+  /* FOLLOW-UP REMINDERS */
+  .reminder-section { padding: 0 16px; margin-top: 16px; }
+  .reminder-group-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 6px; padding: 0 2px; }
+  .reminder-group-label.overdue { color: var(--red); }
+  .reminder-group-label.today { color: var(--orange); }
+  .reminder-card { border-radius: 10px; padding: 12px 14px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .reminder-card.overdue { background: #fdf0ee; border: 1px solid #f0c0b8; }
+  .reminder-card.today { background: #fdf7ee; border: 1px solid #f0d8a8; }
+  .reminder-info { flex: 1; }
+  .reminder-name { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: var(--text-primary); }
+  .reminder-detail { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .reminder-date { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .reminder-date.overdue { color: var(--red); }
+  .reminder-date.today { color: var(--orange); }
+  .reminder-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .reminder-call-btn { background: var(--green-leaf); border: none; border-radius: 6px; color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; padding: 7px 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .reminder-sms-btn { background: var(--orange); border: none; border-radius: 6px; color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; padding: 7px 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .reminders-empty { background: #f0f7ee; border: 0.5px solid #b8ddc8; border-radius: 10px; padding: 14px 16px; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; color: var(--green-leaf); letter-spacing: 0.5px; }
 
   .money-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
   .money-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
@@ -177,20 +190,15 @@
 </head>
 <body>
 
-<!-- PIN LOCK SCREEN -->
 <div class="pin-overlay show" id="pinOverlay">
-  <div class="pin-logo-wrap">
-      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:36px;">
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:36px;">
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:#d4c9a8;letter-spacing:4px;">🌱 GROUNDWORK</div>
     <div style="width:100%;height:1.5px;background:#9e9278;margin:4px 0;"></div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:600;color:#d4c9a8;letter-spacing:4px;">GARDENS</div>
   </div>
-    </div>
   <div class="pin-dots">
-    <div class="pin-dot" id="pd0"></div>
-    <div class="pin-dot" id="pd1"></div>
-    <div class="pin-dot" id="pd2"></div>
-    <div class="pin-dot" id="pd3"></div>
+    <div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
   </div>
   <div class="pin-grid">
     <button class="pin-key" onclick="pinPress('1')">1</button>
@@ -232,7 +240,15 @@
 
 <div class="date-banner">
   <div class="greeting" id="greeting">Good afternoon</div>
-  <div class="today" id="todayDate">Thursday, 28 May 2026</div>
+  <div class="today" id="todayDate"></div>
+</div>
+
+<!-- FOLLOW-UP REMINDERS -->
+<div class="reminder-section" id="reminderSection" style="display:none">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin:16px 0 10px;display:flex;align-items:center;gap:10px;">
+    🔔 Follow-up Reminders<span style="flex:1;height:1px;background:#f0c0b8;display:block"></span>
+  </div>
+  <div id="reminderList"></div>
 </div>
 
 <div class="section" style="margin-top:16px">
@@ -304,18 +320,10 @@
 <div class="section">
   <div class="section-title">📄 Generate Reports</div>
   <div class="export-grid">
-    <button class="export-btn" onclick="generateMonthlyReport()">
-      <span>📊</span>Monthly Report
-    </button>
-    <button class="export-btn orange" onclick="generateQuarterlyReport()">
-      <span>📅</span>Quarterly Report
-    </button>
-    <button class="export-btn blue" onclick="generateYearlyReport()">
-      <span>📋</span>Yearly Report
-    </button>
-    <button class="export-btn blue" onclick="generateFullReport()">
-      <span>📁</span>Full Export
-    </button>
+    <button class="export-btn" onclick="generateMonthlyReport()"><span>📊</span>Monthly Report</button>
+    <button class="export-btn orange" onclick="generateQuarterlyReport()"><span>📅</span>Quarterly Report</button>
+    <button class="export-btn blue" onclick="generateYearlyReport()"><span>📋</span>Yearly Report</button>
+    <button class="export-btn blue" onclick="generateFullReport()"><span>📁</span>Full Export</button>
   </div>
   <div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:10px 0 4px">Downloads as a branded PDF — ready to email to your accountant</div>
 </div>
@@ -346,7 +354,6 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- ADD JOB MODAL -->
 <div class="job-overlay" id="jobOverlay">
   <div class="job-modal">
     <div class="job-modal-title">New Job</div>
@@ -362,67 +369,24 @@
 // ==================== PIN LOCK ====================
 const PIN = '2577';
 let pinEntry = '';
-
-function pinPress(digit){
-  if(pinEntry.length >= 4) return;
-  pinEntry += digit;
-  updatePinDots();
-  if(pinEntry.length === 4){
-    setTimeout(()=>{
-      if(pinEntry === PIN){
-        document.getElementById('pinOverlay').classList.remove('show');
-        sessionStorage.setItem('gg_unlocked','1');
-      } else {
-        document.querySelectorAll('.pin-dot').forEach(d=>d.classList.add('error'));
-        document.getElementById('pinError').classList.add('show');
-        setTimeout(()=>{
-          pinEntry='';
-          updatePinDots();
-          document.querySelectorAll('.pin-dot').forEach(d=>d.classList.remove('error'));
-          document.getElementById('pinError').classList.remove('show');
-        }, 900);
-      }
-    }, 150);
-  }
-}
-
-function pinDelete(){
-  pinEntry = pinEntry.slice(0,-1);
-  updatePinDots();
-}
-
-function updatePinDots(){
-  for(let i=0;i<4;i++){
-    document.getElementById('pd'+i).classList.toggle('filled', i < pinEntry.length);
-  }
-}
-
-if(sessionStorage.getItem('gg_unlocked')==='1'){
-  document.getElementById('pinOverlay').classList.remove('show');
-}
-
-document.addEventListener('keydown', function(e){
-  if(!document.getElementById('pinOverlay').classList.contains('show')) return;
-  if(e.key>='0'&&e.key<='9') pinPress(e.key);
-  if(e.key==='Backspace') pinDelete();
-});
+function pinPress(digit){ if(pinEntry.length>=4)return; pinEntry+=digit; updatePinDots(); if(pinEntry.length===4){ setTimeout(()=>{ if(pinEntry===PIN){ document.getElementById('pinOverlay').classList.remove('show'); sessionStorage.setItem('gg_unlocked','1'); } else { document.querySelectorAll('.pin-dot').forEach(d=>d.classList.add('error')); document.getElementById('pinError').classList.add('show'); setTimeout(()=>{ pinEntry=''; updatePinDots(); document.querySelectorAll('.pin-dot').forEach(d=>d.classList.remove('error')); document.getElementById('pinError').classList.remove('show'); },900); } },150); } }
+function pinDelete(){ pinEntry=pinEntry.slice(0,-1); updatePinDots(); }
+function updatePinDots(){ for(let i=0;i<4;i++) document.getElementById('pd'+i).classList.toggle('filled',i<pinEntry.length); }
+if(sessionStorage.getItem('gg_unlocked')==='1') document.getElementById('pinOverlay').classList.remove('show');
+document.addEventListener('keydown',function(e){ if(!document.getElementById('pinOverlay').classList.contains('show'))return; if(e.key>='0'&&e.key<='9')pinPress(e.key); if(e.key==='Backspace')pinDelete(); });
 
 const SB_URL='https://vgegsaarmzuqpacisbrl.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
 
 var _invoices=[], _expenses=[], _quotes=[];
 
-async function db(path){
-  const res=await fetch(SB_URL+'/rest/v1/'+path,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
-  if(!res.ok)throw new Error(await res.text());
-  return res.json();
-}
-
+async function db(path){ const res=await fetch(SB_URL+'/rest/v1/'+path,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}); if(!res.ok)throw new Error(await res.text()); return res.json(); }
 function fmt(n){return '$'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 function setSyncStatus(ok,msg){const b=document.getElementById('syncBar');b.className='sync-bar'+(ok?'':' error');document.getElementById('syncMsg').textContent=msg;}
 
 const now=new Date();
+const todayStr=now.toISOString().split('T')[0];
 const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const hour=now.getHours();
@@ -431,280 +395,80 @@ document.getElementById('todayDate').textContent=days[now.getDay()]+', '+now.get
 
 function thisMonth(d){if(!d)return false;const x=new Date(d);return x.getFullYear()===now.getFullYear()&&x.getMonth()===now.getMonth();}
 
-function getTotal(r){
-  try{
-    const d=typeof r.data==='string'?JSON.parse(r.data):r.data;
-    if(d.items&&d.items.length){
-      return d.items.reduce((s,i)=>s+(parseFloat(i.price)||0)*(parseFloat(i.qty)||1),0)*1.10;
-    }
-    if(d.wage!==undefined||d.hours!==undefined){
-      const labour=(parseFloat(d.wage)||0)*(parseFloat(d.hours)||0);
-      const mats=d.materials&&d.materials.length?d.materials.reduce((s,m)=>s+(parseFloat(m.price)||0)*(parseFloat(m.qty)||1),0):0;
-      const overheads=parseFloat(d.overheads)||0;
-      const subtotal=labour+mats+overheads;
-      const margin=parseFloat(d.margin)||0;
-      let total=subtotal;
-      if(margin>0){total=d.markup?subtotal*(1+margin/100):subtotal/(1-margin/100);}
-      return isFinite(total)&&total>0?total*1.10:subtotal*1.10;
-    }
-    return parseFloat(d.total||d.grandTotal||d.amount||0);
-  }catch(e){return 0;}
-}
+function getTotal(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;if(d.items&&d.items.length){return d.items.reduce((s,i)=>s+(parseFloat(i.price)||0)*(parseFloat(i.qty)||1),0)*1.10;}if(d.wage!==undefined||d.hours!==undefined){const labour=(parseFloat(d.wage)||0)*(parseFloat(d.hours)||0);const mats=d.materials&&d.materials.length?d.materials.reduce((s,m)=>s+(parseFloat(m.price)||0)*(parseFloat(m.qty)||1),0):0;const overheads=parseFloat(d.overheads)||0;const subtotal=labour+mats+overheads;const margin=parseFloat(d.margin)||0;let total=subtotal;if(margin>0){total=d.markup?subtotal*(1+margin/100):subtotal/(1-margin/100);}return isFinite(total)&&total>0?total*1.10:subtotal*1.10;}return parseFloat(d.total||d.grandTotal||d.amount||0);}catch(e){return 0;}}
 function getStatus(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return(d.status||'unpaid').toLowerCase();}catch(e){return 'unpaid';}}
 function getInvNum(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.num||d.number||r.id||'';}catch(e){return r.id||'';}}
 function getDue(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.due||d.dueDate||'';}catch(e){return '';}}
 function getDate(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.date||r.updated_at?.substring(0,10)||'';}catch(e){return '';}}
 function getDesc(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.desc||d.jobTitle||'';}catch(e){return '';}}
-function getClient(r){
-  if(r.name){
-    const p=r.name.split(' — ');if(p.length>1)return p[0].trim();
-    const p2=r.name.split(' - ');if(p2.length>1)return p2[0].trim();
-    return r.name.split(' ').slice(0,3).join(' ');
+function getClient(r){if(r.name){const p=r.name.split(' — ');if(p.length>1)return p[0].trim();const p2=r.name.split(' - ');if(p2.length>1)return p2[0].trim();return r.name.split(' ').slice(0,3).join(' ');}return 'Unknown';}
+
+// ==================== FOLLOW-UP REMINDERS ====================
+function renderReminders(customers) {
+  const today = todayStr;
+  const withDates = customers.filter(c => c.followup_date);
+
+  const overdue = withDates.filter(c => c.followup_date < today).sort((a,b) => a.followup_date.localeCompare(b.followup_date));
+  const dueToday = withDates.filter(c => c.followup_date === today);
+
+  const section = document.getElementById('reminderSection');
+  const list = document.getElementById('reminderList');
+
+  if (!overdue.length && !dueToday.length) {
+    section.style.display = 'none';
+    return;
   }
-  return 'Unknown';
+
+  section.style.display = 'block';
+  let html = '';
+
+  if (overdue.length) {
+    html += `<div class="reminder-group-label overdue">⚠ Overdue (${overdue.length})</div>`;
+    html += overdue.map(c => reminderCard(c, 'overdue')).join('');
+  }
+
+  if (dueToday.length) {
+    html += `<div class="reminder-group-label today" style="margin-top:${overdue.length?'12px':'0'}">📅 Due Today (${dueToday.length})</div>`;
+    html += dueToday.map(c => reminderCard(c, 'today')).join('');
+  }
+
+  list.innerHTML = html;
+}
+
+function reminderCard(c, type) {
+  const date = c.followup_date;
+  const daysAgo = Math.round((new Date(todayStr) - new Date(date)) / 86400000);
+  const dateLabel = type === 'today' ? 'Today' : daysAgo === 1 ? '1 day overdue' : daysAgo + ' days overdue';
+  const jobInfo = c.job || c.suburb || '';
+  return `<div class="reminder-card ${type}">
+    <div class="reminder-info">
+      <div class="reminder-name">${c.name}</div>
+      <div class="reminder-detail">${jobInfo}${jobInfo ? ' · ' : ''}Follow-up set ${date}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+      <div class="reminder-date ${type}">${dateLabel}</div>
+      <div class="reminder-actions">
+        ${c.phone ? `<a href="tel:${c.phone}" class="reminder-call-btn">📞 Call</a>` : ''}
+        ${c.phone ? `<a href="sms:${c.phone}" class="reminder-sms-btn">💬 Text</a>` : ''}
+      </div>
+    </div>
+  </div>`;
 }
 
 // ==================== PDF HELPERS ====================
-function pdfHeader(doc, title, subtitle){
-  const pw=210, margin=15;
-  let y=10;
-  doc.setFontSize(8);doc.setTextColor(100,100,100);doc.setFont('helvetica','normal');
-  doc.text('Joffre Road, Pascoe Vale VIC 3044',pw-margin,y+4,{align:'right'});
-  doc.text('Phone: 0408 165 409',pw-margin,y+8,{align:'right'});
-  doc.text('groundworkgardens.email@gmail.com',pw-margin,y+12,{align:'right'});
-  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(26,46,23);
-  doc.text('GROUNDWORK GARDENS',margin,y+8);
-  y+=16;
-  doc.setDrawColor(61,107,52);doc.setLineWidth(0.8);doc.line(margin,y,pw-margin,y);y+=10;
-  doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(26,46,23);doc.text(title,margin,y);
-  if(subtitle){y+=6;doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(74,124,63);doc.text(subtitle,margin,y);}
-  y+=4;doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(120,120,120);
-  doc.text('ABN: 28 594 108 955',margin,y+5);
-  doc.text('Generated: '+new Date().toLocaleDateString('en-AU'),pw-margin,y+5,{align:'right'});
-  return y+14;
-}
+function pdfHeader(doc,title,subtitle){const pw=210,margin=15;let y=10;doc.setFontSize(8);doc.setTextColor(100,100,100);doc.setFont('helvetica','normal');doc.text('Joffre Road, Pascoe Vale VIC 3044',pw-margin,y+4,{align:'right'});doc.text('Phone: 0408 165 409',pw-margin,y+8,{align:'right'});doc.text('groundworkgardens.email@gmail.com',pw-margin,y+12,{align:'right'});doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(26,46,23);doc.text('GROUNDWORK GARDENS',margin,y+8);y+=16;doc.setDrawColor(61,107,52);doc.setLineWidth(0.8);doc.line(margin,y,pw-margin,y);y+=10;doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(26,46,23);doc.text(title,margin,y);if(subtitle){y+=6;doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(74,124,63);doc.text(subtitle,margin,y);}y+=4;doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(120,120,120);doc.text('ABN: 28 594 108 955',margin,y+5);doc.text('Generated: '+new Date().toLocaleDateString('en-AU'),pw-margin,y+5,{align:'right'});return y+14;}
+function pdfSectionTitle(doc,title,y){const margin=15,pw=210;doc.setFillColor(240,247,238);doc.setDrawColor(74,124,63);doc.setLineWidth(0.3);doc.rect(margin,y,pw-margin*2,7,'FD');doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(61,107,52);doc.text(title,margin+3,y+5);return y+10;}
+function pdfSummaryRow(doc,label,value,y,bold){const margin=15,pw=210;doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(10);doc.setTextColor(50,50,50);doc.text(label,margin+3,y);doc.text(value,pw-margin-3,y,{align:'right'});return y+6;}
 
-function pdfSectionTitle(doc,title,y){
-  const margin=15,pw=210;
-  doc.setFillColor(240,247,238);doc.setDrawColor(74,124,63);doc.setLineWidth(0.3);
-  doc.rect(margin,y,pw-margin*2,7,'FD');
-  doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(61,107,52);
-  doc.text(title,margin+3,y+5);
-  return y+10;
-}
-
-function pdfSummaryRow(doc,label,value,y,bold){
-  const margin=15,pw=210;
-  doc.setFont('helvetica',bold?'bold':'normal');
-  doc.setFontSize(10);doc.setTextColor(50,50,50);
-  doc.text(label,margin+3,y);
-  doc.text(value,pw-margin-3,y,{align:'right'});
-  return y+6;
-}
-
-function generateMonthlyReport(){
-  showToast('Generating report...');
-  setTimeout(()=>{
-    try{
-      const jsPDF=window.jspdf.jsPDF;
-      const doc=new jsPDF({unit:'mm',format:'a4'});
-      const pw=210,margin=15,cw=pw-margin*2;
-      const monthName=months[now.getMonth()]+' '+now.getFullYear();
-      const monthPaidInv=_invoices.filter(r=>getStatus(r)==='paid'&&thisMonth(r.updated_at));
-      const monthExp=_expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
-      const totalReceived=monthPaidInv.reduce((s,r)=>s+getTotal(r),0);
-      const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-      const profit=totalReceived-totalExp;
-      let y=pdfHeader(doc,'Monthly Business Report',monthName);
-      y=pdfSectionTitle(doc,'FINANCIAL SUMMARY (CASH BASIS)',y);
-      doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
-      doc.rect(margin,y,cw,30,'FD');y+=6;
-      y=pdfSummaryRow(doc,'Revenue Received (Paid Invoices inc GST)',fmt(totalReceived),y,false);
-      y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);
-      doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
-      y=pdfSummaryRow(doc,'Net Profit (Revenue - Expenses)',fmt(profit),y,true);
-      y+=6;
-      if(monthPaidInv.length){
-        if(y>220){doc.addPage();y=20;}
-        y=pdfSectionTitle(doc,'REVENUE RECEIVED THIS MONTH',y);
-        doc.autoTable({startY:y,head:[['','Count','Total (inc GST)']],body:[['Paid Invoices',monthPaidInv.length,fmt(totalReceived)]],theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:10,cellPadding:4,textColor:[61,107,52],fontStyle:'bold'},columnStyles:{0:{cellWidth:100},1:{cellWidth:30,halign:'center'},2:{cellWidth:40,halign:'right'}},margin:{left:margin,right:margin}});
-        y=doc.lastAutoTable.finalY+8;
-      }
-      if(monthExp.length){
-        if(y>200){doc.addPage();y=20;}
-        y=pdfSectionTitle(doc,'EXPENSES THIS MONTH',y);
-        const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];
-        const catTotals=cats.map(c=>({cat:c,total:monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
-        doc.autoTable({startY:y,head:[['Category','Total']],body:[...catTotals.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:10,cellPadding:2,textColor:[50,50,50]},columnStyles:{0:{cellWidth:120},1:{cellWidth:55,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});
-        y=doc.lastAutoTable.finalY+6;
-      }
-      doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);
-      doc.setFontSize(7);doc.setTextColor(180,180,180);doc.setFont('helvetica','normal');
-      doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM',pw/2,292,{align:'center'});
-      doc.save('GG-Monthly-Report-'+monthName.replace(' ','-')+'.pdf');
-      showToast('✓ Monthly report downloaded!');
-    }catch(err){console.error(err);showToast('⚠ Error generating report');}
-  },100);
-}
-
+function generateMonthlyReport(){showToast('Generating report...');setTimeout(()=>{try{const jsPDF=window.jspdf.jsPDF;const doc=new jsPDF({unit:'mm',format:'a4'});const pw=210,margin=15,cw=pw-margin*2;const monthName=months[now.getMonth()]+' '+now.getFullYear();const monthPaidInv=_invoices.filter(r=>getStatus(r)==='paid'&&thisMonth(r.updated_at));const monthExp=_expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));const totalReceived=monthPaidInv.reduce((s,r)=>s+getTotal(r),0);const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);const profit=totalReceived-totalExp;let y=pdfHeader(doc,'Monthly Business Report',monthName);y=pdfSectionTitle(doc,'FINANCIAL SUMMARY (CASH BASIS)',y);doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.rect(margin,y,cw,30,'FD');y+=6;y=pdfSummaryRow(doc,'Revenue Received (Paid Invoices inc GST)',fmt(totalReceived),y,false);y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;y=pdfSummaryRow(doc,'Net Profit (Revenue - Expenses)',fmt(profit),y,true);y+=6;if(monthPaidInv.length){if(y>220){doc.addPage();y=20;}y=pdfSectionTitle(doc,'REVENUE RECEIVED THIS MONTH',y);doc.autoTable({startY:y,head:[['','Count','Total (inc GST)']],body:[['Paid Invoices',monthPaidInv.length,fmt(totalReceived)]],theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:10,cellPadding:4,textColor:[61,107,52],fontStyle:'bold'},columnStyles:{0:{cellWidth:100},1:{cellWidth:30,halign:'center'},2:{cellWidth:40,halign:'right'}},margin:{left:margin,right:margin}});y=doc.lastAutoTable.finalY+8;}if(monthExp.length){if(y>200){doc.addPage();y=20;}y=pdfSectionTitle(doc,'EXPENSES THIS MONTH',y);const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];const catTotals=cats.map(c=>({cat:c,total:monthExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);doc.autoTable({startY:y,head:[['Category','Total']],body:[...catTotals.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:10,cellPadding:2,textColor:[50,50,50]},columnStyles:{0:{cellWidth:120},1:{cellWidth:55,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});y=doc.lastAutoTable.finalY+6;}doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);doc.setFontSize(7);doc.setTextColor(180,180,180);doc.setFont('helvetica','normal');doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM',pw/2,292,{align:'center'});doc.save('GG-Monthly-Report-'+monthName.replace(' ','-')+'.pdf');showToast('✓ Monthly report downloaded!');}catch(err){console.error(err);showToast('⚠ Error generating report');}},100);}
 function getCurrentQuarter(){return Math.floor(now.getMonth()/3)+1;}
-
-function generateQuarterlyReport(){
-  showToast('Generating quarterly report...');
-  setTimeout(()=>{
-    try{
-      const jsPDF=window.jspdf.jsPDF;
-      const doc=new jsPDF({unit:'mm',format:'a4'});
-      const pw=210,margin=15,cw=pw-margin*2;
-      const q=getCurrentQuarter();
-      const qStart=(q-1)*3;
-      const qMonths=[qStart,qStart+1,qStart+2];
-      const qName='Q'+q+' '+now.getFullYear()+' ('+months[qStart]+' – '+months[qStart+2]+')';
-      const qInv=_invoices.filter(r=>{const d=new Date(r.updated_at);return d.getFullYear()===now.getFullYear()&&qMonths.includes(d.getMonth());});
-      const qExp=_expenses.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d.getFullYear()===now.getFullYear()&&qMonths.includes(d.getMonth());});
-      const totalExp=qExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-      const qPaidInv=qInv.filter(r=>getStatus(r)==='paid');
-      const qTotalReceived=qPaidInv.reduce((s,r)=>s+getTotal(r),0);
-      let y=pdfHeader(doc,'Quarterly Business Report',qName);
-      y=pdfSectionTitle(doc,'FINANCIAL SUMMARY (CASH BASIS)',y);
-      doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
-      doc.rect(margin,y,cw,24,'FD');y+=6;
-      y=pdfSummaryRow(doc,'Revenue Received (Paid Invoices inc GST)',fmt(qTotalReceived),y,false);
-      y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);
-      doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
-      y=pdfSummaryRow(doc,'Net Profit (Revenue - Expenses)',fmt(qTotalReceived-totalExp),y,true);
-      y+=8;
-      if(qPaidInv.length){
-        if(y>220){doc.addPage();y=20;}
-        y=pdfSectionTitle(doc,'REVENUE RECEIVED THIS QUARTER',y);
-        doc.autoTable({startY:y,head:[['Month','Paid Invoices','Revenue (inc GST)']],body:qMonths.map(m=>{const mPaid=qInv.filter(r=>getStatus(r)==='paid'&&new Date(r.updated_at).getMonth()===m);return [months[m]+' '+now.getFullYear(),mPaid.length,fmt(mPaid.reduce((s,r)=>s+getTotal(r),0))];}),theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3,textColor:[61,107,52]},columnStyles:{0:{cellWidth:60},1:{cellWidth:40,halign:'center'},2:{cellWidth:70,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});
-        y=doc.lastAutoTable.finalY+8;
-      }
-      if(y>200){doc.addPage();y=20;}
-      y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);
-      const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];
-      const catRows=cats.map(c=>({cat:c,total:qExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
-      doc.autoTable({startY:y,head:[['Category','Total']],body:[...catRows.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:80},1:{cellWidth:40,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});
-      doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);
-      doc.setFontSize(7);doc.setTextColor(180,180,180);
-      doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955',pw/2,292,{align:'center'});
-      doc.save('GG-Quarterly-Report-'+qName.replace(/[^a-z0-9]/gi,'-')+'.pdf');
-      showToast('✓ Quarterly report downloaded!');
-    }catch(err){console.error(err);showToast('⚠ Error generating report');}
-  },100);
-}
-
-function generateYearlyReport(){
-  showToast('Generating yearly report...');
-  setTimeout(()=>{
-    try{
-      const jsPDF=window.jspdf.jsPDF;
-      const doc=new jsPDF({unit:'mm',format:'a4'});
-      const pw=210,margin=15,cw=pw-margin*2;
-      const fyStart=now.getMonth()>=6?now.getFullYear():now.getFullYear()-1;
-      const fyEnd=fyStart+1;
-      const fyStartDate=new Date(fyStart,6,1);
-      const fyEndDate=new Date(fyEnd,5,30,23,59,59);
-      const yrInv=_invoices.filter(r=>{const d=new Date(r.updated_at);return d>=fyStartDate&&d<=fyEndDate;});
-      const yrExp=_expenses.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d>=fyStartDate&&d<=fyEndDate;});
-      const totalExp=yrExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-      const yrPaidInv=yrInv.filter(r=>getStatus(r)==='paid');
-      const yrTotalReceived=yrPaidInv.reduce((s,r)=>s+getTotal(r),0);
-      const fyLabel='FY '+fyStart+'/'+String(fyEnd).slice(-2)+' (1 Jul '+fyStart+' - 30 Jun '+fyEnd+')';
-      let y=pdfHeader(doc,'Yearly Business Report',fyLabel);
-      y=pdfSectionTitle(doc,'ANNUAL SUMMARY (CASH BASIS)',y);
-      doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
-      doc.rect(margin,y,cw,24,'FD');y+=6;
-      y=pdfSummaryRow(doc,'Revenue Received (Paid Invoices inc GST)',fmt(yrTotalReceived),y,false);
-      y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);
-      doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;
-      y=pdfSummaryRow(doc,'Net Annual Profit (Revenue - Expenses)',fmt(yrTotalReceived-totalExp),y,true);
-      y+=8;
-      if(y>180){doc.addPage();y=20;}
-      y=pdfSectionTitle(doc,'MONTHLY REVENUE BREAKDOWN',y);
-      const mRows=[];
-      const fyMonths=[6,7,8,9,10,11,0,1,2,3,4,5];
-      fyMonths.forEach(m=>{
-        const mYear=m>=6?fyStart:fyEnd;
-        const mPaid=yrPaidInv.filter(r=>{const d=new Date(r.updated_at);return d.getMonth()===m&&d.getFullYear()===mYear;});
-        const mExp=yrExp.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d.getMonth()===m&&d.getFullYear()===mYear;});
-        const mRev=mPaid.reduce((s,r)=>s+getTotal(r),0);
-        const mExpT=mExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-        if(mPaid.length||mExp.length) mRows.push([months[m]+' '+mYear,mPaid.length,fmt(mRev),fmt(mExpT),fmt(mRev-mExpT)]);
-      });
-      doc.autoTable({startY:y,head:[['Month','Paid Invoices','Revenue','Expenses','Profit']],body:mRows,theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:35},1:{cellWidth:25,halign:'center'},2:{cellWidth:40,halign:'right'},3:{cellWidth:40,halign:'right'},4:{cellWidth:40,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});
-      y=doc.lastAutoTable.finalY+8;
-      if(y>200){doc.addPage();y=20;}
-      y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);
-      const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];
-      const catRows=cats.map(c=>({cat:c,total:yrExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);
-      doc.autoTable({startY:y,head:[['Category','Total']],body:[...catRows.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:80},1:{cellWidth:40,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});
-      const pageCount=doc.internal.getNumberOfPages();
-      for(let i=1;i<=pageCount;i++){doc.setPage(i);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);doc.setFontSize(7);doc.setTextColor(180,180,180);doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  Page '+i+' of '+pageCount,pw/2,292,{align:'center'});}
-      doc.save('GG-Yearly-Report-FY'+fyStart+'-'+fyEnd+'.pdf');
-      showToast('✓ Yearly report downloaded!');
-    }catch(err){console.error(err);showToast('⚠ Error generating report');}
-  },100);
-}
-
-function generateFullReport(){
-  showToast('Generating full report...');
-  setTimeout(()=>{
-    try{
-      const jsPDF=window.jspdf.jsPDF;
-      const doc=new jsPDF({unit:'mm',format:'a4'});
-      const pw=210,margin=15;
-      let y=pdfHeader(doc,'Full Business Report','All Invoices, Expenses & Quotes');
-      const totalPaidAll=_invoices.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
-      const totalUnpaidAll=_invoices.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);
-      const totalExpAll=_expenses.reduce((s,e)=>s+parseFloat(e.amount||0),0);
-      const cw=pw-margin*2;
-      y=pdfSectionTitle(doc,'OVERALL SUMMARY',y);
-      doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);
-      doc.rect(margin,y,cw,24,'FD');y+=6;
-      y=pdfSummaryRow(doc,'Total Revenue Collected (Paid Invoices)',fmt(totalPaidAll),y,false);
-      y=pdfSummaryRow(doc,'Total Outstanding (Unpaid)',fmt(totalUnpaidAll),y,false);
-      y=pdfSummaryRow(doc,'Total Expenses (All Time)',fmt(totalExpAll),y,false);
-      y+=4;
-      if(_invoices.length){
-        if(y>200){doc.addPage();y=20;}
-        y=pdfSectionTitle(doc,'ALL INVOICES',y);
-        doc.autoTable({startY:y,head:[['Invoice #','Client','Description','Date','Due','Amount','Status']],body:_invoices.map(r=>{const s=getStatus(r);return [getInvNum(r),getClient(r),getDesc(r)||'—',getDate(r),getDue(r)||'—',fmt(getTotal(r)),s.charAt(0).toUpperCase()+s.slice(1)];}),theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:7.5,cellPadding:2.5,textColor:[50,50,50]},columnStyles:{0:{cellWidth:22},1:{cellWidth:36},2:{cellWidth:46},3:{cellWidth:19,halign:'center'},4:{cellWidth:19,halign:'center'},5:{cellWidth:22,halign:'right'},6:{cellWidth:18,halign:'center'}},margin:{left:margin,right:margin}});
-        y=doc.lastAutoTable.finalY+8;
-      }
-      if(_expenses.length){
-        if(y>200){doc.addPage();y=20;}
-        y=pdfSectionTitle(doc,'ALL EXPENSES',y);
-        doc.autoTable({startY:y,head:[['Date','Description','Category','Job / Reference','Amount','Paid Via']],body:_expenses.map(e=>[e.expense_date||'—',e.description||'—',e.category||'—',e.job_ref||'—',fmt(e.amount||0),e.payment_method||'—']),theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:7.5,cellPadding:2.5,textColor:[50,50,50]},columnStyles:{0:{cellWidth:22},1:{cellWidth:50},2:{cellWidth:22},3:{cellWidth:38},4:{cellWidth:20,halign:'right'},5:{cellWidth:23}},margin:{left:margin,right:margin}});
-        y=doc.lastAutoTable.finalY+8;
-      }
-      if(_quotes.length){
-        if(y>200){doc.addPage();y=20;}
-        y=pdfSectionTitle(doc,'ALL QUOTES',y);
-        doc.autoTable({startY:y,head:[['Quote ID','Client','Date','Amount (inc GST)']],body:_quotes.map(r=>[r.id,getClient(r),r.updated_at?r.updated_at.substring(0,10):'—',fmt(getTotal(r))]),theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:8,cellPadding:3,textColor:[50,50,50]},columnStyles:{0:{cellWidth:35},1:{cellWidth:70},2:{cellWidth:30,halign:'center'},3:{cellWidth:35,halign:'right'}},margin:{left:margin,right:margin}});
-      }
-      const pageCount=doc.internal.getNumberOfPages();
-      for(let i=1;i<=pageCount;i++){doc.setPage(i);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);doc.setFontSize(7);doc.setTextColor(180,180,180);doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  Page '+i+' of '+pageCount,pw/2,292,{align:'center'});}
-      doc.save('GG-Full-Report-'+new Date().toLocaleDateString('en-AU').replace(/\//g,'-')+'.pdf');
-      showToast('✓ Full report downloaded!');
-    }catch(err){console.error(err);showToast('⚠ Error generating report');}
-  },100);
-}
+function generateQuarterlyReport(){showToast('Generating quarterly report...');setTimeout(()=>{try{const jsPDF=window.jspdf.jsPDF;const doc=new jsPDF({unit:'mm',format:'a4'});const pw=210,margin=15,cw=pw-margin*2;const q=getCurrentQuarter();const qStart=(q-1)*3;const qMonths=[qStart,qStart+1,qStart+2];const qName='Q'+q+' '+now.getFullYear()+' ('+months[qStart]+' – '+months[qStart+2]+')';const qInv=_invoices.filter(r=>{const d=new Date(r.updated_at);return d.getFullYear()===now.getFullYear()&&qMonths.includes(d.getMonth());});const qExp=_expenses.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d.getFullYear()===now.getFullYear()&&qMonths.includes(d.getMonth());});const totalExp=qExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);const qPaidInv=qInv.filter(r=>getStatus(r)==='paid');const qTotalReceived=qPaidInv.reduce((s,r)=>s+getTotal(r),0);let y=pdfHeader(doc,'Quarterly Business Report',qName);y=pdfSectionTitle(doc,'FINANCIAL SUMMARY (CASH BASIS)',y);doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.rect(margin,y,cw,24,'FD');y+=6;y=pdfSummaryRow(doc,'Revenue Received (Paid Invoices inc GST)',fmt(qTotalReceived),y,false);y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;y=pdfSummaryRow(doc,'Net Profit (Revenue - Expenses)',fmt(qTotalReceived-totalExp),y,true);y+=8;if(qPaidInv.length){if(y>220){doc.addPage();y=20;}y=pdfSectionTitle(doc,'REVENUE RECEIVED THIS QUARTER',y);doc.autoTable({startY:y,head:[['Month','Paid Invoices','Revenue (inc GST)']],body:qMonths.map(m=>{const mPaid=qInv.filter(r=>getStatus(r)==='paid'&&new Date(r.updated_at).getMonth()===m);return[months[m]+' '+now.getFullYear(),mPaid.length,fmt(mPaid.reduce((s,r)=>s+getTotal(r),0))];}),theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3,textColor:[61,107,52]},columnStyles:{0:{cellWidth:60},1:{cellWidth:40,halign:'center'},2:{cellWidth:70,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});y=doc.lastAutoTable.finalY+8;}if(y>200){doc.addPage();y=20;}y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];const catRows=cats.map(c=>({cat:c,total:qExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);doc.autoTable({startY:y,head:[['Category','Total']],body:[...catRows.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:80},1:{cellWidth:40,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);doc.setFontSize(7);doc.setTextColor(180,180,180);doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955',pw/2,292,{align:'center'});doc.save('GG-Quarterly-Report-'+qName.replace(/[^a-z0-9]/gi,'-')+'.pdf');showToast('✓ Quarterly report downloaded!');}catch(err){console.error(err);showToast('⚠ Error generating report');}},100);}
+function generateYearlyReport(){showToast('Generating yearly report...');setTimeout(()=>{try{const jsPDF=window.jspdf.jsPDF;const doc=new jsPDF({unit:'mm',format:'a4'});const pw=210,margin=15,cw=pw-margin*2;const fyStart=now.getMonth()>=6?now.getFullYear():now.getFullYear()-1;const fyEnd=fyStart+1;const fyStartDate=new Date(fyStart,6,1);const fyEndDate=new Date(fyEnd,5,30,23,59,59);const yrInv=_invoices.filter(r=>{const d=new Date(r.updated_at);return d>=fyStartDate&&d<=fyEndDate;});const yrExp=_expenses.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d>=fyStartDate&&d<=fyEndDate;});const totalExp=yrExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);const yrPaidInv=yrInv.filter(r=>getStatus(r)==='paid');const yrTotalReceived=yrPaidInv.reduce((s,r)=>s+getTotal(r),0);const fyLabel='FY '+fyStart+'/'+String(fyEnd).slice(-2)+' (1 Jul '+fyStart+' - 30 Jun '+fyEnd+')';let y=pdfHeader(doc,'Yearly Business Report',fyLabel);y=pdfSectionTitle(doc,'ANNUAL SUMMARY (CASH BASIS)',y);doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.rect(margin,y,cw,24,'FD');y+=6;y=pdfSummaryRow(doc,'Revenue Received (Paid Invoices inc GST)',fmt(yrTotalReceived),y,false);y=pdfSummaryRow(doc,'Total Expenses',fmt(totalExp),y,false);doc.setDrawColor(61,107,52);doc.setLineWidth(0.4);doc.line(margin+3,y,pw-margin-3,y);y+=4;y=pdfSummaryRow(doc,'Net Annual Profit (Revenue - Expenses)',fmt(yrTotalReceived-totalExp),y,true);y+=8;if(y>180){doc.addPage();y=20;}y=pdfSectionTitle(doc,'MONTHLY REVENUE BREAKDOWN',y);const mRows=[];const fyMonths=[6,7,8,9,10,11,0,1,2,3,4,5];fyMonths.forEach(m=>{const mYear=m>=6?fyStart:fyEnd;const mPaid=yrPaidInv.filter(r=>{const d=new Date(r.updated_at);return d.getMonth()===m&&d.getFullYear()===mYear;});const mExp=yrExp.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d.getMonth()===m&&d.getFullYear()===mYear;});const mRev=mPaid.reduce((s,r)=>s+getTotal(r),0);const mExpT=mExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);if(mPaid.length||mExp.length)mRows.push([months[m]+' '+mYear,mPaid.length,fmt(mRev),fmt(mExpT),fmt(mRev-mExpT)]);});doc.autoTable({startY:y,head:[['Month','Paid Invoices','Revenue','Expenses','Profit']],body:mRows,theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:35},1:{cellWidth:25,halign:'center'},2:{cellWidth:40,halign:'right'},3:{cellWidth:40,halign:'right'},4:{cellWidth:40,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});y=doc.lastAutoTable.finalY+8;if(y>200){doc.addPage();y=20;}y=pdfSectionTitle(doc,'EXPENSES BY CATEGORY',y);const cats=['Materials','Fuel','Labour','Tools','Travel','CityLink','Work Clothes','Insurance','Vehicle','Phone & Internet','Software','Tip','Other'];const catRows=cats.map(c=>({cat:c,total:yrExp.filter(e=>e.category===c).reduce((s,e)=>s+parseFloat(e.amount||0),0)})).filter(x=>x.total>0);doc.autoTable({startY:y,head:[['Category','Total']],body:[...catRows.map(x=>[x.cat,fmt(x.total)]),['TOTAL EXPENSES',fmt(totalExp)]],theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:9,cellPadding:3},columnStyles:{0:{cellWidth:80},1:{cellWidth:40,halign:'right',fontStyle:'bold'}},margin:{left:margin,right:margin}});const pageCount=doc.internal.getNumberOfPages();for(let i=1;i<=pageCount;i++){doc.setPage(i);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);doc.setFontSize(7);doc.setTextColor(180,180,180);doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  Page '+i+' of '+pageCount,pw/2,292,{align:'center'});}doc.save('GG-Yearly-Report-FY'+fyStart+'-'+fyEnd+'.pdf');showToast('✓ Yearly report downloaded!');}catch(err){console.error(err);showToast('⚠ Error generating report');}},100);}
+function generateFullReport(){showToast('Generating full report...');setTimeout(()=>{try{const jsPDF=window.jspdf.jsPDF;const doc=new jsPDF({unit:'mm',format:'a4'});const pw=210,margin=15;let y=pdfHeader(doc,'Full Business Report','All Invoices, Expenses & Quotes');const totalPaidAll=_invoices.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);const totalUnpaidAll=_invoices.filter(r=>getStatus(r)!=='paid').reduce((s,r)=>s+getTotal(r),0);const totalExpAll=_expenses.reduce((s,e)=>s+parseFloat(e.amount||0),0);const cw=pw-margin*2;y=pdfSectionTitle(doc,'OVERALL SUMMARY',y);doc.setFillColor(255,255,255);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.rect(margin,y,cw,24,'FD');y+=6;y=pdfSummaryRow(doc,'Total Revenue Collected (Paid Invoices)',fmt(totalPaidAll),y,false);y=pdfSummaryRow(doc,'Total Outstanding (Unpaid)',fmt(totalUnpaidAll),y,false);y=pdfSummaryRow(doc,'Total Expenses (All Time)',fmt(totalExpAll),y,false);y+=4;if(_invoices.length){if(y>200){doc.addPage();y=20;}y=pdfSectionTitle(doc,'ALL INVOICES',y);doc.autoTable({startY:y,head:[['Invoice #','Client','Description','Date','Due','Amount','Status']],body:_invoices.map(r=>{const s=getStatus(r);return[getInvNum(r),getClient(r),getDesc(r)||'—',getDate(r),getDue(r)||'—',fmt(getTotal(r)),s.charAt(0).toUpperCase()+s.slice(1)];}),theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:7.5,cellPadding:2.5,textColor:[50,50,50]},columnStyles:{0:{cellWidth:22},1:{cellWidth:36},2:{cellWidth:46},3:{cellWidth:19,halign:'center'},4:{cellWidth:19,halign:'center'},5:{cellWidth:22,halign:'right'},6:{cellWidth:18,halign:'center'}},margin:{left:margin,right:margin}});y=doc.lastAutoTable.finalY+8;}if(_expenses.length){if(y>200){doc.addPage();y=20;}y=pdfSectionTitle(doc,'ALL EXPENSES',y);doc.autoTable({startY:y,head:[['Date','Description','Category','Job / Reference','Amount','Paid Via']],body:_expenses.map(e=>[e.expense_date||'—',e.description||'—',e.category||'—',e.job_ref||'—',fmt(e.amount||0),e.payment_method||'—']),theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:7.5,cellPadding:2.5,textColor:[50,50,50]},columnStyles:{0:{cellWidth:22},1:{cellWidth:50},2:{cellWidth:22},3:{cellWidth:38},4:{cellWidth:20,halign:'right'},5:{cellWidth:23}},margin:{left:margin,right:margin}});y=doc.lastAutoTable.finalY+8;}if(_quotes.length){if(y>200){doc.addPage();y=20;}y=pdfSectionTitle(doc,'ALL QUOTES',y);doc.autoTable({startY:y,head:[['Quote ID','Client','Date','Amount (inc GST)']],body:_quotes.map(r=>[r.id,getClient(r),r.updated_at?r.updated_at.substring(0,10):'—',fmt(getTotal(r))]),theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},bodyStyles:{fontSize:8,cellPadding:3,textColor:[50,50,50]},columnStyles:{0:{cellWidth:35},1:{cellWidth:70},2:{cellWidth:30,halign:'center'},3:{cellWidth:35,halign:'right'}},margin:{left:margin,right:margin}});}const pageCount=doc.internal.getNumberOfPages();for(let i=1;i<=pageCount;i++){doc.setPage(i);doc.setDrawColor(197,212,192);doc.setLineWidth(0.3);doc.line(margin,287,pw-margin,287);doc.setFontSize(7);doc.setTextColor(180,180,180);doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  Page '+i+' of '+pageCount,pw/2,292,{align:'center'});}doc.save('GG-Full-Report-'+new Date().toLocaleDateString('en-AU').replace(/\//g,'-')+'.pdf');showToast('✓ Full report downloaded!');}catch(err){console.error(err);showToast('⚠ Error generating report');}},100);}
 
 // ==================== LOAD DATA ====================
-function renderInvList(limit){
-  const invEl=window._invEl;
-  const unique=window._allInvoices||[];
-  if(!invEl)return;
-  invEl.innerHTML=unique.slice(0,limit).map(r=>{const s=getStatus(r);return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span></div></div>`;}).join('')+(unique.length>limit?`<button class="see-more-btn" onclick="renderInvList(${limit+10})">Show More Invoices (${unique.length-limit} remaining)</button>`:'');
-}
-
-function renderQuoteList(limit){
-  const qEl=window._qEl;
-  const quotes=window._allQuotes||[];
-  if(!qEl)return;
-  qEl.innerHTML=quotes.slice(0,limit).map(r=>{let approval='pending';try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;approval=d.approval||'pending';}catch(e){}const isApproved=approval==='approved';return `<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-right"><div class="quote-amt">${fmt(getTotal(r))}</div><button class="approval-btn ${isApproved?'approved':'pending'}" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)">${isApproved?'✓ Approved':'⏳ Pending'}</button></div></div>`;}).join('')+(quotes.length>limit?`<button class="see-more-btn" onclick="renderQuoteList(${limit+10})">Show More Quotes (${quotes.length-limit} remaining)</button>`:'')+`<div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap to mark a quote as approved</div>`;
-}
+function renderInvList(limit){const invEl=window._invEl;const unique=window._allInvoices||[];if(!invEl)return;invEl.innerHTML=unique.slice(0,limit).map(r=>{const s=getStatus(r);return`<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span></div></div>`;}).join('')+(unique.length>limit?`<button class="see-more-btn" onclick="renderInvList(${limit+10})">Show More Invoices (${unique.length-limit} remaining)</button>`:'');}
+function renderQuoteList(limit){const qEl=window._qEl;const quotes=window._allQuotes||[];if(!qEl)return;qEl.innerHTML=quotes.slice(0,limit).map(r=>{let approval='pending';try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;approval=d.approval||'pending';}catch(e){}const isApproved=approval==='approved';return`<div class="quote-item"><div><div class="quote-name">${getClient(r)}</div><div class="quote-sub">${r.id} · ${r.updated_at?r.updated_at.substring(0,10):''}</div></div><div class="quote-right"><div class="quote-amt">${fmt(getTotal(r))}</div><button class="approval-btn ${isApproved?'approved':'pending'}" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)">${isApproved?'✓ Approved':'⏳ Pending'}</button></div></div>`;}).join('')+(quotes.length>limit?`<button class="see-more-btn" onclick="renderQuoteList(${limit+10})">Show More Quotes (${quotes.length-limit} remaining)</button>`:'')+`<div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:8px 0 0">Tap to mark a quote as approved</div>`;}
 
 async function loadAll(){
   setSyncStatus(true,'Refreshing...');
@@ -717,6 +481,10 @@ async function loadAll(){
     _invoices=ggQuotes.filter(r=>r.id&&r.id.startsWith('invoice_'));
     _quotes=ggQuotes.filter(r=>r.id&&r.id.startsWith('quote_'));
     _expenses=expenses;
+
+    // Render follow-up reminders
+    renderReminders(customers);
+
     const unpaidInv=_invoices.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
     const paidInv=_invoices.filter(r=>getStatus(r)==='paid');
     const monthInv=_invoices.filter(r=>thisMonth(r.updated_at));
@@ -729,6 +497,7 @@ async function loadAll(){
     document.getElementById('m-paid-sub').textContent=paidInv.length+' paid';
     document.getElementById('m-expenses').textContent=fmt(monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0));
     document.getElementById('m-expenses-sub').textContent=monthExp.length+' expense'+(monthExp.length!==1?'s':'')+' this month';
+
     const invEl=document.getElementById('invoice-list');
     if(!_invoices.length){invEl.innerHTML=`<div class="empty-state">No invoices yet</div>`;}
     else{const sorted=[...unpaidInv,..._invoices.filter(r=>getStatus(r)==='partial'),...paidInv];const unique=[...new Map(sorted.map(r=>[r.id,r])).values()];window._allInvoices=unique;window._invEl=invEl;renderInvList(5);}
@@ -750,133 +519,24 @@ async function loadAll(){
     setSyncStatus(true,'☁ Live data · '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}));
   }catch(e){setSyncStatus(false,'⚠ Could not load data');console.error(e);}
 }
-
 loadAll();
 
-// ==================== QUOTE APPROVAL ====================
-async function toggleApproval(id,btn){
-  const isApproved=btn.classList.contains('approved');
-  const newStatus=isApproved?'pending':'approved';
-  btn.classList.toggle('approved',!isApproved);
-  btn.classList.toggle('pending',isApproved);
-  btn.textContent=isApproved?'⏳ Pending':'✓ Approved';
-  try{
-    const res=await fetch(SB_URL+'/rest/v1/gg_quotes?id=eq.'+id+'&select=data',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
-    const rows=await res.json();
-    if(!rows.length)return;
-    const d=typeof rows[0].data==='string'?JSON.parse(rows[0].data):rows[0].data;
-    d.approval=newStatus;
-    await fetch(SB_URL+'/rest/v1/gg_quotes?id=eq.'+id,{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({data:d})});
-  }catch(e){console.error('Approval save failed',e);}
-}
+async function toggleApproval(id,btn){const isApproved=btn.classList.contains('approved');const newStatus=isApproved?'pending':'approved';btn.classList.toggle('approved',!isApproved);btn.classList.toggle('pending',isApproved);btn.textContent=isApproved?'⏳ Pending':'✓ Approved';try{const res=await fetch(SB_URL+'/rest/v1/gg_quotes?id=eq.'+id+'&select=data',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});const rows=await res.json();if(!rows.length)return;const d=typeof rows[0].data==='string'?JSON.parse(rows[0].data):rows[0].data;d.approval=newStatus;await fetch(SB_URL+'/rest/v1/gg_quotes?id=eq.'+id,{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({data:d})});}catch(e){console.error('Approval save failed',e);}}
 
 // ==================== JOB NOTES ====================
 const JOB_COLORS=['#3d6b34','#1a5276','#6c3483','#c07a2f','#c0392b','#1a7a6e','#7d3c3c','#2e6da4','#7d6608','#4a4a8a'];
 let jobNotes=[];
-let saveTimers={};
-
-async function loadJobNotes(){
-  try{
-    const data=await db('gg_job_notes?order=created_at.desc');
-    jobNotes=data.map(r=>{let items=[];try{if(r.notes)items=JSON.parse(r.notes);}catch(e){items=[];}return{id:r.id,name:r.name,items,colorIdx:r.color_idx||0,date:r.created_at?new Date(r.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):''};});
-  }catch(e){jobNotes=[];}
-  renderJobNotes();
-}
-
-async function saveJobItems(id){
-  const job=jobNotes.find(j=>j.id===id);
-  if(!job)return;
-  const notes=JSON.stringify(job.items||[]);
-  try{
-    const res=await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({notes,updated_at:new Date().toISOString()})});
-    if(res.ok){const saved=document.getElementById('saved-'+id);if(saved){saved.classList.add('show');setTimeout(()=>saved.classList.remove('show'),2000);}}
-  }catch(e){console.error(e);}
-}
-
-async function deleteJobNote(id){
-  if(!confirm('Remove this job note?'))return;
-  try{
-    await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+id,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
-    jobNotes=jobNotes.filter(j=>j.id!==id);
-    renderJobNotes();
-    showToast('Job removed');
-  }catch(e){showToast('⚠ Could not remove job');}
-}
-
-async function saveNewJob(){
-  const name=document.getElementById('job-name-input').value.trim();
-  if(!name){document.getElementById('job-name-input').focus();return;}
-  const id='jn'+Date.now();
-  const colorIdx=jobNotes.length%JOB_COLORS.length;
-  const date=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
-  try{
-    const res=await fetch(SB_URL+'/rest/v1/gg_job_notes',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({id,name,notes:'',color_idx:colorIdx})});
-    if(!res.ok){showToast('⚠ Could not add job');return;}
-    jobNotes.unshift({id,name,items:[],colorIdx,date});
-    renderJobNotes();
-    closeAddJob();
-    showToast('✓ Job added!');
-    setTimeout(()=>toggleJobNote(id),200);
-  }catch(e){showToast('⚠ Could not add job');}
-}
-
-function renderJobNotes(){
-  const el=document.getElementById('job-notes-list');
-  if(!jobNotes.length){el.innerHTML='<div class="empty-state">No jobs yet — tap + Add Job to start</div>';return;}
-  el.innerHTML=jobNotes.map(job=>{
-    const color=JOB_COLORS[job.colorIdx%JOB_COLORS.length];
-    const items=job.items||[];
-    const checklistHtml=items.length?items.map((item,i)=>`<div class="checklist-item" id="ci-${job.id}-${i}"><input type="checkbox" class="checklist-cb" ${item.done?'checked':''} onchange="toggleCheckItem('${job.id}',${i},this)"><span class="checklist-text ${item.done?'done':''}" id="ct-${job.id}-${i}">${item.text}</span></div>`).join(''):'<div style="font-size:13px;color:#aaa;padding:8px 4px">No tasks yet — add one below</div>';
-    return `<div class="job-note-card" id="job-card-${job.id}"><div class="job-note-header" style="background:${color}" onclick="toggleJobNote('${job.id}')"><div class="job-note-left"><div class="job-note-dot"></div><div><div class="job-note-name">${job.name} ${items.filter(i=>i.done).length}/${items.length}</div><div class="job-note-date">Added ${job.date}</div></div></div><div class="job-note-arrow" id="arrow-${job.id}">▾</div></div><div class="job-note-body" id="body-${job.id}"><div class="checklist-wrap" id="cl-${job.id}">${checklistHtml}</div><div class="checklist-add"><input class="checklist-input" id="clinput-${job.id}" type="text" placeholder="Add a task..." maxlength="120" onkeydown="if(event.key==='Enter')addCheckItem('${job.id}')"><button class="checklist-add-btn" onclick="addCheckItem('${job.id}')">+ Add</button></div><div class="job-note-footer"><span class="job-note-saved" id="saved-${job.id}">✓ Saved</span><button class="job-note-delete" onclick="deleteJobNote('${job.id}')">× Remove job</button></div></div></div>`;
-  }).join('');
-}
-
-function toggleJobNote(id){
-  const body=document.getElementById('body-'+id);
-  const arrow=document.getElementById('arrow-'+id);
-  const isOpen=body.classList.contains('open');
-  document.querySelectorAll('.job-note-body').forEach(b=>b.classList.remove('open'));
-  document.querySelectorAll('.job-note-arrow').forEach(a=>a.classList.remove('open'));
-  if(!isOpen){body.classList.add('open');arrow.classList.add('open');setTimeout(()=>{const inp=document.getElementById('clinput-'+id);if(inp)inp.focus();},100);}
-}
-
-function addCheckItem(id){
-  const inp=document.getElementById('clinput-'+id);
-  if(!inp)return;
-  const text=inp.value.trim();
-  if(!text)return;
-  const job=jobNotes.find(j=>j.id===id);
-  if(!job)return;
-  if(!job.items)job.items=[];
-  job.items.push({text,done:false});
-  inp.value='';
-  renderJobNotes();
-  setTimeout(()=>{
-    const body=document.getElementById('body-'+id);
-    const arrow=document.getElementById('arrow-'+id);
-    if(body)body.classList.add('open');
-    if(arrow)arrow.classList.add('open');
-    const newInp=document.getElementById('clinput-'+id);
-    if(newInp)newInp.focus();
-  },50);
-  saveJobItems(id);
-}
-
-function toggleCheckItem(id,index,cb){
-  const job=jobNotes.find(j=>j.id===id);
-  if(!job||!job.items)return;
-  job.items[index].done=cb.checked;
-  const txt=document.getElementById('ct-'+id+'-'+index);
-  if(txt)txt.classList.toggle('done',cb.checked);
-  const header=document.querySelector('#job-card-'+id+' .job-note-name');
-  if(header){const done=job.items.filter(i=>i.done).length;header.textContent=job.name+' '+done+'/'+job.items.length;}
-  saveJobItems(id);
-}
-
+async function loadJobNotes(){try{const data=await db('gg_job_notes?order=created_at.desc');jobNotes=data.map(r=>{let items=[];try{if(r.notes)items=JSON.parse(r.notes);}catch(e){items=[];}return{id:r.id,name:r.name,items,colorIdx:r.color_idx||0,date:r.created_at?new Date(r.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):''};});}catch(e){jobNotes=[];}renderJobNotes();}
+async function saveJobItems(id){const job=jobNotes.find(j=>j.id===id);if(!job)return;const notes=JSON.stringify(job.items||[]);try{const res=await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({notes,updated_at:new Date().toISOString()})});if(res.ok){const saved=document.getElementById('saved-'+id);if(saved){saved.classList.add('show');setTimeout(()=>saved.classList.remove('show'),2000);}}}catch(e){console.error(e);}}
+async function deleteJobNote(id){if(!confirm('Remove this job note?'))return;try{await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+id,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});jobNotes=jobNotes.filter(j=>j.id!==id);renderJobNotes();showToast('Job removed');}catch(e){showToast('⚠ Could not remove job');}}
+async function saveNewJob(){const name=document.getElementById('job-name-input').value.trim();if(!name){document.getElementById('job-name-input').focus();return;}const id='jn'+Date.now();const colorIdx=jobNotes.length%JOB_COLORS.length;const date=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});try{const res=await fetch(SB_URL+'/rest/v1/gg_job_notes',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({id,name,notes:'',color_idx:colorIdx})});if(!res.ok){showToast('⚠ Could not add job');return;}jobNotes.unshift({id,name,items:[],colorIdx,date});renderJobNotes();closeAddJob();showToast('✓ Job added!');setTimeout(()=>toggleJobNote(id),200);}catch(e){showToast('⚠ Could not add job');}}
+function renderJobNotes(){const el=document.getElementById('job-notes-list');if(!jobNotes.length){el.innerHTML='<div class="empty-state">No jobs yet — tap + Add Job to start</div>';return;}el.innerHTML=jobNotes.map(job=>{const color=JOB_COLORS[job.colorIdx%JOB_COLORS.length];const items=job.items||[];const checklistHtml=items.length?items.map((item,i)=>`<div class="checklist-item" id="ci-${job.id}-${i}"><input type="checkbox" class="checklist-cb" ${item.done?'checked':''} onchange="toggleCheckItem('${job.id}',${i},this)"><span class="checklist-text ${item.done?'done':''}" id="ct-${job.id}-${i}">${item.text}</span></div>`).join(''):'<div style="font-size:13px;color:#aaa;padding:8px 4px">No tasks yet — add one below</div>';return`<div class="job-note-card" id="job-card-${job.id}"><div class="job-note-header" style="background:${color}" onclick="toggleJobNote('${job.id}')"><div class="job-note-left"><div class="job-note-dot"></div><div><div class="job-note-name">${job.name} ${items.filter(i=>i.done).length}/${items.length}</div><div class="job-note-date">Added ${job.date}</div></div></div><div class="job-note-arrow" id="arrow-${job.id}">▾</div></div><div class="job-note-body" id="body-${job.id}"><div class="checklist-wrap" id="cl-${job.id}">${checklistHtml}</div><div class="checklist-add"><input class="checklist-input" id="clinput-${job.id}" type="text" placeholder="Add a task..." maxlength="120" onkeydown="if(event.key==='Enter')addCheckItem('${job.id}')"><button class="checklist-add-btn" onclick="addCheckItem('${job.id}')">+ Add</button></div><div class="job-note-footer"><span class="job-note-saved" id="saved-${job.id}">✓ Saved</span><button class="job-note-delete" onclick="deleteJobNote('${job.id}')">× Remove job</button></div></div></div>`;}).join('');}
+function toggleJobNote(id){const body=document.getElementById('body-'+id);const arrow=document.getElementById('arrow-'+id);const isOpen=body.classList.contains('open');document.querySelectorAll('.job-note-body').forEach(b=>b.classList.remove('open'));document.querySelectorAll('.job-note-arrow').forEach(a=>a.classList.remove('open'));if(!isOpen){body.classList.add('open');arrow.classList.add('open');setTimeout(()=>{const inp=document.getElementById('clinput-'+id);if(inp)inp.focus();},100);}}
+function addCheckItem(id){const inp=document.getElementById('clinput-'+id);if(!inp)return;const text=inp.value.trim();if(!text)return;const job=jobNotes.find(j=>j.id===id);if(!job)return;if(!job.items)job.items=[];job.items.push({text,done:false});inp.value='';renderJobNotes();setTimeout(()=>{const body=document.getElementById('body-'+id);const arrow=document.getElementById('arrow-'+id);if(body)body.classList.add('open');if(arrow)arrow.classList.add('open');const newInp=document.getElementById('clinput-'+id);if(newInp)newInp.focus();},50);saveJobItems(id);}
+function toggleCheckItem(id,index,cb){const job=jobNotes.find(j=>j.id===id);if(!job||!job.items)return;job.items[index].done=cb.checked;const txt=document.getElementById('ct-'+id+'-'+index);if(txt)txt.classList.toggle('done',cb.checked);const header=document.querySelector('#job-card-'+id+' .job-note-name');if(header){const done=job.items.filter(i=>i.done).length;header.textContent=job.name+' '+done+'/'+job.items.length;}saveJobItems(id);}
 function openAddJob(){document.getElementById('job-name-input').value='';document.getElementById('jobOverlay').classList.add('show');setTimeout(()=>document.getElementById('job-name-input').focus(),100);}
 function closeAddJob(){document.getElementById('jobOverlay').classList.remove('show');}
 document.getElementById('job-name-input').addEventListener('keydown',function(e){if(e.key==='Enter')saveNewJob();});
-
 loadJobNotes();
 </script>
 </body>
