@@ -15,27 +15,22 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg-page); color: var(--text-primary); font-family: 'Barlow', sans-serif; font-weight: 300; min-height: 100vh; padding-bottom: 80px; }
-
   .main-header { background: #1a2e17; border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 14px; }
   .main-header img { height: 44px; width: auto; object-fit: contain; }
   .main-header .app-name { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-dim); }
-
   .tab-bar { display: flex; background: #1a2e17; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
   .tab-btn { flex: 1; padding: 14px 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; text-align: center; cursor: pointer; color: var(--cream-dim); border-bottom: 2px solid transparent; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; text-decoration: none; display: flex; align-items: center; justify-content: center; }
   .tab-btn:hover { color: var(--cream); }
   .tab-btn.active { color: var(--white); border-bottom: 2px solid var(--green-bright); }
-
   .sync-bar { background: #e8f5ee; border-bottom: 1px solid #b8ddc8; padding: 7px 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 1px; color: var(--green); display: flex; align-items: center; gap: 8px; }
   .sync-bar.error { background: #fde8df; border-color: #f5c0a8; color: var(--orange); }
   .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-bright); animation: pulse 2s infinite; flex-shrink: 0; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
   .stats-bar { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: #c5d4c0; border-bottom: 1px solid #c5d4c0; }
   .stat { background: #ffffff; padding: 12px 16px; text-align: center; }
   .stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; line-height: 1; }
   .stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); margin-top: 2px; }
   .stat-num.c { color: var(--green-leaf); } .stat-num.l { color: var(--gold); } .stat-num.f { color: var(--orange); }
-
   .toolbar { padding: 12px 16px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid #c5d4c0; background: #ffffff; flex-wrap: wrap; }
   .search-wrap { flex: 1; min-width: 160px; position: relative; }
   .search-wrap input { width: 100%; padding: 9px 11px 9px 34px; border: 0.5px solid #c5d4c0; background: var(--bg-page); font-family: 'Barlow', sans-serif; font-size: 13px; border-radius: 6px; color: var(--text-primary); }
@@ -48,7 +43,6 @@
   .add-fab:hover { background: var(--green); }
   .new-job-fab { background: var(--orange); border: 1px solid var(--orange); border-radius: 6px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 2px; padding: 9px 16px; text-transform: uppercase; transition: background 0.2s; white-space: nowrap; }
   .new-job-fab:hover { background: #a86728; }
-
   .list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
   .contact-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .contact-card:hover { border-color: var(--green); box-shadow: 0 2px 8px rgba(74,124,63,0.15); }
@@ -65,33 +59,30 @@
   .card-footer { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
   .btn-sm { padding: 6px 12px; border: 0.5px solid #c5d4c0; background: var(--bg-page); font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 6px; color: var(--text-primary); text-decoration: none; display: inline-block; transition: all 0.2s; }
   .btn-sm:hover { border-color: var(--green); color: var(--green); }
-
+  .btn-sm.build-quote { background: var(--green-leaf); border-color: var(--green); color: white; font-weight: 600; }
+  .btn-sm.build-quote:hover { background: var(--green); }
   .overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px 0; }
   .overlay.show { display: flex; }
   .modal { background: #ffffff; border-radius: 12px; padding: 20px; width: calc(100% - 32px); max-width: 520px; margin: auto; }
   .modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
   .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-secondary); }
-
   .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
   .field label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); }
   .field input, .field select, .field textarea { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; color: var(--text-primary); font-family: 'Barlow', sans-serif; font-size: 14px; padding: 9px 11px; }
   .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--green); }
   .field textarea { resize: vertical; min-height: 70px; }
-
   .section-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--green); margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1px solid #c5d4c0; }
-
   .job-types-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
   .job-type-item { display: flex; align-items: center; gap: 8px; background: #f7f9f6; border: 0.5px solid #c5d4c0; border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: all 0.15s; }
   .job-type-item.selected { background: rgba(74,124,63,0.1); border-color: var(--green); }
   .job-type-cb { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid #c5d4c0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.15s; }
   .job-type-item.selected .job-type-cb { background: var(--green-leaf); border-color: var(--green-leaf); color: white; }
   .job-type-label { font-size: 13px; color: var(--text-primary); }
-
   .measurements-section { margin-bottom: 12px; }
   .measure-card { background: #f7f9f6; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
   .measure-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .measure-card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-primary); }
-  .measure-entry { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; padding: 10px; margin-bottom: 8px; position: relative; }
+  .measure-entry { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; padding: 10px; margin-bottom: 8px; }
   .measure-entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .measure-entry-label { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
   .measure-entry-remove { background: none; border: none; color: var(--red); cursor: pointer; font-size: 16px; padding: 0 4px; }
@@ -101,7 +92,6 @@
   .measure-field input { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; color: var(--text-primary); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; padding: 7px 9px; }
   .add-entry-btn { background: transparent; border: 1px dashed #c5d4c0; border-radius: 6px; color: var(--green); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 7px; text-transform: uppercase; width: 100%; margin-top: 4px; transition: all 0.2s; }
   .add-entry-btn:hover { border-color: var(--green); background: rgba(74,124,63,0.05); }
-
   .photo-upload { border: 1.5px dashed #c5d4c0; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; }
   .photo-upload:hover { border-color: var(--green); background: rgba(74,124,63,0.04); }
   .photo-upload input { display: none; }
@@ -109,7 +99,6 @@
   .photo-thumb { position: relative; aspect-ratio: 1; border-radius: 6px; overflow: hidden; }
   .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
   .photo-thumb .remove-photo { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
   .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
   .gen-btn { background: var(--green-leaf); border: 1px solid var(--green); border-radius: 6px; color: var(--white); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 2px; padding: 13px; text-transform: uppercase; flex: 1; transition: background 0.2s; }
   .gen-btn:hover { background: var(--green); }
@@ -117,18 +106,14 @@
   .clear-btn { background: transparent; border: 1px solid #c5d4c0; border-radius: 6px; color: var(--cream-dim); cursor: pointer; font-family: 'Barlow', sans-serif; font-size: 13px; padding: 13px 20px; transition: all 0.2s; }
   .clear-btn:hover { border-color: var(--red); color: var(--red); }
   .danger-btn { background: var(--red); border: none; border-radius: 6px; color: white; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; letter-spacing: 1px; padding: 13px; text-transform: uppercase; flex: 1; }
-
   .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .detail-field .dl { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 3px; }
   .detail-field .dv { font-size: 14px; font-weight: 400; color: var(--text-primary); }
-
   .empty { text-align: center; padding: 48px 20px; color: var(--text-secondary); }
   .empty-icon { font-size: 40px; margin-bottom: 10px; }
   .empty-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 4px; color: var(--text-primary); }
-
   .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; padding: 14px 24px; border-radius: 8px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
   .toast.show { transform: translateX(-50%) translateY(0); }
-
   .intake-detail-section { background: #f7f9f6; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
   .intake-detail-section h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 8px; }
   .intake-job-tag { display: inline-block; background: rgba(74,124,63,0.1); border: 0.5px solid var(--green); border-radius: 12px; padding: 3px 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; color: var(--green-leaf); margin: 2px; }
@@ -137,27 +122,22 @@
 </style>
 </head>
 <body>
-
 <div class="main-header">
   <img src="logo.png" alt="GG Logo" style="height:44px;width:auto;object-fit:contain">
   <span class="app-name">Customers &amp; Leads</span>
 </div>
-
 <div class="tab-bar">
   <button class="tab-btn active">👥 CRM</button>
   <a href="groundwork-dashboard.html" class="tab-btn">📊 Dashboard</a>
   <a href="groundwork-expenses.html" class="tab-btn">💸 Expenses</a>
   <a href="groundwork-gardens-tools.html" class="tab-btn">🧮 Tools</a>
 </div>
-
 <div class="sync-bar" id="syncBar"><div class="sync-dot"></div><span id="syncMsg">Connecting to cloud...</span></div>
-
 <div class="stats-bar">
   <div class="stat"><div class="stat-num c" id="stat-c">0</div><div class="stat-label">Customers</div></div>
   <div class="stat"><div class="stat-num l" id="stat-l">0</div><div class="stat-label">Leads</div></div>
   <div class="stat"><div class="stat-num f" id="stat-f">0</div><div class="stat-label">Follow-ups</div></div>
 </div>
-
 <div class="toolbar">
   <div class="search-wrap"><input type="text" id="search" placeholder="Search name, phone, suburb..." oninput="render()"></div>
   <div class="filter-tabs">
@@ -170,7 +150,6 @@
   <button class="new-job-fab" onclick="openJobIntake()">📋 New Job</button>
   <button class="add-fab" onclick="openAdd()">+ Contact</button>
 </div>
-
 <div class="list" id="list"><div class="empty"><div class="empty-icon">🌿</div><div class="empty-title">Loading...</div></div></div>
 
 <!-- ADD/EDIT CONTACT MODAL -->
@@ -195,7 +174,6 @@
 <div class="overlay" id="jobIntakeOverlay">
   <div class="modal">
     <div class="modal-title"><span id="jobIntakeTitle">📋 New Job Intake</span><button class="modal-close" onclick="closeJobIntake()">✕</button></div>
-
     <div class="section-heading">Client Details</div>
     <div class="field"><label>Client Name *</label><input id="ji-name" type="text" placeholder="e.g. John Smith"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -238,15 +216,12 @@
         </select>
       </div>
     </div>
-
     <div class="section-heading">Job Types</div>
     <div class="job-types-grid" id="jobTypesGrid"></div>
-
     <div class="section-heading">Measurements</div>
     <div class="measurements-section" id="measurementsSection">
       <div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:10px">Select job types above to add measurements</div>
     </div>
-
     <div class="section-heading">Site Notes</div>
     <div class="field"><label>Access</label>
       <select id="ji-access">
@@ -270,7 +245,6 @@
         <option value="Other">Other</option>
       </select>
     </div>
-
     <div class="section-heading">Photos & Drawings</div>
     <div class="photo-upload" onclick="document.getElementById('ji-photos').click()">
       <input type="file" id="ji-photos" accept="image/*" multiple onchange="handlePhotos(this)">
@@ -279,7 +253,6 @@
       <div style="font-size:11px;color:var(--text-secondary);margin-top:4px">Site photos, hand sketches, client inspiration</div>
     </div>
     <div class="photo-grid" id="photoGrid"></div>
-
     <div class="modal-actions">
       <button class="clear-btn" onclick="closeJobIntake()">Cancel</button>
       <button class="gen-btn" id="saveJobBtn" onclick="saveJobIntake()">💾 Save Job</button>
@@ -348,9 +321,51 @@ function render() {
       <div class="card-footer">
         ${c.phone?`<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="btn-sm">📞 Call</a>`:''}
         ${c.phone?`<a href="sms:${c.phone}" onclick="event.stopPropagation()" class="btn-sm">💬 Text</a>`:''}
-        ${isJob?`<button class="btn-sm" style="color:var(--orange);border-color:var(--orange)" onclick="event.stopPropagation();openJobIntakeEdit('${c.id}')">✏ Edit Job</button>`:`<button class="btn-sm" onclick="event.stopPropagation();openEdit('${c.id}')">Edit</button>`}
+        ${isJob?`<button class="btn-sm build-quote" onclick="event.stopPropagation();buildQuoteFromJob('${c.id}')">🔨 Build Quote</button>`:''}
+        ${isJob?`<button class="btn-sm" style="color:var(--orange);border-color:var(--orange)" onclick="event.stopPropagation();openJobIntakeEdit('${c.id}')">✏ Edit</button>`:`<button class="btn-sm" onclick="event.stopPropagation();openEdit('${c.id}')">Edit</button>`}
       </div></div>`;
   }).join('');
+}
+
+// ==================== BUILD QUOTE FROM JOB ====================
+async function buildQuoteFromJob(id) {
+  const c = contacts.find(x=>x.id===id);
+  if(!c) return;
+  let intake = null;
+  try { intake = typeof c.intake_data==='string' ? JSON.parse(c.intake_data) : c.intake_data; } catch(e){}
+
+  showToast('⏳ Sending to Quote Builder...');
+
+  const pendingData = {
+    clientName: c.name || '',
+    clientAddress: c.suburb || '',
+    phone: c.phone || '',
+    email: c.email || '',
+    jobTitle: intake && intake.jobTypes && intake.jobTypes.length
+      ? intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return jt?jt.label.replace(/^\S+\s/,''):id;}).join(', ')
+      : (c.job || 'Landscaping Works'),
+    notes: intake ? intake.notes || '' : c.notes || '',
+    jobTypes: intake ? intake.jobTypes || [] : [],
+    measurements: intake ? intake.measurements || {} : {},
+    budget: intake ? intake.budget || '' : '',
+    source: intake ? intake.source || '' : '',
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    await fetch(SB_URL + '/rest/v1/gg_pending_quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'return=representation' },
+      body: JSON.stringify({ data: JSON.stringify(pendingData) })
+    });
+    showToast('✓ Opening Quote Builder...');
+    setTimeout(function() {
+      window.location.href = 'groundwork-gardens-tools.html?fromjob=1';
+    }, 800);
+  } catch(e) {
+    showToast('⚠ Could not connect — try again');
+    console.error(e);
+  }
 }
 
 // ==================== CONTACT MODAL ====================
@@ -369,26 +384,16 @@ async function saveContact(){
 
 // ==================== JOB INTAKE ====================
 const JOB_TYPES = [
-  { id: 'paving', label: '🟫 Paving' },
-  { id: 'concrete', label: '🪨 Concrete Slab' },
-  { id: 'turf', label: '🟩 Turf / Lawn' },
-  { id: 'garden', label: '🌿 Garden Beds' },
-  { id: 'retaining', label: '🧱 Retaining Wall' },
-  { id: 'fencing', label: '🪵 Fencing' },
-  { id: 'drainage', label: '🌊 Drainage' },
-  { id: 'irrigation', label: '💧 Irrigation' },
-  { id: 'decking', label: '🪵 Decking' },
-  { id: 'pathway', label: '🛤️ Pathways' },
-  { id: 'excavation', label: '🚜 Excavation' },
-  { id: 'artificial', label: '🎯 Artificial Grass' },
-  { id: 'steps', label: '🪜 Steps' },
-  { id: 'pergola', label: '🏠 Pergola' },
-  { id: 'planting', label: '🌱 Planting' },
-  { id: 'lighting', label: '💡 Lighting' },
-  { id: 'bin', label: '🗑️ Bin / Waste' },
-  { id: 'bricklaying', label: '🧱 Bricklaying' },
-  { id: 'maintenance', label: '🌿 Maintenance' },
-  { id: 'other', label: '⚙️ Other' }
+  { id: 'paving', label: '🟫 Paving' },{ id: 'concrete', label: '🪨 Concrete Slab' },
+  { id: 'turf', label: '🟩 Turf / Lawn' },{ id: 'garden', label: '🌿 Garden Beds' },
+  { id: 'retaining', label: '🧱 Retaining Wall' },{ id: 'fencing', label: '🪵 Fencing' },
+  { id: 'drainage', label: '🌊 Drainage' },{ id: 'irrigation', label: '💧 Irrigation' },
+  { id: 'decking', label: '🪵 Decking' },{ id: 'pathway', label: '🛤️ Pathways' },
+  { id: 'excavation', label: '🚜 Excavation' },{ id: 'artificial', label: '🎯 Artificial Grass' },
+  { id: 'steps', label: '🪜 Steps' },{ id: 'pergola', label: '🏠 Pergola' },
+  { id: 'planting', label: '🌱 Planting' },{ id: 'lighting', label: '💡 Lighting' },
+  { id: 'bin', label: '🗑️ Bin / Waste' },{ id: 'bricklaying', label: '🧱 Bricklaying' },
+  { id: 'maintenance', label: '🌿 Maintenance' },{ id: 'other', label: '⚙️ Other' }
 ];
 
 const STATUS_LABELS = {'lead':'New Lead','followup':'Follow-up Needed','quote-requested':'Quote Requested','quote-sent':'Quote Sent','approved':'Job Approved'};
@@ -416,247 +421,118 @@ const MEASURE_FIELDS = {
   other: [{id:'desc',label:'Description'},{id:'l',label:'Dimension 1'},{id:'w',label:'Dimension 2'}]
 };
 
-// measurements stored as: { paving: [{l:'10',w:'4',area:'40'}, {l:'6',w:'3',area:'18'}], ... }
-let selectedJobTypes = [];
-let jobMeasurements = {}; // { jobTypeId: [ {field: value, ...}, ... ] }
-let jobPhotos = [];
-let editJobId = null;
+let selectedJobTypes=[], jobMeasurements={}, jobPhotos=[], editJobId=null;
 
 function renderJobTypesGrid() {
-  const grid = document.getElementById('jobTypesGrid');
-  grid.innerHTML = JOB_TYPES.map(jt => `
-    <div class="job-type-item ${selectedJobTypes.includes(jt.id)?'selected':''}" onclick="toggleJobType('${jt.id}')">
+  document.getElementById('jobTypesGrid').innerHTML = JOB_TYPES.map(jt =>
+    `<div class="job-type-item ${selectedJobTypes.includes(jt.id)?'selected':''}" onclick="toggleJobType('${jt.id}')">
       <div class="job-type-cb">${selectedJobTypes.includes(jt.id)?'✓':''}</div>
       <div class="job-type-label">${jt.label}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function toggleJobType(id) {
-  if(selectedJobTypes.includes(id)) {
-    selectedJobTypes = selectedJobTypes.filter(j=>j!==id);
-    delete jobMeasurements[id];
-  } else {
-    selectedJobTypes.push(id);
-    if(!jobMeasurements[id]) jobMeasurements[id] = [{}];
-  }
-  renderJobTypesGrid();
-  renderMeasurements();
+  if(selectedJobTypes.includes(id)){selectedJobTypes=selectedJobTypes.filter(j=>j!==id);delete jobMeasurements[id];}
+  else{selectedJobTypes.push(id);if(!jobMeasurements[id])jobMeasurements[id]=[{}];}
+  renderJobTypesGrid();renderMeasurements();
 }
 
-function addMeasurementEntry(jobTypeId) {
-  if(!jobMeasurements[jobTypeId]) jobMeasurements[jobTypeId] = [];
-  jobMeasurements[jobTypeId].push({});
-  renderMeasurements();
-}
+function addMeasurementEntry(jobTypeId){if(!jobMeasurements[jobTypeId])jobMeasurements[jobTypeId]=[];jobMeasurements[jobTypeId].push({});renderMeasurements();}
+function removeMeasurementEntry(jobTypeId,ei){if(jobMeasurements[jobTypeId]&&jobMeasurements[jobTypeId].length>1)jobMeasurements[jobTypeId].splice(ei,1);renderMeasurements();}
 
-function removeMeasurementEntry(jobTypeId, entryIndex) {
-  if(jobMeasurements[jobTypeId] && jobMeasurements[jobTypeId].length > 1) {
-    jobMeasurements[jobTypeId].splice(entryIndex, 1);
-  }
-  renderMeasurements();
-}
-
-function saveMeasurementValues() {
-  // Save current input values back to jobMeasurements before re-rendering
-  selectedJobTypes.forEach(jid => {
-    const fields = MEASURE_FIELDS[jid] || [];
-    const entries = jobMeasurements[jid] || [];
-    entries.forEach((entry, ei) => {
-      fields.forEach(f => {
-        const el = document.getElementById(`m-${jid}-${ei}-${f.id}`);
-        if(el) entry[f.id] = el.value;
-      });
-    });
+function saveMeasurementValues(){
+  selectedJobTypes.forEach(jid=>{
+    const fields=MEASURE_FIELDS[jid]||[];
+    const entries=jobMeasurements[jid]||[];
+    entries.forEach((entry,ei)=>{fields.forEach(f=>{const el=document.getElementById(`m-${jid}-${ei}-${f.id}`);if(el)entry[f.id]=el.value;});});
   });
 }
 
-function renderMeasurements() {
-  const section = document.getElementById('measurementsSection');
-  if(!selectedJobTypes.length) {
-    section.innerHTML = '<div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:10px">Select job types above to add measurements</div>';
-    return;
-  }
-  section.innerHTML = selectedJobTypes.map(id => {
-    const jt = JOB_TYPES.find(j=>j.id===id);
-    const fields = MEASURE_FIELDS[id] || [];
-    const entries = jobMeasurements[id] || [{}];
-    const entriesHTML = entries.map((entry, ei) => `
+function renderMeasurements(){
+  const section=document.getElementById('measurementsSection');
+  if(!selectedJobTypes.length){section.innerHTML='<div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:10px">Select job types above to add measurements</div>';return;}
+  section.innerHTML=selectedJobTypes.map(id=>{
+    const jt=JOB_TYPES.find(j=>j.id===id);
+    const fields=MEASURE_FIELDS[id]||[];
+    const entries=jobMeasurements[id]||[{}];
+    const entriesHTML=entries.map((entry,ei)=>`
       <div class="measure-entry">
         <div class="measure-entry-header">
-          <div class="measure-entry-label">${entries.length > 1 ? 'Area ' + (ei+1) : 'Measurements'}</div>
-          ${entries.length > 1 ? `<button class="measure-entry-remove" onclick="saveMeasurementValues();removeMeasurementEntry('${id}',${ei})">✕ Remove</button>` : ''}
+          <div class="measure-entry-label">${entries.length>1?'Area '+(ei+1):'Measurements'}</div>
+          ${entries.length>1?`<button class="measure-entry-remove" onclick="saveMeasurementValues();removeMeasurementEntry('${id}',${ei})">✕ Remove</button>`:''}
         </div>
         <div class="measure-grid">
           ${fields.map(f=>`<div class="measure-field"><label>${f.label}</label><input type="text" id="m-${id}-${ei}-${f.id}" value="${entry[f.id]||''}" placeholder="—"></div>`).join('')}
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
     return `<div class="measure-card">
-      <div class="measure-card-header">
-        <div class="measure-card-title">${jt?jt.label:id}</div>
-      </div>
+      <div class="measure-card-header"><div class="measure-card-title">${jt?jt.label:id}</div></div>
       ${entriesHTML}
       <button class="add-entry-btn" onclick="saveMeasurementValues();addMeasurementEntry('${id}')">+ Add another ${jt?jt.label.replace(/^\S+\s/,''):id}</button>
     </div>`;
   }).join('');
 }
 
-function getMeasurements() {
-  saveMeasurementValues();
-  return jobMeasurements;
-}
+function getMeasurements(){saveMeasurementValues();return jobMeasurements;}
 
-function handlePhotos(input) {
-  const files = Array.from(input.files);
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = function(e) { jobPhotos.push(e.target.result); renderPhotoGrid(); };
-    reader.readAsDataURL(file);
-  });
-  input.value = '';
-}
+function handlePhotos(input){Array.from(input.files).forEach(file=>{const r=new FileReader();r.onload=e=>{jobPhotos.push(e.target.result);renderPhotoGrid();};r.readAsDataURL(file);});input.value='';}
+function renderPhotoGrid(){document.getElementById('photoGrid').innerHTML=jobPhotos.map((p,i)=>`<div class="photo-thumb"><img src="${p}" alt="Job photo"><button class="remove-photo" onclick="removePhoto(${i})">×</button></div>`).join('');}
+function removePhoto(i){jobPhotos.splice(i,1);renderPhotoGrid();}
 
-function renderPhotoGrid() {
-  const grid = document.getElementById('photoGrid');
-  grid.innerHTML = jobPhotos.map((photo,i) => `
-    <div class="photo-thumb">
-      <img src="${photo}" alt="Job photo">
-      <button class="remove-photo" onclick="removePhoto(${i})">×</button>
-    </div>
-  `).join('');
-}
-
-function removePhoto(i) { jobPhotos.splice(i,1); renderPhotoGrid(); }
-
-function openJobIntake() {
-  editJobId = null;
-  document.getElementById('jobIntakeTitle').textContent = '📋 New Job Intake';
+function openJobIntake(){
+  editJobId=null;document.getElementById('jobIntakeTitle').textContent='📋 New Job Intake';
   ['ji-name','ji-phone','ji-email','ji-address','ji-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('ji-status').value='lead';
-  document.getElementById('ji-budget').value='';
-  document.getElementById('ji-timeline').value='';
-  document.getElementById('ji-access').value='';
-  document.getElementById('ji-source').value='';
-  document.getElementById('ji-followup').value='';
-  selectedJobTypes = [];
-  jobMeasurements = {};
-  jobPhotos = [];
-  renderJobTypesGrid();
-  renderMeasurements();
-  renderPhotoGrid();
+  document.getElementById('ji-status').value='lead';document.getElementById('ji-budget').value='';document.getElementById('ji-timeline').value='';document.getElementById('ji-access').value='';document.getElementById('ji-source').value='';document.getElementById('ji-followup').value='';
+  selectedJobTypes=[];jobMeasurements={};jobPhotos=[];
+  renderJobTypesGrid();renderMeasurements();renderPhotoGrid();
   document.getElementById('jobIntakeOverlay').classList.add('show');
 }
 
-function openJobIntakeEdit(id) {
-  const c = contacts.find(x=>x.id===id);
-  if(!c) return;
-  let intake = null;
-  try { intake = typeof c.intake_data==='string' ? JSON.parse(c.intake_data) : c.intake_data; } catch(e){}
-  if(!intake) return;
-  editJobId = id;
-  document.getElementById('jobIntakeTitle').textContent = '✏️ Edit Job Intake';
-  document.getElementById('ji-name').value = c.name||'';
-  document.getElementById('ji-phone').value = c.phone||'';
-  document.getElementById('ji-email').value = c.email||'';
-  document.getElementById('ji-address').value = c.suburb||'';
-  document.getElementById('ji-notes').value = intake.notes||'';
-  document.getElementById('ji-status').value = intake.status||'lead';
-  document.getElementById('ji-budget').value = intake.budget||'';
-  document.getElementById('ji-timeline').value = intake.timeline||'';
-  document.getElementById('ji-access').value = intake.access||'';
-  document.getElementById('ji-source').value = intake.source||'';
-  document.getElementById('ji-followup').value = intake.followup||'';
-  selectedJobTypes = intake.jobTypes||[];
-  jobMeasurements = intake.measurements||{};
-  // Ensure each selected job type has at least one entry
-  selectedJobTypes.forEach(jid => { if(!jobMeasurements[jid]) jobMeasurements[jid] = [{}]; });
-  jobPhotos = intake.photos||[];
-  renderJobTypesGrid();
-  renderMeasurements();
-  renderPhotoGrid();
+function openJobIntakeEdit(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  let intake=null;try{intake=typeof c.intake_data==='string'?JSON.parse(c.intake_data):c.intake_data;}catch(e){}
+  if(!intake)return;
+  editJobId=id;document.getElementById('jobIntakeTitle').textContent='✏️ Edit Job Intake';
+  document.getElementById('ji-name').value=c.name||'';document.getElementById('ji-phone').value=c.phone||'';document.getElementById('ji-email').value=c.email||'';document.getElementById('ji-address').value=c.suburb||'';document.getElementById('ji-notes').value=intake.notes||'';
+  document.getElementById('ji-status').value=intake.status||'lead';document.getElementById('ji-budget').value=intake.budget||'';document.getElementById('ji-timeline').value=intake.timeline||'';document.getElementById('ji-access').value=intake.access||'';document.getElementById('ji-source').value=intake.source||'';document.getElementById('ji-followup').value=intake.followup||'';
+  selectedJobTypes=intake.jobTypes||[];jobMeasurements=intake.measurements||{};
+  selectedJobTypes.forEach(jid=>{if(!jobMeasurements[jid])jobMeasurements[jid]=[{}];});
+  jobPhotos=intake.photos||[];
+  renderJobTypesGrid();renderMeasurements();renderPhotoGrid();
   document.getElementById('jobIntakeOverlay').classList.add('show');
 }
 
-function closeJobIntake() { document.getElementById('jobIntakeOverlay').classList.remove('show'); }
+function closeJobIntake(){document.getElementById('jobIntakeOverlay').classList.remove('show');}
 
-async function saveJobIntake() {
-  const name = document.getElementById('ji-name').value.trim();
-  if(!name){ alert('Client name is required'); return; }
-  const btn = document.getElementById('saveJobBtn');
-  btn.textContent='Saving...'; btn.disabled=true;
-
-  const intake = {
-    status: document.getElementById('ji-status').value,
-    budget: document.getElementById('ji-budget').value,
-    timeline: document.getElementById('ji-timeline').value,
-    access: document.getElementById('ji-access').value,
-    source: document.getElementById('ji-source').value,
-    followup: document.getElementById('ji-followup').value,
-    notes: document.getElementById('ji-notes').value.trim(),
-    jobTypes: selectedJobTypes,
-    measurements: getMeasurements(),
-    photos: jobPhotos,
-    createdAt: new Date().toISOString()
-  };
-
-  const data = {
-    name,
-    type: 'lead',
-    phone: document.getElementById('ji-phone').value.trim(),
-    email: document.getElementById('ji-email').value.trim(),
-    suburb: document.getElementById('ji-address').value.trim(),
-    job: selectedJobTypes.map(id=>{ const jt=JOB_TYPES.find(j=>j.id===id); return jt?jt.label.replace(/^\S+\s/,''):id; }).join(', '),
-    notes: intake.notes,
-    intake_data: JSON.stringify(intake)
-  };
-
-  try {
-    if(editJobId) {
-      await db(`customers?id=eq.${editJobId}`,'PATCH',data);
-      showToast('✓ Job updated!');
-    } else {
-      await db('customers','POST',data);
-      showToast('✓ Job saved!');
-    }
-    closeJobIntake();
-    await loadContacts();
-  } catch(e) { alert('Save failed: '+e.message); }
-
-  btn.textContent='💾 Save Job'; btn.disabled=false;
+async function saveJobIntake(){
+  const name=document.getElementById('ji-name').value.trim();if(!name){alert('Client name is required');return;}
+  const btn=document.getElementById('saveJobBtn');btn.textContent='Saving...';btn.disabled=true;
+  const intake={status:document.getElementById('ji-status').value,budget:document.getElementById('ji-budget').value,timeline:document.getElementById('ji-timeline').value,access:document.getElementById('ji-access').value,source:document.getElementById('ji-source').value,followup:document.getElementById('ji-followup').value,notes:document.getElementById('ji-notes').value.trim(),jobTypes:selectedJobTypes,measurements:getMeasurements(),photos:jobPhotos,createdAt:new Date().toISOString()};
+  const data={name,type:'lead',phone:document.getElementById('ji-phone').value.trim(),email:document.getElementById('ji-email').value.trim(),suburb:document.getElementById('ji-address').value.trim(),job:selectedJobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return jt?jt.label.replace(/^\S+\s/,''):id;}).join(', '),notes:intake.notes,intake_data:JSON.stringify(intake)};
+  try{if(editJobId){await db(`customers?id=eq.${editJobId}`,'PATCH',data);showToast('✓ Job updated!');}else{await db('customers','POST',data);showToast('✓ Job saved!');}closeJobIntake();await loadContacts();}
+  catch(e){alert('Save failed: '+e.message);}
+  btn.textContent='💾 Save Job';btn.disabled=false;
 }
 
 // ==================== DETAIL VIEW ====================
-function openDetail(id) {
-  const c = contacts.find(x=>x.id===id);
-  if(!c) return;
-
-  let intake = null;
-  if(c.intake_data) { try { intake = typeof c.intake_data==='string' ? JSON.parse(c.intake_data) : c.intake_data; } catch(e){} }
-
+function openDetail(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  let intake=null;if(c.intake_data){try{intake=typeof c.intake_data==='string'?JSON.parse(c.intake_data):c.intake_data;}catch(e){}}
   const bc=intake?'badge-job':c.type==='customer'?'badge-customer':c.type==='followup'?'badge-followup':'badge-lead';
   const bl=intake?'Job Intake':c.type==='customer'?'Customer':c.type==='followup'?'Follow-up':'Lead';
-
-  let intakeHTML = '';
-  if(intake) {
-    let measureHTML = '';
-    if(intake.measurements && Object.keys(intake.measurements).length) {
-      measureHTML = Object.keys(intake.measurements).map(jid => {
-        const jt = JOB_TYPES.find(j=>j.id===jid);
-        const entries = intake.measurements[jid];
-        const fields = MEASURE_FIELDS[jid]||[];
-        if(!entries || !entries.length) return '';
-        const entriesHTML = entries.map((entry, ei) => {
-          const vals = fields.filter(f=>entry[f.id]).map(f=>`${f.label}: <span>${entry[f.id]}</span>`).join(' · ');
-          return vals ? `<div class="intake-measure" style="margin-bottom:4px">${entries.length>1?`<strong>Area ${ei+1}:</strong> `:''}${vals}</div>` : '';
-        }).filter(Boolean).join('');
-        return entriesHTML ? `<div style="margin-bottom:8px"><strong style="font-size:13px">${jt?jt.label:jid}</strong><br>${entriesHTML}</div>` : '';
+  let intakeHTML='';
+  if(intake){
+    let measureHTML='';
+    if(intake.measurements&&Object.keys(intake.measurements).length){
+      measureHTML=Object.keys(intake.measurements).map(jid=>{
+        const jt=JOB_TYPES.find(j=>j.id===jid);const entries=intake.measurements[jid];const fields=MEASURE_FIELDS[jid]||[];
+        if(!entries||!entries.length)return'';
+        const entriesHTML=entries.map((entry,ei)=>{const vals=fields.filter(f=>entry[f.id]).map(f=>`${f.label}: <span>${entry[f.id]}</span>`).join(' · ');return vals?`<div class="intake-measure" style="margin-bottom:4px">${entries.length>1?`<strong>Area ${ei+1}:</strong> `:''}${vals}</div>`:''}).filter(Boolean).join('');
+        return entriesHTML?`<div style="margin-bottom:8px"><strong style="font-size:13px">${jt?jt.label:jid}</strong><br>${entriesHTML}</div>`:'';
       }).filter(Boolean).join('');
     }
-
-    intakeHTML = `
-      <div class="intake-detail-section">
-        <h4>Job Details</h4>
+    intakeHTML=`
+      <div class="intake-detail-section"><h4>Job Details</h4>
         ${intake.status?`<div class="intake-measure">Status: <span>${STATUS_LABELS[intake.status]||intake.status}</span></div>`:''}
         ${intake.budget?`<div class="intake-measure">Budget: <span>${intake.budget}</span></div>`:''}
         ${intake.timeline?`<div class="intake-measure">Timeline: <span>${intake.timeline}</span></div>`:''}
@@ -664,21 +540,11 @@ function openDetail(id) {
         ${intake.source?`<div class="intake-measure">Source: <span>${intake.source}</span></div>`:''}
         ${intake.followup?`<div class="intake-measure">Follow-up: <span>${intake.followup}</span></div>`:''}
       </div>
-      ${intake.jobTypes&&intake.jobTypes.length?`
-      <div class="intake-detail-section">
-        <h4>Job Types</h4>
-        <div>${intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return `<span class="intake-job-tag">${jt?jt.label:id}</span>`;}).join('')}</div>
-      </div>`:''}
+      ${intake.jobTypes&&intake.jobTypes.length?`<div class="intake-detail-section"><h4>Job Types</h4><div>${intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return`<span class="intake-job-tag">${jt?jt.label:id}</span>`;}).join('')}</div></div>`:''}
       ${measureHTML?`<div class="intake-detail-section"><h4>Measurements</h4>${measureHTML}</div>`:''}
       ${intake.notes?`<div class="intake-detail-section"><h4>Site Notes</h4><div style="font-size:13px;line-height:1.6">${intake.notes}</div></div>`:''}
-      ${intake.photos&&intake.photos.length?`
-      <div class="intake-detail-section">
-        <h4>Photos & Drawings (${intake.photos.length})</h4>
-        <div class="photo-grid">${intake.photos.map(p=>`<div class="photo-thumb"><img src="${p}" alt="Job photo" onclick="viewPhoto('${p}')" style="cursor:pointer"></div>`).join('')}</div>
-      </div>`:''}
-    `;
+      ${intake.photos&&intake.photos.length?`<div class="intake-detail-section"><h4>Photos & Drawings (${intake.photos.length})</h4><div class="photo-grid">${intake.photos.map(p=>`<div class="photo-thumb"><img src="${p}" alt="Job photo" onclick="viewPhoto('${p}')" style="cursor:pointer"></div>`).join('')}</div></div>`:''}`;
   }
-
   document.getElementById('detailContent').innerHTML=`
     <div class="modal-title"><span>${c.name}</span><button class="modal-close" onclick="document.getElementById('detailOverlay').classList.remove('show')">✕</button></div>
     <span class="badge ${bc}" style="margin-bottom:16px;display:inline-block">${bl}</span>
@@ -692,6 +558,7 @@ function openDetail(id) {
     <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
       ${c.phone?`<a href="tel:${c.phone}" class="gen-btn" style="text-align:center;text-decoration:none">📞 Call</a>`:''}
       ${c.phone?`<a href="sms:${c.phone}" class="gen-btn" style="text-align:center;text-decoration:none;background:var(--orange);border-color:var(--orange)">💬 Text</a>`:''}
+      ${intake?`<button class="gen-btn" style="background:var(--green-leaf)" onclick="document.getElementById('detailOverlay').classList.remove('show');buildQuoteFromJob('${c.id}')">🔨 Build Quote</button>`:''}
     </div>
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="clear-btn" style="flex:1" onclick="document.getElementById('detailOverlay').classList.remove('show');${intake?`openJobIntakeEdit('${c.id}')`:` openEdit('${c.id}')`}">✏ Edit</button>
@@ -700,13 +567,7 @@ function openDetail(id) {
   document.getElementById('detailOverlay').classList.add('show');
 }
 
-function viewPhoto(src) {
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer';
-  overlay.innerHTML = `<img src="${src}" style="max-width:95%;max-height:95%;border-radius:8px;object-fit:contain">`;
-  overlay.onclick = ()=>overlay.remove();
-  document.body.appendChild(overlay);
-}
+function viewPhoto(src){const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer';o.innerHTML=`<img src="${src}" style="max-width:95%;max-height:95%;border-radius:8px;object-fit:contain">`;o.onclick=()=>o.remove();document.body.appendChild(o);}
 
 async function deleteContact(id){
   if(!confirm('Delete this contact?'))return;
