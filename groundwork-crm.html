@@ -80,7 +80,6 @@
 
   .section-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--green); margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1px solid #c5d4c0; }
 
-  /* Job type checklist */
   .job-types-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
   .job-type-item { display: flex; align-items: center; gap: 8px; background: #f7f9f6; border: 0.5px solid #c5d4c0; border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: all 0.15s; }
   .job-type-item.selected { background: rgba(74,124,63,0.1); border-color: var(--green); }
@@ -88,16 +87,21 @@
   .job-type-item.selected .job-type-cb { background: var(--green-leaf); border-color: var(--green-leaf); color: white; }
   .job-type-label { font-size: 13px; color: var(--text-primary); }
 
-  /* Measurements per job type */
   .measurements-section { margin-bottom: 12px; }
   .measure-card { background: #f7f9f6; border: 0.5px solid #c5d4c0; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-  .measure-card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+  .measure-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .measure-card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .measure-entry { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; padding: 10px; margin-bottom: 8px; position: relative; }
+  .measure-entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .measure-entry-label { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
+  .measure-entry-remove { background: none; border: none; color: var(--red); cursor: pointer; font-size: 16px; padding: 0 4px; }
   .measure-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
   .measure-field { display: flex; flex-direction: column; gap: 4px; }
   .measure-field label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
   .measure-field input { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; color: var(--text-primary); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; padding: 7px 9px; }
+  .add-entry-btn { background: transparent; border: 1px dashed #c5d4c0; border-radius: 6px; color: var(--green); cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 7px; text-transform: uppercase; width: 100%; margin-top: 4px; transition: all 0.2s; }
+  .add-entry-btn:hover { border-color: var(--green); background: rgba(74,124,63,0.05); }
 
-  /* Photos */
   .photo-upload { border: 1.5px dashed #c5d4c0; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; }
   .photo-upload:hover { border-color: var(--green); background: rgba(74,124,63,0.04); }
   .photo-upload input { display: none; }
@@ -337,9 +341,9 @@ function render() {
       <div class="card-top"><div class="card-name">${c.name}</div><span class="badge ${bc}">${bl}</span></div>
       ${c.phone?`<div class="card-detail">📞 ${c.phone}</div>`:''}
       ${c.suburb?`<div class="card-detail">📍 ${c.suburb}</div>`:''}
-      ${intake&&intake.jobTypes&&intake.jobTypes.length?`<div class="card-detail">🔨 ${intake.jobTypes.join(', ')}</div>`:(c.job?`<div class="card-detail">🌿 ${c.job}</div>`:'')}
+      ${intake&&intake.jobTypes&&intake.jobTypes.length?`<div class="card-detail">🔨 ${intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return jt?jt.label.replace(/^\S+\s/,''):id;}).join(', ')}</div>`:(c.job?`<div class="card-detail">🌿 ${c.job}</div>`:'')}
       ${intake&&intake.budget?`<div class="card-detail">💰 ${intake.budget}</div>`:''}
-      ${intake&&intake.status?`<div class="card-detail">📌 ${intake.status}</div>`:''}
+      ${intake&&intake.status?`<div class="card-detail">📌 ${STATUS_LABELS[intake.status]||intake.status}</div>`:''}
       ${c.notes&&!isJob?`<div class="card-note">💬 ${c.notes.substring(0,90)}${c.notes.length>90?'...':''}</div>`:''}
       <div class="card-footer">
         ${c.phone?`<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="btn-sm">📞 Call</a>`:''}
@@ -387,12 +391,14 @@ const JOB_TYPES = [
   { id: 'other', label: '⚙️ Other' }
 ];
 
+const STATUS_LABELS = {'lead':'New Lead','followup':'Follow-up Needed','quote-requested':'Quote Requested','quote-sent':'Quote Sent','approved':'Job Approved'};
+
 const MEASURE_FIELDS = {
   paving: [{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'area',label:'Area (m²)'}],
   concrete: [{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'depth',label:'Depth (mm)'}],
   turf: [{id:'area',label:'Area (m²)'},{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'}],
   garden: [{id:'area',label:'Area (m²)'},{id:'depth',label:'Soil Depth (mm)'},{id:'edging',label:'Edging (lm)'}],
-  retaining: [{id:'length',label:'Length (lm)'},{id:'height',label:'Height (m)'},{id:'notes',label:'Type (timber/conc)'}],
+  retaining: [{id:'length',label:'Length (lm)'},{id:'height',label:'Height (m)'},{id:'type',label:'Type'}],
   fencing: [{id:'length',label:'Length (lm)'},{id:'height',label:'Height (m)'},{id:'type',label:'Type'}],
   drainage: [{id:'ag',label:'Ag Pipe (lm)'},{id:'channel',label:'Channel (lm)'},{id:'pits',label:'Pits'}],
   irrigation: [{id:'zones',label:'Zones'},{id:'pipe',label:'Pipe Run (lm)'},{id:'type',label:'Type'}],
@@ -410,7 +416,9 @@ const MEASURE_FIELDS = {
   other: [{id:'desc',label:'Description'},{id:'l',label:'Dimension 1'},{id:'w',label:'Dimension 2'}]
 };
 
+// measurements stored as: { paving: [{l:'10',w:'4',area:'40'}, {l:'6',w:'3',area:'18'}], ... }
 let selectedJobTypes = [];
+let jobMeasurements = {}; // { jobTypeId: [ {field: value, ...}, ... ] }
 let jobPhotos = [];
 let editJobId = null;
 
@@ -427,11 +435,40 @@ function renderJobTypesGrid() {
 function toggleJobType(id) {
   if(selectedJobTypes.includes(id)) {
     selectedJobTypes = selectedJobTypes.filter(j=>j!==id);
+    delete jobMeasurements[id];
   } else {
     selectedJobTypes.push(id);
+    if(!jobMeasurements[id]) jobMeasurements[id] = [{}];
   }
   renderJobTypesGrid();
   renderMeasurements();
+}
+
+function addMeasurementEntry(jobTypeId) {
+  if(!jobMeasurements[jobTypeId]) jobMeasurements[jobTypeId] = [];
+  jobMeasurements[jobTypeId].push({});
+  renderMeasurements();
+}
+
+function removeMeasurementEntry(jobTypeId, entryIndex) {
+  if(jobMeasurements[jobTypeId] && jobMeasurements[jobTypeId].length > 1) {
+    jobMeasurements[jobTypeId].splice(entryIndex, 1);
+  }
+  renderMeasurements();
+}
+
+function saveMeasurementValues() {
+  // Save current input values back to jobMeasurements before re-rendering
+  selectedJobTypes.forEach(jid => {
+    const fields = MEASURE_FIELDS[jid] || [];
+    const entries = jobMeasurements[jid] || [];
+    entries.forEach((entry, ei) => {
+      fields.forEach(f => {
+        const el = document.getElementById(`m-${jid}-${ei}-${f.id}`);
+        if(el) entry[f.id] = el.value;
+      });
+    });
+  });
 }
 
 function renderMeasurements() {
@@ -443,23 +480,38 @@ function renderMeasurements() {
   section.innerHTML = selectedJobTypes.map(id => {
     const jt = JOB_TYPES.find(j=>j.id===id);
     const fields = MEASURE_FIELDS[id] || [];
-    return `<div class="measure-card">
-      <div class="measure-card-title">${jt?jt.label:id}</div>
-      <div class="measure-grid">
-        ${fields.map(f=>`<div class="measure-field"><label>${f.label}</label><input type="text" id="m-${id}-${f.id}" placeholder="—"></div>`).join('')}
+    const entries = jobMeasurements[id] || [{}];
+    const entriesHTML = entries.map((entry, ei) => `
+      <div class="measure-entry">
+        <div class="measure-entry-header">
+          <div class="measure-entry-label">${entries.length > 1 ? 'Area ' + (ei+1) : 'Measurements'}</div>
+          ${entries.length > 1 ? `<button class="measure-entry-remove" onclick="saveMeasurementValues();removeMeasurementEntry('${id}',${ei})">✕ Remove</button>` : ''}
+        </div>
+        <div class="measure-grid">
+          ${fields.map(f=>`<div class="measure-field"><label>${f.label}</label><input type="text" id="m-${id}-${ei}-${f.id}" value="${entry[f.id]||''}" placeholder="—"></div>`).join('')}
+        </div>
       </div>
+    `).join('');
+    return `<div class="measure-card">
+      <div class="measure-card-header">
+        <div class="measure-card-title">${jt?jt.label:id}</div>
+      </div>
+      ${entriesHTML}
+      <button class="add-entry-btn" onclick="saveMeasurementValues();addMeasurementEntry('${id}')">+ Add another ${jt?jt.label.replace(/^\S+\s/,''):id}</button>
     </div>`;
   }).join('');
+}
+
+function getMeasurements() {
+  saveMeasurementValues();
+  return jobMeasurements;
 }
 
 function handlePhotos(input) {
   const files = Array.from(input.files);
   files.forEach(file => {
     const reader = new FileReader();
-    reader.onload = function(e) {
-      jobPhotos.push(e.target.result);
-      renderPhotoGrid();
-    };
+    reader.onload = function(e) { jobPhotos.push(e.target.result); renderPhotoGrid(); };
     reader.readAsDataURL(file);
   });
   input.value = '';
@@ -475,23 +527,7 @@ function renderPhotoGrid() {
   `).join('');
 }
 
-function removePhoto(i) {
-  jobPhotos.splice(i,1);
-  renderPhotoGrid();
-}
-
-function getMeasurements() {
-  const m = {};
-  selectedJobTypes.forEach(id => {
-    const fields = MEASURE_FIELDS[id] || [];
-    m[id] = {};
-    fields.forEach(f => {
-      const el = document.getElementById(`m-${id}-${f.id}`);
-      if(el && el.value) m[id][f.id] = el.value;
-    });
-  });
-  return m;
-}
+function removePhoto(i) { jobPhotos.splice(i,1); renderPhotoGrid(); }
 
 function openJobIntake() {
   editJobId = null;
@@ -504,6 +540,7 @@ function openJobIntake() {
   document.getElementById('ji-source').value='';
   document.getElementById('ji-followup').value='';
   selectedJobTypes = [];
+  jobMeasurements = {};
   jobPhotos = [];
   renderJobTypesGrid();
   renderMeasurements();
@@ -531,28 +568,17 @@ function openJobIntakeEdit(id) {
   document.getElementById('ji-source').value = intake.source||'';
   document.getElementById('ji-followup').value = intake.followup||'';
   selectedJobTypes = intake.jobTypes||[];
+  jobMeasurements = intake.measurements||{};
+  // Ensure each selected job type has at least one entry
+  selectedJobTypes.forEach(jid => { if(!jobMeasurements[jid]) jobMeasurements[jid] = [{}]; });
   jobPhotos = intake.photos||[];
   renderJobTypesGrid();
   renderMeasurements();
-  // Restore measurements
-  if(intake.measurements) {
-    setTimeout(()=>{
-      Object.keys(intake.measurements).forEach(jid=>{
-        const fields = MEASURE_FIELDS[jid]||[];
-        fields.forEach(f=>{
-          const el = document.getElementById(`m-${jid}-${f.id}`);
-          if(el && intake.measurements[jid][f.id]) el.value = intake.measurements[jid][f.id];
-        });
-      });
-    },100);
-  }
   renderPhotoGrid();
   document.getElementById('jobIntakeOverlay').classList.add('show');
 }
 
-function closeJobIntake() {
-  document.getElementById('jobIntakeOverlay').classList.remove('show');
-}
+function closeJobIntake() { document.getElementById('jobIntakeOverlay').classList.remove('show'); }
 
 async function saveJobIntake() {
   const name = document.getElementById('ji-name').value.trim();
@@ -606,20 +632,32 @@ function openDetail(id) {
   if(!c) return;
 
   let intake = null;
-  if(c.intake_data) {
-    try { intake = typeof c.intake_data==='string' ? JSON.parse(c.intake_data) : c.intake_data; } catch(e){}
-  }
+  if(c.intake_data) { try { intake = typeof c.intake_data==='string' ? JSON.parse(c.intake_data) : c.intake_data; } catch(e){} }
 
   const bc=intake?'badge-job':c.type==='customer'?'badge-customer':c.type==='followup'?'badge-followup':'badge-lead';
   const bl=intake?'Job Intake':c.type==='customer'?'Customer':c.type==='followup'?'Follow-up':'Lead';
 
   let intakeHTML = '';
   if(intake) {
-    const statusLabels = {'lead':'New Lead','followup':'Follow-up Needed','quote-requested':'Quote Requested','quote-sent':'Quote Sent','approved':'Job Approved'};
+    let measureHTML = '';
+    if(intake.measurements && Object.keys(intake.measurements).length) {
+      measureHTML = Object.keys(intake.measurements).map(jid => {
+        const jt = JOB_TYPES.find(j=>j.id===jid);
+        const entries = intake.measurements[jid];
+        const fields = MEASURE_FIELDS[jid]||[];
+        if(!entries || !entries.length) return '';
+        const entriesHTML = entries.map((entry, ei) => {
+          const vals = fields.filter(f=>entry[f.id]).map(f=>`${f.label}: <span>${entry[f.id]}</span>`).join(' · ');
+          return vals ? `<div class="intake-measure" style="margin-bottom:4px">${entries.length>1?`<strong>Area ${ei+1}:</strong> `:''}${vals}</div>` : '';
+        }).filter(Boolean).join('');
+        return entriesHTML ? `<div style="margin-bottom:8px"><strong style="font-size:13px">${jt?jt.label:jid}</strong><br>${entriesHTML}</div>` : '';
+      }).filter(Boolean).join('');
+    }
+
     intakeHTML = `
       <div class="intake-detail-section">
         <h4>Job Details</h4>
-        ${intake.status?`<div class="intake-measure">Status: <span>${statusLabels[intake.status]||intake.status}</span></div>`:''}
+        ${intake.status?`<div class="intake-measure">Status: <span>${STATUS_LABELS[intake.status]||intake.status}</span></div>`:''}
         ${intake.budget?`<div class="intake-measure">Budget: <span>${intake.budget}</span></div>`:''}
         ${intake.timeline?`<div class="intake-measure">Timeline: <span>${intake.timeline}</span></div>`:''}
         ${intake.access?`<div class="intake-measure">Access: <span>${intake.access}</span></div>`:''}
@@ -631,26 +669,12 @@ function openDetail(id) {
         <h4>Job Types</h4>
         <div>${intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return `<span class="intake-job-tag">${jt?jt.label:id}</span>`;}).join('')}</div>
       </div>`:''}
-      ${intake.measurements&&Object.keys(intake.measurements).length?`
-      <div class="intake-detail-section">
-        <h4>Measurements</h4>
-        ${Object.keys(intake.measurements).map(jid=>{
-          const jt=JOB_TYPES.find(j=>j.id===jid);
-          const m=intake.measurements[jid];
-          const fields=MEASURE_FIELDS[jid]||[];
-          const vals=fields.filter(f=>m[f.id]).map(f=>`${f.label}: <span>${m[f.id]}</span>`).join(' · ');
-          return vals?`<div class="intake-measure" style="margin-bottom:6px"><strong>${jt?jt.label:jid}</strong><br>${vals}</div>`:'';
-        }).join('')}
-      </div>`:''}
-      ${intake.notes?`
-      <div class="intake-detail-section">
-        <h4>Site Notes</h4>
-        <div style="font-size:13px;line-height:1.6">${intake.notes}</div>
-      </div>`:''}
+      ${measureHTML?`<div class="intake-detail-section"><h4>Measurements</h4>${measureHTML}</div>`:''}
+      ${intake.notes?`<div class="intake-detail-section"><h4>Site Notes</h4><div style="font-size:13px;line-height:1.6">${intake.notes}</div></div>`:''}
       ${intake.photos&&intake.photos.length?`
       <div class="intake-detail-section">
         <h4>Photos & Drawings (${intake.photos.length})</h4>
-        <div class="photo-grid">${intake.photos.map(p=>`<div class="photo-thumb"><img src="${p}" alt="Job photo" onclick="viewPhoto('${p}')"></div>`).join('')}</div>
+        <div class="photo-grid">${intake.photos.map(p=>`<div class="photo-thumb"><img src="${p}" alt="Job photo" onclick="viewPhoto('${p}')" style="cursor:pointer"></div>`).join('')}</div>
       </div>`:''}
     `;
   }
