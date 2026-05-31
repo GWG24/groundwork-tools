@@ -491,7 +491,7 @@ function openJobIntake(){
 function openJobIntakeEdit(id){
   const c=contacts.find(x=>x.id===id);if(!c)return;
   let intake=null;try{intake=typeof c.intake_data==='string'?JSON.parse(c.intake_data):c.intake_data;}catch(e){}
-  if(!intake)return;
+if(!intake)intake={};
   editJobId=id;document.getElementById('jobIntakeTitle').textContent='✏️ Edit Job Intake';
   document.getElementById('ji-name').value=c.name||'';document.getElementById('ji-phone').value=c.phone||'';document.getElementById('ji-email').value=c.email||'';document.getElementById('ji-address').value=c.suburb||'';document.getElementById('ji-notes').value=intake.notes||'';
   document.getElementById('ji-status').value=intake.status||'lead';document.getElementById('ji-budget').value=intake.budget||'';document.getElementById('ji-timeline').value=intake.timeline||'';document.getElementById('ji-access').value=intake.access||'';document.getElementById('ji-source').value=intake.source||'';document.getElementById('ji-followup').value=intake.followup||'';
