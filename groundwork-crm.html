@@ -47,6 +47,8 @@
   .contact-card { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .contact-card:hover { border-color: var(--green); box-shadow: 0 2px 8px rgba(74,124,63,0.15); }
   .contact-card.job-card { border-left: 3px solid var(--orange); }
+  .contact-card.overdue-card { border-left: 3px solid var(--red); background: #fdf8f8; }
+  .contact-card.today-card { border-left: 3px solid var(--orange); background: #fdfaf5; }
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
   .card-name { font-family: 'Barlow Condensed', sans-serif; font-size: 19px; font-weight: 700; color: var(--text-primary); }
   .badge { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 3px 9px; border-radius: 10px; font-weight: 600; text-transform: uppercase; }
@@ -54,6 +56,10 @@
   .badge-lead { background: rgba(184,134,11,0.15); color: var(--gold); }
   .badge-followup { background: rgba(192,122,47,0.15); color: var(--orange); }
   .badge-job { background: rgba(192,122,47,0.15); color: var(--orange); }
+  .followup-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; padding: 3px 9px; border-radius: 10px; font-weight: 600; text-transform: uppercase; display: inline-block; margin-top: 4px; }
+  .followup-badge.overdue { background: rgba(192,57,43,0.12); color: var(--red); }
+  .followup-badge.today { background: rgba(192,122,47,0.12); color: var(--orange); }
+  .followup-badge.upcoming { background: rgba(74,124,63,0.1); color: var(--green-leaf); }
   .card-detail { color: var(--text-secondary); font-size: 13px; margin-bottom: 2px; }
   .card-note { font-size: 12px; margin-top: 8px; color: var(--text-primary); border-top: 1px solid #e8f0e6; padding-top: 8px; }
   .card-footer { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
@@ -71,11 +77,16 @@
   .field input, .field select, .field textarea { background: #ffffff; border: 0.5px solid #c5d4c0; border-radius: 6px; color: var(--text-primary); font-family: 'Barlow', sans-serif; font-size: 14px; padding: 9px 11px; }
   .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--green); }
   .field textarea { resize: vertical; min-height: 70px; }
+  .followup-field-wrap { background: #fdf7ee; border: 0.5px solid #e8c87a; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+  .followup-field-wrap label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); display: block; margin-bottom: 5px; }
+  .followup-field-wrap input { background: #ffffff; border: 0.5px solid #e8c87a; border-radius: 6px; color: var(--text-primary); font-family: 'Barlow', sans-serif; font-size: 14px; padding: 9px 11px; width: 100%; }
+  .followup-field-wrap input:focus { outline: none; border-color: var(--orange); }
+  .followup-field-wrap .hint { font-size: 11px; color: var(--orange); margin-top: 4px; }
   .section-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--green); margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1px solid #c5d4c0; }
   .job-types-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
   .job-type-item { display: flex; align-items: center; gap: 8px; background: #f7f9f6; border: 0.5px solid #c5d4c0; border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: all 0.15s; }
   .job-type-item.selected { background: rgba(74,124,63,0.1); border-color: var(--green); }
-  .job-type-cb { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid #c5d4c0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.15s; }
+  .job-type-cb { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid #c5d4c0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.15px; }
   .job-type-item.selected .job-type-cb { background: var(--green-leaf); border-color: var(--green-leaf); color: white; }
   .job-type-label { font-size: 13px; color: var(--text-primary); }
   .measurements-section { margin-bottom: 12px; }
@@ -163,6 +174,11 @@
     <div class="field"><label>Suburb / Location</label><input id="f-suburb" type="text" placeholder="Suburb or area"></div>
     <div class="field"><label>Job Type</label><input id="f-job" type="text" placeholder="e.g. Garden bed, Retaining wall, Turf"></div>
     <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Details, source of lead, follow-up info..."></textarea></div>
+    <div class="followup-field-wrap">
+      <label>🔔 Follow-up Date</label>
+      <input id="f-followup" type="date">
+      <div class="hint">Set a date and it will appear as a reminder on the Dashboard</div>
+    </div>
     <div class="modal-actions">
       <button class="clear-btn" onclick="closeAdd()">Cancel</button>
       <button class="gen-btn" id="saveBtn" onclick="saveContact()">Save Contact</button>
@@ -191,9 +207,6 @@
           <option value="approved">Job Approved</option>
         </select>
       </div>
-      <div class="field"><label>Follow-up Date</label><input id="ji-followup" type="date"></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="field"><label>Budget Range</label>
         <select id="ji-budget">
           <option value="">Unknown</option>
@@ -205,6 +218,8 @@
           <option value="$50k+">$50,000+</option>
         </select>
       </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="field"><label>Timeline</label>
         <select id="ji-timeline">
           <option value="">Unknown</option>
@@ -214,6 +229,10 @@
           <option value="3-6 months">3–6 months</option>
           <option value="Flexible">Flexible</option>
         </select>
+      </div>
+      <div class="field" style="background:#fdf7ee;border:0.5px solid #e8c87a;border-radius:8px;padding:8px 10px;">
+        <label style="color:var(--orange)">🔔 Follow-up Date</label>
+        <input id="ji-followup" type="date" style="border-color:#e8c87a;background:#fff">
       </div>
     </div>
     <div class="section-heading">Job Types</div>
@@ -276,6 +295,7 @@ async function db(path, method='GET', body=null) {
   return method==='DELETE' ? null : res.json();
 }
 
+const todayStr = new Date().toISOString().split('T')[0];
 let contacts=[], currentTab='all', editId=null;
 
 function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
@@ -294,6 +314,13 @@ function updateStats() {
 
 function setTab(tab,el) { currentTab=tab; document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); render(); }
 
+function getFollowupStatus(c) {
+  if (!c.followup_date) return null;
+  if (c.followup_date < todayStr) return 'overdue';
+  if (c.followup_date === todayStr) return 'today';
+  return 'upcoming';
+}
+
 function render() {
   const q=document.getElementById('search').value.toLowerCase();
   let list=contacts.filter(c=>{
@@ -310,13 +337,25 @@ function render() {
     const bl=isJob?'Job Intake':c.type==='customer'?'Customer':c.type==='followup'?'Follow-up':'Lead';
     let intake = null;
     if(isJob) { try { intake = typeof c.intake_data==='string' ? JSON.parse(c.intake_data) : c.intake_data; } catch(e){} }
-    return `<div class="contact-card ${isJob?'job-card':''}" onclick="openDetail('${c.id}')">
+    const fuStatus = getFollowupStatus(c);
+    const cardClass = fuStatus==='overdue' ? 'overdue-card' : fuStatus==='today' ? 'today-card' : '';
+    let fuBadge = '';
+    if (fuStatus === 'overdue') {
+      const days = Math.round((new Date(todayStr) - new Date(c.followup_date)) / 86400000);
+      fuBadge = `<span class="followup-badge overdue">⚠ Follow-up ${days===1?'1 day':days+' days'} overdue</span>`;
+    } else if (fuStatus === 'today') {
+      fuBadge = `<span class="followup-badge today">📅 Follow-up due today</span>`;
+    } else if (fuStatus === 'upcoming') {
+      fuBadge = `<span class="followup-badge upcoming">🔔 Follow-up ${c.followup_date}</span>`;
+    }
+    return `<div class="contact-card ${isJob?'job-card':''} ${cardClass}" onclick="openDetail('${c.id}')">
       <div class="card-top"><div class="card-name">${c.name}</div><span class="badge ${bc}">${bl}</span></div>
       ${c.phone?`<div class="card-detail">📞 ${c.phone}</div>`:''}
       ${c.suburb?`<div class="card-detail">📍 ${c.suburb}</div>`:''}
       ${intake&&intake.jobTypes&&intake.jobTypes.length?`<div class="card-detail">🔨 ${intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return jt?jt.label.replace(/^\S+\s/,''):id;}).join(', ')}</div>`:(c.job?`<div class="card-detail">🌿 ${c.job}</div>`:'')}
       ${intake&&intake.budget?`<div class="card-detail">💰 ${intake.budget}</div>`:''}
       ${intake&&intake.status?`<div class="card-detail">📌 ${STATUS_LABELS[intake.status]||intake.status}</div>`:''}
+      ${fuBadge}
       ${c.notes&&!isJob?`<div class="card-note">💬 ${c.notes.substring(0,90)}${c.notes.length>90?'...':''}</div>`:''}
       <div class="card-footer">
         ${c.phone?`<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="btn-sm">📞 Call</a>`:''}
@@ -333,52 +372,64 @@ async function buildQuoteFromJob(id) {
   if(!c) return;
   let intake = null;
   try { intake = typeof c.intake_data==='string' ? JSON.parse(c.intake_data) : c.intake_data; } catch(e){}
-
   showToast('⏳ Sending to Quote Builder...');
-
   const pendingData = {
-    clientName: c.name || '',
-    clientAddress: c.suburb || '',
-    phone: c.phone || '',
-    email: c.email || '',
-    jobTitle: intake && intake.jobTypes && intake.jobTypes.length
-      ? intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return jt?jt.label.replace(/^\S+\s/,''):id;}).join(', ')
-      : (c.job || 'Landscaping Works'),
-    notes: intake ? intake.notes || '' : c.notes || '',
-    jobTypes: intake ? intake.jobTypes || [] : [],
-    measurements: intake ? intake.measurements || {} : {},
-    budget: intake ? intake.budget || '' : '',
-    source: intake ? intake.source || '' : '',
-    createdAt: new Date().toISOString()
+    clientName: c.name || '', clientAddress: c.suburb || '', phone: c.phone || '', email: c.email || '',
+    jobTitle: intake && intake.jobTypes && intake.jobTypes.length ? intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return jt?jt.label.replace(/^\S+\s/,''):id;}).join(', ') : (c.job || 'Landscaping Works'),
+    notes: intake ? intake.notes || '' : c.notes || '', jobTypes: intake ? intake.jobTypes || [] : [],
+    measurements: intake ? intake.measurements || {} : {}, budget: intake ? intake.budget || '' : '',
+    source: intake ? intake.source || '' : '', createdAt: new Date().toISOString()
   };
-
   try {
-    await fetch(SB_URL + '/rest/v1/gg_pending_quote', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'return=representation' },
-      body: JSON.stringify({ data: JSON.stringify(pendingData) })
-    });
+    await fetch(SB_URL + '/rest/v1/gg_pending_quote', { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Prefer': 'return=representation' }, body: JSON.stringify({ data: JSON.stringify(pendingData) }) });
     showToast('✓ Opening Quote Builder...');
-    setTimeout(function() {
-      window.location.href = 'groundwork-gardens-tools.html?fromjob=1';
-    }, 800);
-  } catch(e) {
-    showToast('⚠ Could not connect — try again');
-    console.error(e);
-  }
+    setTimeout(() => { window.location.href = 'groundwork-gardens-tools.html?fromjob=1'; }, 800);
+  } catch(e) { showToast('⚠ Could not connect — try again'); console.error(e); }
 }
 
 // ==================== CONTACT MODAL ====================
-function openAdd(){editId=null;document.getElementById('modalTitle').textContent='New Contact';['name','phone','email','suburb','job','notes'].forEach(f=>document.getElementById('f-'+f).value='');document.getElementById('f-type').value='lead';document.getElementById('addOverlay').classList.add('show');}
-function openEdit(id){const c=contacts.find(x=>x.id===id);if(!c)return;editId=id;document.getElementById('modalTitle').textContent='Edit Contact';document.getElementById('f-name').value=c.name||'';document.getElementById('f-type').value=c.type||'lead';document.getElementById('f-phone').value=c.phone||'';document.getElementById('f-email').value=c.email||'';document.getElementById('f-suburb').value=c.suburb||'';document.getElementById('f-job').value=c.job||'';document.getElementById('f-notes').value=c.notes||'';document.getElementById('addOverlay').classList.add('show');}
+function openAdd(){
+  editId=null;
+  document.getElementById('modalTitle').textContent='New Contact';
+  ['name','phone','email','suburb','job','notes'].forEach(f=>document.getElementById('f-'+f).value='');
+  document.getElementById('f-type').value='lead';
+  document.getElementById('f-followup').value='';
+  document.getElementById('addOverlay').classList.add('show');
+}
+function openEdit(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  editId=id;
+  document.getElementById('modalTitle').textContent='Edit Contact';
+  document.getElementById('f-name').value=c.name||'';
+  document.getElementById('f-type').value=c.type||'lead';
+  document.getElementById('f-phone').value=c.phone||'';
+  document.getElementById('f-email').value=c.email||'';
+  document.getElementById('f-suburb').value=c.suburb||'';
+  document.getElementById('f-job').value=c.job||'';
+  document.getElementById('f-notes').value=c.notes||'';
+  document.getElementById('f-followup').value=c.followup_date||'';
+  document.getElementById('addOverlay').classList.add('show');
+}
 function closeAdd(){document.getElementById('addOverlay').classList.remove('show');}
 
 async function saveContact(){
   const name=document.getElementById('f-name').value.trim();if(!name){alert('Name is required');return;}
   const btn=document.getElementById('saveBtn');btn.textContent='Saving...';btn.disabled=true;
-  const data={name,type:document.getElementById('f-type').value,phone:document.getElementById('f-phone').value.trim(),email:document.getElementById('f-email').value.trim(),suburb:document.getElementById('f-suburb').value.trim(),job:document.getElementById('f-job').value.trim(),notes:document.getElementById('f-notes').value.trim()};
-  try{if(editId){await db(`customers?id=eq.${editId}`,'PATCH',data);showToast('Contact updated');}else{await db('customers','POST',data);showToast('Contact saved');}closeAdd();await loadContacts();}
-  catch(e){alert('Save failed: '+e.message);}
+  const followupDate = document.getElementById('f-followup').value || null;
+  const data={
+    name, type:document.getElementById('f-type').value,
+    phone:document.getElementById('f-phone').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    suburb:document.getElementById('f-suburb').value.trim(),
+    job:document.getElementById('f-job').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+    followup_date: followupDate
+  };
+  try{
+    if(editId){await db(`customers?id=eq.${editId}`,'PATCH',data);showToast('Contact updated');}
+    else{await db('customers','POST',data);showToast('Contact saved');}
+    closeAdd();await loadContacts();
+  } catch(e){alert('Save failed: '+e.message);}
   btn.textContent='Save Contact';btn.disabled=false;
 }
 
@@ -399,82 +450,37 @@ const JOB_TYPES = [
 const STATUS_LABELS = {'lead':'New Lead','followup':'Follow-up Needed','quote-requested':'Quote Requested','quote-sent':'Quote Sent','approved':'Job Approved'};
 
 const MEASURE_FIELDS = {
-  paving: [{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'area',label:'Area (m²)'}],
-  concrete: [{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'depth',label:'Depth (mm)'}],
-  turf: [{id:'area',label:'Area (m²)'},{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'}],
-  garden: [{id:'area',label:'Area (m²)'},{id:'depth',label:'Soil Depth (mm)'},{id:'edging',label:'Edging (lm)'}],
-  retaining: [{id:'length',label:'Length (lm)'},{id:'height',label:'Height (m)'},{id:'type',label:'Type'}],
-  fencing: [{id:'length',label:'Length (lm)'},{id:'height',label:'Height (m)'},{id:'type',label:'Type'}],
-  drainage: [{id:'ag',label:'Ag Pipe (lm)'},{id:'channel',label:'Channel (lm)'},{id:'pits',label:'Pits'}],
-  irrigation: [{id:'zones',label:'Zones'},{id:'pipe',label:'Pipe Run (lm)'},{id:'type',label:'Type'}],
-  decking: [{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'type',label:'Material'}],
-  pathway: [{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'type',label:'Type'}],
-  excavation: [{id:'area',label:'Area (m²)'},{id:'depth',label:'Depth (mm)'},{id:'notes',label:'Notes'}],
-  artificial: [{id:'area',label:'Area (m²)'},{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'}],
-  steps: [{id:'count',label:'No. Steps'},{id:'width',label:'Width (m)'},{id:'type',label:'Material'}],
-  pergola: [{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'height',label:'Height (m)'}],
-  planting: [{id:'count',label:'No. Plants'},{id:'type',label:'Plant Types'},{id:'notes',label:'Notes'}],
-  lighting: [{id:'count',label:'No. Lights'},{id:'cable',label:'Cable Run (lm)'},{id:'type',label:'Type'}],
-  bin: [{id:'size',label:'Bin Size (m³)'},{id:'qty',label:'Qty'},{id:'notes',label:'Notes'}],
-  bricklaying: [{id:'length',label:'Length (lm)'},{id:'height',label:'Height (m)'},{id:'type',label:'Brick Type'}],
-  maintenance: [{id:'area',label:'Area (m²)'},{id:'freq',label:'Frequency'},{id:'notes',label:'Notes'}],
-  other: [{id:'desc',label:'Description'},{id:'l',label:'Dimension 1'},{id:'w',label:'Dimension 2'}]
+  paving:[{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'area',label:'Area (m²)'}],
+  concrete:[{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'depth',label:'Depth (mm)'}],
+  turf:[{id:'area',label:'Area (m²)'},{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'}],
+  garden:[{id:'area',label:'Area (m²)'},{id:'depth',label:'Soil Depth (mm)'},{id:'edging',label:'Edging (lm)'}],
+  retaining:[{id:'length',label:'Length (lm)'},{id:'height',label:'Height (m)'},{id:'type',label:'Type'}],
+  fencing:[{id:'length',label:'Length (lm)'},{id:'height',label:'Height (m)'},{id:'type',label:'Type'}],
+  drainage:[{id:'ag',label:'Ag Pipe (lm)'},{id:'channel',label:'Channel (lm)'},{id:'pits',label:'Pits'}],
+  irrigation:[{id:'zones',label:'Zones'},{id:'pipe',label:'Pipe Run (lm)'},{id:'type',label:'Type'}],
+  decking:[{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'type',label:'Material'}],
+  pathway:[{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'type',label:'Type'}],
+  excavation:[{id:'area',label:'Area (m²)'},{id:'depth',label:'Depth (mm)'},{id:'notes',label:'Notes'}],
+  artificial:[{id:'area',label:'Area (m²)'},{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'}],
+  steps:[{id:'count',label:'No. Steps'},{id:'width',label:'Width (m)'},{id:'type',label:'Material'}],
+  pergola:[{id:'l',label:'Length (m)'},{id:'w',label:'Width (m)'},{id:'height',label:'Height (m)'}],
+  planting:[{id:'count',label:'No. Plants'},{id:'type',label:'Plant Types'},{id:'notes',label:'Notes'}],
+  lighting:[{id:'count',label:'No. Lights'},{id:'cable',label:'Cable Run (lm)'},{id:'type',label:'Type'}],
+  bin:[{id:'size',label:'Bin Size (m³)'},{id:'qty',label:'Qty'},{id:'notes',label:'Notes'}],
+  bricklaying:[{id:'length',label:'Length (lm)'},{id:'height',label:'Height (m)'},{id:'type',label:'Brick Type'}],
+  maintenance:[{id:'area',label:'Area (m²)'},{id:'freq',label:'Frequency'},{id:'notes',label:'Notes'}],
+  other:[{id:'desc',label:'Description'},{id:'l',label:'Dimension 1'},{id:'w',label:'Dimension 2'}]
 };
 
 let selectedJobTypes=[], jobMeasurements={}, jobPhotos=[], editJobId=null;
 
-function renderJobTypesGrid() {
-  document.getElementById('jobTypesGrid').innerHTML = JOB_TYPES.map(jt =>
-    `<div class="job-type-item ${selectedJobTypes.includes(jt.id)?'selected':''}" onclick="toggleJobType('${jt.id}')">
-      <div class="job-type-cb">${selectedJobTypes.includes(jt.id)?'✓':''}</div>
-      <div class="job-type-label">${jt.label}</div>
-    </div>`).join('');
-}
-
-function toggleJobType(id) {
-  if(selectedJobTypes.includes(id)){selectedJobTypes=selectedJobTypes.filter(j=>j!==id);delete jobMeasurements[id];}
-  else{selectedJobTypes.push(id);if(!jobMeasurements[id])jobMeasurements[id]=[{}];}
-  renderJobTypesGrid();renderMeasurements();
-}
-
+function renderJobTypesGrid(){document.getElementById('jobTypesGrid').innerHTML=JOB_TYPES.map(jt=>`<div class="job-type-item ${selectedJobTypes.includes(jt.id)?'selected':''}" onclick="toggleJobType('${jt.id}')"><div class="job-type-cb">${selectedJobTypes.includes(jt.id)?'✓':''}</div><div class="job-type-label">${jt.label}</div></div>`).join('');}
+function toggleJobType(id){if(selectedJobTypes.includes(id)){selectedJobTypes=selectedJobTypes.filter(j=>j!==id);delete jobMeasurements[id];}else{selectedJobTypes.push(id);if(!jobMeasurements[id])jobMeasurements[id]=[{}];}renderJobTypesGrid();renderMeasurements();}
 function addMeasurementEntry(jobTypeId){if(!jobMeasurements[jobTypeId])jobMeasurements[jobTypeId]=[];jobMeasurements[jobTypeId].push({});renderMeasurements();}
 function removeMeasurementEntry(jobTypeId,ei){if(jobMeasurements[jobTypeId]&&jobMeasurements[jobTypeId].length>1)jobMeasurements[jobTypeId].splice(ei,1);renderMeasurements();}
-
-function saveMeasurementValues(){
-  selectedJobTypes.forEach(jid=>{
-    const fields=MEASURE_FIELDS[jid]||[];
-    const entries=jobMeasurements[jid]||[];
-    entries.forEach((entry,ei)=>{fields.forEach(f=>{const el=document.getElementById(`m-${jid}-${ei}-${f.id}`);if(el)entry[f.id]=el.value;});});
-  });
-}
-
-function renderMeasurements(){
-  const section=document.getElementById('measurementsSection');
-  if(!selectedJobTypes.length){section.innerHTML='<div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:10px">Select job types above to add measurements</div>';return;}
-  section.innerHTML=selectedJobTypes.map(id=>{
-    const jt=JOB_TYPES.find(j=>j.id===id);
-    const fields=MEASURE_FIELDS[id]||[];
-    const entries=jobMeasurements[id]||[{}];
-    const entriesHTML=entries.map((entry,ei)=>`
-      <div class="measure-entry">
-        <div class="measure-entry-header">
-          <div class="measure-entry-label">${entries.length>1?'Area '+(ei+1):'Measurements'}</div>
-          ${entries.length>1?`<button class="measure-entry-remove" onclick="saveMeasurementValues();removeMeasurementEntry('${id}',${ei})">✕ Remove</button>`:''}
-        </div>
-        <div class="measure-grid">
-          ${fields.map(f=>`<div class="measure-field"><label>${f.label}</label><input type="text" id="m-${id}-${ei}-${f.id}" value="${entry[f.id]||''}" placeholder="—"></div>`).join('')}
-        </div>
-      </div>`).join('');
-    return `<div class="measure-card">
-      <div class="measure-card-header"><div class="measure-card-title">${jt?jt.label:id}</div></div>
-      ${entriesHTML}
-      <button class="add-entry-btn" onclick="saveMeasurementValues();addMeasurementEntry('${id}')">+ Add another ${jt?jt.label.replace(/^\S+\s/,''):id}</button>
-    </div>`;
-  }).join('');
-}
-
+function saveMeasurementValues(){selectedJobTypes.forEach(jid=>{const fields=MEASURE_FIELDS[jid]||[];const entries=jobMeasurements[jid]||[];entries.forEach((entry,ei)=>{fields.forEach(f=>{const el=document.getElementById(`m-${jid}-${ei}-${f.id}`);if(el)entry[f.id]=el.value;});});});}
+function renderMeasurements(){const section=document.getElementById('measurementsSection');if(!selectedJobTypes.length){section.innerHTML='<div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:10px">Select job types above to add measurements</div>';return;}section.innerHTML=selectedJobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);const fields=MEASURE_FIELDS[id]||[];const entries=jobMeasurements[id]||[{}];const entriesHTML=entries.map((entry,ei)=>`<div class="measure-entry"><div class="measure-entry-header"><div class="measure-entry-label">${entries.length>1?'Area '+(ei+1):'Measurements'}</div>${entries.length>1?`<button class="measure-entry-remove" onclick="saveMeasurementValues();removeMeasurementEntry('${id}',${ei})">✕ Remove</button>`:''}</div><div class="measure-grid">${fields.map(f=>`<div class="measure-field"><label>${f.label}</label><input type="text" id="m-${id}-${ei}-${f.id}" value="${entry[f.id]||''}" placeholder="—"></div>`).join('')}</div></div>`).join('');return`<div class="measure-card"><div class="measure-card-header"><div class="measure-card-title">${jt?jt.label:id}</div></div>${entriesHTML}<button class="add-entry-btn" onclick="saveMeasurementValues();addMeasurementEntry('${id}')">+ Add another ${jt?jt.label.replace(/^\S+\s/,''):id}</button></div>`;}).join('');}
 function getMeasurements(){saveMeasurementValues();return jobMeasurements;}
-
 function handlePhotos(input){Array.from(input.files).forEach(file=>{const r=new FileReader();r.onload=e=>{jobPhotos.push(e.target.result);renderPhotoGrid();};r.readAsDataURL(file);});input.value='';}
 function renderPhotoGrid(){document.getElementById('photoGrid').innerHTML=jobPhotos.map((p,i)=>`<div class="photo-thumb"><img src="${p}" alt="Job photo"><button class="remove-photo" onclick="removePhoto(${i})">×</button></div>`).join('');}
 function removePhoto(i){jobPhotos.splice(i,1);renderPhotoGrid();}
@@ -491,10 +497,12 @@ function openJobIntake(){
 function openJobIntakeEdit(id){
   const c=contacts.find(x=>x.id===id);if(!c)return;
   let intake=null;try{intake=typeof c.intake_data==='string'?JSON.parse(c.intake_data):c.intake_data;}catch(e){}
-if(!intake)intake={};
+  if(!intake)intake={};
   editJobId=id;document.getElementById('jobIntakeTitle').textContent='✏️ Edit Job Intake';
   document.getElementById('ji-name').value=c.name||'';document.getElementById('ji-phone').value=c.phone||'';document.getElementById('ji-email').value=c.email||'';document.getElementById('ji-address').value=c.suburb||'';document.getElementById('ji-notes').value=intake.notes||'';
-  document.getElementById('ji-status').value=intake.status||'lead';document.getElementById('ji-budget').value=intake.budget||'';document.getElementById('ji-timeline').value=intake.timeline||'';document.getElementById('ji-access').value=intake.access||'';document.getElementById('ji-source').value=intake.source||'';document.getElementById('ji-followup').value=intake.followup||'';
+  document.getElementById('ji-status').value=intake.status||'lead';document.getElementById('ji-budget').value=intake.budget||'';document.getElementById('ji-timeline').value=intake.timeline||'';document.getElementById('ji-access').value=intake.access||'';document.getElementById('ji-source').value=intake.source||'';
+  // Use top-level followup_date first, fall back to intake.followup
+  document.getElementById('ji-followup').value=c.followup_date||intake.followup||'';
   selectedJobTypes=intake.jobTypes||[];jobMeasurements=intake.measurements||{};
   selectedJobTypes.forEach(jid=>{if(!jobMeasurements[jid])jobMeasurements[jid]=[{}];});
   jobPhotos=intake.photos||[];
@@ -507,10 +515,35 @@ function closeJobIntake(){document.getElementById('jobIntakeOverlay').classList.
 async function saveJobIntake(){
   const name=document.getElementById('ji-name').value.trim();if(!name){alert('Client name is required');return;}
   const btn=document.getElementById('saveJobBtn');btn.textContent='Saving...';btn.disabled=true;
-  const intake={status:document.getElementById('ji-status').value,budget:document.getElementById('ji-budget').value,timeline:document.getElementById('ji-timeline').value,access:document.getElementById('ji-access').value,source:document.getElementById('ji-source').value,followup:document.getElementById('ji-followup').value,notes:document.getElementById('ji-notes').value.trim(),jobTypes:selectedJobTypes,measurements:getMeasurements(),photos:jobPhotos,createdAt:new Date().toISOString()};
-  const data={name,type:'lead',phone:document.getElementById('ji-phone').value.trim(),email:document.getElementById('ji-email').value.trim(),suburb:document.getElementById('ji-address').value.trim(),job:selectedJobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return jt?jt.label.replace(/^\S+\s/,''):id;}).join(', '),notes:intake.notes,intake_data:JSON.stringify(intake)};
-  try{if(editJobId){await db(`customers?id=eq.${editJobId}`,'PATCH',data);showToast('✓ Job updated!');}else{await db('customers','POST',data);showToast('✓ Job saved!');}closeJobIntake();await loadContacts();}
-  catch(e){alert('Save failed: '+e.message);}
+  const followupDate = document.getElementById('ji-followup').value || null;
+  const intake={
+    status:document.getElementById('ji-status').value,
+    budget:document.getElementById('ji-budget').value,
+    timeline:document.getElementById('ji-timeline').value,
+    access:document.getElementById('ji-access').value,
+    source:document.getElementById('ji-source').value,
+    followup:followupDate||'',
+    notes:document.getElementById('ji-notes').value.trim(),
+    jobTypes:selectedJobTypes,
+    measurements:getMeasurements(),
+    photos:jobPhotos,
+    createdAt:new Date().toISOString()
+  };
+  const data={
+    name, type:'lead',
+    phone:document.getElementById('ji-phone').value.trim(),
+    email:document.getElementById('ji-email').value.trim(),
+    suburb:document.getElementById('ji-address').value.trim(),
+    job:selectedJobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return jt?jt.label.replace(/^\S+\s/,''):id;}).join(', '),
+    notes:intake.notes,
+    intake_data:JSON.stringify(intake),
+    followup_date: followupDate   // ← saved to top-level column for dashboard queries
+  };
+  try{
+    if(editJobId){await db(`customers?id=eq.${editJobId}`,'PATCH',data);showToast('✓ Job updated!');}
+    else{await db('customers','POST',data);showToast('✓ Job saved!');}
+    closeJobIntake();await loadContacts();
+  } catch(e){alert('Save failed: '+e.message);}
   btn.textContent='💾 Save Job';btn.disabled=false;
 }
 
@@ -523,27 +556,24 @@ function openDetail(id){
   let intakeHTML='';
   if(intake){
     let measureHTML='';
-    if(intake.measurements&&Object.keys(intake.measurements).length){
-      measureHTML=Object.keys(intake.measurements).map(jid=>{
-        const jt=JOB_TYPES.find(j=>j.id===jid);const entries=intake.measurements[jid];const fields=MEASURE_FIELDS[jid]||[];
-        if(!entries||!entries.length)return'';
-        const entriesHTML=entries.map((entry,ei)=>{const vals=fields.filter(f=>entry[f.id]).map(f=>`${f.label}: <span>${entry[f.id]}</span>`).join(' · ');return vals?`<div class="intake-measure" style="margin-bottom:4px">${entries.length>1?`<strong>Area ${ei+1}:</strong> `:''}${vals}</div>`:''}).filter(Boolean).join('');
-        return entriesHTML?`<div style="margin-bottom:8px"><strong style="font-size:13px">${jt?jt.label:jid}</strong><br>${entriesHTML}</div>`:'';
-      }).filter(Boolean).join('');
-    }
-    intakeHTML=`
-      <div class="intake-detail-section"><h4>Job Details</h4>
-        ${intake.status?`<div class="intake-measure">Status: <span>${STATUS_LABELS[intake.status]||intake.status}</span></div>`:''}
-        ${intake.budget?`<div class="intake-measure">Budget: <span>${intake.budget}</span></div>`:''}
-        ${intake.timeline?`<div class="intake-measure">Timeline: <span>${intake.timeline}</span></div>`:''}
-        ${intake.access?`<div class="intake-measure">Access: <span>${intake.access}</span></div>`:''}
-        ${intake.source?`<div class="intake-measure">Source: <span>${intake.source}</span></div>`:''}
-        ${intake.followup?`<div class="intake-measure">Follow-up: <span>${intake.followup}</span></div>`:''}
-      </div>
-      ${intake.jobTypes&&intake.jobTypes.length?`<div class="intake-detail-section"><h4>Job Types</h4><div>${intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return`<span class="intake-job-tag">${jt?jt.label:id}</span>`;}).join('')}</div></div>`:''}
-      ${measureHTML?`<div class="intake-detail-section"><h4>Measurements</h4>${measureHTML}</div>`:''}
-      ${intake.notes?`<div class="intake-detail-section"><h4>Site Notes</h4><div style="font-size:13px;line-height:1.6">${intake.notes}</div></div>`:''}
-      ${intake.photos&&intake.photos.length?`<div class="intake-detail-section"><h4>Photos & Drawings (${intake.photos.length})</h4><div class="photo-grid">${intake.photos.map(p=>`<div class="photo-thumb"><img src="${p}" alt="Job photo" onclick="viewPhoto('${p}')" style="cursor:pointer"></div>`).join('')}</div></div>`:''}`;
+    if(intake.measurements&&Object.keys(intake.measurements).length){measureHTML=Object.keys(intake.measurements).map(jid=>{const jt=JOB_TYPES.find(j=>j.id===jid);const entries=intake.measurements[jid];const fields=MEASURE_FIELDS[jid]||[];if(!entries||!entries.length)return'';const entriesHTML=entries.map((entry,ei)=>{const vals=fields.filter(f=>entry[f.id]).map(f=>`${f.label}: <span>${entry[f.id]}</span>`).join(' · ');return vals?`<div class="intake-measure" style="margin-bottom:4px">${entries.length>1?`<strong>Area ${ei+1}:</strong> `:''}${vals}</div>`:''}).filter(Boolean).join('');return entriesHTML?`<div style="margin-bottom:8px"><strong style="font-size:13px">${jt?jt.label:jid}</strong><br>${entriesHTML}</div>`:'';}).filter(Boolean).join('');}
+    intakeHTML=`<div class="intake-detail-section"><h4>Job Details</h4>
+      ${intake.status?`<div class="intake-measure">Status: <span>${STATUS_LABELS[intake.status]||intake.status}</span></div>`:''}
+      ${intake.budget?`<div class="intake-measure">Budget: <span>${intake.budget}</span></div>`:''}
+      ${intake.timeline?`<div class="intake-measure">Timeline: <span>${intake.timeline}</span></div>`:''}
+      ${intake.access?`<div class="intake-measure">Access: <span>${intake.access}</span></div>`:''}
+      ${intake.source?`<div class="intake-measure">Source: <span>${intake.source}</span></div>`:''}
+      ${c.followup_date?`<div class="intake-measure">Follow-up: <span>${c.followup_date}</span></div>`:''}
+    </div>
+    ${intake.jobTypes&&intake.jobTypes.length?`<div class="intake-detail-section"><h4>Job Types</h4><div>${intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return`<span class="intake-job-tag">${jt?jt.label:id}</span>`;}).join('')}</div></div>`:''}
+    ${measureHTML?`<div class="intake-detail-section"><h4>Measurements</h4>${measureHTML}</div>`:''}
+    ${intake.notes?`<div class="intake-detail-section"><h4>Site Notes</h4><div style="font-size:13px;line-height:1.6">${intake.notes}</div></div>`:''}
+    ${intake.photos&&intake.photos.length?`<div class="intake-detail-section"><h4>Photos & Drawings (${intake.photos.length})</h4><div class="photo-grid">${intake.photos.map(p=>`<div class="photo-thumb"><img src="${p}" alt="Job photo" onclick="viewPhoto('${p}')" style="cursor:pointer"></div>`).join('')}</div></div>`:''}`;
+  }
+  const fuStatus = getFollowupStatus(c);
+  let fuDetailHTML = '';
+  if (c.followup_date && !intake) {
+    fuDetailHTML = `<div style="background:#fdf7ee;border:0.5px solid #e8c87a;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:'Barlow Condensed',sans-serif;font-size:13px;">🔔 Follow-up: <strong>${c.followup_date}</strong>${fuStatus==='overdue'?' <span style="color:var(--red)">(overdue)</span>':fuStatus==='today'?' <span style="color:var(--orange)">(today!)</span>':''}</div>`;
   }
   document.getElementById('detailContent').innerHTML=`
     <div class="modal-title"><span>${c.name}</span><button class="modal-close" onclick="document.getElementById('detailOverlay').classList.remove('show')">✕</button></div>
@@ -553,6 +583,7 @@ function openDetail(id){
       ${c.email?`<div class="detail-field"><div class="dl">Email</div><div class="dv">${c.email}</div></div>`:''}
       ${c.suburb?`<div class="detail-field"><div class="dl">Address</div><div class="dv">${c.suburb}</div></div>`:''}
     </div>
+    ${fuDetailHTML}
     ${intakeHTML}
     ${c.notes&&!intake?`<div style="background:var(--bg-page);border:0.5px solid #c5d4c0;border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.6;margin-bottom:16px">${c.notes}</div>`:''}
     <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
