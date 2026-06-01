@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- GG_VERSION_20260531_CRM_CONNECT -->
+<!-- GG_VERSION_20260503_FINAL -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -29,8 +29,8 @@
   .tab-btn { flex: 1; padding: 14px 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-align: center; cursor: pointer; color: var(--cream-dim); border-bottom: 2px solid transparent; transition: all 0.2s; user-select: none; background: none; border-top: none; border-left: none; border-right: none; }
   .tab-btn:hover { color: var(--cream); }
 
-.tab-panel { display: none; width: 100%; }
-  
+  .tab-panel { display: none; }
+
   .section { padding: 20px 20px 0; }
   .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--green); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
   .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
@@ -1433,7 +1433,6 @@ function switchTab(tab) {
 
   window.scrollTo(0, 0);
   if (tab === 'invoice' && typeof renderInvItems === 'function') {
-    if (invItems.length === 0) addInvItem();
     renderInvItems();
     // Auto-generate invoice number if field is empty
     var invNumEl = document.getElementById('inv-num');
@@ -3607,63 +3606,9 @@ window.addEventListener('load', function() {
   // Auto generate invoice number
   autoInvoiceNumber();
 
-// Start on calculator tab
+  // Start on calculator tab
   switchTab('calc');
-
-  // Check if coming from CRM via Build Quote button
-  checkPendingQuote();
 });
-
-// ==================== CHECK PENDING QUOTE FROM CRM ====================
-async function checkPendingQuote() {
-  if (!window.location.search.includes('fromjob')) return;
-  try {
-    var res = await fetch(SB_URL + '/rest/v1/gg_pending_quote?select=id,data&order=created_at.desc&limit=1', {
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-    });
-    if (!res.ok) return;
-    var rows = await res.json();
-    if (!rows || !rows.length) return;
-    var pending = JSON.parse(rows[0].data);
-    var rowId = rows[0].id;
-
-    if (pending.clientName) document.getElementById('clientName').value = pending.clientName;
-    if (pending.clientAddress) document.getElementById('clientAddress').value = pending.clientAddress;
-    if (pending.jobTitle) document.getElementById('jobTitle').value = pending.jobTitle;
-
-    if (pending.notes && pending.notes.trim()) {
-      scopeLines.push(pending.notes.trim());
-      renderScope();
-    }
-
-    if (pending.jobTypes && pending.jobTypes.length) {
-      var JOB_TYPE_LABELS = {
-        paving:'Paving', concrete:'Concrete Slab', turf:'Turf / Lawn', garden:'Garden Beds',
-        retaining:'Retaining Wall', fencing:'Fencing', drainage:'Drainage', irrigation:'Irrigation',
-        decking:'Decking', pathway:'Pathways', excavation:'Excavation', artificial:'Artificial Grass',
-        steps:'Steps', pergola:'Pergola', planting:'Planting', lighting:'Lighting',
-        bin:'Bin / Waste', bricklaying:'Bricklaying', maintenance:'Maintenance', other:'Other'
-      };
-      var jobsList = pending.jobTypes.map(function(id) { return JOB_TYPE_LABELS[id] || id; }).join(', ');
-      if (jobsList) { scopeLines.push('Works include: ' + jobsList + '.'); renderScope(); }
-    }
-
-    switchTab('quote');
-
-    await fetch(SB_URL + '/rest/v1/gg_pending_quote?id=eq.' + rowId, {
-      method: 'DELETE',
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-    });
-
-    showToast('✓ Job details loaded from CRM!');
-    setTimeout(function() {
-      var el = document.getElementById('clientName');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 400);
-  } catch(e) {
-    console.error('Could not load pending quote from CRM:', e);
-  }
-}
 </script>
 </body>
 </html>
