@@ -1192,40 +1192,6 @@
 
 </div><!-- end tab-quote -->
 
-<!-- Invoice Email Modal -->
-<div class="overlay" id="invEmailModal">
-  <div class="modal" style="max-width:560px">
-    <div class="modal-title">📧 Send Invoice Email <button class="modal-close" onclick="document.getElementById('invEmailModal').classList.remove('show')">×</button></div>
-    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;background:#f0f7ee;border:1px solid #c5d4c0;border-radius:6px;padding:10px 14px;">This opens Gmail with your invoice pre-filled. Review, attach your PDF, and click Send.</div>
-    <div style="margin-bottom:12px">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:5px">To (Client Email)</div>
-      <input type="email" id="invEmailTo" placeholder="client@email.com" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:14px;padding:9px 11px;background-image:none;">
-    </div>
-    <div style="margin-bottom:12px">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:5px">Subject</div>
-      <input type="text" id="invEmailSubject" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:14px;padding:9px 11px;background-image:none;">
-    </div>
-    <div style="margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Email Body</div>
-        <button onclick="resetInvEmailTemplate()" style="background:none;border:none;font-size:11px;color:var(--cream-dim);cursor:pointer;letter-spacing:1px;text-transform:uppercase;">↺ Reset to default</button>
-      </div>
-      <textarea id="invEmailBody" rows="12" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:13px;padding:9px 11px;resize:vertical;line-height:1.6;"></textarea>
-    </div>
-    <div style="display:flex;gap:10px">
-      <button onclick="saveInvEmailTemplate()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:12px;text-transform:uppercase">💾 Save Template</button>
-      <button onclick="sendInvoiceEmail()" style="flex:2;background:#1a73e8;border:none;border-radius:6px;color:white;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:12px;text-transform:uppercase">📧 Open in Gmail</button>
-    </div>
-  </div>
-</div>
-  <!-- Load Invoice Modal -->
-<div class="overlay" id="loadInvoiceModal">
-  <div class="modal">
-    <div class="modal-title">Saved Invoices <button class="modal-close" onclick="document.getElementById('loadInvoiceModal').classList.remove('show')">×</button></div>
-    <div id="loadInvoiceList"></div>
-    <div class="gap"></div>
-  </div>
-</div>
 
 <!-- ==================== INVOICE TAB ==================== -->
 <div class="tab-panel" id="tab-invoice" style="display:none">
@@ -1325,6 +1291,41 @@
   <div id="inv-status-msg"></div>
   <div class="gap"></div>
 </div>
+  <!-- Invoice Email Modal -->
+<div class="overlay" id="invEmailModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title">📧 Send Invoice Email <button class="modal-close" onclick="document.getElementById('invEmailModal').classList.remove('show')">×</button></div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;background:#f0f7ee;border:1px solid #c5d4c0;border-radius:6px;padding:10px 14px;">This opens Gmail with your invoice pre-filled. Review, attach your PDF, and click Send.</div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:5px">To (Client Email)</div>
+      <input type="email" id="invEmailTo" placeholder="client@email.com" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:14px;padding:9px 11px;background-image:none;">
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:5px">Subject</div>
+      <input type="text" id="invEmailSubject" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:14px;padding:9px 11px;background-image:none;">
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Email Body</div>
+        <button onclick="resetInvEmailTemplate()" style="background:none;border:none;font-size:11px;color:var(--cream-dim);cursor:pointer;letter-spacing:1px;text-transform:uppercase;">↺ Reset to default</button>
+      </div>
+      <textarea id="invEmailBody" rows="12" style="width:100%;background:#ffffff;border:0.5px solid #c5d4c0;border-radius:6px;color:#1a2e17;font-family:'Barlow',sans-serif;font-size:13px;padding:9px 11px;resize:vertical;line-height:1.6;"></textarea>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="saveInvEmailTemplate()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:12px;text-transform:uppercase">💾 Save Template</button>
+      <button onclick="sendInvoiceEmail()" style="flex:2;background:#1a73e8;border:none;border-radius:6px;color:white;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:12px;text-transform:uppercase">📧 Open in Gmail</button>
+    </div>
+  </div>
+</div>
+  <!-- Load Invoice Modal -->
+<div class="overlay" id="loadInvoiceModal">
+  <div class="modal">
+    <div class="modal-title">Saved Invoices <button class="modal-close" onclick="document.getElementById('loadInvoiceModal').classList.remove('show')">×</button></div>
+    <div id="loadInvoiceList"></div>
+    <div class="gap"></div>
+  </div>
+</div>
+
 
 </div><!-- end tab-invoice -->
 
