@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plant Database — Groundwork Gardens</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sage: #7a8c6e;
+    --sage-light: #a3b494;
+    --sage-dark: #4f5e46;
+    --earth: #9b7b5b;
+    --earth-light: #c4a07a;
+    --charcoal: #2a2a2a;
+    --warm-white: #f8f5f0;
+    --cream: #ede8df;
+    --stone: #d4cfc6;
+    --text: #333;
+    --text-muted: #888;
+    --card-bg: #ffffff;
+    --border: #e0dbd2;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    --shadow-hover: 0 8px 28px rgba(0,0,0,0.13);
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--charcoal);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--sage);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .logo-sub {
+    font-size: 11px;
+    color: var(--sage-light);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--sage);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--sage-dark); transform: translateY(-1px); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.15); }
+
+  /* LAYOUT */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* SIDEBAR */
+  aside {
+    width: 280px;
+    min-width: 280px;
+    background: var(--cream);
+    border-right: 1px solid var(--border);
+    padding: 24px 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 64px);
+    position: sticky;
+    top: 64px;
+  }
+  .filter-section {
+    margin-bottom: 28px;
+  }
+  .filter-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .search-box {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: var(--sage); }
+
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid var(--stone);
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text);
+    font-weight: 400;
+  }
+  .chip:hover { border-color: var(--sage); color: var(--sage-dark); }
+  .chip.active {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .select-box {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+  }
+  .select-box:focus { border-color: var(--sage); }
+
+  .stats-bar {
+    background: var(--sage-dark);
+    color: rgba(255,255,255,0.85);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    padding: 28px 28px;
+    overflow-y: auto;
+  }
+
+  .main-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .results-count {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .results-count span {
+    color: var(--sage-dark);
+    font-weight: 600;
+  }
+  .view-toggle {
+    display: flex;
+    gap: 4px;
+  }
+  .view-btn {
+    width: 34px; height: 34px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    transition: all 0.15s;
+  }
+  .view-btn.active {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: #fff;
+  }
+
+  /* PLANT GRID */
+  .plant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .plant-grid.list-view {
+    grid-template-columns: 1fr;
+  }
+
+  /* CARD IMAGE */
+  .card-img-wrap {
+    width: 100%;
+    height: 160px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--cream);
+    margin-bottom: 14px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .card-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    display: block;
+  }
+  .plant-card:hover .card-img-wrap img { transform: scale(1.04); }
+  .card-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: var(--text-muted);
+    font-size: 32px;
+    gap: 6px;
+  }
+  .card-img-placeholder span { font-size: 11px; font-weight: 400; }
+  .card-img-loading {
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, var(--cream) 25%, var(--stone) 50%, var(--cream) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* LIST VIEW image — small square */
+  .plant-card.list-view .card-img-wrap {
+    width: 80px; height: 80px;
+    margin-bottom: 0;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  /* MODAL HERO IMAGE */
+  .modal-hero {
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+    position: relative;
+    background: var(--cream);
+  }
+  .modal-hero img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .modal-hero-loading {
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, var(--cream) 25%, var(--stone) 50%, var(--cream) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); font-size: 13px;
+  }
+  .modal-hero-credit {
+    position: absolute;
+    bottom: 8px; right: 10px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.75);
+    background: rgba(0,0,0,0.35);
+    padding: 2px 7px;
+    border-radius: 4px;
+    backdrop-filter: blur(2px);
+  }
+
+  /* PLANT CARD */
+  .plant-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .plant-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--sage);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .plant-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+    border-color: var(--sage-light);
+  }
+  .plant-card:hover::before { opacity: 1; }
+
+  .plant-card.list-view {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+  .plant-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--charcoal);
+    line-height: 1.2;
+  }
+  .plant-latin {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+  .plant-type-badge {
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    background: var(--cream);
+    color: var(--earth);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .plant-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .plant-attrs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .attr {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text);
+    background: var(--warm-white);
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .attr-icon { font-size: 13px; }
+
+  .style-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .style-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    background: rgba(122,140,110,0.12);
+    color: var(--sage-dark);
+    font-weight: 500;
+  }
+
+  /* NO RESULTS */
+  .no-results {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+  }
+  .no-results .icon { font-size: 48px; margin-bottom: 12px; }
+  .no-results h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--charcoal); margin-bottom: 8px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+    transform: translateY(20px);
+    transition: transform 0.25s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-header {
+    padding: 28px 28px 0;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .modal-close:hover { background: var(--cream); }
+
+  .modal-plant-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--charcoal);
+    margin-bottom: 2px;
+  }
+  .modal-latin {
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .modal-body { padding: 20px 28px 28px; }
+
+  .detail-section {
+    margin-bottom: 22px;
+  }
+  .detail-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .detail-item {
+    background: var(--warm-white);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .detail-item-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 3px;
+  }
+  .detail-item-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--charcoal);
+  }
+
+  .companions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .companion-chip {
+    padding: 5px 13px;
+    border-radius: 20px;
+    background: rgba(122,140,110,0.1);
+    color: var(--sage-dark);
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid rgba(122,140,110,0.25);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .companion-chip:hover {
+    background: var(--sage);
+    color: #fff;
+    border-color: var(--sage);
+  }
+
+  .notes-box {
+    background: var(--warm-white);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    border-left: 3px solid var(--sage-light);
+  }
+
+  /* ADD PLANT FORM */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .form-input, .form-select, .form-textarea {
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--sage); }
+  .form-textarea { resize: vertical; min-height: 70px; }
+
+  /* WATER / SHADE INDICATORS */
+  .indicator {
+    display: flex;
+    gap: 4px;
+  }
+  .indicator-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--stone);
+  }
+  .indicator-dot.filled { background: var(--sage); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--charcoal);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    z-index: 999;
+    transform: translateY(60px);
+    opacity: 0;
+    transition: all 0.3s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* TAB NAV */
+  .tab-nav {
+    background: var(--charcoal);
+    display: flex;
+    gap: 0;
+    padding: 0 32px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .tab-btn {
+    padding: 11px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.45);
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.18s;
+    letter-spacing: 0.02em;
+  }
+  .tab-btn:hover { color: rgba(255,255,255,0.75); }
+  .tab-btn.active {
+    color: #fff;
+    border-bottom-color: var(--sage-light);
+  }
+
+  /* PALETTE PAGE */
+  #palettePage { display: none; padding: 32px; max-width: 1200px; margin: 0 auto; }
+  #palettePage.active { display: block; }
+  #dbPage { display: flex; }
+  #dbPage.hidden { display: none; }
+
+  .palette-intro {
+    margin-bottom: 32px;
+  }
+  .palette-intro h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+  }
+  .palette-intro p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 680px;
+  }
+
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+  }
+
+  .palette-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all 0.22s;
+    cursor: pointer;
+  }
+  .palette-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-3px);
+  }
+
+  .palette-header {
+    padding: 22px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .palette-accent {
+    width: 40px; height: 4px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+  .palette-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+  }
+  .palette-tagline {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .palette-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .palette-meta-chip {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    background: var(--cream);
+    color: var(--earth);
+    font-weight: 500;
+  }
+
+  .palette-plants {
+    padding: 16px 22px 20px;
+  }
+  .palette-plant-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .palette-plant-row:last-child { border-bottom: none; }
+
+  .palette-plant-img {
+    width: 48px; height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--cream);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    overflow: hidden;
+  }
+  .palette-plant-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .palette-plant-info { flex: 1; }
+  .palette-plant-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 1px;
+  }
+  .palette-plant-role {
+    font-size: 11px;
+    color: var(--sage-dark);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 2px;
+  }
+  .palette-plant-why {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+
+  .palette-design-notes {
+    margin: 0 22px 20px;
+    background: linear-gradient(135deg, rgba(122,140,110,0.08), rgba(122,140,110,0.04));
+    border-radius: 10px;
+    padding: 14px;
+    border-left: 3px solid var(--sage);
+  }
+  .palette-design-notes-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--sage-dark);
+    margin-bottom: 5px;
+  }
+  .palette-design-notes p {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  /* PALETTE DETAIL MODAL */
+  .palette-modal-hero {
+    height: 8px;
+    width: 100%;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--stone); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    .layout { flex-direction: column; }
+    aside { width: 100%; max-height: none; position: relative; top: 0; }
+    .plant-grid { grid-template-columns: 1fr; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🌿</div>
+    <div>
+      <div class="logo-text">Plant Database</div>
+      <div class="logo-sub">Groundwork Gardens</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="openExportModal()">📋 Export</button>
+    <button class="btn btn-primary" onclick="openAddModal()">＋ Add Plant</button>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('db')">🌱 Plant Database</button>
+  <button class="tab-btn" onclick="switchTab('palettes')">🎨 Designer Palettes</button>
+</nav>
+
+<div class="layout" id="dbPage">
+  <aside>
+    <div class="filter-section">
+      <div class="filter-label">Search</div>
+      <input class="search-box" type="text" placeholder="Plant name or keyword..." id="searchInput" oninput="renderPlants()">
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Garden Style</div>
+      <div class="chip-group" id="styleFilters"></div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Watering Needs</div>
+      <div class="chip-group" id="waterFilters"></div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Shade Tolerance</div>
+      <div class="chip-group" id="shadeFilters"></div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Plant Type</div>
+      <div class="chip-group" id="typeFilters"></div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Sort By</div>
+      <select class="select-box" id="sortSelect" onchange="renderPlants()">
+        <option value="name">Name (A–Z)</option>
+        <option value="type">Plant Type</option>
+        <option value="water">Water Needs</option>
+        <option value="custom">Custom Added</option>
+      </select>
+    </div>
+
+    <div class="filter-section">
+      <div class="stats-bar" id="statsBar">Loading...</div>
+      <button class="btn" style="width:100%;background:#fff;border:1.5px solid var(--border);color:var(--text-muted);font-size:12px;margin-top:8px;" onclick="clearFilters()">Clear All Filters</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="main-top">
+      <div class="results-count" id="resultsCount"></div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Grid view">⊞</button>
+        <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="List view">☰</button>
+      </div>
+    </div>
+    <div class="plant-grid" id="plantGrid"></div>
+  </main>
+</div>
+
+<!-- PALETTES PAGE -->
+<div id="palettePage">
+  <div class="palette-intro">
+    <h2>Designer Plant Palettes</h2>
+    <p>Ten professionally curated planting combinations for Melbourne gardens. Each plant is selected with intention — for its role, texture, seasonal contribution, and relationship to the plants around it. Use these as a starting point and adapt to site conditions.</p>
+  </div>
+  <div class="palette-grid" id="paletteGrid"></div>
+</div>
+
+<!-- PLANT DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" id="detailModalContent"></div>
+</div>
+
+<!-- ADD PLANT MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-plant-name">Add New Plant</div>
+      <div class="modal-latin">Add a custom plant to your database</div>
+      <button class="modal-close" onclick="closeAddModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Common Name *</label>
+          <input class="form-input" id="f_name" placeholder="e.g. Lavender">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Latin Name</label>
+          <input class="form-input" id="f_latin" placeholder="e.g. Lavandula angustifolia">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Plant Type *</label>
+          <select class="form-select" id="f_type">
+            <option>Shrub</option><option>Perennial</option><option>Annual</option>
+            <option>Tree</option><option>Groundcover</option><option>Grass/Sedge</option>
+            <option>Climber</option><option>Succulent</option><option>Fern</option><option>Bulb</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Watering Needs</label>
+          <select class="form-select" id="f_water">
+            <option>Low</option><option>Low–Medium</option><option>Medium</option>
+            <option>Medium–High</option><option>High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Shade Tolerance</label>
+          <select class="form-select" id="f_shade">
+            <option>Full Sun</option><option>Part Shade</option><option>Full Shade</option><option>Full Sun to Part Shade</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Height</label>
+          <input class="form-input" id="f_height" placeholder="e.g. 0.5–1m">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Spread</label>
+          <input class="form-input" id="f_spread" placeholder="e.g. 1–1.5m">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Soil</label>
+          <input class="form-input" id="f_soil" placeholder="e.g. Well-drained, sandy">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Garden Styles (comma separated)</label>
+          <input class="form-input" id="f_styles" placeholder="e.g. Modern, Mediterranean, Cottage">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Companion Plants (comma separated)</label>
+          <input class="form-input" id="f_companions" placeholder="e.g. Rosemary, Salvia, Agapanthus">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="f_desc" placeholder="Brief description of the plant..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Landscaper Notes</label>
+          <textarea class="form-textarea" id="f_notes" placeholder="Planting tips, spacing, seasonality, common issues..."></textarea>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn btn-ghost" style="color:var(--charcoal);border-color:var(--border);" onclick="closeAddModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveCustomPlant()">Save Plant</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== PLANT DATABASE =====================
+const BUILT_IN_PLANTS = [
+  // MODERN STYLE
+  {id:'p1', name:'Agapanthus', latin:'Agapanthus praecox', type:'Perennial', water:'Low–Medium', shade:'Full Sun to Part Shade', height:'0.6–1m', spread:'0.5–1m', soil:'Well-drained, adaptable', styles:['Modern','Coastal','Mediterranean'], companions:['Lavender','Rosemary','Lomandra','Kangaroo Paw'], desc:'A quintessential Australian garden staple with strappy leaves and stunning blue-purple globe flowers. Tough, drought-tolerant once established.', notes:'Clump-forming — divide every few years to maintain vigour. Avoid overwatering. Works well lining driveways and paths. Tolerates frost moderately.', custom:false},
+  {id:'p2', name:'Lomandra', latin:'Lomandra longifolia', type:'Grass/Sedge', water:'Low', shade:'Full Sun to Part Shade', height:'0.6–1m', spread:'0.8–1m', soil:'Any, highly adaptable', styles:['Modern','Native','Coastal'], companions:['Agapanthus','Kangaroo Paw','Grevillea','Westringia'], desc:'A tough Australian native strappy-leaf grass ideal for mass planting. Extremely low maintenance with architectural form.', notes:'Near indestructible. Perfect for erosion control, slopes, and difficult sites. Cut back hard every 2–3 years to refresh. Many compact cultivars available (\'Nyalla\', \'Tanika\').', custom:false},
+  {id:'p3', name:'Westringia', latin:'Westringia fruticosa', type:'Shrub', water:'Low', shade:'Full Sun', height:'1–2m', spread:'1–2m', soil:'Well-drained, tolerates poor soil', styles:['Modern','Coastal','Native','Mediterranean'], companions:['Lomandra','Lavender','Agapanthus','Salvia'], desc:'Australian coastal rosemary — a silvery-grey native shrub with small white flowers. Excellent hedging and screening plant.', notes:'Responds very well to regular clipping for formal hedges. Salt-tolerant and perfect for coastal properties. Extremely drought-hardy once established.', custom:false},
+  {id:'p4', name:'Kangaroo Paw', latin:'Anigozanthos flavidus', type:'Perennial', water:'Low–Medium', shade:'Full Sun', height:'0.6–1.5m', spread:'0.5–1m', soil:'Well-drained, sandy', styles:['Native','Modern','Cottage'], companions:['Lomandra','Agapanthus','Grevillea','Penstemon'], desc:'Iconic Australian native with striking tubular flowers in red, yellow, orange and pink. Bold textural plant for the garden or pots.', notes:'Excellent in pots and garden beds. Remove spent flower stems. Divide clumps regularly. Susceptible to ink disease — choose resistant cultivars like \'Bush Gems\' series.', custom:false},
+  {id:'p5', name:'Salvia', latin:'Salvia nemorosa', type:'Perennial', water:'Low–Medium', shade:'Full Sun', height:'0.4–0.8m', spread:'0.4–0.6m', soil:'Well-drained', styles:['Modern','Cottage','Mediterranean'], companions:['Lavender','Agapanthus','Rosemary','Echinacea'], desc:'Long-flowering perennial with deep violet-blue flower spikes. Superb in mass planting and mixed borders. Highly attractive to pollinators.', notes:'Cut back by half after first flush for repeat flowering. Extremely tough and drought-tolerant. \'Caradonna\', \'May Night\' and \'Marcus\' are excellent compact cultivars.', custom:false},
+  {id:'p6', name:'Lavender', latin:'Lavandula angustifolia', type:'Shrub', water:'Low', shade:'Full Sun', height:'0.5–1m', spread:'0.6–1m', soil:'Well-drained, alkaline preferred', styles:['Cottage','Mediterranean','Modern'], companions:['Rosemary','Salvia','Agapanthus','Westringia'], desc:'Classic Mediterranean herb-shrub with fragrant silver foliage and purple flower spikes. Beloved for scent, structure and colour.', notes:'Must have excellent drainage — will rot in wet soil. Prune lightly after flowering. \'Hidcote\' and \'Munstead\' are reliable compact varieties for Melbourne.', custom:false},
+  {id:'p7', name:'Rosemary', latin:'Salvia rosmarinus', type:'Shrub', water:'Low', shade:'Full Sun', height:'0.5–1.5m', spread:'1–1.5m', soil:'Well-drained, poor to medium', styles:['Mediterranean','Cottage','Modern'], companions:['Lavender','Salvia','Westringia','Thyme'], desc:'Fragrant, woody Mediterranean herb that doubles as a versatile landscape shrub. Blue flowers in winter and spring. Excellent for hedges and retaining walls.', notes:'Trailing forms work well cascading over walls. Upright forms for hedging. Prune regularly to prevent woodiness. Highly drought-tolerant.', custom:false},
+  {id:'p8', name:'Ornamental Grass — Blue Fescue', latin:'Festuca glauca', type:'Grass/Sedge', water:'Low', shade:'Full Sun', height:'0.2–0.3m', spread:'0.3–0.4m', soil:'Well-drained, poor to medium', styles:['Modern','Mediterranean','Coastal'], companions:['Agapanthus','Lomandra','Salvia','Lavender'], desc:'Steel-blue clumping grass with striking colour. Ideal for edging, mass planting and contrast against green or dark-foliage plants.', notes:'Replace individual clumps every 3–4 years as they can die out in centre. Excellent in gravel gardens and modern minimalist designs.', custom:false},
+  {id:'p9', name:'Muhly Grass', latin:'Muhlenbergia capillaris', type:'Grass/Sedge', water:'Low–Medium', shade:'Full Sun', height:'0.8–1.2m', spread:'0.6–1m', soil:'Well-drained, adaptable', styles:['Modern','Cottage','Coastal'], companions:['Salvia','Agapanthus','Kangaroo Paw','Lomandra'], desc:'Sensational ornamental grass with a spectacular cloud of pink-purple flower plumes in autumn. Creates incredible movement and texture.', notes:'Spectacular in mass plantings backlit by afternoon sun. Cut back hard in late winter. Suits Melbourne\'s climate well.', custom:false},
+  {id:'p10', name:'Buxus (Box)', latin:'Buxus sempervirens', type:'Shrub', water:'Medium', shade:'Full Sun to Part Shade', height:'0.3–2m', spread:'0.3–1.5m', soil:'Well-drained, fertile', styles:['Formal','Cottage','Modern'], companions:['Lavender','Roses','Agapanthus','Topiary accent plants'], desc:'The classic formal hedging and topiary shrub. Dense, fine-textured evergreen foliage responds perfectly to clipping into any shape.', notes:'Box blight is a serious risk in humid/wet conditions — ensure good air circulation. Use Buxus microphylla or Ilex (Japanese Holly) as alternatives in prone areas.', custom:false},
+
+  // COTTAGE / CLASSIC
+  {id:'p11', name:'Rose', latin:'Rosa spp.', type:'Shrub', water:'Medium–High', shade:'Full Sun', height:'0.5–2.5m', spread:'0.5–2m', soil:'Fertile, well-drained, moisture-retentive', styles:['Cottage','Formal','Classic'], companions:['Lavender','Salvia','Geranium','Catmint'], desc:'Timeless garden classic available in hundreds of forms — climbers, shrubs, standards and groundcovers. Unmatched for fragrance and floral display.', notes:'Feed regularly (6-weekly in season). Watch for black spot, aphids. Prune in late winter (June–July in Melbourne). \'Easy on the Eye\', David Austin varieties perform well.', custom:false},
+  {id:'p12', name:'Catmint', latin:'Nepeta × faassenii', type:'Perennial', water:'Low–Medium', shade:'Full Sun to Part Shade', height:'0.3–0.6m', spread:'0.5–0.8m', soil:'Well-drained, poor to medium', styles:['Cottage','Mediterranean','Modern'], companions:['Roses','Lavender','Salvia','Iris'], desc:'Soft, silver-grey aromatic foliage with a haze of lavender-blue flowers spring to autumn. One of the best companion plants for roses.', notes:'Shear back by half after first flowering for repeat blooms all season. \'Walker\'s Low\' is the best performing cultivar. Extremely drought-tolerant once established.', custom:false},
+  {id:'p13', name:'Echinacea (Coneflower)', latin:'Echinacea purpurea', type:'Perennial', water:'Low–Medium', shade:'Full Sun', height:'0.6–1m', spread:'0.4–0.6m', soil:'Well-drained, adaptable', styles:['Cottage','Modern','Prairie'], companions:['Salvia','Rudbeckia','Agapanthus','Catmint'], desc:'Bold daisy-like flowers in pink, purple, orange and white with prominent cone centres. Long-flowering and attracts birds and butterflies.', notes:'Allow seed heads to remain over winter for bird food. Drought-tolerant once established. Divide clumps every 3–4 years.', custom:false},
+  {id:'p14', name:'Iris', latin:'Iris germanica', type:'Bulb', water:'Low–Medium', shade:'Full Sun', height:'0.6–1.2m', spread:'0.3–0.5m', soil:'Well-drained, slightly alkaline', styles:['Cottage','Formal','Mediterranean'], companions:['Catmint','Salvia','Roses','Lavender'], desc:'Spectacular bearded iris produce magnificent flowers in virtually every colour. Bold architectural foliage even when not in flower.', notes:'Plant rhizomes at soil surface — burying causes rot. Divide after 3–4 years. Bloom in spring (Sep–Nov). \'Tall bearded\' types perform best in Melbourne.', custom:false},
+  {id:'p15', name:'Geranium (Cranesbill)', latin:'Geranium spp.', type:'Perennial', water:'Low–Medium', shade:'Full Sun to Part Shade', height:'0.2–0.5m', spread:'0.4–0.8m', soil:'Well-drained, medium fertility', styles:['Cottage','Mediterranean','Woodland'], companions:['Roses','Salvia','Catmint','Lavender'], desc:'Hardy, low-growing perennial with pretty five-petalled flowers and attractive lobed foliage. Not to be confused with Pelargonium.', notes:'Cut back hard after flowering for a second flush. Excellent weed-suppressing groundcover under roses and shrubs. Tolerates part shade.', custom:false},
+  {id:'p16', name:'Penstemon', latin:'Penstemon spp.', type:'Perennial', water:'Low–Medium', shade:'Full Sun', height:'0.4–1m', spread:'0.3–0.5m', soil:'Well-drained, poor to medium', styles:['Cottage','Modern','Mediterranean'], companions:['Salvia','Echinacea','Kangaroo Paw','Lavender'], desc:'Tubular flowers in red, pink, purple and white on upright stems. Long-flowering from spring to autumn, loved by birds and bees.', notes:'Cut back to new basal growth in late winter. Short-lived perennial — propagate by cuttings to maintain. Excellent cut flower.', custom:false},
+  {id:'p17', name:'Hydrangea', latin:'Hydrangea macrophylla', type:'Shrub', water:'High', shade:'Part Shade', height:'1–2m', spread:'1–2m', soil:'Fertile, moist, well-drained', styles:['Cottage','Coastal','Classic'], companions:['Ferns','Hostas','Astilbe','Impatiens'], desc:'Dramatic large-flowering shrub with mophead or lacecap blooms in blue, pink, purple or white. Flowers summer to autumn.', notes:'Colour is pH-dependent: acid soil = blue, alkaline = pink. Prune old stems only after flowering. Keep consistently moist. Suits shaded, sheltered positions.', custom:false},
+
+  // NATIVE
+  {id:'p18', name:'Grevillea', latin:'Grevillea spp.', type:'Shrub', water:'Low', shade:'Full Sun', height:'0.5–5m', spread:'1–4m', soil:'Well-drained, low phosphorus', styles:['Native','Modern','Coastal'], companions:['Lomandra','Kangaroo Paw','Westringia','Callistemon'], desc:'Diverse genus of Australian natives with extraordinary spider-flower blooms in red, orange, yellow and pink. Critical food source for honeyeaters.', notes:'Never fertilise with phosphorus — it is fatal. Use native fertilisers only. Prune after flowering to maintain shape. Huge range of sizes available.', custom:false},
+  {id:'p19', name:'Callistemon (Bottlebrush)', latin:'Callistemon spp.', type:'Shrub', water:'Low–Medium', shade:'Full Sun', height:'1–5m', spread:'1–4m', soil:'Well-drained to moist, adaptable', styles:['Native','Cottage','Informal'], companions:['Grevillea','Lomandra','Kangaroo Paw','Westringia'], desc:'Classic Australian native with showy bottlebrush flowers in red, pink, cream or purple. Incredibly tough and highly attractive to honeyeaters.', notes:'Trim lightly after flowering to maintain shape. Tolerates wet feet better than most natives. Compact varieties (\'Little John\', \'Captain Cook\') ideal for small gardens.', custom:false},
+  {id:'p20', name:'Lilly Pilly', latin:'Syzygium australe', type:'Tree', water:'Low–Medium', shade:'Full Sun to Part Shade', height:'3–15m', spread:'2–6m', soil:'Well-drained, adaptable', styles:['Native','Modern','Formal'], companions:['Lomandra','Westringia','Agapanthus'], desc:'Fast-growing native with glossy foliage, fluffy white flowers and colourful berries. Excellent for screening, hedging and privacy.', notes:'Susceptible to psyllid (lumpy leaves). Choose resistant varieties: \'Resilience\', \'Aussie Southern\'. Responds very well to clipping. One of the best screen plants for Melbourne.', custom:false},
+  {id:'p21', name:'Banksia', latin:'Banksia spp.', type:'Shrub', water:'Low', shade:'Full Sun', height:'1–6m', spread:'1–5m', soil:'Well-drained, sandy, low phosphorus', styles:['Native','Coastal','Modern'], companions:['Grevillea','Lomandra','Kangaroo Paw'], desc:'Spectacular Australian native with bold cylindrical flower spikes in yellow, orange and red. Striking structural plant that feeds wildlife.', notes:'Strictly no phosphorus fertiliser. Excellent drainage essential. Coastal banksias tolerate salt spray. Prune spent flower heads if desired.', custom:false},
+  {id:'p22', name:'Correa', latin:'Correa spp.', type:'Shrub', water:'Low', shade:'Full Sun to Full Shade', height:'0.5–2m', spread:'1–2m', soil:'Well-drained, adaptable', styles:['Native','Woodland','Cottage'], companions:['Lomandra','Grevillea','Correa variety mix'], desc:'Under-used native shrub with delightful tubular hanging flowers in winter — an invaluable food source for birds when little else is flowering.', notes:'One of the very few flowering natives that tolerates full shade. Tolerates dry shade under trees — extremely useful in problem spots.', custom:false},
+  {id:'p23', name:'Acacia (Wattle)', latin:'Acacia spp.', type:'Tree', water:'Low', shade:'Full Sun', height:'2–10m', spread:'2–8m', soil:'Well-drained, poor to medium', styles:['Native','Informal','Coastal'], companions:['Grevillea','Lomandra','Banksia'], desc:'Australia\'s floral emblem — wattles offer spectacular golden-yellow flowers and provide fast-growing structure and habitat.', notes:'Many wattles are short-lived (10–15 years) — plan for replacement. Fast-growing for quick screening. Avoid planting near structures. Cootamundra Wattle (A. baileyana) is popular.', custom:false},
+  {id:'p24', name:'Dianella (Flax Lily)', latin:'Dianella spp.', type:'Grass/Sedge', water:'Low', shade:'Full Sun to Part Shade', height:'0.4–0.8m', spread:'0.4–0.8m', soil:'Well-drained, adaptable', styles:['Native','Modern','Cottage'], companions:['Lomandra','Kangaroo Paw','Correa','Westringia'], desc:'Australian native strappy-leaf plant with blue-purple flowers and stunning blue berries. Similar role to Lomandra but lighter in texture.', notes:'Great companion to Lomandra in mixed native plantings. Attractive berries last through summer. Divide clumps occasionally to refresh.', custom:false},
+
+  // MEDITERRANEAN / WARM
+  {id:'p25', name:'Olive Tree', latin:'Olea europaea', type:'Tree', water:'Low', shade:'Full Sun', height:'4–10m', spread:'4–8m', soil:'Well-drained, poor to medium', styles:['Mediterranean','Modern','Formal'], companions:['Lavender','Rosemary','Salvia','Agapanthus'], desc:'Iconic Mediterranean tree with silver-grey foliage and gnarled trunk. Incredibly drought-tolerant and long-lived. Superb structural specimen.', notes:'Fruitless varieties (\'Swan Hill\', \'Kalamata Fruitless\') avoid mess. Slow growing but very long-lived. Perfect for raised planters and feature positions.', custom:false},
+  {id:'p26', name:'Agave', latin:'Agave attenuata', type:'Succulent', water:'Low', shade:'Full Sun to Part Shade', height:'0.8–1.5m', spread:'1–2m', soil:'Well-drained, sandy', styles:['Modern','Mediterranean','Tropical'], companions:['Aloe','Blue Fescue','Lomandra','Westringia'], desc:'Bold architectural succulent with soft grey-green leaves. Unlike many agaves it has no sharp spines, making it family-safe. Spectacular flower spike when mature.', notes:'A. attenuata is the safest choice for domestic gardens — no spines. Clumping habit produces offsets. Very drought tolerant. Perfect specimen or mass planted.', custom:false},
+  {id:'p27', name:'Aloe Vera', latin:'Aloe vera', type:'Succulent', water:'Low', shade:'Full Sun to Part Shade', height:'0.5–1m', spread:'0.5–0.8m', soil:'Well-drained, sandy', styles:['Modern','Mediterranean','Tropical'], companions:['Agave','Westringia','Blue Fescue'], desc:'Fleshy-leaved succulent with medicinal gel. Orange-yellow tubular flower spikes attract birds. Extremely low maintenance.', notes:'Divide offsets to propagate easily. Excellent in pots. Tolerates neglect. Orange flowers appear in late winter/spring.', custom:false},
+  {id:'p28', name:'Teucrium (Germander)', latin:'Teucrium fruticans', type:'Shrub', water:'Low', shade:'Full Sun', height:'1–1.5m', spread:'1–2m', soil:'Well-drained, poor to medium', styles:['Mediterranean','Modern','Formal'], companions:['Lavender','Rosemary','Westringia','Salvia'], desc:'Silver-grey aromatic shrub with soft blue flowers. Excellent alternative to Lavender for hedging and mass planting. Very drought-tolerant.', notes:'Responds well to regular trimming. Slightly faster-growing than lavender and more reliable in Melbourne\'s variable conditions. Clips into clean formal hedges.', custom:false},
+  {id:'p29', name:'Euphorbia', latin:'Euphorbia characias', type:'Perennial', water:'Low', shade:'Full Sun to Part Shade', height:'0.8–1.2m', spread:'0.8–1m', soil:'Well-drained, poor', styles:['Modern','Mediterranean','Coastal'], companions:['Salvia','Agave','Blue Fescue','Lavender'], desc:'Striking architectural perennial with blue-green cylindrical stems topped with lime-green flower bracts. Bold contrast plant.', notes:'Milky sap is a skin irritant — wear gloves. Cut old flowering stems to base after blooming. Self-seeds readily. Short-lived but replaces itself.', custom:false},
+  {id:'p30', name:'Cistus (Rock Rose)', latin:'Cistus spp.', type:'Shrub', water:'Low', shade:'Full Sun', height:'0.5–1.5m', spread:'0.8–1.5m', soil:'Well-drained, poor, tolerates dry', styles:['Mediterranean','Cottage','Coastal'], companions:['Lavender','Rosemary','Salvia','Westringia'], desc:'Tough Mediterranean shrub covered in single papery flowers in white, pink or magenta through spring. Ideal for difficult hot dry spots.', notes:'Extremely drought-tolerant once established. Do not over-water. Short-lived (8–10 years) — take cuttings to replace. Fire-retardant.', custom:false},
+
+  // SHADE / WOODLAND
+  {id:'p31', name:'Hosta', latin:'Hosta spp.', type:'Perennial', water:'Medium–High', shade:'Part Shade to Full Shade', height:'0.3–1m', spread:'0.4–1.2m', soil:'Moist, fertile, humus-rich', styles:['Woodland','Cottage','Formal'], companions:['Hydrangea','Ferns','Astilbe','Hellebore'], desc:'King of the shade garden — hostas are grown for their spectacular, bold foliage in blue, green, gold and variegated forms.', notes:'Slugs and snails are the main pest. Protect with snail bait or copper tape. Divide every 4–5 years. Dies back in winter — mark position to avoid damage.', custom:false},
+  {id:'p32', name:'Hellebore', latin:'Helleborus × hybridus', type:'Perennial', water:'Low–Medium', shade:'Part Shade to Full Shade', height:'0.3–0.5m', spread:'0.4–0.6m', soil:'Moist, humus-rich, well-drained', styles:['Woodland','Cottage','Formal'], companions:['Hostas','Ferns','Agapanthus','Daffodils'], desc:'One of the finest winter-flowering perennials, producing nodding flowers in dusky pinks, purples, white and near-black from July–September.', notes:'Long-lived and extremely reliable. Cut off old leaves in autumn to show flowers. Self-seeds to create natural colonies. Excellent under deciduous trees.', custom:false},
+  {id:'p33', name:'Fern — Soft Tree Fern', latin:'Dicksonia antarctica', type:'Fern', water:'Medium–High', shade:'Part Shade to Full Shade', height:'2–6m', spread:'2–4m', soil:'Moist, humus-rich, well-drained', styles:['Woodland','Tropical','Cottage'], companions:['Hostas','Hellebore','Hydrangea','Impatiens'], desc:'Magnificent Australian tree fern creating dramatic architectural canopy. Fronds to 3m long. Iconic in cool, moist garden settings.', notes:'Water the trunk daily in dry weather — it absorbs moisture through the trunk. Protect from hot afternoon sun and wind. Hardy to mild frosts.', custom:false},
+  {id:'p34', name:'Liriope', latin:'Liriope muscari', type:'Grass/Sedge', water:'Low–Medium', shade:'Full Sun to Full Shade', height:'0.3–0.5m', spread:'0.3–0.5m', soil:'Adaptable, well-drained to moist', styles:['Modern','Woodland','Formal'], companions:['Hostas','Hellebore','Lomandra','Agapanthus'], desc:'Versatile strappy-leaved perennial with purple flower spikes in late summer. One of the best plants for dry shade under trees.', notes:'Possibly the most versatile garden plant available. Tolerates deep dry shade, poor soil and root competition. Excellent edging and mass planting. Variegated forms available.', custom:false},
+  {id:'p35', name:'Impatiens', latin:'Impatiens walleriana', type:'Annual', water:'High', shade:'Part Shade to Full Shade', height:'0.2–0.4m', spread:'0.3–0.5m', soil:'Fertile, moist', styles:['Cottage','Tropical','Woodland'], companions:['Hydrangea','Ferns','Hostas','Begonia'], desc:'Reliable shade-loving annual smothered in flowers in pink, red, white, coral and salmon from spring to autumn. Excellent for colour in shady spots.', notes:'Annual — replace each season. Keep moist and feed regularly. Can be affected by downy mildew — ensure airflow. New Guinea Impatiens more sun-tolerant.', custom:false},
+
+  // TROPICAL / LUSH
+  {id:'p36', name:'Canna Lily', latin:'Canna × generalis', type:'Perennial', water:'Medium–High', shade:'Full Sun to Part Shade', height:'1–2m', spread:'0.6–1m', soil:'Fertile, moist, well-drained', styles:['Tropical','Cottage','Bold'], companions:['Agapanthus','Salvia','Ornamental Grass','Dahlia'], desc:'Bold tropical perennial with large paddle-shaped leaves in green, bronze or variegated, topped with vivid flowers in red, orange, yellow and pink.', notes:'Lift rhizomes in cold areas over winter. Divide clumps every 3–4 years. Feed well for best performance. Creates dramatic tropical effect quickly.', custom:false},
+  {id:'p37', name:'Phormium (Flax)', latin:'Phormium tenax', type:'Perennial', water:'Low–Medium', shade:'Full Sun to Part Shade', height:'1–3m', spread:'1–2m', soil:'Adaptable, well-drained', styles:['Modern','Tropical','Coastal'], companions:['Agapanthus','Lomandra','Agave','Ornamental Grass'], desc:'Bold structural plant from New Zealand with dramatic strap-like leaves in green, bronze, red, orange and variegated forms. Extraordinary architectural presence.', notes:'Dramatic focal point or mass planting. Remove dead leaves from base. Divide large clumps if overcrowded. Tolerates coastal conditions well.', custom:false},
+  {id:'p38', name:'Dahlia', latin:'Dahlia spp.', type:'Bulb', water:'Medium–High', shade:'Full Sun', height:'0.3–1.5m', spread:'0.3–0.8m', soil:'Fertile, well-drained, moisture-retentive', styles:['Cottage','Tropical','Cutting Garden'], companions:['Roses','Salvia','Echinacea','Cosmos'], desc:'Spectacular flowering tubers producing some of the most dramatic flowers in the garden — pom-poms, cactus, dinner-plate and collarette forms.', notes:'Lift tubers after frost or leave in ground in Melbourne\'s mild climate with mulch. Stake taller varieties. Feed fortnightly for best blooms. Excellent cut flower.', custom:false},
+
+  // PRODUCTIVE / EDIBLE
+  {id:'p39', name:'Rosemary (Edible)', latin:'Salvia rosmarinus', type:'Shrub', water:'Low', shade:'Full Sun', height:'0.5–1.5m', spread:'1–1.5m', soil:'Well-drained, poor to medium', styles:['Productive','Mediterranean','Cottage'], companions:['Lavender','Salvia','Thyme','Sage'], desc:'Dual-purpose aromatic shrub equally at home in the herb garden or ornamental border. Blue winter flowers attract early pollinators.', notes:'One of the easiest herbs to grow. Essentially zero maintenance once established. Trailing forms cascade beautifully over retaining walls.', custom:false},
+  {id:'p40', name:'Thyme', latin:'Thymus vulgaris', type:'Perennial', water:'Low', shade:'Full Sun', height:'0.1–0.3m', spread:'0.3–0.5m', soil:'Well-drained, poor to medium', styles:['Productive','Mediterranean','Cottage'], companions:['Rosemary','Lavender','Sage','Strawberry'], desc:'Aromatic groundcover herb forming low mats of tiny leaves smothered in pink-mauve flowers in spring. Suitable for paving gaps and herb gardens.', notes:'Excellent between pavers — releases fragrance when walked on. Divide clumps every 2–3 years. Prune after flowering. Many ornamental-only varieties also available.', custom:false},
+  {id:'p41', name:'Sage', latin:'Salvia officinalis', type:'Shrub', water:'Low', shade:'Full Sun', height:'0.4–0.8m', spread:'0.5–0.8m', soil:'Well-drained, medium fertility', styles:['Productive','Mediterranean','Cottage'], companions:['Rosemary','Thyme','Lavender','Brassicas'], desc:'Woody aromatic herb with soft grey-green leaves and purple flower spikes. Attractive in the ornamental garden as well as culinary use.', notes:'Purple, tricolour and golden varieties are highly ornamental. Prune lightly after flowering to keep compact. Replant every 4–5 years as plants become woody.', custom:false},
+  {id:'p42', name:'Citrus', latin:'Citrus spp.', type:'Tree', water:'Medium', shade:'Full Sun', height:'2–5m', spread:'2–4m', soil:'Fertile, well-drained, slightly acid', styles:['Productive','Mediterranean','Classic'], companions:['Rosemary','Lavender','Companion herbs'], desc:'Productive fruiting trees — lemon, orange, lime, cumquat and mandarin — providing fruit, fragrance and year-round glossy foliage.', notes:'Feed with citrus fertiliser in Aug, Nov, Feb. Water deeply and consistently — irregular watering causes fruit drop. Watch for citrus leafminer, scale. Cumquats excellent in pots.', custom:false},
+
+  // GROUNDCOVERS
+  {id:'p43', name:'Myoporum (Boobialla)', latin:'Myoporum parvifolium', type:'Groundcover', water:'Low', shade:'Full Sun', height:'0.1–0.2m', spread:'1–3m', soil:'Well-drained, adaptable', styles:['Native','Modern','Coastal'], companions:['Lomandra','Westringia','Grevillea'], desc:'Fast-spreading Australian native groundcover that forms a dense, weed-suppressing mat with small white flowers. Excellent for large areas and slopes.', notes:'One of the most useful large-area groundcovers. Spreads rapidly to cover ground. Tip-prune to encourage density. Very drought hardy.', custom:false},
+  {id:'p44', name:'Ajuga (Bugle Weed)', latin:'Ajuga reptans', type:'Groundcover', water:'Low–Medium', shade:'Part Shade to Full Shade', height:'0.1–0.2m', spread:'0.3–0.6m (spreading)', soil:'Adaptable, moist preferred', styles:['Woodland','Cottage','Formal'], companions:['Liriope','Hostas','Hellebore','Ferns'], desc:'Low spreading groundcover with attractive bronze, purple or variegated foliage and blue flower spikes in spring. Excellent shade groundcover.', notes:'Spreads by runners to fill gaps. Can become invasive in ideal conditions — monitor spread. Cut off runners to control.', custom:false},
+  {id:'p45', name:'Dwarf Mondo Grass', latin:'Ophiopogon japonicus \'Nana\'', type:'Groundcover', water:'Low–Medium', shade:'Full Sun to Full Shade', height:'0.05–0.1m', spread:'0.2–0.3m', soil:'Adaptable', styles:['Modern','Formal','Japanese'], companions:['Liriope','Buxus','Maples','Feature stones'], desc:'Ultra-fine, very low-growing dark green grass-like plant. Creates a superb lawn substitute or filler between stepping stones. Very slow-growing and precise.', notes:'Extremely slow-growing — use in small areas or be patient. Excellent between pavers. Black Mondo (O. planiscapus \'Nigrescens\') is a dramatic black-leaved alternative.', custom:false},
+
+  // TREES
+  {id:'p46', name:'Japanese Maple', latin:'Acer palmatum', type:'Tree', water:'Medium', shade:'Part Shade', height:'2–8m', spread:'2–6m', soil:'Fertile, moist, well-drained, slightly acid', styles:['Modern','Japanese','Cottage','Formal'], companions:['Azalea','Hosta','Ferns','Liriope'], desc:'One of the finest ornamental trees for small to medium gardens. Spectacular autumn colour in reds, oranges and yellows. Delicate, deeply-lobed foliage.', notes:'Protect from hot afternoon sun and wind. Keep consistently moist. Feed with low-phosphorus fertiliser. Weeping forms superb as specimens. Excellent in large pots.', custom:false},
+  {id:'p47', name:'Ornamental Pear', latin:'Pyrus calleryana \'Chanticleer\'', type:'Tree', water:'Low–Medium', shade:'Full Sun', height:'8–12m', spread:'4–6m', soil:'Adaptable, well-drained', styles:['Formal','Modern','Classic'], companions:['Agapanthus','Lavender','Lomandra','Buxus'], desc:'Elegant upright deciduous tree with stunning white spring blossom and spectacular deep-red autumn foliage. Perfect avenue and street tree.', notes:'\'Chanticleer\' is the superior variety for narrow upright form. Does not produce messy fruit. Tough and adaptable. Excellent lining driveways.', custom:false},
+  {id:'p48', name:'Crepe Myrtle', latin:'Lagerstroemia indica', type:'Tree', water:'Low–Medium', shade:'Full Sun', height:'3–8m', spread:'3–5m', soil:'Well-drained, adaptable', styles:['Modern','Cottage','Formal'], companions:['Agapanthus','Lavender','Salvia','Lomandra'], desc:'Outstanding small-medium deciduous tree with spectacular summer flowers in pink, red, white and purple, plus excellent autumn colour and attractive bark.', notes:'Do NOT "crape murder" (over-prune). Light tip pruning only. Powdery mildew can be an issue — choose resistant varieties. Dwarf varieties available for small spaces.', custom:false},
+  {id:'p49', name:'Magnolia', latin:'Magnolia spp.', type:'Tree', water:'Medium', shade:'Full Sun to Part Shade', height:'3–15m', spread:'3–10m', soil:'Fertile, moist, well-drained, acid to neutral', styles:['Formal','Cottage','Classic'], companions:['Azalea','Hydrangea','Hellebore','Daffodils'], desc:'Spectacular flowering trees producing large, waxy flowers in white, pink, purple and cream before the leaves emerge. Icons of the Melbourne garden.', notes:'Avoid damaging roots — don\'t plant deeply or disturb root zone. M. stellata (star magnolia) is compact. Evergreen forms available. Very long-lived.', custom:false},
+  {id:'p50', name:'Birch', latin:'Betula spp.', type:'Tree', water:'Medium', shade:'Full Sun to Part Shade', height:'8–20m', spread:'4–8m', soil:'Moist, well-drained, acid', styles:['Modern','Woodland','Formal'], companions:['Hostas','Ferns','Hellebore','Liriope'], desc:'Graceful deciduous tree with beautiful white papery bark and delicate golden-yellow autumn foliage. Superb specimen and multi-stem clump plantings.', notes:"Plant in groups of 3–5 multi-stem forms for maximum impact. Keep moist. 'Jacquemontii' has the whitest bark. Beautiful underplanted with shade perennials.", custom:false},
+  {id:'p51', name:'Silver Cushion Bush', latin:'Leucophyta brownii', type:'Shrub', water:'Low', shade:'Full Sun', height:'0.3–1m', spread:'0.5–1.2m', soil:'Well-drained, sandy, low fertility', styles:['Coastal','Modern','Mediterranean'], companions:['Agave attenuata','Blue Chalk Sticks','Poa labillardieri','Lomandra'], desc:'Extraordinary Australian native with silver wire-like stems forming a tight, rounded mound. One of the most striking silver plants available — looks like spun silver against Corten steel or dark mulch.', notes:'Exceptional contrast against Corten steel. Coastal native — very salt and wind tolerant. Must have perfect drainage. Never fertilise with phosphorus. Prune lightly after flowering to maintain tight form.', custom:false},
+  {id:'p52', name:'Echeveria', latin:'Echeveria spp.', type:'Succulent', water:'Low', shade:'Full Sun to Part Shade', height:'0.05–0.3m', spread:'0.1–0.4m', soil:'Well-drained, sandy or gritty', styles:['Modern','Mediterranean','Coastal'], companions:['Agave attenuata','Blue Chalk Sticks','Aloe Vera','Senecio'], desc:'Rosette-forming succulents in an extraordinary range of colours — blue-grey, pink-edged, burgundy, green and silver. Living sculpture at ground level. Exceptionally photogenic in Corten steel planters.', notes:'Excellent in Corten steel planters and raised beds. Mix varieties for a living tapestry effect. Protect from prolonged frost. Overwatering is the main killer. Propagate easily from offsets.', custom:false},
+  {id:'p53', name:'Photinia', latin:'Photinia fraseri', type:'Shrub', water:'Low–Medium', shade:'Full Sun to Part Shade', height:'2–5m', spread:'2–4m', soil:'Well-drained, adaptable', styles:['Modern','Formal','Cottage'], companions:['Lomandra','Buxus (Box)','Liriope','Agapanthus'], desc:"One of the most popular hedging shrubs in Melbourne — new growth flushes brilliant red in spring and again in autumn, providing vivid seasonal colour. 'Red Robin' is the standard variety.", notes:'Makes an outstanding screen or hedge. Tip-prune regularly to encourage repeated flushes of red new growth. Avoid very wet soils. Some susceptibility to leaf spot in humid conditions — ensure airflow.', custom:false},
+  {id:'p54', name:'Blue Chalk Sticks', latin:'Senecio serpens', type:'Succulent', water:'Low', shade:'Full Sun to Part Shade', height:'0.2–0.4m', spread:'0.5–1m', soil:'Well-drained, sandy', styles:['Modern','Coastal','Mediterranean'], companions:['Agave attenuata','Echeveria','Lomandra','Poa labillardieri'], desc:'Trailing succulent groundcover with ice-blue cylindrical leaves. One of the most striking groundcovers for dry gardens and planter boxes. Looks extraordinary against Corten steel or dark planters.', notes:'Extremely drought-tolerant. Spreads readily to cover ground. Trim back if straggly. Yellow flowers in summer are a bonus. Excellent spilling over planter box edges and Corten steel rims.', custom:false},
+  {id:'p55', name:'Poa labillardieri', latin:'Poa labillardieri', type:'Grass/Sedge', water:'Low', shade:'Full Sun to Part Shade', height:'0.6–1m', spread:'0.6–1m', soil:'Well-drained, adaptable', styles:['Modern','Coastal','Native'], companions:['Lomandra','Westringia','Blue Chalk Sticks','Agave attenuata'], desc:"Australian native tussock grass with fine silver-green arching leaves. Creates beautiful movement in wind. One of the best ornamental grasses for modern Australian gardens — elegant and self-sufficient.", notes:"Extremely tough and drought-tolerant once established. Cut back hard every 2–3 years to refresh. 'Kingsdale' is a popular compact cultivar. Excellent in planter boxes and as mass planting.", custom:false},
+];
+
+// ===================== STATE =====================
+let allPlants = [];
+let activeFilters = { styles: [], water: [], shade: [], types: [] };
+let currentView = 'grid';
+let selectedPlant = null;
+
+const STYLES = ['Modern','Cottage','Native','Mediterranean','Formal','Coastal','Woodland','Tropical','Productive','Japanese'];
+const WATERS = ['Low','Low–Medium','Medium','Medium–High','High'];
+const SHADES = ['Full Sun','Full Sun to Part Shade','Part Shade','Part Shade to Full Shade','Full Shade'];
+const TYPES = ['Shrub','Perennial','Annual','Tree','Groundcover','Grass/Sedge','Climber','Succulent','Fern','Bulb'];
+
+// ===================== STORAGE =====================
+async function loadCustomPlants() {
+  try {
+    const res = await window.storage.get('gwg_custom_plants');
+    return res ? JSON.parse(res.value) : [];
+  } catch { return []; }
+}
+async function saveCustomPlants(plants) {
+  const custom = plants.filter(p => p.custom);
+  try {
+    await window.storage.set('gwg_custom_plants', JSON.stringify(custom));
+  } catch(e) { console.warn('Storage error:', e); }
+}
+
+// ===================== INIT =====================
+async function init() {
+  const custom = await loadCustomPlants();
+  allPlants = [...BUILT_IN_PLANTS, ...custom];
+  buildFilters();
+  renderPlants();
+}
+
+function buildFilters() {
+  buildChipGroup('styleFilters', STYLES, 'styles');
+  buildChipGroup('waterFilters', WATERS, 'water');
+  buildChipGroup('shadeFilters', SHADES, 'shade');
+  buildChipGroup('typeFilters', TYPES, 'types');
+}
+
+function buildChipGroup(containerId, options, filterKey) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = options.map(opt => `
+    <div class="chip" data-key="${filterKey}" data-val="${opt}" onclick="toggleFilter('${filterKey}','${opt}',this)">${opt}</div>
+  `).join('');
+}
+
+function toggleFilter(key, val, el) {
+  const arr = activeFilters[key];
+  const idx = arr.indexOf(val);
+  if (idx === -1) { arr.push(val); el.classList.add('active'); }
+  else { arr.splice(idx, 1); el.classList.remove('active'); }
+  renderPlants();
+}
+
+function clearFilters() {
+  activeFilters = { styles: [], water: [], shade: [], types: [] };
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('searchInput').value = '';
+  renderPlants();
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('gridViewBtn').classList.toggle('active', v === 'grid');
+  document.getElementById('listViewBtn').classList.toggle('active', v === 'list');
+  const grid = document.getElementById('plantGrid');
+  grid.classList.toggle('list-view', v === 'list');
+  document.querySelectorAll('.plant-card').forEach(c => c.classList.toggle('list-view', v === 'list'));
+}
+
+// ===================== RENDER =====================
+function renderPlants() {
+  const search = document.getElementById('searchInput').value.toLowerCase().trim();
+  const sort = document.getElementById('sortSelect').value;
+
+  let filtered = allPlants.filter(p => {
+    if (search) {
+      const haystack = `${p.name} ${p.latin} ${p.desc} ${p.notes} ${p.type} ${p.styles?.join(' ')} ${p.companions?.join(' ')}`.toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    if (activeFilters.styles.length && !p.styles?.some(s => activeFilters.styles.includes(s))) return false;
+    if (activeFilters.water.length && !activeFilters.water.includes(p.water)) return false;
+    if (activeFilters.shade.length && !activeFilters.shade.includes(p.shade)) return false;
+    if (activeFilters.types.length && !activeFilters.types.includes(p.type)) return false;
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    if (sort === 'name') return a.name.localeCompare(b.name);
+    if (sort === 'type') return a.type.localeCompare(b.type) || a.name.localeCompare(b.name);
+    if (sort === 'water') return WATERS.indexOf(a.water) - WATERS.indexOf(b.water);
+    if (sort === 'custom') return (b.custom ? 1 : 0) - (a.custom ? 1 : 0) || a.name.localeCompare(b.name);
+    return 0;
+  });
+
+  // Stats
+  const total = allPlants.length;
+  const custom = allPlants.filter(p => p.custom).length;
+  document.getElementById('statsBar').textContent = `${total} plants  •  ${custom} custom`;
+  document.getElementById('resultsCount').innerHTML = `Showing <span>${filtered.length}</span> of ${total} plants`;
+
+  const grid = document.getElementById('plantGrid');
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="no-results" style="grid-column:1/-1"><div class="icon">🌱</div><h3>No plants found</h3><p>Try adjusting your filters or search term.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => renderCard(p)).join('');
+  if (currentView === 'list') {
+    grid.classList.add('list-view');
+    document.querySelectorAll('.plant-card').forEach(c => c.classList.add('list-view'));
+  }
+
+  // Load images for cards that don't have a cached result yet
+  filtered.forEach(p => {
+    if (p.latin && (imgCache[p.latin.trim()] === undefined || imgCache[p.latin.trim()] === null)) {
+      loadCardImage(p.id, p.latin, `img-${p.id}`);
+    }
+  });
+}
+
+function waterDots(water) {
+  const level = WATERS.indexOf(water);
+  return Array.from({length:5}, (_,i) => `<div class="indicator-dot ${i <= level ? 'filled' : ''}"></div>`).join('');
+}
+
+function renderCard(p) {
+  const styleTagsHtml = (p.styles || []).slice(0,3).map(s => `<span class="style-tag">${s}</span>`).join('');
+  const wrapId = `img-${p.id}`;
+
+  // Check cache for instant render
+  const cached = imgCache[p.latin?.trim()];
+  let imgHtml;
+  if (cached && cached !== 'error' && cached !== null) {
+    imgHtml = `<img src="${cached.url}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'card-img-placeholder\'>🌿</div>'">`;
+  } else if (cached === 'error') {
+    imgHtml = `<div class="card-img-placeholder">🌿</div>`;
+  } else {
+    imgHtml = `<div class="card-img-loading"></div>`;
+  }
+
+  return `
+    <div class="plant-card" onclick="openDetail('${p.id}')">
+      <div class="card-img-wrap" id="${wrapId}">${imgHtml}</div>
+      <div class="card-header">
+        <div>
+          <div class="plant-name">${p.name}${p.custom ? ' ✦' : ''}</div>
+          <div class="plant-latin">${p.latin || ''}</div>
+        </div>
+        <span class="plant-type-badge">${p.type}</span>
+      </div>
+      <div class="plant-desc">${p.desc}</div>
+      <div class="plant-attrs">
+        <div class="attr"><span class="attr-icon">💧</span>${p.water}</div>
+        <div class="attr"><span class="attr-icon">☀️</span>${p.shade}</div>
+        <div class="attr"><span class="attr-icon">📏</span>${p.height || '—'}</div>
+      </div>
+      <div class="style-tags">${styleTagsHtml}</div>
+    </div>
+  `;
+}
+
+// ===================== DETAIL MODAL =====================
+function openDetail(id) {
+  const p = allPlants.find(x => x.id === id);
+  if (!p) return;
+  selectedPlant = p;
+
+  const companions = (p.companions || []).map(c =>
+    `<span class="companion-chip" onclick="searchCompanion('${c}')">${c}</span>`
+  ).join('');
+
+  const deleteBtn = p.custom ? `<button class="btn" style="background:#fee2e2;color:#dc2626;border:1.5px solid #fca5a5;" onclick="deletePlant('${p.id}')">Delete Plant</button>` : '';
+
+  document.getElementById('detailModalContent').innerHTML = `
+    <div class="modal-hero" id="modal-hero">
+      <div class="modal-hero-loading">Loading image…</div>
+      <span class="modal-hero-credit" id="modal-hero-credit" style="display:none;">Image: Wikipedia / CC</span>
+    </div>
+    <div class="modal-header">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;padding-right:44px;">
+        <div>
+          <div class="modal-plant-name">${p.name}${p.custom ? ' <span style="font-size:14px;color:var(--earth);">Custom</span>' : ''}</div>
+          <div class="modal-latin">${p.latin || ''}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+            <span class="plant-type-badge">${p.type}</span>
+            ${(p.styles||[]).map(s=>`<span class="style-tag">${s}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-section">
+        <div class="detail-title">About this Plant</div>
+        <div class="notes-box">${p.desc}</div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-title">Growing Conditions</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-item-label">💧 Watering</div>
+            <div class="detail-item-value">${p.water}</div>
+            <div class="indicator" style="margin-top:5px;">${waterDots(p.water)}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">☀️ Sun / Shade</div>
+            <div class="detail-item-value">${p.shade}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">📏 Height</div>
+            <div class="detail-item-value">${p.height || '—'}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">↔️ Spread</div>
+            <div class="detail-item-value">${p.spread || '—'}</div>
+          </div>
+          <div class="detail-item" style="grid-column:1/-1">
+            <div class="detail-item-label">🌍 Soil</div>
+            <div class="detail-item-value">${p.soil || '—'}</div>
+          </div>
+        </div>
+      </div>
+      ${companions ? `
+      <div class="detail-section">
+        <div class="detail-title">🤝 Companion Plants — tap to search</div>
+        <div class="companions-list">${companions}</div>
+      </div>` : ''}
+      ${p.notes ? `
+      <div class="detail-section">
+        <div class="detail-title">📋 Landscaper Notes</div>
+        <div class="notes-box">${p.notes}</div>
+      </div>` : ''}
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+        ${deleteBtn}
+        <button class="btn btn-ghost" style="color:var(--charcoal);border-color:var(--border);" onclick="closeDetail()">Close</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('detailModal').classList.add('open');
+
+  // Load hero image
+  if (p.latin) {
+    loadModalHero(p.latin, 'modal-hero', 'modal-hero-credit');
+  } else {
+    document.getElementById('modal-hero').innerHTML = `<div class="modal-hero-loading" style="animation:none;background:var(--cream);">🌿 No image available</div>`;
+  }
+}
+
+function searchCompanion(name) {
+  closeDetail();
+  document.getElementById('searchInput').value = name;
+  renderPlants();
+}
+
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('open');
+}
+
+// ===================== ADD PLANT =====================
+function openAddModal() {
+  // Clear form
+  ['f_name','f_latin','f_height','f_spread','f_soil','f_styles','f_companions','f_desc','f_notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('addModal').classList.add('open');
+}
+function closeAddModal() {
+  document.getElementById('addModal').classList.remove('open');
+}
+
+async function saveCustomPlant() {
+  const name = document.getElementById('f_name').value.trim();
+  if (!name) { toast('Please enter a plant name'); return; }
+
+  const plant = {
+    id: 'custom_' + Date.now(),
+    name,
+    latin: document.getElementById('f_latin').value.trim(),
+    type: document.getElementById('f_type').value,
+    water: document.getElementById('f_water').value,
+    shade: document.getElementById('f_shade').value,
+    height: document.getElementById('f_height').value.trim(),
+    spread: document.getElementById('f_spread').value.trim(),
+    soil: document.getElementById('f_soil').value.trim(),
+    styles: document.getElementById('f_styles').value.split(',').map(s=>s.trim()).filter(Boolean),
+    companions: document.getElementById('f_companions').value.split(',').map(s=>s.trim()).filter(Boolean),
+    desc: document.getElementById('f_desc').value.trim(),
+    notes: document.getElementById('f_notes').value.trim(),
+    custom: true
+  };
+
+  allPlants.push(plant);
+  await saveCustomPlants(allPlants);
+  closeAddModal();
+  renderPlants();
+  toast(`✦ ${name} added to your database`);
+}
+
+async function deletePlant(id) {
+  if (!confirm('Delete this plant from your database?')) return;
+  allPlants = allPlants.filter(p => p.id !== id);
+  await saveCustomPlants(allPlants);
+  closeDetail();
+  renderPlants();
+  toast('Plant removed');
+}
+
+// ===================== EXPORT =====================
+function openExportModal() {
+  const custom = allPlants.filter(p => p.custom);
+  const all = allPlants;
+  const data = JSON.stringify(all, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'groundwork-plants.json';
+  a.click();
+  toast(`📋 Exported ${all.length} plants`);
+}
+
+// ===================== WIKIMEDIA IMAGES =====================
+const imgCache = {}; // latin name -> { url, credit } or 'error'
+
+async function fetchWikiImage(latin) {
+  if (!latin) return null;
+  const key = latin.trim();
+  if (imgCache[key] !== undefined) return imgCache[key];
+
+  // Mark as in-flight
+  imgCache[key] = null;
+
+  try {
+    // Use the genus + first species word for best results
+    const searchTerm = key.split(' ').slice(0,2).join(' ');
+    const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchTerm)}`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error('no page');
+    const data = await res.json();
+    if (data.thumbnail && data.thumbnail.source) {
+      // Upscale the thumbnail
+      const src = data.thumbnail.source.replace(/\/\d+px-/, '/500px-');
+      const result = { url: src, credit: 'Image: Wikipedia' };
+      imgCache[key] = result;
+      return result;
+    }
+    imgCache[key] = 'error';
+    return null;
+  } catch {
+    imgCache[key] = 'error';
+    return null;
+  }
+}
+
+// Inject image into a card's img wrap once fetched
+async function loadCardImage(plantId, latin, wrapId) {
+  const result = await fetchWikiImage(latin);
+  const wrap = document.getElementById(wrapId);
+  if (!wrap) return;
+  if (result && result.url) {
+    wrap.innerHTML = `<img src="${result.url}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'card-img-placeholder\'>🌿</div>'">`;
+  } else {
+    wrap.innerHTML = `<div class="card-img-placeholder">🌿</div>`;
+  }
+}
+
+// Inject image into the modal hero
+async function loadModalHero(latin, heroId, creditId) {
+  const result = await fetchWikiImage(latin);
+  const hero = document.getElementById(heroId);
+  const credit = document.getElementById(creditId);
+  if (!hero) return;
+  if (result && result.url) {
+    hero.innerHTML = `<img src="${result.url}" alt="" onerror="this.parentElement.innerHTML='<div class=\'modal-hero-loading\'>No image available</div>'">`;
+    if (credit) credit.style.display = 'block';
+  } else {
+    hero.innerHTML = `<div class="modal-hero-loading" style="animation:none;background:var(--cream);">🌿 No image available</div>`;
+  }
+}
+
+
+// ===================== TAB SWITCHING =====================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&tab==='db')||(i===1&&tab==='palettes')));
+  const dbPage = document.getElementById('dbPage');
+  const palettePage = document.getElementById('palettePage');
+  if (tab === 'db') {
+    dbPage.style.display = 'flex';
+    palettePage.classList.remove('active');
+  } else {
+    dbPage.style.display = 'none';
+    palettePage.classList.add('active');
+    renderPalettes();
+  }
+}
+
+// ===================== PALETTE DATA =====================
+const PALETTES = [
+  {
+    id:'pal1', name:'Modern Minimalist',
+    tagline:'Dark steel tones, architectural form, zero clutter. Every plant is a sculpture.',
+    color:'#3d4f3a', water:'Low–Medium', sun:'Full Sun',
+    context:'New build front yards, paved courtyards, commercial entries',
+    designNotes:'The design language here is restraint. Three plant types maximum per layer — thriller, filler, edging — repeated rhythmically along a bed. The clipped Buxus spheres create geometric bones; Blue Fescue provides silver punctuation; the Olive anchors the whole composition. Use charcoal or white pebble mulch, never bark.',
+    plants:[
+      {name:"Olive Tree 'Fruitless'",latin:'Olea europaea',role:'Thriller — Canopy Anchor',why:"The silver-grey foliage and sculptural trunk give height and permanence. Nothing looks more considered as a feature tree. Fruitless variety keeps it clean."},
+      {name:"Lomandra 'Tanika'",latin:'Lomandra longifolia',role:'Mid-layer Mass',why:"Fine arching leaf texture softens the hard landscaping. Planted in drifts of 5–7 creates rhythm. 'Tanika' stays compact — no cutting needed."},
+      {name:'Buxus Sphere (clipped)',latin:'Buxus sempervirens',role:'Structural Punctuation',why:'Repeat spheres at key intervals anchor the eye. The contrast of a perfect dark globe against silver Lomandra is quintessentially modern.'},
+      {name:'Blue Fescue',latin:'Festuca glauca',role:'Edging — Colour Contrast',why:'Steel-blue tone echoes the olive foliage. Low and tidy, creates a clean border without effort. Replace clumps every 3–4 years.'},
+      {name:'Westringia (clipped hedge)',latin:'Westringia fruticosa',role:'Screening / Background',why:'Silver-grey foliage blends seamlessly with the olive. Clips into a clean backdrop that frames everything in front of it.'},
+    ]
+  },
+  {
+    id:'pal2', name:'Coastal Melbourne',
+    tagline:'Silver, movement, salt-tolerant. A garden that looks like it belongs near the bay.',
+    color:'#7a9aaa', water:'Low', sun:'Full Sun',
+    context:'Bayside suburbs, exposed sites, front gardens with sea breeze',
+    designNotes:'Coastal planting is about embracing movement — grasses and fine-leaved shrubs that dance in the wind. The palette is silver, grey-green and soft white. No dark green. Use limestone or bleached timber in the hard landscaping. Avoid heavy broadleaf plants that look wrong in a coastal context.',
+    plants:[
+      {name:'Olive Tree',latin:'Olea europaea',role:'Thriller — Canopy',why:"Coastal-tough and iconic. Prune for character rather than a lollipop shape — let it look ancient. The silver leaf is perfectly at home in a coastal palette."},
+      {name:"Westringia 'Naringa'",latin:'Westringia fruticosa',role:'Mid Shrub Layer',why:"Variegated silver-green form. Salt and wind tolerant. One of the toughest plants available for coastal gardens — thrives where others struggle."},
+      {name:"Lomandra 'Lime Tuff'",latin:'Lomandra longifolia',role:'Texture & Movement',why:'Bright lime-green foliage contrasts the silver tones. Creates beautiful movement in coastal breezes. Stays compact and tidy.'},
+      {name:"Dianella 'Little Rev'",latin:'Dianella caerulea',role:'Mid-ground Colour',why:'Blue-green strappy leaf with purple-blue flowers and striking blue berries. Provides colour interest without breaking the coastal palette.'},
+      {name:'Muhly Grass',latin:'Muhlenbergia capillaris',role:'Seasonal Drama',why:'The autumn pink-purple haze is spectacular backlit by afternoon sun. Creates incredible movement that feels uniquely coastal.'},
+    ]
+  },
+  {
+    id:'pal3', name:'Luxury Front Yard',
+    tagline:'Formal structure with sophisticated softness. Signals quality before you reach the front door.',
+    color:'#6b5a3e', water:'Low–Medium', sun:'Full Sun to Part Shade',
+    context:'Premium residential front yards, wide frontages, statement entries',
+    designNotes:"Use ONE feature tree — not three. Symmetry or clear asymmetry, nothing accidental. The Magnolia is the non-negotiable centrepiece. Clipped spheres create the architectural framework. Everything within that structure can be more relaxed. White agapanthus only — colour would cheapen the palette.",
+    plants:[
+      {name:"Magnolia grandiflora 'Little Gem'",latin:'Magnolia grandiflora',role:'Thriller — Hero Tree',why:"Evergreen, glossy leaves with russet undersides and enormous white flowers. 'Little Gem' stays manageable. Plants quality and permanence."},
+      {name:'Buxus Spheres (clipped)',latin:'Buxus sempervirens',role:'Formal Framework',why:'Repeated spheres at even spacing create the formal backbone. They read as deliberate and confident — shorthand for quality landscaping.'},
+      {name:"Liriope 'Evergreen Giant'",latin:'Liriope muscari',role:'Mid-ground Mass',why:"Dark green strappy mass under the magnolia. Creates lushness without competing. Tidy, reliable, requires nothing."},
+      {name:"Hebe 'Green Globe'",latin:'Hebe spp.',role:'Soft Sphere — Filler',why:'Naturally rounded compact form with tiny leaves. Echoes the Buxus spheres but softer. Creates a conversation between the two forms.'},
+      {name:'Agapanthus (white only)',latin:'Agapanthus praecox',role:'Seasonal Flower Drama',why:"White agapanthus in summer is exceptional against dark Magnolia foliage. Plant in bold drifts of 9+. White only — colour would cheapen the palette."},
+    ]
+  },
+  {
+    id:'pal4', name:'Native Contemporary',
+    tagline:"Australian natives — but designed, not bush. Sophisticated, structured, full of wildlife.",
+    color:'#7a6e42', water:'Low', sun:'Full Sun',
+    context:'Any Melbourne garden, council verges, wildlife corridors, low-maintenance sites',
+    designNotes:"The failure mode of native gardens is randomness — everything dotted in without a plan. Use natives the way European plants are used: in layers, in drifts, with clear structure. Design the bones first, plant the natives into them. Grevillea provides height and wildlife food; Lomandra and Dianella create the rhythmic mid layer; Myoporum covers the ground.",
+    plants:[
+      {name:"Banksia spinulosa 'Birthday Candles'",latin:'Banksia spinulosa',role:'Thriller — Feature Shrub',why:"Golden cylinder flowers in autumn-winter when the garden needs it most. Compact form. Honeyeaters will come daily. Extraordinary plant."},
+      {name:"Grevillea 'Robyn Gordon'",latin:'Grevillea spp.',role:'Mid Shrub — Wildlife Magnet',why:'Long-flowering red spider flowers year-round. Medium size, manageable. Prune after flowering to keep tight. Birds are constant visitors.'},
+      {name:"Westringia 'Grey Box'",latin:'Westringia fruticosa',role:'Structure — Hedge / Mass',why:'Grey-green foliage provides the neutral backdrop that makes colourful natives pop. Clips well for structure. Drought-proof once established.'},
+      {name:"Lomandra 'Longifolia'",latin:'Lomandra longifolia',role:'Mid-ground Rhythm',why:'The workhorse. In drifts of 5–7 it creates the repetition that makes a design look intentional rather than random.'},
+      {name:'Dianella tasmanica',latin:'Dianella tasmanica',role:'Colour & Texture Contrast',why:'Broader leaf than Lomandra, stunning blue berries. Sits beautifully between Lomandra drifts and adds genuine seasonal interest.'},
+    ]
+  },
+  {
+    id:'pal5', name:'Purple & Silver Border',
+    tagline:'A perennial border with incredible flowering succession. Always something performing.',
+    color:'#6b5a82', water:'Low–Medium', sun:'Full Sun',
+    context:'Garden borders, fence lines, any sunny well-drained bed',
+    designNotes:"Plant in odd numbers (3, 5, 7) in diagonal drifts so colour weaves through the whole border. The Stipa grass creates airy connective tissue that stops the planting feeling heavy. The Buxus sphere provides one anchor point of dark structure. Colour echo — purple and silver repeated through three layers so the eye travels the entire border.",
+    plants:[
+      {name:"Salvia nemorosa 'Caradonna'",latin:'Salvia nemorosa',role:'Primary Flower — Dark Violet',why:"The deepest, darkest violet spike available. Upright black stems make it architectural. Cut back after first flush for a second wave. The backbone of the palette."},
+      {name:"Nepeta 'Walker's Low'",latin:'Nepeta faassenii',role:'Soft Lavender Froth',why:"Billows of soft lavender-blue spring to autumn. The contrast between Caradonna's dark uprights and Nepeta's soft mounds is the whole design in miniature."},
+      {name:'Mexican Feather Grass',latin:'Nassella tenuissima',role:'Connective Tissue — Movement',why:'Silver-blonde, impossibly fine grass that catches every breeze. Weaves between the dark salvias and creates lightness. Without it, the border is too heavy.'},
+      {name:"Geranium 'Rozanne'",latin:'Geranium spp.',role:'Ground-level Blue Filler',why:"Flowers October to June — extraordinary run. Blue-violet ties to the salvia colour above while filling gaps at ground level. Spreads to suppress weeds."},
+      {name:'Clipped Buxus Sphere',latin:'Buxus sempervirens',role:'Anchor — Dark Structure',why:"One sphere, placed deliberately. Creates a full stop in the border — a moment of dark solidity against all that movement and lightness. Essential."},
+    ]
+  },
+  {
+    id:'pal6', name:'Rooftop & Planter Box',
+    tagline:'Wind-tough, low water, high visual impact. Designed for containers and elevated sites.',
+    color:'#4a5568', water:'Low', sun:'Full Sun',
+    context:'Rooftop terraces, balconies, large planter boxes, exposed elevated positions',
+    designNotes:"Container planting requires a different mindset: weight, wind, heat load and drainage are all critical. Use shallow-rooted, drought-tolerant plants that look exceptional together. The Strelitzia is the thriller. Blue Chalk Sticks provide silver groundcover that trails over edges. Fine grass creates movement. Charcoal pebble mulch is essential — it insulates roots and looks the part.",
+    plants:[
+      {name:'Bird of Paradise',latin:'Strelitzia reginae',role:'Thriller — Bold Architectural Form',why:'Broad paddle leaves provide instant drama and scale. Extremely wind-resistant. Spectacular orange-blue flowers. Slow-growing so stays manageable in containers for years.'},
+      {name:"Blue Chalk Sticks",latin:'Senecio serpens',role:'Groundcover — Colour Contrast',why:'Ice-blue succulent foliage is extraordinary against dark planter boxes. Trails over edges. Zero water requirement. Creates the visual contrast that makes the composition.'},
+      {name:"Poa labillardieri",latin:'Poa labillardieri',role:'Movement & Texture',why:'Fine, arching silver-green grass creates movement in wind. Softens the hard edges of planter boxes. Looks beautiful year-round with zero maintenance.'},
+      {name:'Rosemary (trailing)',latin:'Salvia rosmarinus',role:'Spiller — Edge Softener',why:'Trailing rosemary cascading over the planter edge is classically elegant. Fragrant. Extremely drought-tolerant. Functional and beautiful simultaneously.'},
+      {name:'Agave attenuata',latin:'Agave attenuata',role:'Structural Accent',why:"No spine variety — safe for families and bold in form. Creates a strong sculptural accent at corners of large planters. Near zero water. Looks expensive."},
+    ]
+  },
+  {
+    id:'pal7', name:'Dry Garden Mediterranean',
+    tagline:'Plants that thrive on neglect. Designed for tough, hot, dry sites with stunning results.',
+    color:'#9b7b5b', water:'Low', sun:'Full Sun',
+    context:'Hot north-facing aspects, clay or sandy soils, water-restricted sites',
+    designNotes:"Stop trying to fight drought — design with plants that peak in dry conditions. Gravel mulch is essential (not bark — it holds moisture and rots these plants). Leave space between plants so they don't compete for water. The palette is silver, grey, terracotta and soft mauve. Beautiful and utterly self-sufficient after year one.",
+    plants:[
+      {name:'Olive Tree',latin:'Olea europaea',role:'Canopy Anchor',why:'Nothing is more quintessentially Mediterranean. Once established it survives on rainfall alone. The silver canopy casts dappled shade that suits the plants below.'},
+      {name:'Lavender (hedge)',latin:'Lavandula angustifolia',role:'Mid-layer Fragrance & Colour',why:'Mass planted in a drift of 5–9, lavender provides an extraordinary purple wave in spring. The fragrance is part of the experience. Sharp drainage essential.'},
+      {name:'Rosemary (upright)',latin:'Salvia rosmarinus',role:'Structure — Background Hedge',why:'Clips into a clean backdrop hedge. Silver-green foliage echoes the olive and lavender palette. Blue winter flowers bridge the seasons.'},
+      {name:'Cistus (Rock Rose)',latin:'Cistus spp.',role:'Filler — Papery Flower Drama',why:'Covered in flowers spring through early summer in the hottest, driest spots. Self-sufficient. The papery petals in white and pink are beautiful despite their delicacy.'},
+      {name:'Teucrium fruticans',latin:'Teucrium fruticans',role:'Silver Mass — Neutral Filler',why:"Silver-blue aromatic foliage ties lavender, cistus and rosemary together. Clips well into flowing hedges. An underused gem — most clients don't know it."},
+    ]
+  },
+  {
+    id:'pal8', name:'Shaded Sanctuary',
+    tagline:'Cool, lush and restorative. A garden room that feels like deep relief from the sun.',
+    color:'#3a5a4a', water:'Medium', sun:'Part to Full Shade',
+    context:'South-facing gardens, under established trees, narrow side passages, shaded courtyards',
+    designNotes:"Shade planting is about foliage contrast — varying size, texture and tone since you have fewer flowers to work with. Bold Hosta leaves, fine Liriope, delicate Fern fronds, and nodding Hellebore flowers create a year-round tapestry. Keep the palette to greens, silvers and deep purples. No bright colours — they look wrong in shade.",
+    plants:[
+      {name:'Soft Tree Fern',latin:'Dicksonia antarctica',role:'Thriller — Canopy Structure',why:"Creates an immediate sense of place — lush, cool, ancient. The 3m fronds cast dappled shade. A statement plant that transforms a shaded space completely."},
+      {name:'Hosta (large blue form)',latin:'Hosta spp.',role:'Bold Foliage — Focal Points',why:'The bold, ribbed blue-green leaves are everything in a shade garden. Plant in groups of 3 for impact. The scale contrast with fine-leaved plants is dramatic.'},
+      {name:'Hellebore',latin:'Helleborus hybridus',role:'Winter Flower — Ground Layer',why:'Nodding flowers in the dead of winter when nothing else performs. Self-seeds to create colonies under trees. The most valuable winter-flowering shade plant available.'},
+      {name:'Liriope muscari',latin:'Liriope muscari',role:'Edging — Year-round Structure',why:'Dark green strappy edging that defines bed edges and pathways. Purple flower spikes in late summer. Tolerates complete dry shade — invaluable.'},
+      {name:'Ajuga (bronze form)',latin:'Ajuga reptans',role:'Groundcover — Colour Layer',why:'Deep bronze-purple groundcover that creates colour even in dense shade. Blue flower spikes in spring. Spreads to fill gaps and suppress weeds.'},
+    ]
+  },
+  {
+    id:'pal9', name:'Tropical Bold',
+    tagline:'Statement foliage, resort feeling. For clients who want drama and are prepared to water for it.',
+    color:'#2d5a3d', water:'Medium–High', sun:'Part Shade to Full Sun',
+    context:'Sheltered courtyards, pool surrounds, protected north-facing gardens, indoor-outdoor spaces',
+    designNotes:"Tropical planting needs at least three dramatically different leaf forms: large paddle vs fine strap vs round or heart-shaped. Colour should be deep green and near-black with occasional bold accent. Shelter from strong wind is non-negotiable — torn leaves destroy the effect. This palette works best in a contained, sheltered courtyard.",
+    plants:[
+      {name:'Bird of Paradise',latin:'Strelitzia reginae',role:'Thriller — Architectural Hero',why:"Paddle leaves up to 1m long create instant tropical scale. Extraordinary orange flowers. The anchor plant the whole composition is built around."},
+      {name:'Canna Lily (dark bronze)',latin:'Canna generalis',role:'Bold Foliage — Vertical Drama',why:"Bronze-black foliage with red flowers creates extraordinary drama. The vertical paddle leaves echo the Strelitzia at a different scale."},
+      {name:'Phormium (dark red)',latin:'Phormium tenax',role:'Structural Strap — Dark Accent',why:'Deep bronze-red strappy leaves provide the darkest tone in the palette. The sword-like form contrasts with paddle shapes around it. Essential for grounding the composition.'},
+      {name:'Soft Tree Fern',latin:'Dicksonia antarctica',role:'Canopy — Dappled Shade Maker',why:'Creates the canopy layer that completes the tropical illusion. Everything underneath benefits from the filtered light.'},
+      {name:'Liriope muscari',latin:'Liriope muscari',role:'Ground Layer — Dark Edging',why:'The darkest, densest groundcover that keeps its form. Holds the composition together at ground level. Purple flowers in late summer are a welcome surprise.'},
+    ]
+  },
+  {
+    id:'pal10', name:'Cottage Reimagined',
+    tagline:'Romantic but structured. The soft abundance of cottage style without the chaos.',
+    color:'#8a6a7a', water:'Low–Medium', sun:'Full Sun',
+    context:'Established suburbs, heritage homes, Edwardian and Victorian properties',
+    designNotes:"Traditional cottage gardens fail because they have no structure — just a tangle of colour with no bones. This version uses repeated Roses and clipped Catmint as the backbone, then weaves in Salvia, Iris and Echinacea for succession. Every plant must flower at a different time so something performs from September through to April. Plant in drifts and odd numbers — never singles.",
+    plants:[
+      {name:"Rose (David Austin — repeat flowering)",latin:'Rosa spp.',role:'Thriller — Fragrance & Flower Drama',why:"The heart of the cottage garden. Choose repeat-flowering David Austins: 'Olivia Rose', 'Gentle Hermione'. Plant 3 of the same variety, not one each of three different ones."},
+      {name:"Catmint 'Walker's Low'",latin:'Nepeta faassenii',role:'Classic Rose Companion — Froth & Fragrance',why:"The most elegant companion to roses in existence. Soft lavender-blue froth belongs at the base of every rose. Shear after first flush for repeat. Always plant with roses."},
+      {name:'Salvia nemorosa',latin:'Salvia nemorosa',role:'Mid-border Vertical — Blue Spine',why:'Provides the upright, structured element within the soft cottage planting. Deep violet-blue spikes July–December. Bridges wild and structured perfectly.'},
+      {name:'Iris germanica',latin:'Iris germanica',role:'Spring Drama — Bold Focal Point',why:'Spectacular spring flowering before the roses peak — extends the season earlier. The bold sword leaf provides winter structure. Plant en masse in groups of 7+ for impact.'},
+      {name:'Echinacea purpurea',latin:'Echinacea purpurea',role:'Late Summer — Bird Attractor',why:"Takes over when roses and salvia tire in late summer. The cone seed heads feed birds through winter — leave them standing. The final act of the season."},
+    ]
+  },
+  {
+    id:'pal11', name:'Modern Backyard — Steel Edge',
+    tagline:'Multi-stem Olives, clipped spheres, curved steel edging. The most sought-after backyard style in Melbourne right now.',
+    color:'#2c3e2d', water:'Low', sun:'Full Sun',
+    context:'New build backyards, turf lawns with garden borders, dark Colorbond fence backdrop',
+    designNotes:"The dark fence is doing half the work — it makes every plant pop. The key to this style is the curved steel edging that creates a fluid, generous bed against a clean lawn. Multi-stem Olives give immediate scale without blocking light. Clipped Buxus spheres anchor the planting at regular intervals — they should be the same size and evenly spaced, not random. Blue Agave or Echeveria at ground level provides the silver accent that completes the palette. Bark mulch in this context is correct — it suits the Australian garden aesthetic and the dark fence.",
+    plants:[
+      {name:'Olive Tree (multi-stem)',latin:'Olea europaea',role:'Thriller — Feature Tree',why:"Multi-stem form is far more interesting than a standard single trunk. Plant 2–3 in a loose group for a grove effect. The silver canopy against a dark Colorbond fence is exceptional."},
+      {name:'Buxus Sphere (clipped)',latin:'Buxus sempervirens',role:'Structural Punctuation — Rhythm',why:'Same-sized spheres at even intervals create the repetition that makes this style read as designed. Non-negotiable. They are the bones of the whole bed.'},
+      {name:'Agave attenuata',latin:'Agave attenuata',role:'Silver Accent — Low Drama',why:"The blue-grey rosette at ground level provides a completely different texture and form. No spines so safe for families. Groups of 3, not singles — singles look forgotten."},
+      {name:'Blue Chalk Sticks',latin:'Senecio serpens',role:'Groundcover — Silver Carpet',why:'Spreads to fill the ground between the feature plants. The ice-blue colour echoes the Agave and ties the whole bed together. Very low water once established.'},
+      {name:"Lomandra 'Tanika'",latin:'Lomandra longifolia',role:'Texture Contrast — Fine Strap',why:"Fine arching grass provides movement and softness between the hard geometric elements. 'Tanika' stays small and tidy. Plant in drifts of 3 between the Buxus spheres."},
+    ]
+  },
+  {
+    id:'pal12', name:'Corten Steel & Succulents',
+    tagline:'Weathered steel, decomposed granite, silver groundcovers. Raw materials, refined planting.',
+    color:'#8B4513', water:'Low', sun:'Full Sun',
+    context:'Contemporary front yards, small courtyards, warm north-facing aspects',
+    designNotes:"The Corten steel is the hero material — everything else is chosen to complement its rust-orange tone. Silver and blue-grey plants look extraordinary against rusted steel. Decomposed granite (terracotta-toned) or crushed granite paths complete the warm material palette. Avoid green mulch bark — it fights the colour story. The stepping stones should be irregular natural stone, not cut pavers. This is a dry garden at heart — zero irrigation after establishment if designed correctly.",
+    plants:[
+      {name:'Silver Cushion Bush',latin:'Leucophyta brownii',role:'Silver Mass — Foreground Drama',why:"A silver cloud of fine texture that spills over Corten edges beautifully. The contrast of silver foliage against rust steel is one of the most striking combinations in dry garden design. Australian native."},
+      {name:'Blue Chalk Sticks',latin:'Senecio serpens',role:'Groundcover — Blue-Silver Carpet',why:'Trails and spills between stepping stones and over Corten edges. The cool blue tone counterbalances the warm rust of the steel. Near zero water requirement.'},
+      {name:'Agave attenuata',latin:'Agave attenuata',role:'Structural Accent — Bold Rosette',why:'A single large Agave as a centrepiece in the raised Corten bed commands attention. The bold geometry contrasts with the delicate silver groundcovers around it.'},
+      {name:'Echeveria (mixed)',latin:'Echeveria spp.',role:'Container Planting — Colour Detail',why:'The blue-grey, pink-edged rosettes of Echeveria add fine detail and colour variation inside raised Corten planters. Low water, long-lived, endlessly photogenic.'},
+      {name:'Poa labillardieri',latin:'Poa labillardieri',role:'Background Movement — Fine Grass',why:'Silver-green clumping grass provides height and movement behind the low groundcovers. Softens the hard edges of the Corten and creates the naturalistic backdrop the composition needs.'},
+    ]
+  },
+  {
+    id:'pal13', name:'Considered Arrival — Water Feature',
+    tagline:'A single specimen Olive, clipped structure, silver groundcovers and a water feature as focal point. Refined restraint.',
+    color:'#b5a898', water:'Low', sun:'Full Sun',
+    context:'Statement front entries, circular driveways, prestige properties with generous forecourts',
+    designNotes:"This is the most restrained palette on the list — and restraint is the hardest thing to achieve. The water feature (concrete bowl or millstone) is the single focal point. Everything else is subordinate to it. ONE Olive tree, positioned to frame not obscure. The silver groundcover mass (Teucrium or Westringia) flows around the water feature like water itself. NO flowers — this palette is entirely about form, texture and material. Limestone or concrete pavers only. Never terracotta.",
+    plants:[
+      {name:'Olive Tree (character specimen)',latin:'Olea europaea',role:'Thriller — Framing Element',why:"A single large character Olive with a gnarled, interesting trunk. Not a standard nursery tree — source a specimen with age. It frames the water feature without competing with it."},
+      {name:'Teucrium fruticans (mass)',latin:'Teucrium fruticans',role:'Silver Groundcover — Flowing Mass',why:"Mass planted as a single species to create a silver-grey sea around the water feature. The undulating silver softens the hard paving and draws the eye to the water bowl."},
+      {name:'Buxus Sphere (one only)',latin:'Buxus sempervirens',role:'Counterweight — Dark Punctuation',why:"A single clipped Buxus sphere provides the one moment of dark, solid green in an otherwise silver composition. Placed deliberately off-centre to the water feature."},
+      {name:"Lomandra 'Tanika'",latin:'Lomandra longifolia',role:'Background Texture',why:'A small drift behind the water feature provides fine texture contrast to the broad silver Teucrium. Keeps the background interesting without competing with the centrepiece.'},
+      {name:'Westringia (clipped)',latin:'Westringia fruticosa',role:'Structure — Background Screen',why:"Clipped into a low flowing hedge behind the composition. Silver-grey that blends with the Teucrium but adds structural definition to the background."},
+    ]
+  },
+  {
+    id:'pal14', name:'Naturalistic Boulder Garden',
+    tagline:'Birch multi-stems, sandstone boulders, native groundcovers. A garden that looks like it grew itself — but didn\'t.',
+    color:'#7a6a52', water:'Low–Medium', sun:'Full Sun',
+    context:'Sloped gardens, properties with existing rocks, large suburban backyards, naturalistic style clients',
+    designNotes:"This is the hardest style to execute well because it has to look effortless. The boulders must be placed first — they are the structural skeleton. Then plant into and around them. Never the other way around. Birch multi-stems are essential for the airy, light-filtering canopy that this style requires. The groundcover layer should be a mix of 3–4 species planted in overlapping drifts, never in rows. Decomposed granite paths should meander, not be straight. Every plant should appear self-seeded and inevitable.",
+    plants:[
+      {name:'Birch (multi-stem clump)',latin:'Betula spp.',role:'Thriller — Airy Canopy',why:"Multi-stem birch clumps give the dappled, naturalistic canopy this style requires. White bark glows in afternoon light. Autumn gold is spectacular. Plant 3–5 stems per clump."},
+      {name:'Blue Fescue',latin:'Festuca glauca',role:'Ground Layer — Steel Blue Accent',why:'Low steel-blue clumps weave between the boulders. The blue tone reads as cool water against the warm sandstone. Plant irregularly in groups of 3–5, not evenly spaced.'},
+      {name:'Blue Chalk Sticks',latin:'Senecio serpens',role:'Groundcover — Flowing Blue-Silver',why:'Trails between rocks and down slopes. The sprawling, informal growth habit is exactly right for this naturalistic style. Drought-proof once established.'},
+      {name:'Pratia (Lobularia between pavers)',latin:'Lobularia maritima',role:'Path Filler — Delicate White Froth',why:"Tiny white flowers that creep between stepping stones and boulders. The delicate scale against large stones creates beautiful contrast. Self-seeds to fill every gap."},
+      {name:'Sandstone Boulders + Poa grass',latin:'Poa labillardieri',role:'Background Mass — Native Grass',why:"Large clumping silver-green grass anchors the background and provides the naturalistic backdrop that makes the boulders and birch look like they belong in the landscape."},
+    ]
+  },
+  {
+    id:'pal15', name:'Corten Curves — Coastal Contemporary',
+    tagline:'Curved Corten beds, Olive tree, succulents and native grasses. Coastal suburb front yard done properly.',
+    color:'#a0522d', water:'Low', sun:'Full Sun',
+    context:'Coastal and suburban front yards, new builds, Corten steel garden beds',
+    designNotes:"The curved Corten beds are the design move — they create organic, generous planting zones within a paved or lawn setting. The Olive tree is always slightly off-centre. Agave as a centrepiece in the round bed, surrounded by trailing Blue Chalk Sticks. Sandstone rocks placed as if naturally occurring within the beds add weight and texture. The material palette is warm: rust Corten, honey sandstone, silver-blue plants. Keep the planting palette to 4 species maximum — simplicity is the point.",
+    plants:[
+      {name:'Olive Tree',latin:'Olea europaea',role:'Thriller — Off-Centre Feature',why:"Positioned deliberately off-centre in the composition. Not symmetrical. The asymmetry is the sophistication. Single trunk with character, not a multi-stem in this context."},
+      {name:'Agave attenuata (centrepiece)',latin:'Agave attenuata',role:'Focal Point — Bold Rosette',why:"Centred in the round Corten bed as the hero plant. Everything else radiates around it. The geometry of a perfect Agave rosette suits the circular Corten form exactly."},
+      {name:'Blue Chalk Sticks',latin:'Senecio serpens',role:'Spiller — Trailing Groundcover',why:"Trails over and through the Corten edges creating a soft, organic contrast to the hard steel. The blue-grey colour is the defining tone of the whole composition."},
+      {name:"Lomandra 'Lime Tuff'",latin:'Lomandra longifolia',role:'Background Texture — Fine Strap',why:"Bright green fine strap provides the one warm colour note against the cool blue-grey plants and warm rust steel. Creates important contrast without complicating the palette."},
+      {name:'Sandstone Rocks (placed)',latin:'Festuca glauca',role:'Texture Detail — Material Interest',why:"Small sandstone rocks placed within the beds add a third material texture and reinforce the warm/cool colour contrast. Blue Fescue planted around them echoes the chalk sticks."},
+    ]
+  },
+  {
+    id:'pal16', name:'Mixed Perennial Courtyard',
+    tagline:'Diverse low perennials, succulents and shrubs in Corten beds. A garden designed to be explored up close.',
+    color:'#5a7a5a', water:'Low–Medium', sun:'Full Sun to Part Shade',
+    context:'Urban courtyard gardens, small front yards, Corten raised bed gardens, inner suburb properties',
+    designNotes:"This style rewards detail — each plant is interesting up close. The key is achieving apparent diversity within a controlled palette. Use a mix of textures: fine grass, broad succulent rosette, mounding shrub, and trailing groundcover. Black rubber chip mulch (as in image 2) is a considered choice — it reads as sophisticated, shows the plants clearly, and suppresses weeds effectively. The Corten beds define the planting zones; the path and stepping stones define the movement through the space.",
+    plants:[
+      {name:'Photinia (red-tip)',latin:'Photinia fraseri',role:'Thriller — Red Seasonal Accent',why:"New growth flushes brilliant red in spring — the most vivid seasonal display of any shrub in this palette. Clips into a backdrop screen or stands as a loose specimen. The red ties to the Corten rust tone."},
+      {name:'Hebe (compact form)',latin:'Hebe spp.',role:'Structure — Rounded Mounding Shrub',why:'Compact, naturally rounded form requires almost no maintenance. Small glossy leaves provide a fine texture contrast to broader succulents. Flowers pink-white in spring and summer.'},
+      {name:'Echeveria (mixed species)',latin:'Echeveria spp.',role:'Detail Planting — Rosette Texture',why:'Mixed Echeveria varieties in Corten beds provide extraordinary close-up detail. Blue-grey, pink-edged, green and burgundy rosettes create a living mosaic at ground level.'},
+      {name:'Lomandra (compact)',latin:'Lomandra longifolia',role:'Structural Grass — Filler',why:'Fine green strap between the feature plants provides the neutral green that balances the bold succulents and red Photinia. Reliable, zero-maintenance, always looks right.'},
+      {name:'Blue Chalk Sticks',latin:'Senecio serpens',role:'Groundcover — Connecting Element',why:"Trails between all the other plants tying the composition together. The blue-grey is the thread that connects every element in the bed. Can't be left out of this palette."},
+    ]
+  },
+];
+
+// ===================== PALETTE RENDERING =====================
+function renderPalettes() {
+  const grid = document.getElementById('paletteGrid');
+  if (!grid) return;
+  grid.innerHTML = PALETTES.map(p => renderPaletteCard(p)).join('');
+  PALETTES.forEach(palette => {
+    palette.plants.forEach((plant, i) => {
+      loadPalettePlantImage(palette.id, i, plant.latin);
+    });
+  });
+}
+
+function renderPaletteCard(palette) {
+  const plantsHtml = palette.plants.map((plant, i) => `
+    <div class="palette-plant-row">
+      <div class="palette-plant-img" id="pimg-${palette.id}-${i}">
+        <div class="card-img-loading" style="width:100%;height:100%;border-radius:8px;"></div>
+      </div>
+      <div class="palette-plant-info">
+        <div class="palette-plant-role">${plant.role}</div>
+        <div class="palette-plant-name">${plant.name}</div>
+        <div class="palette-plant-why">${plant.why}</div>
+      </div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="palette-card">
+      <div class="palette-modal-hero" style="background:${palette.color};"></div>
+      <div class="palette-header">
+        <div class="palette-name">${palette.name}</div>
+        <div class="palette-tagline">${palette.tagline}</div>
+        <div class="palette-meta">
+          <span class="palette-meta-chip">💧 ${palette.water}</span>
+          <span class="palette-meta-chip">☀️ ${palette.sun}</span>
+        </div>
+        <div class="palette-meta" style="margin-top:4px;">
+          <span class="palette-meta-chip" style="background:var(--warm-white);color:var(--text-muted);">📍 ${palette.context}</span>
+        </div>
+      </div>
+      <div class="palette-plants">${plantsHtml}</div>
+      <div class="palette-design-notes">
+        <div class="palette-design-notes-title">✏️ Designer's Notes</div>
+        <p>${palette.designNotes}</p>
+      </div>
+    </div>
+  `;
+}
+
+async function loadPalettePlantImage(paletteId, plantIdx, latin) {
+  if (!latin) return;
+  const result = await fetchWikiImage(latin);
+  const el = document.getElementById(`pimg-${paletteId}-${plantIdx}`);
+  if (!el) return;
+  if (result && result.url) {
+    el.innerHTML = `<img src="${result.url}" alt="" onerror="this.parentElement.innerHTML='🌿';this.parentElement.style.background='var(--cream)'">`;
+  } else {
+    el.innerHTML = '🌿';
+    el.style.cssText += ';background:var(--cream);font-size:20px;';
+  }
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ===================== CLOSE ON BACKDROP =====================
+document.getElementById('detailModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('detailModal')) closeDetail();
+});
+document.getElementById('addModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('addModal')) closeAddModal();
+});
+
+init();
+</script>
+</body>
+</html>
