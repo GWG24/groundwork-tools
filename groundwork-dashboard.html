@@ -862,7 +862,8 @@ function renderInvList(limit){
   if(!invEl) return;
   invEl.innerHTML = unique.slice(0, limit).map(r=>{
     const s=getStatus(r);
-    return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span></div></div>`;
+const paidBtn = s === 'unpaid' ? `<button onclick="markInvoicePaid('${r.id}')" style="margin-top:5px;background:var(--green-leaf);border:none;border-radius:6px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;padding:4px 10px;cursor:pointer;width:100%">✓ Mark Paid</button>` : '';
+      return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span>${paidBtn}</div></div>`;
   }).join('') + (unique.length > limit ? `<button class="see-more-btn" onclick="renderInvList(${limit+10})">Show More Invoices (${unique.length-limit} remaining)</button>` : '');
 }
 
@@ -964,7 +965,25 @@ async function loadAll(){
 
 loadAll();
 
-// ==================== QUOTE APPROVAL ====================
+async function markInvoicePaid(id){
+  try{
+    const res = await fetch(SB_URL+'/rest/v1/gg_quotes?id=eq.'+id+'&select=data', {
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    const rows = await res.json();
+    if(!rows.length) return;
+    const d = typeof rows[0].data==='string' ? JSON.parse(rows[0].data) : rows[0].data;
+    d.status = 'paid';
+    await fetch(SB_URL+'/rest/v1/gg_quotes?id=eq.'+id, {
+      method:'PATCH',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({data:d, updated_at:new Date().toISOString()})
+    });
+    showToast('✓ Invoice marked as paid!');
+    loadAll();
+  }catch(e){ showToast('⚠ Could not update invoice'); console.error(e); }
+}
+  // ==================== QUOTE APPROVAL ====================
 async function toggleApproval(id, btn){
   const isApproved = btn.classList.contains('approved');
   const newStatus = isApproved ? 'pending' : 'approved';
