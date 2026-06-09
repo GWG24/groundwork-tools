@@ -2680,6 +2680,16 @@ function sendToInvoice() {
   // Build invoice line items from quote
   invItems = [];
 
+  // Check for price override — if set, send as single line item
+  var priceOverrideVal = parseFloat(document.getElementById('priceOverride').value);
+  if (!isNaN(priceOverrideVal) && priceOverrideVal > 0) {
+    invItems.push({ name: jobTitle || 'Landscaping Works', qty: 1, price: Math.round(priceOverrideVal / 1.10 * 100) / 100 });
+    renderInvItems();
+    switchTab('invoice');
+    showToast('✓ Quote sent to Invoice (adjusted price used)!');
+    return;
+  }
+
   // Add labour if any
   var hours = parseFloat(document.getElementById('hours').value) || 0;
   var rate = getRate();
