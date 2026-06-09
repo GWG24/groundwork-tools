@@ -597,6 +597,7 @@
         <div class="price-field"><label>Bluestone ($/m²)</label><input type="number" id="pvp-bluestone" value="110" oninput="calcPaving()"></div>
         <div class="price-field"><label>Porcelain ($/m²)</label><input type="number" id="pvp-porcelain" value="85" oninput="calcPaving()"></div>
         <div class="price-field"><label>Clay brick ($/m²)</label><input type="number" id="pvp-brick" value="55" oninput="calcPaving()"></div>
+        <div class="price-field"><label>Price per brick ($)</label><input type="number" id="pvp-brick-each" value="1.20" step="0.01" oninput="calcPaving()"></div>
         <div class="price-field"><label>Bedding sand ($/m³)</label><input type="number" id="pvp-sand" value="60" oninput="calcPaving()"></div>
         <div class="price-field"><label>Crusher dust ($/m³)</label><input type="number" id="pvp-base" value="65" oninput="calcPaving()"></div>
         <div class="price-field"><label>Edge restraint ($/lm)</label><input type="number" id="pvp-edge" value="6" oninput="calcPaving()"></div>
@@ -1897,11 +1898,14 @@ function calcPaving() {
   else { paverM2 = parseFloat(sizeEl.value); var sl = {'0.16':'400×400mm','0.36':'600×600mm','0.18':'600×300mm'}; paverSizeLabel = sl[sizeEl.value] || ''; }
   var areaWithWaste = area * 1.1;
   var paverQty = paverM2 > 0 ? Math.ceil(areaWithWaste / paverM2) : Math.ceil(areaWithWaste);
+  var brickEachPrice = parseFloat(document.getElementById('pvp-brick-each') ? document.getElementById('pvp-brick-each').value : 1.20) || 1.20;
+var bricksPerM2 = brickEachPrice > 0 ? Math.round(prices['brick'] / brickEachPrice) : 46;
+var brickCount = type === 'brick' ? Math.ceil(areaWithWaste * bricksPerM2) : 0;
   var sandM3 = Math.ceil(area * v('pv-sand')/1000 * 1.1 * 100)/100;
   var baseM3 = Math.ceil(area * v('pv-base')/1000 * 1.1 * 100)/100;
   var edge = v('pv-edge');
   var items = [
-    { name: names[type] + (paverSizeLabel ? ' (' + paverSizeLabel + ')' : ''), qty: paverM2 > 0 ? paverQty + ' units' : Math.ceil(areaWithWaste) + ' m²', total: Math.ceil(areaWithWaste) * prices[type], note: 'incl. 10% waste' },
+{ name: names[type] + (paverSizeLabel ? ' (' + paverSizeLabel + ')' : ''), qty: type === 'brick' ? brickCount + ' bricks (' + bricksPerM2 + '/m²)' : paverM2 > 0 ? paverQty + ' units' : Math.ceil(areaWithWaste) + ' m²', total: Math.ceil(areaWithWaste) * prices[type], note: 'incl. 10% waste' },   
     { name: 'Crusher dust base', qty: baseM3 + ' m³', total: baseM3 * v('pvp-base') },
     { name: 'Bedding sand', qty: sandM3 + ' m³', total: sandM3 * v('pvp-sand') },
     { name: 'Grout/adhesive', qty: '1 lot', total: v('pvp-grout') }
