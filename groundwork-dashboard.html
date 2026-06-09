@@ -518,7 +518,7 @@ function generateMonthlyReport(){
       const monthName=months[selMonth]+' '+selYear;
 
       // Cash basis - only paid invoices for selected month
-      const monthPaidInv=_invoices.filter(r=>getStatus(r)==='paid'&&isSelMonth(r.updated_at));
+const monthPaidInv=_invoices.filter(r=>getStatus(r)==='paid'&&(isSelMonth(getDate(r))||isSelMonth(r.updated_at)));
       const monthExp=_expenses.filter(e=>isSelMonth(e.expense_date)||isSelMonth(e.created_at));
       const totalReceived=monthPaidInv.reduce((s,r)=>s+getTotal(r),0);
       const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
