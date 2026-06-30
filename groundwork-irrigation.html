@@ -513,9 +513,15 @@ html, body {
 #report-output { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; font-size: 13px; line-height: 1.6; }
 @media (min-width: 600px) { #report-output { padding: 30px 40px; } }
 .report-header { border-bottom: 3px solid var(--green); padding-bottom: 14px; margin-bottom: 18px; }
+.report-letterhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.report-letterhead-logo img { height: 56px; display: block; }
+.report-letterhead-contact { text-align: right; font-size: 12px; color: var(--mid); line-height: 1.6; }
+.report-doc-row { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px; }
 .report-logo { font-size: 18px; font-weight: 800; color: var(--green); letter-spacing: 0.04em; }
-.report-title { font-size: 20px; font-weight: 700; margin-top: 6px; }
-.report-meta { color: var(--mid); font-size: 12px; margin-top: 4px; }
+.report-title { font-size: 26px; font-weight: 800; }
+.report-meta { color: var(--mid); font-size: 12px; margin-top: 4px; text-align: right; }
+.report-nbr { font-size: 13px; color: var(--mid); text-align: right; }
+.report-nbr strong { color: var(--soil); font-size: 14px; }
 .report-section { margin-top: 20px; }
 .report-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--green); margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
 .report-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
@@ -3290,9 +3296,25 @@ function generateReport() {
   });
   document.getElementById('report-output').innerHTML = `
     <div class="report-header">
-      <div class="report-logo">${LOGO_B64 ? `<img src="${LOGO_B64}" alt="Groundwork Gardens" style="height:44px;display:block;margin-bottom:8px">` : '⬡ GROUNDWORK GARDENS'}</div>
-      <div class="report-title">Irrigation Design Report</div>
-      <div class="report-meta">Prepared: ${now}</div>
+      <div class="report-letterhead">
+        <div class="report-letterhead-logo">
+          ${LOGO_B64 ? `<img src="${LOGO_B64}" alt="Groundwork Gardens">` : '<div class="report-logo">⬡ GROUNDWORK GARDENS</div>'}
+        </div>
+        <div class="report-letterhead-contact">
+          Joffre Road, Pascoe Vale VIC 3044, Australia<br>
+          Phone: 0408 165 409<br>
+          Email: groundworkgardens.email@gmail.com
+        </div>
+      </div>
+      <div class="report-doc-row">
+        <div>
+          <div class="report-title">Irrigation Plan</div>
+          <div style="font-size:12px;color:var(--mid);margin-top:2px">Groundwork Gardens &nbsp;|&nbsp; ABN: 28 594 108 955</div>
+        </div>
+        <div class="report-nbr">
+          Prepared: <strong>${now}</strong>
+        </div>
+      </div>
     </div>
     <div class="report-section"><h3>Project Details</h3>
       <table class="report-table">
