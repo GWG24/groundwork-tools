@@ -8,7 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
   :root {
     --black: #0a0a0a; --card: #f0f0f0; --border: #2a2a2a;
     --cream: #d4c9a8; --cream-dim: #9e9278; --green: #4a7c3f;
@@ -3617,6 +3618,7 @@ window.location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + encode
   }
     // ==================== INIT ====================
 window.addEventListener('load', function() {
+  emailjs.init('bWtPl2gxZoi332iHn');
   // Set dates
   document.getElementById('issueDate').valueAsDate = new Date();
   var vd = new Date(); vd.setDate(vd.getDate() + 7);
