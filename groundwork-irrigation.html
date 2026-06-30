@@ -2558,20 +2558,35 @@ function placeSprinklerAt(pos) {
   renderSprCanvas(); renderSprList(); updateSprStatus(); persistState();
 }
 
+// Shared drag-vs-click movement threshold, used by both mouse and touch
+// handlers below, so a tiny accidental wobble doesn't get mistaken for a drag.
+const SPR_DRAG_THRESHOLD = 6; // px of movement before it counts as a drag
+
 // Mouse — spr canvas
+// Same movement-threshold approach as the touch handler below: a click only
+// counts as a drag once the mouse has actually moved a few pixels. Without
+// this, the tiniest mouse wobble between two quick clicks would register as
+// a drag-then-click instead of a clean double-click, breaking rotation.
 let lastSprClick = 0;
+let sprMouseStartPos = null, sprMouseMoved = false;
+
 sprCanvas.addEventListener('mousedown', e => {
   const pos = cPos(sprCanvas, e);
   if (placeMode) { placeSprinklerAt(pos); return; }
   const hit = [...state.sprinklers].reverse().find(s => Math.hypot(s.x-pos.x, s.y-pos.y) < 14);
   const now = Date.now();
+
+  sprMouseStartPos = pos;
+  sprMouseMoved = false;
+
   if (hit) {
     if (state.selectedSpr === hit.id && now - lastSprClick < 400) {
       // Double-click on same sprinkler = rotate 45°
-      rotateSpr(45); lastSprClick = 0; return;
+      rotateSpr(45); lastSprClick = 0; dragSpr = null; renderSprCanvas(); renderSprList(); return;
     }
     state.selectedSpr = hit.id; dragSpr = hit;
-    dragSprOff = {x:pos.x-hit.x, y:pos.y-hit.y}; isDragSpr = true;
+    dragSprOff = {x:pos.x-hit.x, y:pos.y-hit.y};
+    isDragSpr = false; // only becomes true once movement exceeds the threshold
     lastSprClick = now;
   } else {
     state.selectedSpr = null; dragSpr = null; lastSprClick = 0;
@@ -2579,12 +2594,24 @@ sprCanvas.addEventListener('mousedown', e => {
   renderSprCanvas(); renderSprList();
 });
 sprCanvas.addEventListener('mousemove', e => {
-  if (!isDragSpr || !dragSpr) return;
+  if (!dragSpr) return;
   const pos = cPos(sprCanvas, e);
-  dragSpr.x = pos.x - dragSprOff.x; dragSpr.y = pos.y - dragSprOff.y;
-  renderSprCanvas();
+
+  if (!isDragSpr && sprMouseStartPos) {
+    const moved = Math.hypot(pos.x - sprMouseStartPos.x, pos.y - sprMouseStartPos.y);
+    if (moved > SPR_DRAG_THRESHOLD) { isDragSpr = true; sprMouseMoved = true; }
+  }
+
+  if (isDragSpr) {
+    dragSpr.x = pos.x - dragSprOff.x; dragSpr.y = pos.y - dragSprOff.y;
+    renderSprCanvas();
+  }
 });
-sprCanvas.addEventListener('mouseup', () => { isDragSpr = false; if (dragSpr) persistState(); dragSpr = null; });
+sprCanvas.addEventListener('mouseup', () => {
+  if (isDragSpr && dragSpr) persistState();
+  isDragSpr = false; dragSpr = null;
+  sprMouseStartPos = null; sprMouseMoved = false;
+});
 
 // Touch — spr canvas
 // Distinguishes a genuine drag from a tap by requiring the finger to move
@@ -2594,7 +2621,6 @@ sprCanvas.addEventListener('mouseup', () => { isDragSpr = false; if (dragSpr) pe
 // making rotation feel unreliable.
 let lastSprTapId = null, lastSprTapTime = 0;
 let sprTouchStartPos = null, sprTouchMoved = false;
-const SPR_DRAG_THRESHOLD = 6; // px of finger movement before it counts as a drag
 
 sprCanvas.addEventListener('touchstart', e => {
   e.preventDefault();
