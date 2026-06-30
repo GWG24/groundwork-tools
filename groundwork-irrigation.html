@@ -2580,7 +2580,7 @@ sprCanvas.addEventListener('mousedown', e => {
   sprMouseMoved = false;
 
   if (hit) {
-    if (state.selectedSpr === hit.id && now - lastSprClick < 400) {
+    if (state.selectedSpr === hit.id && now - lastSprClick < 700) {
       // Double-click on same sprinkler = rotate 45°
       rotateSpr(45); lastSprClick = 0; dragSpr = null; renderSprCanvas(); renderSprList(); return;
     }
@@ -2673,7 +2673,7 @@ sprCanvas.addEventListener('touchend', e => {
     // Genuine tap (no meaningful movement) — handle as tap/double-tap for rotation
     const now = Date.now();
     const hitId = dragSpr.id;
-    if (lastSprTapId === hitId && now - lastSprTapTime < 400) {
+    if (lastSprTapId === hitId && now - lastSprTapTime < 700) {
       rotateSpr(45);
       lastSprTapId = null; lastSprTapTime = 0;
     } else {
