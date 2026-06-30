@@ -2439,6 +2439,7 @@ doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAI
 doc.setFontSize(7); doc.setTextColor(180,180,180); doc.setFont('helvetica','normal');
 doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, 289, {align:'center'});
     doc.save('Quote-' + quoteNum + '-Groundwork-Gardens.pdf');
+    sendGWGRecord('Quote', quoteNum, clientName, clientAddress, fmt(total), issueDate);
     status.textContent = '✓ PDF downloaded!';
     btn.disabled = false;
     setTimeout(function() { status.textContent = ''; }, 3000);
@@ -2644,6 +2645,7 @@ function generateInvoicePDF() {
     doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, y, {align:'center'});
 
     doc.save('Invoice-' + invNum + '-Groundwork-Gardens.pdf');
+    sendGWGRecord('Invoice', invNum, clientName, clientAddress, fmt(total), invDate);
     if (status) status.textContent = '✓ PDF downloaded!';
     if (btn) btn.disabled = false;
     setTimeout(function() { if(status) status.textContent = ''; }, 3000);
@@ -3600,7 +3602,20 @@ function sendInvoiceEmail() {
 window.location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);  document.getElementById('invEmailModal').classList.remove('show');
   showToast('✓ Gmail opened — attach your PDF invoice and send!');
 }
-  // ==================== INIT ====================
+ // ==================== GWG RECORD EMAIL ====================
+  function sendGWGRecord(docType, docNum, clientName, clientAddress, total, docDate) {
+    if (typeof emailjs === 'undefined') return;
+    emailjs.send('service_f2v80x4', 'template_maitf7j', {
+      doc_type: docType,
+      doc_num: docNum,
+      client_name: clientName || 'Unknown',
+      client_address: clientAddress || '',
+      total: total,
+      doc_date: docDate || '',
+      timestamp: new Date().toLocaleString('en-AU')
+    }, 'bWtPl2gxZoi332iHn').catch(function(e) { console.log('GWG record email failed:', e); });
+  }
+    // ==================== INIT ====================
 window.addEventListener('load', function() {
   // Set dates
   document.getElementById('issueDate').valueAsDate = new Date();
