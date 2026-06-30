@@ -418,6 +418,7 @@ html, body {
 }
 .nozzle-code-label { font-size: 13px; font-weight: 800; }
 .nozzle-code-sub { font-size: 9px; color: var(--mid); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin-top: 1px; }
+.nozzle-code-radius { font-size: 10px; color: var(--green); font-weight: 700; margin-top: 4px; font-family: monospace; }
 
 #nozzle-spec-preview {
   margin-top: 12px;
@@ -2442,22 +2443,41 @@ let lastSprTap  = 0;
 // after picking the colour-coded nozzle.
 let selectedNozzleCode = 'N8';
 
+// Calculates the min and max spray radius a nozzle code can achieve,
+// across every arc and pressure variant it supports — so the picker can
+// show "Throws 1.0–1.4m" at a glance without drilling into the dropdowns.
+function getNozzleRadiusRange(code) {
+  const d = NOZZLE_DATA[code];
+  let min = Infinity, max = -Infinity;
+  Object.values(d.arcs).forEach(variants => {
+    variants.forEach(v => {
+      if (v.radius < min) min = v.radius;
+      if (v.radius > max) max = v.radius;
+    });
+  });
+  return { min, max };
+}
+
 function renderProducts() {
   // Render the colour-coded nozzle code picker (N4, N6, N8... + Dripline)
   const codes = Object.keys(NOZZLE_DATA);
   const codeListHtml = codes.map(code => {
     const d = NOZZLE_DATA[code];
+    const r = getNozzleRadiusRange(code);
+    const rangeLabel = r.min === r.max ? `${r.min}m` : `${r.min}–${r.max}m`;
     return `
       <div class="nozzle-code-card ${selectedNozzleCode===code ? 'selected' : ''}" onclick="selectNozzleCode('${code}')">
         <div class="nozzle-code-swatch" style="background:${d.color}"></div>
         <div class="nozzle-code-label">${code}</div>
         <div class="nozzle-code-sub">${d.colorName}</div>
+        <div class="nozzle-code-radius">Throws ${rangeLabel}</div>
       </div>`;
   }).join('') + `
       <div class="nozzle-code-card ${selectedNozzleCode==='DRIP' ? 'selected' : ''}" onclick="selectNozzleCode('DRIP')">
         <div class="nozzle-code-swatch" style="background:#795548"></div>
         <div class="nozzle-code-label">Drip</div>
         <div class="nozzle-code-sub">Dripline</div>
+        <div class="nozzle-code-radius">&nbsp;</div>
       </div>`;
   document.getElementById('nozzle-code-list').innerHTML = codeListHtml;
 
