@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <!-- GG_VERSION_20260503_FINAL -->
 <html lang="en">
@@ -220,6 +221,7 @@
     <div class="pill active" onclick="togglePill(this,'footings')">🏗️ Concrete Footings</div>
     <div class="pill active" onclick="togglePill(this,'maintenance')">🌿 Maintenance</div>
     <div class="pill active" onclick="togglePill(this,'bulkmaterials')">🪨 Bulk Materials</div>
+    <div class="pill active" onclick="togglePill(this,'extramaterials')">➕ Extra Materials</div>
   </div>
 </div>
 
@@ -1056,11 +1058,25 @@
       <div class="result-list" id="res-bulkmaterials"></div>
       <div class="hours-estimate" id="hrs-bulkmaterials" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-bulkmaterials-val">—</span></div>
 
-      <div class="divider"></div>
+    </div>
+  </div>
+</div>
 
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--green-bright);margin-bottom:10px">+ Extra Items</div>
-      <div id="bulkExtrasList"></div>
-      <button class="add-btn" onclick="addBulkExtra()">+ Add Extra Item</button>
+  <!-- EXTRA MATERIALS -->
+<div class="section" id="sec-extramaterials">
+  <div class="job-section">
+    <div class="job-header" onclick="toggleJob('extramaterials')">
+      <div class="job-icon">➕</div><div class="job-title">Extra Materials</div>
+      <div class="job-badge" id="badge-extramaterials"></div><div class="job-toggle open" id="toggle-extramaterials">▾</div>
+    </div>
+    <div class="job-body open" id="body-extramaterials">
+
+      <p style="font-size:12px;color:var(--cream-dim);margin-bottom:14px">Anything not covered by the other calculators — pins, fixings, one-off purchases, odds and ends.</p>
+
+      <div id="extraMaterialsList"></div>
+      <button class="add-btn" onclick="addExtraMaterial()">+ Add Extra Item</button>
+
+      <div class="result-list" id="res-extramaterials"></div>
 
     </div>
   </div>
@@ -2968,7 +2984,7 @@ function calcMaintenance() {
   showResults('maintenance', items, 0, 0);
 }
 
-  var bulkExtras = [];
+  var extraMaterials = [];
 
 function bulkMethodChange() {
   var method = document.getElementById('bm-method').value;
@@ -3010,37 +3026,42 @@ function calcBulkMaterials() {
     items.push({ name: matInfo.name, qty: volM3 + ' m³', total: volM3 * price, note: 'incl. 10% waste · ' + area.toFixed(1) + ' m² @ ' + (depth*1000) + 'mm' });
   }
 
-  bulkExtras.filter(function(e){ return e.name || e.price; }).forEach(function(e) {
-    items.push({ name: e.name || 'Extra item', qty: (e.qty||1) + ' units', qty_num: parseFloat(e.qty)||1, total: (parseFloat(e.qty)||1) * (parseFloat(e.price)||0) });
-  });
-
   if (items.length === 0) { showResults('bulkmaterials', []); return; }
   var hrsMin = area > 0 ? Math.round(area * 0.15) : 0;
   var hrsMax = area > 0 ? Math.round(area * 0.3) : 0;
   showResults('bulkmaterials', items, hrsMin, hrsMax);
 }
 
-function addBulkExtra() {
-  bulkExtras.push({ name: '', qty: 1, price: 0 });
-  renderBulkExtras();
-  setTimeout(function() { var all = document.querySelectorAll('.bulk-extra-name'); if (all.length) all[all.length-1].focus(); }, 50);
+function calcExtraMaterials() {
+  var items = [];
+  extraMaterials.filter(function(e){ return e.name || e.price; }).forEach(function(e) {
+    items.push({ name: e.name || 'Extra item', qty: (e.qty||1) + ' units', qty_num: parseFloat(e.qty)||1, total: (parseFloat(e.qty)||1) * (parseFloat(e.price)||0) });
+  });
+  if (items.length === 0) { showResults('extramaterials', []); return; }
+  showResults('extramaterials', items, 0, 0);
 }
 
-function renderBulkExtras() {
-  var el = document.getElementById('bulkExtrasList');
+function addExtraMaterial() {
+  extraMaterials.push({ name: '', qty: 1, price: 0 });
+  renderExtraMaterials();
+  setTimeout(function() { var all = document.querySelectorAll('.extra-material-name'); if (all.length) all[all.length-1].focus(); }, 50);
+}
+
+function renderExtraMaterials() {
+  var el = document.getElementById('extraMaterialsList');
   if (!el) return;
   el.innerHTML = '';
-  bulkExtras.forEach(function(item, i) {
+  extraMaterials.forEach(function(item, i) {
     var row = document.createElement('div');
     row.className = 'mat-row';
-    var ni = document.createElement('input'); ni.className = 'bulk-extra-name mat-name'; ni.type = 'text'; ni.placeholder = 'Item name e.g. Pins'; ni.value = item.name || '';
-    ni.oninput = (function(idx) { return function() { bulkExtras[idx].name = this.value; calcBulkMaterials(); }; })(i);
+    var ni = document.createElement('input'); ni.className = 'extra-material-name mat-name'; ni.type = 'text'; ni.placeholder = 'Item name e.g. Pins'; ni.value = item.name || '';
+    ni.oninput = (function(idx) { return function() { extraMaterials[idx].name = this.value; calcExtraMaterials(); }; })(i);
     var qi = document.createElement('input'); qi.className = 'mat-qty'; qi.type = 'number'; qi.placeholder = 'Qty'; qi.value = item.qty || 1; qi.min = 1;
-    qi.oninput = (function(idx) { return function() { bulkExtras[idx].qty = parseFloat(this.value)||1; calcBulkMaterials(); }; })(i);
+    qi.oninput = (function(idx) { return function() { extraMaterials[idx].qty = parseFloat(this.value)||1; calcExtraMaterials(); }; })(i);
     var pi = document.createElement('input'); pi.className = 'mat-price'; pi.type = 'number'; pi.placeholder = '$0'; pi.value = item.price || 0;
-    pi.oninput = (function(idx) { return function() { bulkExtras[idx].price = parseFloat(this.value)||0; calcBulkMaterials(); }; })(i);
+    pi.oninput = (function(idx) { return function() { extraMaterials[idx].price = parseFloat(this.value)||0; calcExtraMaterials(); }; })(i);
     var rb = document.createElement('button'); rb.className = 'mat-remove'; rb.textContent = '×';
-    rb.onclick = (function(idx) { return function() { bulkExtras.splice(idx, 1); renderBulkExtras(); calcBulkMaterials(); }; })(i);
+    rb.onclick = (function(idx) { return function() { extraMaterials.splice(idx, 1); renderExtraMaterials(); calcExtraMaterials(); }; })(i);
     row.appendChild(ni); row.appendChild(qi); row.appendChild(pi); row.appendChild(rb);
     el.appendChild(row);
   });
