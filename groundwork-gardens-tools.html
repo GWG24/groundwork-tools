@@ -1225,6 +1225,7 @@
   </div>
   <button onclick="sendToInvoice()" style="width:100%;background:transparent;border:1px solid var(--orange);border-radius:6px;color:var(--orange);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase;margin-bottom:10px">🧾 Send to Invoice</button>
   <button class="gen-btn" id="genBtn" onclick="generatePDF()">⬇ Download Quote PDF</button>
+  <button class="gen-btn" onclick="generatePDF('share')" style="background:#1a73e8;margin-top:8px">📤 Save to Drive</button>
   <button onclick="openEmailModal()" style="width:100%;background:transparent;border:2px solid #1a73e8;border-radius:6px;color:#1a73e8;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:14px;text-transform:uppercase;margin-top:8px;">📧 Send Quote Email</button>
   <div id="statusMsg"></div>
   <div class="gap"></div>
@@ -1362,6 +1363,7 @@
     <button onclick="showLoadInvoices()" style="flex:1;background:transparent;border:1px solid #2e6da4;border-radius:6px;color:#4a90d9;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">📂 Load Invoice</button>
   </div>
   <button class="gen-btn" onclick="generateInvoicePDF()">⬇ Download Invoice PDF</button>
+  <button class="gen-btn" onclick="generateInvoicePDF('share')" style="background:#1a73e8;margin-top:8px">📤 Save to Drive</button>
   <button onclick="openInvEmailModal()" style="width:100%;background:transparent;border:2px solid #1a73e8;border-radius:6px;color:#1a73e8;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:14px;text-transform:uppercase;margin-top:8px;">📧 Send Invoice Email</button>
   <div id="inv-status-msg"></div>
   <div class="gap"></div>
@@ -2374,7 +2376,21 @@ async function loadQuoteById(id) {
 }
 
 // ==================== PDF GENERATION ====================
-function generatePDF() {
+async function sharePDF(doc, filename) {
+  try {
+    var blob = doc.output('blob');
+    var file = new File([blob], filename, { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: filename });
+    } else {
+      doc.save(filename);
+      showToast('Share not supported here — downloaded instead.');
+    }
+  } catch(e) {
+    if (e.name !== 'AbortError') { console.error(e); showToast('⚠ Could not open share sheet'); }
+  }
+}
+  function generatePDF(mode) {
   var btn = document.getElementById('genBtn');
   var status = document.getElementById('statusMsg');
   btn.disabled = true; status.textContent = 'Generating PDF...';
@@ -2511,8 +2527,14 @@ doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAI
    doc.setDrawColor(197,212,192); doc.setLineWidth(0.3); doc.line(margin, 284, pw-margin, 284);
 doc.setFontSize(7); doc.setTextColor(180,180,180); doc.setFont('helvetica','normal');
 doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, 289, {align:'center'});
-    doc.save('Quote-' + quoteNum + '-Groundwork-Gardens.pdf');
-    status.textContent = '✓ PDF downloaded!';
+var quoteFilename = 'Quote-' + quoteNum + '-Groundwork-Gardens.pdf';
+    if (mode === 'share') {
+      sharePDF(doc, quoteFilename);
+      status.textContent = '';
+    } else {
+      doc.save(quoteFilename);
+      status.textContent = '✓ PDF downloaded!';
+    }
     btn.disabled = false;
     setTimeout(function() { status.textContent = ''; }, 3000);
   } catch(err) {
@@ -2617,7 +2639,7 @@ function calcInv() {
   }
 }
 
-function generateInvoicePDF() {
+function generateInvoicePDF(mode) {
   var btn = document.querySelector('#tab-invoice .gen-btn');
   var status = document.getElementById('inv-status-msg');
   if (btn) btn.disabled = true;
@@ -2716,8 +2738,14 @@ function generateInvoicePDF() {
     doc.setFontSize(7); doc.setTextColor(180,180,180);
     doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, y, {align:'center'});
 
-    doc.save('Invoice-' + invNum + '-Groundwork-Gardens.pdf');
-       if (status) status.textContent = '✓ PDF downloaded!';
+var invFilename = 'Invoice-' + invNum + '-Groundwork-Gardens.pdf';
+    if (mode === 'share') {
+      sharePDF(doc, invFilename);
+      if (status) status.textContent = '';
+    } else {
+      doc.save(invFilename);
+      if (status) status.textContent = '✓ PDF downloaded!';
+    }
     if (btn) btn.disabled = false;
     setTimeout(function() { if(status) status.textContent = ''; }, 3000);
   } catch(err) {
