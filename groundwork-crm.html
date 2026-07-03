@@ -315,6 +315,17 @@ function updateStats() {
 
 function setTab(tab,el) { currentTab=tab; document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); render(); }
 
+  function buildCalendarLink(c) {
+  if (!c.followup_date) return '#';
+  var d = c.followup_date.replace(/-/g,'');
+  var nextDay = new Date(c.followup_date);
+  nextDay.setDate(nextDay.getDate()+1);
+  var d2 = nextDay.toISOString().split('T')[0].replace(/-/g,'');
+  var title = 'Follow up: ' + c.name;
+  var details = (c.job ? 'Job: ' + c.job + '\n' : '') + (c.notes || '');
+  var location = c.suburb || '';
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + '&dates=' + d + '/' + d2 + '&details=' + encodeURIComponent(details) + '&location=' + encodeURIComponent(location);
+}
 function getFollowupStatus(c) {
   if (!c.followup_date) return null;
   if (c.followup_date < todayStr) return 'overdue';
@@ -361,6 +372,7 @@ function render() {
       <div class="card-footer">
         ${c.phone?`<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="btn-sm">📞 Call</a>`:''}
         ${c.phone?`<a href="sms:${c.phone}" onclick="event.stopPropagation()" class="btn-sm">💬 Text</a>`:''}
+        ${c.followup_date?`<a href="${buildCalendarLink(c)}" target="_blank" onclick="event.stopPropagation()" class="btn-sm" style="color:var(--orange);border-color:var(--orange)">📅 Add to Calendar</a>`:''}
         ${isJob?`<button class="btn-sm build-quote" onclick="event.stopPropagation();buildQuoteFromJob('${c.id}')">🔨 Build Quote</button>`:''}
         ${isJob?`<button class="btn-sm" style="color:var(--orange);border-color:var(--orange)" onclick="event.stopPropagation();openJobIntakeEdit('${c.id}')">✏ Edit</button>`:`<button class="btn-sm" onclick="event.stopPropagation();openEdit('${c.id}')">Edit</button>`}
       </div></div>`;
@@ -572,9 +584,9 @@ function openDetail(id){
     ${intake.photos&&intake.photos.length?`<div class="intake-detail-section"><h4>Photos & Drawings (${intake.photos.length})</h4><div class="photo-grid">${intake.photos.map(p=>`<div class="photo-thumb"><img src="${p}" alt="Job photo" onclick="viewPhoto('${p}')" style="cursor:pointer"></div>`).join('')}</div></div>`:''}`;
   }
   const fuStatus = getFollowupStatus(c);
-  let fuDetailHTML = '';
-  if (c.followup_date && !intake) {
-    fuDetailHTML = `<div style="background:#fdf7ee;border:0.5px solid #e8c87a;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:'Barlow Condensed',sans-serif;font-size:13px;">🔔 Follow-up: <strong>${c.followup_date}</strong>${fuStatus==='overdue'?' <span style="color:var(--red)">(overdue)</span>':fuStatus==='today'?' <span style="color:var(--orange)">(today!)</span>':''}</div>`;
+let fuDetailHTML = '';
+  if (c.followup_date) {
+    fuDetailHTML = `<div style="background:#fdf7ee;border:0.5px solid #e8c87a;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:'Barlow Condensed',sans-serif;font-size:13px;">🔔 Follow-up: <strong>${c.followup_date}</strong>${fuStatus==='overdue'?' <span style="color:var(--red)">(overdue)</span>':fuStatus==='today'?' <span style="color:var(--orange)">(today!)</span>':''}<br><a href="${buildCalendarLink(c)}" target="_blank" style="display:inline-block;margin-top:8px;color:var(--orange);font-weight:600;text-decoration:none">📅 Add to Google Calendar →</a></div>`;
   }
   document.getElementById('detailContent').innerHTML=`
     <div class="modal-title"><span>${c.name}</span><button class="modal-close" onclick="document.getElementById('detailOverlay').classList.remove('show')">✕</button></div>
