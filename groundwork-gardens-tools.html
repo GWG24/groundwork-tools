@@ -1018,46 +1018,11 @@
       <div class="job-icon">🪨</div><div class="job-title">Bulk Materials</div>
       <div class="job-badge" id="badge-bulkmaterials"></div><div class="job-toggle open" id="toggle-bulkmaterials">▾</div>
     </div>
-    <div class="job-body open" id="body-bulkmaterials">
-
-      <div class="input-grid">
-        <div class="field full"><label>Material</label>
-          <select id="bm-material" onchange="calcBulkMaterials()">
-            <option value="rock">Crushed rock</option>
-            <option value="soil">Premium garden soil</option>
-            <option value="mulch">Mulch</option>
-            <option value="topsoil">Topsoil</option>
-            <option value="agg">Drainage aggregate</option>
-            <option value="scoria">Scoria aggregate</option>
-            <option value="dg">Decomposed granite</option>
-            <option value="gravel">Gravel / crushed granite</option>
-            <option value="bark">Bark chips</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="input-grid">
-        <div class="field"><label>Entry method</label>
-          <select id="bm-method" onchange="bulkMethodChange()">
-            <option value="area">Area (m²)</option>
-            <option value="dims">Length × Width (m)</option>
-          </select>
-        </div>
-        <div class="field"><label>Depth (mm)</label><input type="number" id="bm-depth" value="100" oninput="calcBulkMaterials()"></div>
-      </div>
-
-      <div class="input-grid" id="bm-area-fields">
-        <div class="field"><label>Area (m²)</label><input type="number" id="bm-area" placeholder="0" oninput="calcBulkMaterials()"></div>
-      </div>
-
-      <div class="input-grid" id="bm-dims-fields" style="display:none">
-        <div class="field"><label>Length (m)</label><input type="number" id="bm-length" placeholder="0" oninput="calcBulkMaterials()"></div>
-        <div class="field"><label>Width (m)</label><input type="number" id="bm-width" placeholder="0" oninput="calcBulkMaterials()"></div>
-      </div>
-
+<div class="job-body open" id="body-bulkmaterials">
+      <div id="bulkMaterialsList"></div>
+      <button class="add-btn" onclick="addBulkMaterial()">+ Add Material</button>
       <div class="result-list" id="res-bulkmaterials"></div>
       <div class="hours-estimate" id="hrs-bulkmaterials" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-bulkmaterials-val">—</span></div>
-
     </div>
   </div>
 </div>
@@ -3154,24 +3119,49 @@ function calcMaintenance() {
 
   var extraMaterials = [];
 
-function bulkMethodChange() {
-  var method = document.getElementById('bm-method').value;
-  document.getElementById('bm-area-fields').style.display = method === 'area' ? 'grid' : 'none';
-  document.getElementById('bm-dims-fields').style.display = method === 'dims' ? 'grid' : 'none';
+var bulkMaterials = [];
+
+function addBulkMaterial() {
+  bulkMaterials.push({ material: 'rock', customName: '', customPrice: 0, method: 'area', area: 0, length: 0, width: 0, depth: 100 });
+  renderBulkMaterials();
+}
+
+function renderBulkMaterials() {
+  var el = document.getElementById('bulkMaterialsList');
+  if (!el) return;
+  if (!bulkMaterials.length) { el.innerHTML = ''; calcBulkMaterials(); return; }
+  el.innerHTML = bulkMaterials.map(function(b, i) {
+    var isCustom = b.material === 'custom';
+    var options = ['rock:Crushed rock','soil:Premium garden soil','mulch:Mulch','topsoil:Topsoil','agg:Drainage aggregate','scoria:Scoria aggregate','dg:Decomposed granite','gravel:Gravel / crushed granite','bark:Bark chips','custom:Custom / Other (enter price)'];
+    var selectHTML = options.map(function(opt) {
+      var parts = opt.split(':'); var val = parts[0], label = parts[1];
+      return '<option value="' + val + '"' + (b.material===val?' selected':'') + '>' + label + '</option>';
+    }).join('');
+    return '<div style="background:#f7f9f6;border:0.5px solid #c5d4c0;border-radius:8px;padding:12px;margin-bottom:10px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+      '<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Material ' + (i+1) + '</div>' +
+      '<button onclick="bulkMaterials.splice(' + i + ',1);renderBulkMaterials()" style="background:none;border:none;font-size:18px;color:#c0392b;cursor:pointer;padding:0">×</button></div>' +
+      '<select style="width:100%;background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:9px 11px;font-family:Barlow,sans-serif;font-size:14px;color:var(--text-primary);margin-bottom:8px;-webkit-appearance:none" onchange="bulkMaterials[' + i + '].material=this.value;renderBulkMaterials()">' + selectHTML + '</select>' +
+      (isCustom ? '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">' +
+        '<input type="text" placeholder="Material name" value="' + (b.customName||'') + '" style="background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:Barlow,sans-serif;font-size:13px;color:var(--text-primary)" oninput="bulkMaterials[' + i + '].customName=this.value;calcBulkMaterials()">' +
+        '<input type="number" placeholder="$/m³" value="' + (b.customPrice||'') + '" style="background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary)" oninput="bulkMaterials[' + i + '].customPrice=parseFloat(this.value)||0;calcBulkMaterials()"></div>' : '') +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">' +
+      '<select style="background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:Barlow,sans-serif;font-size:13px;color:var(--text-primary);-webkit-appearance:none" onchange="bulkMaterials[' + i + '].method=this.value;renderBulkMaterials()">' +
+      '<option value="area"' + (b.method==='area'?' selected':'') + '>Area (m²)</option>' +
+      '<option value="dims"' + (b.method==='dims'?' selected':'') + '>Length × Width (m)</option></select>' +
+      '<input type="number" placeholder="Depth (mm)" value="' + (b.depth||100) + '" style="background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary)" oninput="bulkMaterials[' + i + '].depth=parseFloat(this.value)||100;calcBulkMaterials()"></div>' +
+      (b.method === 'area' ?
+        '<input type="number" placeholder="Area (m²)" value="' + (b.area||'') + '" style="width:100%;background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary)" oninput="bulkMaterials[' + i + '].area=parseFloat(this.value)||0;calcBulkMaterials()">'
+        :
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+        '<input type="number" placeholder="Length (m)" value="' + (b.length||'') + '" style="background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary)" oninput="bulkMaterials[' + i + '].length=parseFloat(this.value)||0;calcBulkMaterials()">' +
+        '<input type="number" placeholder="Width (m)" value="' + (b.width||'') + '" style="background:#fff;border:0.5px solid #c5d4c0;border-radius:6px;padding:8px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary)" oninput="bulkMaterials[' + i + '].width=parseFloat(this.value)||0;calcBulkMaterials()"></div>') +
+      '</div>';
+  }).join('');
   calcBulkMaterials();
 }
 
 function calcBulkMaterials() {
-  var method = document.getElementById('bm-method').value;
-  var area = 0;
-  if (method === 'area') {
-    area = v('bm-area');
-  } else {
-    area = v('bm-length') * v('bm-width');
-  }
-  var depth = v('bm-depth') / 1000;
-  var material = document.getElementById('bm-material').value;
-
   var priceMap = {
     rock: { id: 'cp-rock', name: 'Crushed rock' },
     soil: { id: 'gp-soil', name: 'Premium garden soil' },
@@ -3183,20 +3173,29 @@ function calcBulkMaterials() {
     gravel: { id: 'pwp-gravel', name: 'Gravel / crushed granite' },
     bark: { id: 'pwp-bark', name: 'Bark chips' }
   };
-
-  var matInfo = priceMap[material];
   var items = [];
-
-  if (area > 0 && depth > 0) {
+  var totalArea = 0;
+  bulkMaterials.forEach(function(b) {
+    var area = b.method === 'area' ? (b.area||0) : (b.length||0) * (b.width||0);
+    var depth = (b.depth||100) / 1000;
+    if (area <= 0 || depth <= 0) return;
+    totalArea += area;
     var volM3 = Math.ceil(area * depth * 1.1 * 100) / 100;
-    var priceEl = document.getElementById(matInfo.id);
-    var price = priceEl ? (parseFloat(priceEl.value) || 0) : 0;
-    items.push({ name: matInfo.name, qty: volM3 + ' m³', total: volM3 * price, note: 'incl. 10% waste · ' + area.toFixed(1) + ' m² @ ' + (depth*1000) + 'mm' });
-  }
-
+    var name, price;
+    if (b.material === 'custom') {
+      name = b.customName || 'Custom material';
+      price = b.customPrice || 0;
+    } else {
+      var matInfo = priceMap[b.material];
+      name = matInfo.name;
+      var priceEl = document.getElementById(matInfo.id);
+      price = priceEl ? (parseFloat(priceEl.value) || 0) : 0;
+    }
+    items.push({ name: name, qty: volM3 + ' m³', total: volM3 * price, note: 'incl. 10% waste · ' + area.toFixed(1) + ' m² @ ' + (b.depth||100) + 'mm' });
+  });
   if (items.length === 0) { showResults('bulkmaterials', []); return; }
-  var hrsMin = area > 0 ? Math.round(area * 0.15) : 0;
-  var hrsMax = area > 0 ? Math.round(area * 0.3) : 0;
+  var hrsMin = totalArea > 0 ? Math.round(totalArea * 0.15) : 0;
+  var hrsMax = totalArea > 0 ? Math.round(totalArea * 0.3) : 0;
   showResults('bulkmaterials', items, hrsMin, hrsMax);
 }
 
