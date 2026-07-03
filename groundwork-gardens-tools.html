@@ -1514,17 +1514,36 @@ function switchTab(tab) {
   if (tab === 'invoice' && typeof renderInvItems === 'function') {
     renderInvItems();
     // Auto-generate invoice number if field is empty
-    var invNumEl = document.getElementById('inv-num');
-    if (invNumEl && !invNumEl.value) {
-      var year = new Date().getFullYear();
-      var storageKey = 'gg_inv_seq_' + year;
-      var seq = parseInt(localStorage.getItem(storageKey) || '0') + 1;
-      localStorage.setItem(storageKey, seq);
-      invNumEl.value = 'INV-' + year + '-' + String(seq).padStart(3, '0');
-    }
+   var invNumEl = document.getElementById('inv-num');
+        if (invNumEl && !invNumEl.value) {
+          var qNumEl = document.getElementById('quoteNum');
+          invNumEl.value = (qNumEl && qNumEl.value) ? qNumEl.value : getNextJobNumber();
+        }
   }
 }
-
+// ==================== JOB NUMBERING ====================
+function getFinancialYearCode() {
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = now.getMonth();
+  var startYear, endYear;
+  if (m >= 6) { startYear = y; endYear = y + 1; }
+  else { startYear = y - 1; endYear = y; }
+  return String(startYear).slice(-2) + String(endYear).slice(-2);
+}
+function getNextJobNumber() {
+  var fy = getFinancialYearCode();
+  var key = 'gg_job_seq_' + fy;
+  var seq = parseInt(localStorage.getItem(key) || '0') + 1;
+  localStorage.setItem(key, seq);
+  return fy + '-' + String(seq).padStart(3, '0');
+}
+function suffixForPaymentType(type) {
+  if (type === 'deposit') return '-D';
+  if (type === 'progress') return '-P';
+  if (type === 'final') return '-F';
+  return '';
+}
 // ==================== UTILITIES ====================
 function fmt(n) { return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
@@ -2794,7 +2813,11 @@ function sendToInvoice() {
   if (invClient) invClient.value = clientName;
   if (invAddress) invAddress.value = clientAddress;
   if (invDesc) invDesc.value = jobTitle;
-  if (invNum) invNum.value = quoteNum ? 'INV-' + quoteNum : '';
+  if (invNum) {
+    var payTypeEl = document.getElementById('inv-payment-type');
+    var suffix = payTypeEl ? suffixForPaymentType(payTypeEl.value) : '';
+    invNum.value = quoteNum ? quoteNum + suffix : '';
+  }
   if (invDate) invDate.valueAsDate = new Date();
   if (invDue) { var dd = new Date(); dd.setDate(dd.getDate() + 14); invDue.valueAsDate = dd; }
 
@@ -3823,8 +3846,9 @@ window.addEventListener('load', function() {
   loadMaterialPrices();
   loadMaterialsFromCloud();
 
-  // Auto generate invoice number
-  autoInvoiceNumber();
+// Auto generate job number for new quote
+  var qNumEl = document.getElementById('quoteNum');
+  if (qNumEl && !qNumEl.value) qNumEl.value = getNextJobNumber();
 
   // Start on calculator tab
   switchTab('calc');
