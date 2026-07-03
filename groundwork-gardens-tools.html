@@ -2283,9 +2283,18 @@ function renderMats() {
   var el = document.getElementById('matList');
   el.innerHTML = '';
   materials.forEach(function(m, i) {
-    var row = document.createElement('div'); row.className = 'mat-row';
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'margin-bottom:10px';
+    var row = document.createElement('div'); row.className = 'mat-row'; row.style.marginBottom = '4px';
     row.innerHTML = '<input class="mat-name" type="text" placeholder="Item name" value="' + (m.name||'') + '" oninput="materials[' + i + '].name=this.value"><input class="mat-qty" type="number" placeholder="Qty" value="' + (m.qty||1) + '" min="1" oninput="materials[' + i + '].qty=this.value;recalc()"><input class="mat-price" type="number" placeholder="$0" value="' + (m.price||0) + '" oninput="materials[' + i + '].price=this.value;recalc()"><button class="mat-remove" onclick="materials.splice(' + i + ',1);renderMats();recalc()">×</button>';
-    el.appendChild(row);
+    var noteInput = document.createElement('input');
+    noteInput.type = 'text';
+    noteInput.placeholder = 'Qty note for your records e.g. 4m³ concrete (optional)';
+    noteInput.value = m.note || '';
+    noteInput.style.cssText = 'width:100%;background:#f7f9f6;border:0.5px solid #c5d4c0;border-radius:6px;color:var(--text-secondary);font-family:Barlow,sans-serif;font-size:12px;padding:6px 10px';
+    noteInput.oninput = (function(idx){ return function(){ materials[idx].note = this.value; }; })(i);
+    wrap.appendChild(row); wrap.appendChild(noteInput);
+    el.appendChild(wrap);
   });
   recalc();
 }
@@ -2362,9 +2371,11 @@ async function exportQuoteData(mode) {
   var realMats = materials.filter(function(m){return m.name||m.price;});
   if (realMats.length) {
     tableBody.push([{content:'MATERIALS',colSpan:4,styles:{fillColor:[240,237,230],textColor:[120,120,120],fontSize:7,fontStyle:'bold'}}]);
-    realMats.forEach(function(m) {
+realMats.forEach(function(m) {
       var lt = (parseFloat(m.price)||0)*(parseFloat(m.qty)||1);
-      tableBody.push([m.name||'Item', String(m.qty||1), fmt(parseFloat(m.price)||0), fmt(lt)]);
+      var label = m.name||'Item';
+      if (m.note) label += ' — ' + m.note;
+      tableBody.push([label, String(m.qty||1), fmt(parseFloat(m.price)||0), fmt(lt)]);
     });
     if (markup > 0) tableBody.push(['Materials handling & sourcing (15%)', '1', fmt(markup), fmt(markup)]);
   }
