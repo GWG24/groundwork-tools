@@ -382,6 +382,7 @@
   <div class="job-modal">
     <div class="job-modal-title">New Job</div>
     <input id="job-name-input" type="text" placeholder="e.g. Ben — Paving, Pascoe Vale" maxlength="60">
+    <select id="job-customer-select" class="job-customer-select"><option value="">No linked customer</option></select>
     <div class="job-modal-btns">
       <button class="job-modal-cancel" onclick="closeAddJob()">Cancel</button>
       <button class="job-modal-save" onclick="saveNewJob()">Add Job</button>
@@ -1449,10 +1450,17 @@ async function saveJobData(id){
 
 function openAddJob(){
   document.getElementById('job-name-input').value='';
+  populateJobCustomerSelect();
   document.getElementById('jobOverlay').classList.add('show');
   setTimeout(()=>document.getElementById('job-name-input').focus(),100);
 }
 
+function populateJobCustomerSelect(){
+  const sel = document.getElementById('job-customer-select');
+  if(!sel) return;
+  const options = _customers.map(c => `<option value="${c.id}">${c.name || 'Unnamed'}${c.suburb ? ' — ' + c.suburb : ''}</option>`).join('');
+  sel.innerHTML = '<option value="">No linked customer</option>' + options;
+}
 function closeAddJob(){
   document.getElementById('jobOverlay').classList.remove('show');
 }
