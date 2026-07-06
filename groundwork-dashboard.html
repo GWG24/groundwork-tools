@@ -443,7 +443,7 @@ document.addEventListener('keydown', function(e){
 const SB_URL='https://vgegsaarmzuqpacisbrl.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
 
-var _invoices=[], _expenses=[], _quotes=[];
+var _invoices=[], _expenses=[], _quotes=[], _customers=[];
 
 async function db(path){
   const res=await fetch(SB_URL+'/rest/v1/'+path,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
@@ -938,7 +938,8 @@ async function loadAll(){
 
     _invoices=ggQuotes.filter(r=>r.id&&r.id.startsWith('invoice_'));
     _quotes=ggQuotes.filter(r=>r.id&&r.id.startsWith('quote_'));
-    _expenses=expenses;
+   _expenses=expenses;
+_customers=customers;
 
     const unpaidInv=_invoices.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
     const paidInv=_invoices.filter(r=>getStatus(r)==='paid');
@@ -1079,10 +1080,11 @@ async function loadJobNotes(){
             parsed.tasks = raw.tasks || [];
             parsed.notes = raw.notes || [];
             parsed.issues = raw.issues || [];
+            parsed.customerId = raw.customerId || null;
           }
         }
       }catch(e){ /* keep defaults */ }
-      return {id:r.id, name:r.name, items: parsed.tasks, notesList: parsed.notes, issuesList: parsed.issues, colorIdx:r.color_idx||0, date:r.created_at?new Date(r.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):''};
+      return {id:r.id, name:r.name, items: parsed.tasks, notesList: parsed.notes, issuesList: parsed.issues, customerId: parsed.customerId, colorIdx:r.color_idx||0, date:r.created_at?new Date(r.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):''};
     });
   }catch(e){ jobNotes = []; }
   renderJobNotes();
