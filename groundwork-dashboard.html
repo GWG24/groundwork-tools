@@ -1182,6 +1182,7 @@ function renderJobNotes(){
           <div>
             <div class="job-note-name">${job.name} ${items.filter(i=>i.done).length}/${items.length}</div>
             <div class="job-note-date">Added ${job.date}</div>
+            ${(() => { const cust = job.customerId ? _customers.find(c => c.id === job.customerId) : null; if (!cust) return ''; return `<div class="job-customer-chip" onclick="event.stopPropagation()"><span class="job-customer-chip-name">${cust.name || 'Customer'}</span>${cust.suburb ? `<span class="job-customer-chip-suburb">${cust.suburb}</span>` : ''}${cust.phone ? `<a class="job-customer-chip-btn" href="tel:${cust.phone}">Call</a><a class="job-customer-chip-btn" href="sms:${cust.phone}">Text</a>` : ''}</div>`; })()}
           </div>
         </div>
         <div class="job-note-arrow" id="arrow-${job.id}">▾</div>
