@@ -2723,12 +2723,12 @@ function calcInv() {
     if (contractRow) { contractRow.style.display = 'flex'; contractDisplay.textContent = fmt(contractTotal); }
     // Only use FIRST line item for % calculation (the progress payment line)
     var firstItemAmount = invItems.length > 0 ? (parseFloat(invItems[0].price)||0) * (parseFloat(invItems[0].qty)||1) : 0;
-    var alreadyPaid = deposit + subtotal;
-    var remaining = Math.max(0, contractTotal - alreadyPaid);
+var alreadyPaid = deposit + total;
+var remaining = Math.max(0, contractTotal - alreadyPaid);
     if (remainingRow) { remainingRow.style.display = 'flex'; remainingDisplay.textContent = fmt(remaining); }
     if (paytypeRow && paytype !== 'full') {
       paytypeRow.style.display = 'flex';
-      var pct = contractTotal > 0 ? Math.round((firstItemAmount / contractTotal) * 100) : 0;
+     var pct = contractTotal > 0 ? Math.round((firstItemAmount * 1.10 / contractTotal) * 100) : 0;
       var labels = { deposit: 'Deposit', progress: 'Progress Payment', final: 'Final Payment' };
       if (paytypeLabel) paytypeLabel.textContent = labels[paytype] || 'Payment';
       if (paytypePct) paytypePct.textContent = pct + '% of contract';
@@ -2822,11 +2822,11 @@ function generateInvoicePDF(mode) {
     if (contractTotal > 0 && paymentType !== 'full') {
       var invoiceSubtotal = invItems.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
       var firstItemOnly = invItems.length > 0 ? (parseFloat(invItems[0].price)||0)*(parseFloat(invItems[0].qty)||1) : invoiceSubtotal;
-      var pct = contractTotal > 0 ? Math.round((firstItemOnly / contractTotal) * 100) : 0;
+     var pct = contractTotal > 0 ? Math.round((firstItemOnly * 1.10 / contractTotal) * 100) : 0;
       // Remaining = contract - deposit already paid - this invoice subtotal
       var depositPdfEl = document.getElementById('inv-deposit');
       var depositPdf = depositPdfEl ? (parseFloat(depositPdfEl.value) || 0) : 0;
-      var remaining = Math.max(0, contractTotal - depositPdf - invoiceSubtotal);
+      var remaining = Math.max(0, contractTotal - depositPdf - total);
       doc.setFontSize(8); doc.setTextColor(100,100,100); doc.setFont('helvetica','normal');
       doc.text('Total Contract Value: ' + fmt(contractTotal), margin, y+12);
       if (depositPdf > 0) doc.text('Deposit / Prev. payments: ' + fmt(depositPdf), margin, y+18);
@@ -3717,7 +3717,7 @@ function applyInvPct(pct) {
   var contractEl = document.getElementById('inv-contract-total');
   var total = contractEl ? (parseFloat(contractEl.value) || 0) : 0;
   if (total <= 0) { showToast('⚠ Enter Total Contract Value in Invoice Details first'); return; }
-  var amount = parseFloat((total * pct / 100).toFixed(2));
+ var amount = parseFloat((total * pct / 100 / 1.10).toFixed(2));
   var paytypeEl = document.getElementById('inv-payment-type');
   var paytype = paytypeEl ? paytypeEl.value : 'progress';
   var labels = { deposit: 'Deposit', progress: 'Progress payment', final: 'Final payment', full: 'Payment' };
