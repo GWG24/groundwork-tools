@@ -1106,15 +1106,17 @@ async function deleteJobNote(id){
 
 async function saveNewJob(){
   const name = document.getElementById('job-name-input').value.trim();
-  if(!name){ document.getElementById('job-name-input').focus(); return; }
-  const id = 'jn'+Date.now();
+ if(!name){ document.getElementById('job-name-input').focus(); return; }
+const customerSelEl = document.getElementById('job-customer-select');
+const customerId = customerSelEl && customerSelEl.value ? customerSelEl.value : null;
+const id = 'jn'+Date.now();
   const colorIdx = jobNotes.length % JOB_COLORS.length;
   const date = new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
   try{
     const res = await fetch(SB_URL+'/rest/v1/gg_job_notes', {
       method:'POST',
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({id, name, notes:JSON.stringify({tasks:[],notes:[],issues:[]}), color_idx:colorIdx})
+    body:JSON.stringify({id, name, notes:JSON.stringify({tasks:[],notes:[],issues:[],customerId}), color_idx:colorIdx})
     });
     if(!res.ok){
       const err = await res.text();
@@ -1122,7 +1124,7 @@ async function saveNewJob(){
       showToast('⚠ Could not add job');
       return;
     }
-    jobNotes.unshift({id, name, items:[], notesList:[], issuesList:[], colorIdx, date});
+   jobNotes.unshift({id, name, items:[], notesList:[], issuesList:[], customerId, colorIdx, date});
     renderJobNotes();
     closeAddJob();
     showToast('✓ Job added!');
