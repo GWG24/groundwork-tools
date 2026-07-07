@@ -433,6 +433,27 @@
             <option value="sleeper">Timber sleeper</option><option value="concrete">Concrete sleeper</option>
           </select>
         </div>
+        <div class="field"><label>Sleeper size</label>
+          <select id="r-sleeper-size" onchange="calcRetaining()">
+            <option value="0">Timber sleeper (generic)</option>
+            <option value="1">200x50 @ 2400mm</option>
+            <option value="2">200x50 @ 2700mm</option>
+            <option value="3">200x50 @ 3000mm</option>
+            <option value="4">200x75 @ 2700mm</option>
+            <option value="5">200x75 @ 3000mm</option>
+          </select>
+        </div>
+        <div class="field"><label>Post size</label>
+          <select id="r-post-size" onchange="calcRetaining()">
+            <option value="0">H4 post 2.4m (generic)</option>
+            <option value="1">H Post 80mm</option>
+            <option value="2">C Post 80mm</option>
+            <option value="3">Corner Post 80mm</option>
+            <option value="4">H Post 50mm</option>
+            <option value="5">C Post 50mm</option>
+            <option value="6">Corner Post 50mm</option>
+          </select>
+        </div>
       </div>
       <div class="prices-toggle" onclick="togglePrices('rp')">⚙ Edit material prices <span id="rp-arrow">▾</span></div>
       <div class="prices-grid" id="rp">
@@ -797,7 +818,7 @@
         <div class="field"><label>Area (m²)</label><input type="number" id="ag-area" placeholder="0" oninput="calcArtificial()"></div>
         <div class="field"><label>Grass quality</label>
           <select id="ag-type" onchange="calcArtificial()">
-            <option value="standard">Standard (30mm)</option><option value="premium">Premium (40mm)</option><option value="luxury">Luxury (45mm)</option>
+           <option value="ezyturf">Ezyturf</option><option value="fusion">Fusion</option><option value="summit">Summit</option><option value="everest">Everest</option><option value="multisport">Multisport</option><option value="multiplay">Multiplay</option>
           </select>
         </div>
         <div class="field"><label>Base depth (mm)</label><input type="number" id="ag-base" value="75" oninput="calcArtificial()"></div>
@@ -807,9 +828,12 @@
       </div>
       <div class="prices-toggle" onclick="togglePrices('agp')">⚙ Edit material prices <span id="agp-arrow">▾</span></div>
       <div class="prices-grid" id="agp">
-        <div class="price-field"><label>Standard grass ($/m²)</label><input type="number" id="agp-standard" value="28" oninput="calcArtificial()"></div>
-        <div class="price-field"><label>Premium grass ($/m²)</label><input type="number" id="agp-premium" value="42" oninput="calcArtificial()"></div>
-        <div class="price-field"><label>Luxury grass ($/m²)</label><input type="number" id="agp-luxury" value="58" oninput="calcArtificial()"></div>
+<div class="price-field"><label>Ezyturf ($/m²)</label><input type="number" id="agp-ezyturf" value="24" oninput="calcArtificial()"></div>
+<div class="price-field"><label>Fusion ($/m²)</label><input type="number" id="agp-fusion" value="30" oninput="calcArtificial()"></div>
+<div class="price-field"><label>Summit ($/m²)</label><input type="number" id="agp-summit" value="30" oninput="calcArtificial()"></div>
+<div class="price-field"><label>Everest ($/m²)</label><input type="number" id="agp-everest" value="28" oninput="calcArtificial()"></div>
+<div class="price-field"><label>Multisport ($/m²)</label><input type="number" id="agp-multisport" value="24" oninput="calcArtificial()"></div>
+<div class="price-field"><label>Multiplay ($/m²)</label><input type="number" id="agp-multiplay" value="33" oninput="calcArtificial()"></div>
         <div class="price-field"><label>Crusher dust ($/m³)</label><input type="number" id="agp-base" value="65" oninput="calcArtificial()"></div>
         <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="agp-weed" value="3.50" oninput="calcArtificial()"></div>
         <div class="price-field"><label>Silica sand infill ($/bag)</label><input type="number" id="agp-infill" value="8" oninput="calcArtificial()"></div>
@@ -1874,10 +1898,17 @@ function calcRetaining() {
   var totalSleepers = sleeperRows * sleepersPerRow;
   var concreteM3 = Math.ceil(posts * 0.025 * 10) / 10;
   var aggM3 = Math.ceil(len * h * 0.3 * 10) / 10;
-  var sleeperPrice = type === 'sleeper' ? v('rp-tsleeper') : v('rp-csleeper');
-  var sleeperLabel = type === 'sleeper' ? 'Hardwood timber sleepers' : 'Concrete sleepers';
+var sleeperSizeIdx = parseInt(document.getElementById('r-sleeper-size').value) || 0;
+  var sleeperSizeInfo = SLEEPER_TYPES[sleeperSizeIdx];
+  var sleeperPrice = type === 'sleeper' ? (sleeperSizeInfo.price !== null ? sleeperSizeInfo.price : v('rp-tsleeper')) : v('rp-csleeper');
+  var sleeperLabel = type === 'sleeper' ? sleeperSizeInfo.label : 'Concrete sleepers';
+
+  var postSizeIdx = parseInt(document.getElementById('r-post-size').value) || 0;
+  var postSizeInfo = POST_TYPES[postSizeIdx];
+  var postPrice = postSizeInfo.price !== null ? postSizeInfo.price : v('rp-post');
+  var postLabel = postSizeInfo.label;
   var items = [
-    { name: 'H4 treated posts', qty: posts + ' units', total: posts * v('rp-post') },
+{ name: postLabel, qty: posts + ' units', total: posts * postPrice },
     { name: sleeperLabel, qty: totalSleepers + ' units', total: totalSleepers * sleeperPrice },
     { name: 'Concrete (post footings)', qty: concreteM3 + ' m³', total: concreteM3 * v('rp-concrete') },
     { name: 'Drainage aggregate', qty: aggM3 + ' m³', total: aggM3 * v('rp-agg') },
@@ -2114,8 +2145,8 @@ function calcArtificial() {
   var area = v('ag-area');
   if (area <= 0) { showResults('artificial', []); return; }
   var type = document.getElementById('ag-type').value;
-  var prices = { standard: v('agp-standard'), premium: v('agp-premium'), luxury: v('agp-luxury') };
-  var names = { standard: 'Artificial grass (standard 30mm)', premium: 'Artificial grass (premium 40mm)', luxury: 'Artificial grass (luxury 45mm)' };
+  var prices = { ezyturf: v('agp-ezyturf'), fusion: v('agp-fusion'), summit: v('agp-summit'), everest: v('agp-everest'), multisport: v('agp-multisport'), multiplay: v('agp-multiplay') };
+var names = { ezyturf: 'Ezyturf', fusion: 'Fusion', summit: 'Summit', everest: 'Everest', multisport: 'Multisport', multiplay: 'Multiplay' };
   var grassQty = Math.ceil(area * 1.08);
   var baseM3 = Math.ceil(area * v('ag-base')/1000 * 1.1 * 100)/100;
   var infillBags = Math.ceil(area * 0.5);
@@ -3077,6 +3108,25 @@ var EDGING_TYPES = [
   { label: '100mm x 5mm Corten Steel', lengthM: 6, price: 90 },
   { label: '150mm x 5mm Corten Steel', lengthM: 6, price: 135 }
 ];
+
+  var SLEEPER_TYPES = [
+  { label: 'Timber sleeper (generic)', price: null },
+  { label: 'Timber sleeper 200x50 @ 2400mm', price: 18.65 },
+  { label: 'Timber sleeper 200x50 @ 2700mm', price: 21.10 },
+  { label: 'Timber sleeper 200x50 @ 3000mm', price: 23.40 },
+  { label: 'Timber sleeper 200x75 @ 2700mm', price: 33.00 },
+  { label: 'Timber sleeper 200x75 @ 3000mm', price: 35.17 }
+];
+
+var POST_TYPES = [
+  { label: 'H4 post 2.4m (generic)', price: null },
+  { label: 'H Post 80mm', price: 47.00 },
+  { label: 'C Post 80mm', price: 33.00 },
+  { label: 'Corner Post 80mm', price: 71.00 },
+  { label: 'H Post 50mm', price: 39.00 },
+  { label: 'C Post 50mm', price: 21.78 },
+  { label: 'Corner Post 50mm', price: 43.30 }
+];
   // ==================== MAINTENANCE ====================
 var MAINTENANCE_TASKS = [
   { label: '🌿 Mowing & Lawn Care', unit: 'hrs', rate: 75 },
@@ -3638,6 +3688,17 @@ var DEFAULT_MATERIALS = {
     { id: 'rp-csleeper', label: 'Concrete sleeper', unit: '/unit', value: 37.95 },
     { id: 'rp-agg', label: 'Drainage aggregate (retaining)', unit: '/m³', value: 75 },
     { id: 'rp-fixings', label: 'Retaining wall fixings', unit: '/lot', value: 40 },
+    { id: 'rp-sleeper-200x50-2400', label: 'Timber sleeper 200x50 @ 2400mm', unit: '/unit', value: 18.65 },
+      { id: 'rp-sleeper-200x50-2700', label: 'Timber sleeper 200x50 @ 2700mm', unit: '/unit', value: 21.10 },
+      { id: 'rp-sleeper-200x50-3000', label: 'Timber sleeper 200x50 @ 3000mm', unit: '/unit', value: 23.40 },
+      { id: 'rp-sleeper-200x75-2700', label: 'Timber sleeper 200x75 @ 2700mm', unit: '/unit', value: 33.00 },
+      { id: 'rp-sleeper-200x75-3000', label: 'Timber sleeper 200x75 @ 3000mm', unit: '/unit', value: 35.17 },
+      { id: 'rp-post-h80', label: 'H Post 80mm', unit: '/unit', value: 47.00 },
+      { id: 'rp-post-c80', label: 'C Post 80mm', unit: '/unit', value: 33.00 },
+      { id: 'rp-post-corner80', label: 'Corner Post 80mm', unit: '/unit', value: 71.00 },
+      { id: 'rp-post-h50', label: 'H Post 50mm', unit: '/unit', value: 39.00 },
+      { id: 'rp-post-c50', label: 'C Post 50mm', unit: '/unit', value: 21.78 },
+      { id: 'rp-post-corner50', label: 'Corner Post 50mm', unit: '/unit', value: 43.30 },
     { id: 'stp-sleeper', label: 'Step timber sleeper', unit: '/unit', value: 32 },
     { id: 'stp-stone', label: 'Natural stone steps', unit: '/m²', value: 120 },
     { id: 'stp-brick', label: 'Step bricks', unit: '/unit', value: 1.20 },
@@ -3647,7 +3708,7 @@ var DEFAULT_MATERIALS = {
   fencing: [
     { id: 'fp-post', label: 'H4 fence post', unit: '/unit', value: 38 },
     { id: 'fp-paling', label: 'Timber paling', unit: '/unit', value: 3.50 },
-    { id: 'fp-rail', label: 'Rail 4.2m', unit: '/unit', value: 22 },
+   { id: 'fp-rail', label: 'Rail 5.4m', unit: '/unit', value: 15.85 },
     { id: 'fp-conc', label: 'Concrete post mix', unit: '/bag', value: 9 },
     { id: 'fp-fix', label: 'Fence fixings', unit: '/lot', value: 35 },
     { id: 'fp-cb', label: 'Colorbond fence panel', unit: '/lm', value: 85 },
