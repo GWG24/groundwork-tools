@@ -282,11 +282,11 @@
       </div>
       <div class="prices-toggle" onclick="togglePrices('cp')">⚙ Edit material prices <span id="cp-arrow">▾</span></div>
       <div class="prices-grid" id="cp">
-        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="cp-concrete" value="230" oninput="calcConcrete()"></div>
-        <div class="price-field"><label>Crushed rock ($/m³)</label><input type="number" id="cp-rock" value="65" oninput="calcConcrete()"></div>
-        <div class="price-field"><label>Mesh SL62 ($/sheet)</label><input type="number" id="cp-mesh62" value="22" oninput="calcConcrete()"></div>
-        <div class="price-field"><label>Mesh SL72 ($/sheet)</label><input type="number" id="cp-mesh72" value="28" oninput="calcConcrete()"></div>
-        <div class="price-field"><label>Mesh SL82 ($/sheet)</label><input type="number" id="cp-mesh82" value="38" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="cp-concrete" value="330" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Crushed rock ($/m³)</label><input type="number" id="cp-rock" value="80" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL62 ($/sheet)</label><input type="number" id="cp-mesh62" value="90" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL72 ($/sheet)</label><input type="number" id="cp-mesh72" value="110" oninput="calcConcrete()"></div>
+        <div class="price-field"><label>Mesh SL82 ($/sheet)</label><input type="number" id="cp-mesh82" value="130" oninput="calcConcrete()"></div>
         <div class="price-field"><label>Formwork ($/lm)</label><input type="number" id="cp-form" value="4" oninput="calcConcrete()"></div>
       </div>
       <div class="result-list" id="res-concrete"></div>
@@ -311,8 +311,8 @@
       </div>
       <div class="prices-toggle" onclick="togglePrices('gp')">⚙ Edit material prices <span id="gp-arrow">▾</span></div>
       <div class="prices-grid" id="gp">
-        <div class="price-field"><label>Premium soil ($/m³)</label><input type="number" id="gp-soil" value="85" oninput="calcGarden()"></div>
-        <div class="price-field"><label>Mulch ($/m³)</label><input type="number" id="gp-mulch" value="55" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Garden Mix Soil ($/m³)</label><input type="number" id="gp-soil" value="84" oninput="calcGarden()"></div>
+        <div class="price-field"><label>Mulch ($/m³)</label><input type="number" id="gp-mulch" value="100" oninput="calcGarden()"></div>
         <div class="price-field"><label>Compost ($/bag 25L)</label><input type="number" id="gp-compost" value="12" oninput="calcGarden()"></div>
         <div class="price-field"><label>Edging ($/lm)</label><input type="number" id="gp-edging" value="8" oninput="calcGarden()"></div>
         <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="gp-weedmat" value="3.50" oninput="calcGarden()"></div>
@@ -428,7 +428,7 @@
         <div class="price-field"><label>H4 post 2.4m ($/unit)</label><input type="number" id="rp-post" value="38" oninput="calcRetaining()"></div>
         <div class="price-field"><label>Timber sleeper ($/unit)</label><input type="number" id="rp-tsleeper" value="32" oninput="calcRetaining()"></div>
         <div class="price-field"><label>Concrete sleeper ($/unit)</label><input type="number" id="rp-csleeper" value="65" oninput="calcRetaining()"></div>
-        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="rp-concrete" value="230" oninput="calcRetaining()"></div>
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="rp-concrete" value="330" oninput="calcRetaining()"></div>
         <div class="price-field"><label>Fixings ($)</label><input type="number" id="rp-fixings" value="40" oninput="calcRetaining()"></div>
         <div class="price-field"><label>Drainage aggregate ($/m³)</label><input type="number" id="rp-agg" value="75" oninput="calcRetaining()"></div>
       </div>
@@ -461,10 +461,10 @@
       </div>
       <div class="prices-toggle" onclick="togglePrices('tp')">⚙ Edit material prices <span id="tp-arrow">▾</span></div>
       <div class="prices-grid" id="tp">
-        <div class="price-field"><label>Kikuyu ($/m²)</label><input type="number" id="tp-kik" value="12" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Kikuyu ($/m²)</label><input type="number" id="tp-kik" value="13" oninput="calcTurf()"></div>
         <div class="price-field"><label>Buffalo ($/m²)</label><input type="number" id="tp-buf" value="15" oninput="calcTurf()"></div>
-        <div class="price-field"><label>Couch ($/m²)</label><input type="number" id="tp-cou" value="13" oninput="calcTurf()"></div>
-        <div class="price-field"><label>Zoysia ($/m²)</label><input type="number" id="tp-zoy" value="18" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Couch ($/m²)</label><input type="number" id="tp-cou" value="15" oninput="calcTurf()"></div>
+        <div class="price-field"><label>Zoysia ($/m²)</label><input type="number" id="tp-zoy" value="20" oninput="calcTurf()"></div>
         <div class="price-field"><label>Topsoil ($/m³)</label><input type="number" id="tp-soil" value="75" oninput="calcTurf()"></div>
         <div class="price-field"><label>Starter fertiliser ($)</label><input type="number" id="tp-fert" value="35" oninput="calcTurf()"></div>
       </div>
@@ -494,8 +494,8 @@
       </div>
       <div class="prices-toggle" onclick="togglePrices('fp')">⚙ Edit material prices <span id="fp-arrow">▾</span></div>
       <div class="prices-grid" id="fp">
-        <div class="price-field"><label>H4 post ($/unit)</label><input type="number" id="fp-post" value="38" oninput="calcFencing()"></div>
-        <div class="price-field"><label>Paling ($/unit)</label><input type="number" id="fp-paling" value="3.50" oninput="calcFencing()"></div>
+        <div class="price-field"><label>H4 post ($/unit)</label><input type="number" id="fp-post" value="25" oninput="calcFencing()"></div>
+        <div class="price-field"><label>Paling ($/unit)</label><input type="number" id="fp-paling" value="1.50" oninput="calcFencing()"></div>
         <div class="price-field"><label>Rail 4.2m ($/unit)</label><input type="number" id="fp-rail" value="22" oninput="calcFencing()"></div>
         <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="fp-conc" value="9" oninput="calcFencing()"></div>
         <div class="price-field"><label>Fixings ($)</label><input type="number" id="fp-fix" value="35" oninput="calcFencing()"></div>
@@ -554,7 +554,7 @@
         <div class="price-field"><label>Ag pipe 100mm ($/lm)</label><input type="number" id="dp-ag" value="4.50" oninput="calcDrainage()"></div>
         <div class="price-field"><label>Channel drain ($/lm)</label><input type="number" id="dp-channel" value="35" oninput="calcDrainage()"></div>
         <div class="price-field"><label>Pit 300x300 ($/unit)</label><input type="number" id="dp-pit" value="65" oninput="calcDrainage()"></div>
-        <div class="price-field"><label>Scoria ($/m³)</label><input type="number" id="dp-scoria" value="80" oninput="calcDrainage()"></div>
+        <div class="price-field"><label>Scoria ($/m³)</label><input type="number" id="dp-scoria" value="89" oninput="calcDrainage()"></div>
         <div class="price-field"><label>Geotech fabric ($/m²)</label><input type="number" id="dp-geo" value="4" oninput="calcDrainage()"></div>
         <div class="price-field"><label>Fittings allowance ($)</label><input type="number" id="dp-fit" value="40" oninput="calcDrainage()"></div>
       </div>
@@ -637,11 +637,11 @@
       </div>
       <div class="prices-toggle" onclick="togglePrices('dkp')">⚙ Edit material prices <span id="dkp-arrow">▾</span></div>
       <div class="prices-grid" id="dkp">
-        <div class="price-field"><label>Merbau boards ($/lm)</label><input type="number" id="dkp-merbau" value="18" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Merbau boards ($/lm)</label><input type="number" id="dkp-merbau" value="38.30" oninput="calcDecking()"></div>
         <div class="price-field"><label>Treated pine ($/lm)</label><input type="number" id="dkp-pine" value="9" oninput="calcDecking()"></div>
         <div class="price-field"><label>Composite ($/lm)</label><input type="number" id="dkp-composite" value="28" oninput="calcDecking()"></div>
         <div class="price-field"><label>H4 bearer/joist ($/lm)</label><input type="number" id="dkp-frame" value="8" oninput="calcDecking()"></div>
-        <div class="price-field"><label>Post 100x100 ($/unit)</label><input type="number" id="dkp-post" value="45" oninput="calcDecking()"></div>
+        <div class="price-field"><label>Post 100x100 ($/unit)</label><input type="number" id="dkp-post" value="30" oninput="calcDecking()"></div>
         <div class="price-field"><label>Concrete ($/bag)</label><input type="number" id="dkp-conc" value="9" oninput="calcDecking()"></div>
         <div class="price-field"><label>Fixings/screws ($)</label><input type="number" id="dkp-fix" value="80" oninput="calcDecking()"></div>
         <div class="price-field"><label>Handrail ($/lm)</label><input type="number" id="dkp-rail" value="120" oninput="calcDecking()"></div>
@@ -676,7 +676,7 @@
         <div class="price-field"><label>Gravel ($/m³)</label><input type="number" id="pwp-gravel" value="70" oninput="calcPathway()"></div>
         <div class="price-field"><label>Stepping stones ($/unit)</label><input type="number" id="pwp-stepping" value="25" oninput="calcPathway()"></div>
         <div class="price-field"><label>Decomposed granite ($/m³)</label><input type="number" id="pwp-dg" value="85" oninput="calcPathway()"></div>
-        <div class="price-field"><label>Bark chips ($/m³)</label><input type="number" id="pwp-bark" value="55" oninput="calcPathway()"></div>
+        <div class="price-field"><label>Bark chips ($/m³)</label><input type="number" id="pwp-bark" value="100" oninput="calcPathway()"></div>
         <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="pwp-weed" value="3.50" oninput="calcPathway()"></div>
         <div class="price-field"><label>Edge restraint ($/lm)</label><input type="number" id="pwp-edge" value="6" oninput="calcPathway()"></div>
       </div>
@@ -748,7 +748,7 @@
       </div>
       <div class="prices-toggle" onclick="togglePrices('exp')">⚙ Edit prices <span id="exp-arrow">▾</span></div>
       <div class="prices-grid" id="exp">
-        <div class="price-field"><label>Bobcat hire ($/day)</label><input type="number" id="exp-bobcat" value="900" oninput="calcExcavation()"></div>
+        <div class="price-field"><label>Bobcat hire ($/day)</label><input type="number" id="exp-bobcat" value="350" oninput="calcExcavation()"></div>
         <div class="price-field"><label>Tip truck hire ($/load)</label><input type="number" id="exp-truck" value="350" oninput="calcExcavation()"></div>
         <div class="price-field"><label>Tip fees ($/tonne)</label><input type="number" id="exp-tip" value="85" oninput="calcExcavation()"></div>
       </div>
@@ -785,9 +785,9 @@
         <div class="price-field"><label>Luxury grass ($/m²)</label><input type="number" id="agp-luxury" value="58" oninput="calcArtificial()"></div>
         <div class="price-field"><label>Crusher dust ($/m³)</label><input type="number" id="agp-base" value="65" oninput="calcArtificial()"></div>
         <div class="price-field"><label>Weed mat ($/m²)</label><input type="number" id="agp-weed" value="3.50" oninput="calcArtificial()"></div>
-        <div class="price-field"><label>Silica sand infill ($/bag)</label><input type="number" id="agp-infill" value="22" oninput="calcArtificial()"></div>
-        <div class="price-field"><label>Joining tape ($/lm)</label><input type="number" id="agp-tape" value="8" oninput="calcArtificial()"></div>
-        <div class="price-field"><label>Nails/pegs ($)</label><input type="number" id="agp-nails" value="35" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Silica sand infill ($/bag)</label><input type="number" id="agp-infill" value="8" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Joining tape ($/lm)</label><input type="number" id="agp-tape" value="15" oninput="calcArtificial()"></div>
+        <div class="price-field"><label>Nails/pegs ($)</label><input type="number" id="agp-nails" value="50" oninput="calcArtificial()"></div>
       </div>
       <div class="result-list" id="res-artificial"></div>
       <div class="hours-estimate" id="hrs-artificial" style="display:none"><span class="hel">⏱ Estimated labour</span><span class="hev" id="hrs-artificial-val">—</span></div>
@@ -881,7 +881,7 @@
       </div>
       <div class="prices-toggle" onclick="togglePrices('binp')">⚙ Edit pricing formula <span id="binp-arrow">▾</span></div>
       <div class="prices-grid" id="binp">
-        <div class="price-field"><label>Rate per m³ ($)</label><input type="number" id="binp-rate" value="100" oninput="calcBin()"></div>
+        <div class="price-field"><label>Rate per m³ ($)</label><input type="number" id="binp-rate" value="110" oninput="calcBin()"></div>
         <div class="price-field"><label>Delivery fee ($)</label><input type="number" id="binp-delivery" value="60" oninput="calcBin()"></div>
       </div>
       <div class="result-list" id="res-bin"></div>
@@ -986,9 +986,9 @@
       </div>
       <div class="prices-toggle" onclick="togglePrices('ftp')">⚙ Edit material prices <span id="ftp-arrow">▾</span></div>
       <div class="prices-grid" id="ftp">
-        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="ftp-concrete" value="230" oninput="calcFootings()"></div>
-        <div class="price-field"><label>Reo bar N12 ($/lm)</label><input type="number" id="ftp-reo" value="4.50" oninput="calcFootings()"></div>
-        <div class="price-field"><label>Mesh SL72 ($/sheet)</label><input type="number" id="ftp-mesh" value="28" oninput="calcFootings()"></div>
+        <div class="price-field"><label>Concrete ($/m³)</label><input type="number" id="ftp-concrete" value="330" oninput="calcFootings()"></div>
+        <div class="price-field"><label>Reo bar N12 ($/lm)</label><input type="number" id="ftp-reo" value="3.00" oninput="calcFootings()"></div>
+        <div class="price-field"><label>Mesh SL72 ($/sheet)</label><input type="number" id="ftp-mesh" value="110" oninput="calcFootings()"></div>
         <div class="price-field"><label>Formwork ($/lm)</label><input type="number" id="ftp-form" value="4" oninput="calcFootings()"></div>
       </div>
       <div class="result-list" id="res-footings"></div>
@@ -1754,9 +1754,9 @@ function calcGarden() {
   });
   if (totalArea <= 0) { showResults('garden', []); return; }
   var items = [
-    { name: 'Premium garden soil', qty: totalSoilM3.toFixed(1) + ' m³', total: totalSoilM3 * v('gp-soil'), note: 'incl. 10% compaction' },
-    { name: 'Mulch', qty: totalMulchM3.toFixed(1) + ' m³', total: totalMulchM3 * v('gp-mulch') },
-    { name: 'Compost (25L bags)', qty: totalCompost + ' bags', total: totalCompost * v('gp-compost') }
+{ name: 'Garden Mix Soil', qty: totalSoilM3.toFixed(1) + ' m³', total: totalSoilM3 * v('gp-soil'), note: 'incl. 10% compaction' },
+{ name: 'Mulch', qty: totalMulchM3.toFixed(1) + ' m³', total: totalMulchM3 * v('gp-mulch') },
+{ name: 'Compost (25L bags)', qty: totalCompost + ' bags', total: totalCompost * v('gp-compost') }
   ];
   if (edging > 0) items.push({ name: 'Garden edging', qty: edging + ' lm', total: edging * v('gp-edging') });
   if (weedmat > 0) items.push({ name: 'Weed mat', qty: weedmat + ' m²', total: weedmat * v('gp-weedmat') });
@@ -3538,11 +3538,11 @@ var DEFAULT_MATERIALS = {
     { id: 'pwp-edge', label: 'Edge restraint (pathways)', unit: '/lm', value: 6 }
   ],
   decking: [
-    { id: 'dkp-merbau', label: 'Merbau decking boards', unit: '/lm', value: 18 },
+    { id: 'dkp-merbau', label: 'Merbau decking boards', unit: '/lm', value: 38.33 },
     { id: 'dkp-pine', label: 'Treated pine boards', unit: '/lm', value: 9 },
     { id: 'dkp-composite', label: 'Composite boards', unit: '/lm', value: 28 },
     { id: 'dkp-frame', label: 'H4 bearer / joist', unit: '/lm', value: 8 },
-    { id: 'dkp-post', label: 'Post 100x100', unit: '/unit', value: 45 },
+    { id: 'dkp-post', label: 'Post 100x100', unit: '/unit', value: 30 },
     { id: 'dkp-conc', label: 'Concrete post mix', unit: '/bag', value: 9 },
     { id: 'dkp-fix', label: 'Deck fixings & hardware', unit: '/lot', value: 80 },
     { id: 'dkp-rail', label: 'Handrail', unit: '/lm', value: 120 },
@@ -3552,11 +3552,11 @@ var DEFAULT_MATERIALS = {
     { id: 'pgp-fix', label: 'Pergola fixings & brackets', unit: '/lot', value: 120 },
     { id: 'pgp-poly', label: 'Polycarbonate roofing', unit: '/m²', value: 45 },
     { id: 'pgp-cb', label: 'Colorbond roofing', unit: '/m²', value: 55 },
-    { id: 'ltp-spike', label: 'Spike / spotlight', unit: '/unit', value: 35 },
-    { id: 'ltp-path', label: 'Path light', unit: '/unit', value: 45 },
-    { id: 'ltp-wall', label: 'Wall / step light', unit: '/unit', value: 55 },
-    { id: 'ltp-cable', label: 'Low volt cable', unit: '/lm', value: 3.50 },
-    { id: 'ltp-trans', label: 'Transformer', unit: '/unit', value: 120 },
+    { id: 'ltp-spike', label: 'Spike / spotlight', unit: '/unit', value: 60 },
+    { id: 'ltp-path', label: 'Path light', unit: '/unit', value: 75 },
+    { id: 'ltp-wall', label: 'Wall / step light', unit: '/unit', value: 70 },
+    { id: 'ltp-cable', label: 'Low volt cable', unit: '/lm', value: 4.50 },
+    { id: 'ltp-trans', label: 'Transformer', unit: '/unit', value: 180 },
     { id: 'ltp-conn', label: 'Connectors & clips', unit: '/lot', value: 40 }
   ],
   drainage: [
@@ -3568,7 +3568,7 @@ var DEFAULT_MATERIALS = {
     { id: 'dp-fit', label: 'Drainage fittings', unit: '/lot', value: 40 },
     { id: 'rp-post', label: 'H4 treated post 2.4m', unit: '/unit', value: 38 },
     { id: 'rp-tsleeper', label: 'Hardwood timber sleeper', unit: '/unit', value: 32 },
-    { id: 'rp-csleeper', label: 'Concrete sleeper', unit: '/unit', value: 65 },
+    { id: 'rp-csleeper', label: 'Concrete sleeper', unit: '/unit', value: 37.95 },
     { id: 'rp-agg', label: 'Drainage aggregate (retaining)', unit: '/m³', value: 75 },
     { id: 'rp-fixings', label: 'Retaining wall fixings', unit: '/lot', value: 40 },
     { id: 'stp-sleeper', label: 'Step timber sleeper', unit: '/unit', value: 32 },
@@ -3588,13 +3588,13 @@ var DEFAULT_MATERIALS = {
     { id: 'agp-weed', label: 'Weed mat (artificial grass)', unit: '/m²', value: 3.50 }
   ],
   waste: [
-    { id: 'exp-bobcat', label: 'Bobcat hire', unit: '/day', value: 900 },
+    { id: 'exp-bobcat', label: 'Bobcat hire', unit: '/day', value: 350 },
     { id: 'exp-truck', label: 'Tip truck hire', unit: '/load', value: 350 },
     { id: 'exp-tip', label: 'Tip / disposal fees', unit: '/tonne', value: 85 },
-    { id: 'binp-rate', label: 'Skip bin rate', unit: '/m³', value: 100 },
+    { id: 'binp-rate', label: 'Skip bin rate', unit: '/m³', value: 110 },
     { id: 'binp-delivery', label: 'Skip bin delivery fee', unit: '/bin', value: 60 },
     { id: 'pgp-conc', label: 'Concrete post mix (pergola)', unit: '/bag', value: 9 },
-    { id: 'rp-concrete', label: 'Concrete (retaining footings)', unit: '/m³', value: 230 },
+    { id: 'rp-concrete', label: 'Concrete (retaining footings)', unit: '/m³', value: 330 },
     { id: 'stp-concrete', label: 'Concrete (steps)', unit: '/m³', value: 230 }
   ]
 };
