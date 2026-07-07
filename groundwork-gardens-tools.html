@@ -387,6 +387,7 @@
       <div class="input-grid">
         <div class="field"><label>No. of zones</label><input type="number" id="i-zones" value="1" min="1" oninput="calcIrrigation()"></div>
         <div class="field"><label>20mm poly pipe (lm)</label><input type="number" id="i-pipe" placeholder="0" oninput="calcIrrigation()"></div>
+        <div class="field"><label>13mm poly pipe (lm)</label><input type="number" id="i-pipe13" placeholder="0" oninput="calcIrrigation()"></div>
         <div class="field"><label>13mm dripline (lm)</label><input type="number" id="i-dripline" placeholder="0" oninput="calcIrrigation()"></div>
         <div class="field"><label>Spray heads</label><input type="number" id="i-heads" placeholder="0" oninput="calcIrrigation()"></div>
         <div class="field"><label>Drip emitters</label><input type="number" id="i-drip" placeholder="0" oninput="calcIrrigation()"></div>
@@ -397,12 +398,13 @@
       </div><!-- end install fields -->
       <div class="prices-toggle" onclick="togglePrices('ip')">⚙ Edit material prices <span id="ip-arrow">▾</span></div>
       <div class="prices-grid" id="ip">
-        <div class="price-field"><label>20mm poly pipe ($/lm)</label><input type="number" id="ip-pipe" value="2.20" oninput="calcIrrigation()"></div>
+<div class="price-field"><label>20mm poly pipe ($/50m roll)</label><input type="number" id="ip-pipe" value="44.00" oninput="calcIrrigation()"></div>
+<div class="price-field"><label>13mm poly pipe ($/50m roll)</label><input type="number" id="ip-pipe13" value="25.00" oninput="calcIrrigation()"></div>
         <div class="price-field"><label>Tap timer ($/unit)</label><input type="number" id="ip-timer" value="85" oninput="calcIrrigation()"></div>
         <div class="price-field"><label>Manifold 2-way ($/unit)</label><input type="number" id="ip-manifold" value="45" oninput="calcIrrigation()"></div>
         <div class="price-field"><label>Spray head ($/unit)</label><input type="number" id="ip-head" value="8.50" oninput="calcIrrigation()"></div>
         <div class="price-field"><label>Drip emitter ($/unit)</label><input type="number" id="ip-drip" value="1.80" oninput="calcIrrigation()"></div>
-        <div class="price-field"><label>13mm dripline ($/lm)</label><input type="number" id="ip-dripline" value="1.80" oninput="calcIrrigation()"></div>
+<div class="price-field"><label>13mm dripline ($/50m roll)</label><input type="number" id="ip-dripline" value="53.30" oninput="calcIrrigation()"></div>      
         <div class="price-field"><label>1-way tap timer ($)</label><input type="number" id="ip-timer1" value="65" oninput="calcIrrigation()"></div>
         <div class="price-field"><label>4-way tap timer ($)</label><input type="number" id="ip-timer4" value="120" oninput="calcIrrigation()"></div>
         <div class="price-field"><label>Tap adapter ($)</label><input type="number" id="ip-tapadapter" value="35" oninput="calcIrrigation()"></div>
@@ -554,17 +556,24 @@
     <div class="job-body open" id="body-drainage">
       <div class="input-grid">
         <div class="field"><label>Ag pipe run (lm)</label><input type="number" id="d-ag" placeholder="0" oninput="calcDrainage()"></div>
+        <div class="field"><label>Ag pipe size</label>
+  <select id="d-ag-size" onchange="calcDrainage()">
+    <option value="100">100mm</option>
+    <option value="65">65mm</option>
+  </select>
+</div>
         <div class="field"><label>Channel drain (lm)</label><input type="number" id="d-channel" placeholder="0" oninput="calcDrainage()"></div>
         <div class="field"><label>Pits needed</label><input type="number" id="d-pits" placeholder="0" oninput="calcDrainage()"></div>
         <div class="field"><label>Scoria/aggregate (m³)</label><input type="number" id="d-scoria" placeholder="0" oninput="calcDrainage()"></div>
       </div>
       <div class="prices-toggle" onclick="togglePrices('dp')">⚙ Edit material prices <span id="dp-arrow">▾</span></div>
       <div class="prices-grid" id="dp">
-        <div class="price-field"><label>Ag pipe 100mm ($/lm)</label><input type="number" id="dp-ag" value="4.50" oninput="calcDrainage()"></div>
-        <div class="price-field"><label>Channel drain ($/lm)</label><input type="number" id="dp-channel" value="35" oninput="calcDrainage()"></div>
+       <div class="price-field"><label>Ag pipe 100mm ($/20m roll)</label><input type="number" id="dp-ag100" value="138" oninput="calcDrainage()"></div>
+<div class="price-field"><label>Ag pipe 65mm ($/20m roll)</label><input type="number" id="dp-ag65" value="80.65" oninput="calcDrainage()"></div>
+<div class="price-field"><label>Channel drain ($/3m length)</label><input type="number" id="dp-channel" value="174" oninput="calcDrainage()"></div>
         <div class="price-field"><label>Pit 300x300 ($/unit)</label><input type="number" id="dp-pit" value="65" oninput="calcDrainage()"></div>
         <div class="price-field"><label>Scoria ($/m³)</label><input type="number" id="dp-scoria" value="89" oninput="calcDrainage()"></div>
-        <div class="price-field"><label>Geotech fabric ($/m²)</label><input type="number" id="dp-geo" value="4" oninput="calcDrainage()"></div>
+<div class="price-field"><label>Geotextile fabric ($/10m roll)</label><input type="number" id="dp-geo" value="48.62" oninput="calcDrainage()"></div>
         <div class="price-field"><label>Fittings allowance ($)</label><input type="number" id="dp-fit" value="40" oninput="calcDrainage()"></div>
       </div>
       <div class="result-list" id="res-drainage"></div>
@@ -1819,24 +1828,35 @@ function calcIrrigation() {
   }
 
   // INSTALL items
-  if (type === 'install') {
-    var zones = v('i-zones'), pipe = v('i-pipe'), heads = v('i-heads'), drip = v('i-drip');
+if (type === 'install') {
+    var zones = v('i-zones'), pipe = v('i-pipe'), pipe13 = v('i-pipe13'), heads = v('i-heads'), drip = v('i-drip');
     var timer1 = v('i-timer1'), timer4 = v('i-timer4'), tapadapter = v('i-tapadapter');
     var dripline = v('i-dripline');
-    if (zones <= 0 && pipe <= 0) { showResults('irrigation', []); return; }
+    if (zones <= 0 && pipe <= 0 && pipe13 <= 0) { showResults('irrigation', []); return; }
     var manifolds = Math.ceil(zones / 2);
     var fittings = v('ip-fittings') + pipe * 0.5;
-    items.push({ name: '20mm poly pipe', qty: pipe + ' lm', total: pipe * v('ip-pipe') });
+    var rollLm = 50;
+    if (pipe > 0) {
+      var pipeRolls = Math.ceil(pipe / rollLm);
+      items.push({ name: '20mm poly pipe (' + rollLm + 'm rolls)', qty: pipeRolls + ' rolls', total: pipeRolls * v('ip-pipe'), note: pipe + 'lm needed' });
+    }
+    if (pipe13 > 0) {
+      var pipe13Rolls = Math.ceil(pipe13 / rollLm);
+      items.push({ name: '13mm poly pipe (' + rollLm + 'm rolls)', qty: pipe13Rolls + ' rolls', total: pipe13Rolls * v('ip-pipe13'), note: pipe13 + 'lm needed' });
+    }
     items.push({ name: 'Automatic tap timer', qty: zones + ' units', total: zones * v('ip-timer') });
     items.push({ name: '2-way manifold', qty: manifolds + ' units', total: manifolds * v('ip-manifold') });
     if (heads > 0) items.push({ name: 'Adjustable spray heads', qty: heads + ' units', total: heads * v('ip-head') });
     if (drip > 0) items.push({ name: 'Drip emitters', qty: drip + ' units', total: drip * v('ip-drip') });
-    if (dripline > 0) items.push({ name: '13mm dripline', qty: dripline + ' lm', total: dripline * v('ip-dripline') });
+    if (dripline > 0) {
+      var driplineRolls = Math.ceil(dripline / rollLm);
+      items.push({ name: '13mm dripline (' + rollLm + 'm rolls)', qty: driplineRolls + ' rolls', total: driplineRolls * v('ip-dripline'), note: dripline + 'lm needed' });
+    }
     if (timer1 > 0) items.push({ name: '1-way tap timer', qty: timer1 + ' units', total: timer1 * v('ip-timer1') });
     if (timer4 > 0) items.push({ name: '4-way tap timer', qty: timer4 + ' units', total: timer4 * v('ip-timer4') });
     if (tapadapter > 0) items.push({ name: 'Tap adapter manifold', qty: tapadapter + ' units', total: tapadapter * v('ip-tapadapter') });
     items.push({ name: 'Fittings & connectors', qty: '1 lot', total: fittings });
-    showResults('irrigation', items, Math.round(zones * 3 + pipe * 0.1), Math.round(zones * 5 + pipe * 0.15));
+    showResults('irrigation', items, Math.round(zones * 3 + (pipe + pipe13) * 0.1), Math.round(zones * 5 + (pipe + pipe13) * 0.15));
     return;
   }
 
@@ -1951,13 +1971,27 @@ function calcPlanting() {
 function calcDrainage() {
   var ag = v('d-ag'), ch = v('d-channel'), pits = v('d-pits'), scoria = v('d-scoria');
   if (ag + ch + pits + scoria <= 0) { showResults('drainage', []); return; }
-  var geoFabric = Math.ceil(ag * 0.5 + scoria * 3);
+  var geoFabricM2 = Math.ceil(ag * 0.5 + scoria * 3);
   var items = [];
-  if (ag > 0) items.push({ name: 'Ag pipe 100mm', qty: ag + ' lm', total: ag * v('dp-ag') });
-  if (ch > 0) items.push({ name: 'Channel drain', qty: ch + ' lm', total: ch * v('dp-channel') });
+  if (ag > 0) {
+    var agSize = document.getElementById('d-ag-size').value;
+    var agRollLm = 20;
+    var agRollsNeeded = Math.ceil(ag / agRollLm);
+    var agPrice = agSize === '100' ? v('dp-ag100') : v('dp-ag65');
+    items.push({ name: 'Ag pipe ' + agSize + 'mm (' + agRollLm + 'm rolls)', qty: agRollsNeeded + ' rolls', total: agRollsNeeded * agPrice, note: ag + 'lm needed' });
+  }
+  if (ch > 0) {
+    var chLengthM = 3;
+    var chLengthsNeeded = Math.ceil(ch / chLengthM);
+    items.push({ name: 'Channel drain (' + chLengthM + 'm lengths)', qty: chLengthsNeeded + ' lengths', total: chLengthsNeeded * v('dp-channel'), note: ch + 'lm needed' });
+  }
   if (pits > 0) items.push({ name: 'Drainage pits 300×300', qty: pits + ' units', total: pits * v('dp-pit') });
   if (scoria > 0) items.push({ name: 'Scoria aggregate', qty: scoria + ' m³', total: scoria * v('dp-scoria') });
-  if (geoFabric > 0) items.push({ name: 'Geotextile fabric', qty: geoFabric + ' m²', total: geoFabric * v('dp-geo') });
+  if (geoFabricM2 > 0) {
+    var geoRollM2 = 10;
+    var geoRollsNeeded = Math.ceil(geoFabricM2 / geoRollM2);
+    items.push({ name: 'Geotextile fabric (10m² rolls)', qty: geoRollsNeeded + ' rolls', total: geoRollsNeeded * v('dp-geo'), note: geoFabricM2 + 'm² needed' });
+  }
   items.push({ name: 'Fittings & connectors', qty: '1 lot', total: v('dp-fit') });
   showResults('drainage', items, Math.round((ag + ch) * 0.5 + pits), Math.round((ag + ch) * 0.8 + pits * 2));
 }
