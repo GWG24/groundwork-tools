@@ -307,6 +307,15 @@
       <button class="add-btn" onclick="addGardenBed()">+ Add Garden Bed</button>
       <div class="input-grid">
         <div class="field"><label>Garden edging (lm)</label><input type="number" id="g-edging" placeholder="0" oninput="calcGarden()"></div>
+        <div class="field"><label>Edging type</label>
+  <select id="g-edging-type" onchange="calcGarden()">
+    <option value="0">100mm x 3mm Corten Steel</option>
+    <option value="1">150mm x 3mm Corten Steel</option>
+    <option value="2">200mm x 3mm Corten Steel</option>
+    <option value="3">100mm x 5mm Corten Steel</option>
+    <option value="4">150mm x 5mm Corten Steel</option>
+  </select>
+</div>
         <div class="field"><label>Weed mat (m²)</label><input type="number" id="g-weedmat" placeholder="0" oninput="calcGarden()"></div>
       </div>
       <div class="prices-toggle" onclick="togglePrices('gp')">⚙ Edit material prices <span id="gp-arrow">▾</span></div>
@@ -670,6 +679,15 @@
           </select>
         </div>
         <div class="field"><label>Depth (mm)</label><input type="number" id="pw-depth" value="75" oninput="calcPathway()"></div>
+        <div class="field"><label>Edging type</label>
+  <select id="pw-edging-type" onchange="calcPathway()">
+    <option value="0">100mm x 3mm Corten Steel</option>
+    <option value="1">150mm x 3mm Corten Steel</option>
+    <option value="2">200mm x 3mm Corten Steel</option>
+    <option value="3">100mm x 5mm Corten Steel</option>
+    <option value="4">150mm x 5mm Corten Steel</option>
+  </select>
+</div>
       </div>
       <div class="prices-toggle" onclick="togglePrices('pwp')">⚙ Edit material prices <span id="pwp-arrow">▾</span></div>
       <div class="prices-grid" id="pwp">
@@ -1758,7 +1776,12 @@ function calcGarden() {
 { name: 'Mulch', qty: totalMulchM3.toFixed(1) + ' m³', total: totalMulchM3 * v('gp-mulch') },
 { name: 'Compost (25L bags)', qty: totalCompost + ' bags', total: totalCompost * v('gp-compost') }
   ];
-  if (edging > 0) items.push({ name: 'Garden edging', qty: edging + ' lm', total: edging * v('gp-edging') });
+if (edging > 0) {
+  var edgeTypeIdx = parseInt(document.getElementById('g-edging-type').value) || 0;
+  var edgeType = EDGING_TYPES[edgeTypeIdx];
+  var lengthsNeeded = Math.ceil(edging / edgeType.lengthM);
+  items.push({ name: edgeType.label + ' edging (' + edgeType.lengthM + 'm lengths)', qty: lengthsNeeded + ' lengths', total: lengthsNeeded * edgeType.price, note: edging + 'lm needed' });
+}
   if (weedmat > 0) items.push({ name: 'Weed mat', qty: weedmat + ' m²', total: weedmat * v('gp-weedmat') });
   showResults('garden', items, Math.round(totalArea * 0.4), Math.round(totalArea * 0.7));
 }
@@ -2007,8 +2030,11 @@ function calcPathway() {
   else if (type === 'dg') items.push({ name: 'Decomposed granite', qty: volM3 + ' m³', total: volM3 * v('pwp-dg') });
   else items.push({ name: 'Bark chips', qty: volM3 + ' m³', total: volM3 * v('pwp-bark') });
   items.push({ name: 'Weed mat', qty: area + ' m²', total: area * v('pwp-weed') });
-  items.push({ name: 'Edge restraint', qty: (l*2).toFixed(1) + ' lm', total: l*2 * v('pwp-edge') });
-  showResults('pathway', items, Math.round(l * 0.5), Math.round(l * 1));
+var pwEdgeLm = l * 2;
+var pwEdgeTypeIdx = parseInt(document.getElementById('pw-edging-type').value) || 0;
+var pwEdgeType = EDGING_TYPES[pwEdgeTypeIdx];
+var pwLengthsNeeded = Math.ceil(pwEdgeLm / pwEdgeType.lengthM);
+items.push({ name: pwEdgeType.label + ' edging (' + pwEdgeType.lengthM + 'm lengths)', qty: pwLengthsNeeded + ' lengths', total: pwLengthsNeeded * pwEdgeType.price, note: pwEdgeLm.toFixed(1) + 'lm needed' });  showResults('pathway', items, Math.round(l * 0.5), Math.round(l * 1));
 }
 
 function calcPergola() {
@@ -3010,7 +3036,14 @@ async function loadInvoiceById(id) {
   } catch(e) { showToast('⚠ Could not load invoice'); console.error(e); }
 }
 
-// ==================== MAINTENANCE ====================
+var EDGING_TYPES = [
+  { label: '100mm x 3mm Corten Steel', lengthM: 4, price: 34 },
+  { label: '150mm x 3mm Corten Steel', lengthM: 4, price: 54 },
+  { label: '200mm x 3mm Corten Steel', lengthM: 4, price: 72 },
+  { label: '100mm x 5mm Corten Steel', lengthM: 6, price: 90 },
+  { label: '150mm x 5mm Corten Steel', lengthM: 6, price: 135 }
+];
+  // ==================== MAINTENANCE ====================
 var MAINTENANCE_TASKS = [
   { label: '🌿 Mowing & Lawn Care', unit: 'hrs', rate: 75 },
   { label: '✂️ Pruning & Hedging', unit: 'hrs', rate: 75 },
