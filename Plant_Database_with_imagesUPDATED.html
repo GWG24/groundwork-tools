@@ -706,6 +706,381 @@ const palettes = [
   why: "Symmetry and clipped structure define formal design. Crisp Buxus hedging and a clipped Bay standard create the architectural bones, with Gardenia adding scent and softness within the structure.",
   quote: "The classic premium formal entry package for period and architecturally symmetrical homes.",
   warning: "Gardenia needs acidic, well-drained soil — test soil pH before quoting and budget for iron chelate if needed."
+},
+{
+  name: "Japanese Zen Garden", style: "Japanese", location: "Courtyards, meditation spaces, entries on Japanese-inspired or minimalist renovations",
+  water: "Medium", sun: "Part Shade", maintenance: "Medium–High",
+  plants: [
+    {role:"Feature", name:"Japanese Maple (Acer palmatum)", desc:"The soul of a Japanese garden — filtered light through delicate foliage and spectacular autumn colour."},
+    {role:"Structure", name:"Buxus (cloud-pruned)", desc:"Hand-clipped into soft rounded mounds (niwaki-style) rather than geometric shapes — organic, not architectural."},
+    {role:"Groundcover", name:"Dwarf Mondo Grass", desc:"Creates the illusion of moss without moss's fussy water needs — edges paths and stepping stones."},
+    {role:"Accent", name:"Black Mondo Grass", desc:"Near-black foliage against raked gravel or dark pebble is a classic Japanese contrast."},
+    {role:"Screen", name:"Nandina domestica", desc:"Fine bamboo-like foliage and red winter colour without the invasiveness of true bamboo."}
+  ],
+  why: "Japanese design is about restraint and asymmetry — odd-numbered groupings, empty space treated as a deliberate design element (ma), and a small, disciplined plant palette repeated rather than varied.",
+  quote: "A genuine specialist niche — very few Melbourne landscapers do authentic Japanese-style work well, which supports premium pricing for the skill involved.",
+  warning: "Resist adding flowering colour for its own sake — restraint is the entire point. A client wanting 'a splash of colour' needs a different palette."
+},
+{
+  name: "Mediterranean Terrace", style: "Mediterranean", location: "Sun-drenched terraces, entertaining areas, north-facing courtyards",
+  water: "Low", sun: "Full Sun", maintenance: "Low",
+  plants: [
+    {role:"Feature", name:"Olive Tree", desc:"Iconic silver-grey foliage and sculptural trunk — instantly reads as established."},
+    {role:"Vertical Accent", name:"Bay Tree (clipped standard)", desc:"Flanks entries or steps with formal, fragrant, evergreen structure."},
+    {role:"Fragrance Layer", name:"Lavender", desc:"Classic Mediterranean texture and scent released underfoot."},
+    {role:"Cascading", name:"Rosemary (trailing form)", desc:"Spills over retaining walls and pot edges, softening hard landscaping."},
+    {role:"Pot Feature", name:"Agave attenuata", desc:"Architectural counterpoint in a terracotta pot near seating."}
+  ],
+  why: "Mediterranean gardens read as effortless but are carefully engineered around drainage and heat — gravel mulch, raised beds, and silver-grey foliage that reflects rather than absorbs sun.",
+  quote: "Popular for entertaining-focused renovations — pairs beautifully with limestone paving, rendered walls and outdoor kitchens.",
+  warning: "Needs genuinely excellent drainage — on Melbourne's clay soils, budget for raised beds or serious soil amendment, or lavender and rosemary will rot over winter."
+},
+{
+  name: "Tropical Resort Retreat", style: "Tropical", location: "North-facing courtyards, pool surrounds, sheltered inner-city gardens",
+  water: "Medium–High", sun: "Part Shade", maintenance: "Medium",
+  plants: [
+    {role:"Canopy", name:"Dicksonia antarctica (Tree Fern)", desc:"Filtered overhead shade and instant lush character."},
+    {role:"Feature", name:"Canna Lily", desc:"Bold tropical flower and paddle-shaped foliage — the hot-climate statement plant."},
+    {role:"Backdrop", name:"Phormium tenax", desc:"Bold strap-leaf drama layered behind smaller foliage."},
+    {role:"Groundlayer", name:"Liriope muscari", desc:"Lush dark green underlayer that reads as jungle floor."},
+    {role:"Climber", name:"Star Jasmine (on a screen)", desc:"Fragrant, glossy backdrop that thickens a tropical feel quickly."}
+  ],
+  why: "Tropical design relies on contrasting leaf shapes and sizes stacked in dense layers — the 'jungle' effect comes from eliminating visible mulch and bare soil, not from any one hero plant.",
+  quote: "Strong seller for pool areas and north-facing courtyards with good winter sun and shelter from wind.",
+  warning: "Melbourne frosts will damage true tropicals — site in a warm, sheltered microclimate or budget for frost protection in the first few winters."
+},
+{
+  name: "Kitchen Garden / Potager", style: "Productive", location: "Backyards with good sun, family homes wanting productive space with visual appeal",
+  water: "Medium", sun: "Full Sun", maintenance: "Medium–High",
+  plants: [
+    {role:"Structure", name:"Buxus (clipped edging)", desc:"Formal bones around informal, ever-changing vegetable beds."},
+    {role:"Feature", name:"Citrus (dwarf)", desc:"Fruit, fragrant blossom and glossy year-round foliage in one tree."},
+    {role:"Fragrant Edge", name:"Rosemary & Thyme border", desc:"Edible, drought-tough, and defines bed edges without fuss."},
+    {role:"Seasonal", name:"Rotating veg & herb beds", desc:"The productive heart of the garden — changes with the season."},
+    {role:"Pollinator", name:"Lavender (at bed ends)", desc:"Draws bees in to pollinate the productive beds nearby."}
+  ],
+  why: "A potager borrows the bones of a formal garden — clipped edges, symmetry, repetition — and fills it with productive planting, so it looks intentional in every season rather than just at harvest time.",
+  quote: "Increasingly requested by clients wanting a genuine 'grow your own' element without an allotment-style mess — a good point of difference in consultations.",
+  warning: "Needs genuine full sun (6+ hours) for productive crops to perform — don't oversell this palette for shaded backyards."
+},
+{
+  name: "Rain Garden / Stormwater Swale", style: "Native", location: "Downpipe overflow zones, low points prone to pooling, WSUD-compliant new builds",
+  water: "Wet Tolerant (zoned)", sun: "Full Sun to Part Shade", maintenance: "Low",
+  plants: [
+    {role:"Wet Zone", name:"Carex appressa", desc:"Handles standing water at the lowest point of the swale."},
+    {role:"Wet Zone Alt.", name:"Juncus usitatus", desc:"Grows in standing water where nothing else survives."},
+    {role:"Mid Zone", name:"Lomandra 'Katie Belles'", desc:"Copes with fluctuating wet-to-dry conditions on the swale slopes."},
+    {role:"Dry Margin", name:"Westringia fruticosa", desc:"Handles the drier upper edges where water rarely reaches."},
+    {role:"Accent", name:"Dianella tasmanica", desc:"Architectural texture and blue berries at the swale margins."}
+  ],
+  why: "A rain garden is planted in zones — genuinely wet-tolerant species at the lowest point, grading out to ordinary garden plants at the margins — so it functions as drainage infrastructure while reading as an ordinary garden bed.",
+  quote: "A real differentiator — few residential landscapers offer WSUD-informed planting. Strong fit for new builds needing stormwater compliance sign-off.",
+  warning: "Confirm the swale is correctly graded and connected before planting — no plant selection fixes bad drainage engineering underneath it."
+},
+{
+  name: "Poolside Paradise", style: "Modern", location: "Pool surrounds, entertaining decks",
+  water: "Low", sun: "Full Sun", maintenance: "Low",
+  plants: [
+    {role:"Feature", name:"Agave attenuata", desc:"Spineless and safe near bare feet, architectural presence poolside."},
+    {role:"Screen", name:"Lilly Pilly 'Straight and Narrow'", desc:"Privacy without heavy leaf litter falling into the pool."},
+    {role:"Grass", name:"Lomandra 'Tanika'", desc:"Fine texture with minimal debris — pool-filter friendly."},
+    {role:"Colour", name:"Agapanthus (white)", desc:"Clean, classic poolside flower without a messy drop."},
+    {role:"Pot Accent", name:"Yucca elephantipes", desc:"Bold vertical statement in a large pot near the deck."}
+  ],
+  why: "Poolside planting has one non-negotiable rule: minimal leaf and flower drop. Every plant here earns its place first by what it doesn't shed into the filter, second by how it looks.",
+  quote: "Ask about ongoing pool-area maintenance when quoting — leaf litter complaints are the number-one pool-garden callback.",
+  warning: "Avoid deciduous trees, messy-fruiting natives (Banksia, Grevillea) and anything spined near pool decking and bare feet."
+},
+{
+  name: "Slope & Embankment Stabilisation", style: "Native", location: "Steep banks, retaining wall tops and bases, erosion-prone sites",
+  water: "Low", sun: "Full Sun to Part Shade", maintenance: "Low",
+  plants: [
+    {role:"Primary Cover", name:"Myoporum parvifolium", desc:"Fast-spreading root mat that knits and holds the soil surface."},
+    {role:"Secondary Cover", name:"Grevillea 'Bronze Rambler'", desc:"Deep-rooted native groundcover for slope reinforcement."},
+    {role:"Cascading", name:"Casuarina 'Cousin It'", desc:"Softens the top of retaining walls, spilling down the face."},
+    {role:"Anchor Shrub", name:"Correa alba (at intervals)", desc:"Deeper root systems spaced through the slope for real stabilisation."}
+  ],
+  why: "Erosion-control planting is about root structure more than looks — fast, fibrous-rooted groundcovers knit the soil surface while deeper-rooted shrubs spaced through the slope anchor it more permanently.",
+  quote: "Council and developer sites often specifically request erosion-control planting — a useful niche to list in scope-of-works documents.",
+  warning: "Groundcovers alone don't stabilise a genuinely steep slope — always pair planting with proper engineering, and recommend a structural assessment for anything steep or near buildings."
+},
+{
+  name: "Deep Shade Woodland", style: "Woodland", location: "South-facing yards, under established trees, heavily overhung side passages",
+  water: "Medium", sun: "Full Shade to Part Shade", maintenance: "Medium",
+  plants: [
+    {role:"Structure", name:"Camellia japonica", desc:"Spectacular flowers in deep shade when little else will bloom."},
+    {role:"Groundcover", name:"Native Violet", desc:"Dense, shade-tolerant carpet under trees and along paths."},
+    {role:"Winter Interest", name:"Hellebore", desc:"Flowers through winter in genuinely low light."},
+    {role:"Architecture", name:"Dicksonia antarctica (Tree Fern)", desc:"Lush understorey structure that thrives without direct sun."},
+    {role:"Path Edge", name:"Dwarf Mondo Grass", desc:"Defines edges and paths cleanly even in low light."}
+  ],
+  why: "Deep shade is the most commonly mis-planted condition in Melbourne gardens — most 'shade plants' sold at nurseries are actually part-shade. This palette is genuinely suited to full shade under established canopy.",
+  quote: "A valuable palette to have ready — many competitors default to 'sorry, nothing grows there,' which is a lost sale you can win instead.",
+  warning: "Check for root competition from established trees — deep shade sites often also have dry soil under the canopy, which narrows plant choices further."
+},
+{
+  name: "Grand Entrance Statement", style: "Formal", location: "Wide driveways, feature entries, period and architect-designed homes",
+  water: "Low–Medium", sun: "Full Sun", maintenance: "Medium",
+  plants: [
+    {role:"Avenue Tree", name:"Ornamental Pear 'Capital' (paired)", desc:"Symmetrical planting either side of the entry for instant formality."},
+    {role:"Framework", name:"Buxus balls (repeated)", desc:"Rhythm and formality through simple, disciplined repetition."},
+    {role:"Underplanting", name:"Liriope 'Evergreen Giant'", desc:"Tidy dark mass at the base ties the composition together."},
+    {role:"Seasonal Lift", name:"Agapanthus (white only)", desc:"Clean seasonal flowering without disrupting the formal palette."}
+  ],
+  why: "Entrance statements rely entirely on repetition and symmetry — the same tree, the same clipped shape, repeated at even intervals, reads as intentional and expensive even from a modest plant list.",
+  quote: "This is the single highest-visibility palette you'll install — it's what the client and every visitor sees first, so photograph it well for your portfolio.",
+  warning: "Confirm exact driveway width and vehicle clearances before specifying paired trees — mature canopy width needs to clear vehicle access."
+},
+{
+  name: "Rural Acreage Windbreak & Entry", style: "Native", location: "Rural and semi-rural properties, long driveways, exposed paddocks",
+  water: "Low", sun: "Full Sun", maintenance: "Low",
+  plants: [
+    {role:"Outer Windbreak", name:"Eucalyptus leucoxylon", desc:"Fast, tough, tall — the first line of wind defence."},
+    {role:"Mid Windbreak", name:"Lilly Pilly 'Resilience'", desc:"Dense mid-layer screening beneath the taller canopy."},
+    {role:"Driveway Avenue", name:"Corymbia ficifolia (Flowering Gum)", desc:"Spectacular flowering avenue tree for a memorable entry."},
+    {role:"Verge Layer", name:"Lomandra 'Nyalla'", desc:"Mass-planted, low-maintenance groundlayer along the drive."}
+  ],
+  why: "Windbreaks are engineered in layers, tallest to shortest, to filter wind rather than block it outright — a solid wall of planting creates turbulence, while a layered, semi-permeable break reduces wind speed further downwind.",
+  quote: "Rural clients often need large-scale, budget-conscious planting — quote tube stock and bulk pricing for windbreak rows rather than advanced pot sizes.",
+  warning: "Windbreak rows need irrigation through the first one to two summers even with drought-tolerant species — budget this in, or be upfront that losses are likely without it."
+},
+{
+  name: "Family-Safe Garden (Pet & Child Friendly)", style: "Modern", location: "Family backyards with young kids and/or dogs",
+  water: "Low–Medium", sun: "Full Sun to Part Shade", maintenance: "Low",
+  plants: [
+    {role:"Lawn Alternative", name:"Dichondra repens", desc:"Soft underfoot and handles light foot traffic from kids and pets."},
+    {role:"Safe Structural", name:"Agave attenuata (spineless)", desc:"Bold architectural form without the spines of typical agaves."},
+    {role:"Tough Shrub", name:"Westringia fruticosa", desc:"Safe, non-toxic and forgiving of a ball or dog bouncing through it."},
+    {role:"Groundcover", name:"Native Violet", desc:"Cushions minor falls and is non-toxic if nibbled."}
+  ],
+  why: "Family-safe planting isn't a special plant category — it's actively excluding the toxic and spined plants common on typical trade lists, and choosing tougher cultivars that bounce back from footballs and dog zoomies.",
+  quote: "A genuine trust-builder with young-family clients — explicitly asking about pets and children before quoting shows a level of care competitors often skip.",
+  warning: "Always ask directly about pets and small children before finalising a plant list — no list is 100% failsafe, so also recommend clients supervise young children around any garden, and avoid Nandina (toxic berries) if pets are present."
+},
+{
+  name: "Fragrant Garden / Scented Pathway", style: "Cottage", location: "Entry paths, bedroom-window gardens, outdoor entertaining areas",
+  water: "Low–Medium", sun: "Full Sun to Part Shade", maintenance: "Medium",
+  plants: [
+    {role:"Entry Climber", name:"Star Jasmine (on an arch)", desc:"The classic Melbourne fragrance, framing an entry or path."},
+    {role:"Evening Scent", name:"Gardenia 'Florida'", desc:"Heady evening fragrance best placed near outdoor seating."},
+    {role:"Underfoot", name:"Lavender", desc:"Releases fragrance when brushed against along a path."},
+    {role:"Paving Filler", name:"Thyme (between pavers)", desc:"Scent released with every step across stepping stones."},
+    {role:"Screening Scent", name:"Murraya paniculata (Mock Orange)", desc:"Fragrant hedge that doubles as a screening plant."}
+  ],
+  why: "Fragrance gardens are designed around movement — plants are placed where people brush past, or where evening air pools near windows and outdoor seating, not simply where they look best.",
+  quote: "An easy upsell during consultation — ask what clients want to smell from their back deck in the evening, then build the palette around the answer.",
+  warning: "Concentrate fragrance near seating and entries rather than spreading it thinly — too many competing scents through a whole garden becomes confusing rather than pleasant."
+},
+{
+  name: "Heritage / Period Garden", style: "Formal", location: "Victorian and Edwardian homes, heritage-overlay properties",
+  water: "Medium", sun: "Full Sun to Part Shade", maintenance: "Medium–High",
+  plants: [
+    {role:"Feature", name:"Standard Roses", desc:"Period-correct romantic flowering, classically underplanted."},
+    {role:"Structure", name:"Buxus (low clipped hedging)", desc:"Classic parterre-style edging true to the period."},
+    {role:"Climber", name:"Wisteria (over a veranda/pergola)", desc:"The quintessential heritage-garden climber."},
+    {role:"Border", name:"Hydrangea macrophylla", desc:"A Victorian-era cottage favourite for shaded borders."},
+    {role:"Path Edge", name:"Catmint", desc:"Soft, informal edging that relaxes the formal bones."}
+  ],
+  why: "Heritage gardens draw on planting that was actually available in Australia in the 1880s–1910s — roses, hydrangeas, wisteria, clipped box — rather than modern natives, which read as anachronistic against period architecture.",
+  quote: "A valuable specialty for heritage-overlay council areas (Camberwell, Malvern, Hawthorn) where garden character can factor into heritage assessments.",
+  warning: "Roses and hydrangeas are maintenance-heavy — pruning, fungal disease management, consistent watering — set client expectations honestly at the quoting stage."
+},
+{
+  name: "Monochrome Modern (Black, White & Green)", style: "Modern", location: "Architect-designed homes, minimalist renovations, gallery-style gardens",
+  water: "Low–Medium", sun: "Full Sun to Part Shade", maintenance: "Low–Medium",
+  plants: [
+    {role:"Dark Accent", name:"Black Mondo Grass", desc:"Near-black foliage — the signature dark note in the composition."},
+    {role:"Structure", name:"Buxus (clipped)", desc:"Pure green geometry underpinning the whole design."},
+    {role:"White Seasonal", name:"Agapanthus (white only)", desc:"The only flower colour permitted in this restrained palette."},
+    {role:"Silver Counterpoint", name:"Blue Chalk Sticks", desc:"Reads as part of the black/white/green story rather than a fourth colour."}
+  ],
+  why: "A restricted palette is harder to design than a colourful one — every plant has to earn its place within only three tones (black, white, green), which is exactly why it photographs so well and reads as considered rather than generic.",
+  quote: "A strong portfolio piece — restrained palettes photograph exceptionally well for social media and give you a recognisable signature style to market.",
+  warning: "Resist client requests to 'just add a bit of colour' — one pink flower undermines the entire design logic. If they want colour, this isn't the right palette for them."
+},
+{
+  name: "Bushfire-Resistant Garden", style: "Native", location: "Bushfire-prone (BAL-rated) zones, semi-rural and peri-urban properties",
+  water: "Low–Medium", sun: "Full Sun", maintenance: "Medium",
+  plants: [
+    {role:"Low Groundcover", name:"Native Violet", desc:"Moist, low, high-moisture-content foliage close to the ground."},
+    {role:"Fire-Resistant Shrub", name:"Correa alba", desc:"High-moisture, low-oil-content foliage — genuinely fire-resistant characteristics."},
+    {role:"Hedge", name:"Westringia fruticosa", desc:"Dense but lower-flammability screening compared to resinous conifers."},
+    {role:"Buffer Note", name:"Avoid resinous natives near structures", desc:"Skip highly flammable eucalypts and oil-rich grevilleas close to the house."}
+  ],
+  why: "Bushfire-resistant planting favours high-moisture, low-oil-content foliage kept low and well-spaced near structures — the opposite instinct to a typical native garden, which often puts highly flammable species right against the house.",
+  quote: "A genuine point of difference — very few residential landscapers understand BAL (Bushfire Attack Level) planting requirements, and it's worth the CFA/DELWP guideline research to offer this properly.",
+  warning: "This is a safety-critical palette — always defer to the property's specific BAL rating and current CFA guidelines rather than this list alone, and recommend formal bushfire management advice for high-BAL sites."
+},
+{
+  name: "Balcony & Rooftop Container Garden", style: "Modern", location: "Apartment balconies, rooftop terraces, podium gardens",
+  water: "Low–Medium", sun: "Full Sun to Part Shade", maintenance: "Low",
+  plants: [
+    {role:"Wind-Tough Feature", name:"Agave attenuata (in a large pot)", desc:"Copes with wind exposure that would shred softer foliage."},
+    {role:"Lightweight Screen", name:"Star Jasmine (on a trellis)", desc:"Doesn't need deep soil, so it suits shallow containers well."},
+    {role:"Texture", name:"Lomandra 'Lime Tuff' (in troughs)", desc:"Tough and drought tolerant even in shallow, exposed pots."},
+    {role:"Colour", name:"Agapanthus (dwarf, potted)", desc:"Reliable flowering with minimal ongoing care."}
+  ],
+  why: "Container and rooftop planting is governed by weight limits and wind exposure, not aesthetics alone — soil volume is minimal, so every plant needs to tolerate irregular watering and genuine wind, not just look the part.",
+  quote: "A growing market as apartment living increases — factor delivery access (lifts, stairs, cranage) into quotes, as this often adds more cost than the plants themselves.",
+  warning: "Always confirm structural load limits with the building manager or engineer before specifying large pots and soil volumes on a balcony or rooftop."
+},
+{
+  name: "Naturalistic Grasses & Perennial Border", style: "Modern", location: "Contemporary gardens wanting movement and seasonal change, front yards, verges",
+  water: "Low", sun: "Full Sun", maintenance: "Medium",
+  plants: [
+    {role:"Movement", name:"Muhly Grass", desc:"Spectacular pink-purple haze in autumn — the seasonal showstopper."},
+    {role:"Vertical Structure", name:"Salvia 'Caradonna'", desc:"Repeated dark violet spikes threading through the grasses."},
+    {role:"Base Layer", name:"Blue Fescue", desc:"Silver-blue texture weaving throughout the border."},
+    {role:"Winter Interest", name:"Echinacea purpurea", desc:"Bold seedheads left standing through winter rather than cut back."}
+  ],
+  why: "Naturalistic planting (in the 'New Perennial' tradition) blends grasses and perennials in drifts so the garden changes character through the seasons, rather than looking static — seedheads and dried grasses are left standing through winter on purpose.",
+  quote: "This design style has had a huge resurgence — clients researching 'New Perennial' or 'prairie style' gardens on Pinterest will specifically ask for this look.",
+  warning: "Set expectations up front that this style looks deliberately unkempt through late autumn and winter — a client expecting tidy year-round neatness will be unhappy without this conversation first."
+},
+{
+  name: "Overlooking Neighbours — Fast Privacy Screen", style: "Modern", location: "Renovations with a new upper storey overlooking neighbours, tight side boundaries",
+  water: "Low–Medium", sun: "Full Sun to Part Shade", maintenance: "Medium",
+  plants: [
+    {role:"Primary Screen", name:"Lilly Pilly 'Select Form'", desc:"Fast, dense growth that reaches screening height quickly."},
+    {role:"Narrow Alternative", name:"Pittosporum 'Green Pillar'", desc:"For very tight boundary strips where width is genuinely limited."},
+    {role:"Interim Fill", name:"Liriope muscari", desc:"Fills the visual gap at ground level while the screen establishes."}
+  ],
+  why: "Overlooking complaints need a genuinely fast solution — this palette prioritises growth rate and ultimate density over rarity or novelty, because the client's problem is urgent, not decorative.",
+  quote: "Consider quoting advanced (larger pot size) stock for these jobs — clients dealing with an active privacy complaint will often pay a premium for immediate height over waiting two to three years for standard stock to fill in.",
+  warning: "Check easement and boundary setback requirements and mature width against the neighbour's fence line before finalising spacing — a friendly conversation with the neighbour up front prevents disputes later."
+},
+{
+  name: "Victorian Terrace / Villa", style: "Victorian", location: "Narrow-frontage terraces and villas with cast-iron lacework — Fitzroy, Carlton, Richmond, Albert Park, Emerald Hill",
+  water: "Medium", sun: "Full Sun to Part Shade", maintenance: "Medium–High",
+  plants: [
+    {role:"Feature", name:"Standard Rose", desc:"The quintessential Victorian front-garden flower, formally underplanted."},
+    {role:"Structure", name:"Buxus (clipped low hedge)", desc:"Defines the small formal front garden typical of a narrow terrace block."},
+    {role:"Shade Layer", name:"Camellia japonica", desc:"Thrives in the shaded, verandah-facing beds common to terrace housing."},
+    {role:"Climber", name:"Wisteria (over verandah lacework)", desc:"Softens cast-iron detailing without hiding it."},
+    {role:"Path Edge", name:"Catmint", desc:"Informal froth against the formal bones either side of the path."}
+  ],
+  why: "Victorian terrace gardens were almost always tiny and formal — narrow beds either side of a straight path, a low clipped hedge, and one feature like a standard rose. The garden is a frame for the cast-iron lacework, not a competitor to it.",
+  quote: "Inner-Melbourne terrace renovations are a strong, repeat market — nail this palette once and word-of-mouth in Fitzroy, Carlton and Albert Park does a lot of the marketing for you.",
+  warning: "Front garden space is often tiny — sometimes under 2m deep. Resist overplanting; two or three well-chosen elements read as considered, five compete for the same postage stamp of soil."
+},
+{
+  name: "Federation / Edwardian Home", style: "Federation", location: "Red-brick homes with terracotta tiled roofs, leadlight windows and wide verandahs — Camberwell, Malvern, Hawthorn, Kew",
+  water: "Medium", sun: "Full Sun to Part Shade", maintenance: "Medium",
+  plants: [
+    {role:"Feature", name:"Magnolia grandiflora", desc:"A grand flowering tree scaled to the generous Federation-era block."},
+    {role:"Structure", name:"Buxus japonica hedging", desc:"Crisp lines that read beautifully against warm red brick."},
+    {role:"Native Accent", name:"Grevillea 'Superb'", desc:"Federation coincided with Australian nationhood — a restrained native accent feels historically apt without going full native garden."},
+    {role:"Verandah Softener", name:"Hydrangea macrophylla", desc:"Classic period planting for the shaded beds under deep verandahs."},
+    {role:"Path/Entry", name:"Agapanthus", desc:"Reliable, unfussy, period-appropriate structure along entry paths."}
+  ],
+  why: "Federation gardens sit between Victorian formality and the native-garden movement that followed — a mostly European palette with room for one restrained native accent, set against generous red-brick facades and deep verandahs.",
+  quote: "These are often larger blocks than Victorian terraces, giving more room to make a genuine design statement — a feature tree is usually the single biggest impact move available, and worth quoting as the anchor line item.",
+  warning: "Deep verandahs cast serious shade over the front beds for much of the day — check actual sun hours on site rather than assuming from the street."
+},
+{
+  name: "Californian Bungalow", style: "Californian Bungalow", location: "1920s–30s rendered or brick homes with low-pitched gable roofs and deep verandahs — Camberwell, Ivanhoe, Ashburton, Glen Iris",
+  water: "Low–Medium", sun: "Full Sun to Part Shade", maintenance: "Low–Medium",
+  plants: [
+    {role:"Feature", name:"Crepe Myrtle", desc:"The classic 1920s–30s street tree, with spectacular seasonal flowering and bark interest."},
+    {role:"Structure", name:"Westringia (clipped hedge)", desc:"Low, tidy lines that echo the strong horizontal architecture."},
+    {role:"Mass Planting", name:"Agapanthus", desc:"A genuinely period-correct choice that still reads as current today."},
+    {role:"Verandah Pots", name:"Aloe vera or Agave (in terracotta)", desc:"Bungalow verandahs suit bold potted architectural forms either side of the entry."},
+    {role:"Path Edge", name:"Lavender", desc:"Soft, informal counterpoint to the solid brick or render base."}
+  ],
+  why: "Californian Bungalows have strong horizontal lines and deep, shaded verandahs — planting should echo that horizontality with low hedging and mass planting, rather than tall vertical accents that fight the roofline.",
+  quote: "A hugely common house type across Melbourne's middle-ring suburbs — worth having a tight, repeatable package ready to quote quickly and consistently.",
+  warning: "Original bungalow gardens were often quite plain — check whether the client wants heritage-sympathetic restraint or a more contemporary refresh before over-designing the front yard."
+},
+{
+  name: "Art Deco / Moderne", style: "Art Deco", location: "1930s–40s rendered homes with geometric, streamlined facades — pockets of Elwood, Brighton, Caulfield",
+  water: "Low", sun: "Full Sun", maintenance: "Low",
+  plants: [
+    {role:"Geometry", name:"Buxus spheres or cones (clipped)", desc:"Geometric forms that echo the architecture's own lines directly."},
+    {role:"Vertical Drama", name:"Yucca elephantipes", desc:"A bold sculptural silhouette suited to Deco's love of dramatic form."},
+    {role:"Groundcover", name:"Blue Chalk Sticks", desc:"Silvery and sculptural — reads as deliberately modern for the era."},
+    {role:"Colour", name:"Agapanthus (white)", desc:"Clean and restrained, with no clutter to compete with the facade."}
+  ],
+  why: "Art Deco architecture is about geometry and streamlined drama — the planting should be equally sculptural and restrained, using strong forms (spheres, spikes, blades) rather than soft, blowsy cottage shapes that fight the building's own lines.",
+  quote: "A smaller but distinctive niche — Elwood and Brighton Deco renovations are often high-budget jobs where an architecture-literate palette stands out sharply from a generic planting scheme.",
+  warning: "Keep the palette tight — three or four repeated elements, not a variety show. Deco's power is in restraint and repetition, exactly like the building facades themselves."
+},
+{
+  name: "Mid-Century Modern", style: "Mid-Century", location: "1950s–60s post-and-beam homes with breeze-block screens and skillion roofs — Eltham, Beaumaris, Doncaster pockets",
+  water: "Low", sun: "Full Sun to Part Shade", maintenance: "Low–Medium",
+  plants: [
+    {role:"Feature", name:"Eucalyptus caesia", desc:"The mid-century love affair with native trees as architectural elements, in a weeping, silver-foliaged form."},
+    {role:"Structure", name:"Grevillea 'Moonlight'", desc:"A bold native shrub genuinely fashionable when these homes were built."},
+    {role:"Mass Planting", name:"Lomandra 'Tanika'", desc:"Textural, low-fuss and period-honest en masse."},
+    {role:"Screen Softener", name:"Casuarina 'Cousin It'", desc:"Softens breeze-block screens without hiding the architecture behind it."}
+  ],
+  why: "Mid-century Melbourne architecture (think Robin Boyd, the Eltham and Beaumaris bush-modern scene) pioneered using Australian natives as a deliberate design statement — this palette leans into that history rather than reaching for European imports.",
+  quote: "A genuinely well-matched period palette for mid-century homes is rare among competitors — most default to generic natives without understanding the design history behind the pairing.",
+  warning: "Original mid-century gardens were often quite bushy and informal — confirm with heritage-conscious clients whether they want that authentic looseness or a tidier contemporary native look."
+},
+{
+  name: "Postwar Brick Veneer Suburban", style: "Brick Veneer", location: "1950s–60s modest brick veneer homes across established middle-ring suburbs — the classic Australian family home",
+  water: "Low–Medium", sun: "Full Sun", maintenance: "Low",
+  plants: [
+    {role:"Feature", name:"Magnolia 'Little Gem'", desc:"A reliable, manageable flowering tree scaled to a modest suburban block."},
+    {role:"Hedge", name:"Viburnum odoratissimum", desc:"Classic suburban screening — familiar, low-fuss and forgiving."},
+    {role:"Mass Planting", name:"Dianella spp.", desc:"Hardworking, practically indestructible groundlayer."},
+    {role:"Path Edge", name:"Westringia fruticosa", desc:"Low-maintenance structure without pretension."}
+  ],
+  why: "This is the most common house type in Melbourne, and the brief is almost always the same: tidy, low-maintenance, reliable kerb appeal on a modest budget — a sensible improvement, not a design statement.",
+  quote: "High-volume, straightforward jobs — a tight, well-costed package here builds a strong referral base even when an individual job isn't a portfolio showpiece.",
+  warning: "Budget is usually the deciding factor more than design — have a genuinely affordable version of this palette ready, not just the premium option."
+},
+{
+  name: "1970s–80s Triple-Fronted Brick Veneer", style: "Retro Suburban", location: "Orange or cream brick triple-fronted homes with low-pitch tile roofs — classic outer and middle-ring Melbourne suburbia",
+  water: "Low", sun: "Full Sun", maintenance: "Low",
+  plants: [
+    {role:"Feature", name:"Corymbia ficifolia (Flowering Gum)", desc:"Updates the classic foundation planting with something more contemporary and spectacular."},
+    {role:"Hedge", name:"Buxus japonica", desc:"Modernises the inevitable foundation hedge along the brick base."},
+    {role:"Mass Planting", name:"Lomandra 'Nyalla'", desc:"Low, tough texture that replaces a tired agapanthus-only look."},
+    {role:"Feature Pot", name:"Agave attenuata (near the front door)", desc:"A small contemporary gesture that lifts a dated facade cheaply."}
+  ],
+  why: "These homes are rarely heritage-sensitive — the brief is almost always 'modernise the kerb appeal without a full renovation.' Swapping tired foundation planting for a tighter, more textural native and exotic mix is one of the highest-value, lowest-cost jobs in landscaping.",
+  quote: "An excellent kerb-appeal 'facelift' service to offer — cheap for the client, quick to install, and dramatically improves street presence, which often leads to a referral or a bigger backyard job.",
+  warning: "Check that the existing foundation planting isn't hiding structural elements (subfloor vents, weep holes) before ripping it all out — brick veneer homes need airflow at the base."
+},
+{
+  name: "Contemporary Glass & Steel Architectural", style: "Contemporary", location: "New architect-designed builds with glass and steel facades, concrete and Corten detailing",
+  water: "Low", sun: "Full Sun to Part Shade", maintenance: "Low–Medium",
+  plants: [
+    {role:"Feature", name:"Tristaniopsis 'Luscious' (multi-trunk)", desc:"A sculptural specimen that reads beautifully against glass."},
+    {role:"Structure", name:"Westringia (clipped hedge)", desc:"Crisp lines against hard architectural materials."},
+    {role:"Textural Contrast", name:"Blue Fescue", desc:"Softens the hard edges of glass, steel and concrete."},
+    {role:"Mass Planting", name:"Dianella 'Cassa Blue'", desc:"Low-maintenance groundlayer that reads as considered, not decorative."}
+  ],
+  why: "Contemporary architectural homes need planting that acts as a counterpoint to hard materials — soft grasses and considered structure against glass, steel and concrete, rather than planting that tries to compete with the architecture.",
+  quote: "These are often the highest-budget jobs on offer — architects and builders will often refer landscapers who understand how to work with a strong architectural statement rather than against it.",
+  warning: "Coordinate closely with the architect or builder on sightlines and window placement — the wrong tree in the wrong spot can block a carefully designed view."
+},
+{
+  name: "Warehouse / Industrial Conversion", style: "Industrial", location: "Converted warehouses, exposed brick and steel-framed inner-city conversions, industrial-style new builds",
+  water: "Low", sun: "Part Shade", maintenance: "Low",
+  plants: [
+    {role:"Feature", name:"Olive Tree (multi-trunk)", desc:"Softens hard industrial materials with organic form."},
+    {role:"Climber", name:"Star Jasmine (on exposed brick)", desc:"A classic industrial-softening climber with fragrant flowers."},
+    {role:"Structure", name:"Agave attenuata (in black pots)", desc:"Bold, low-maintenance form suited to a courtyard or laneway setting."},
+    {role:"Groundcover", name:"Black Mondo Grass", desc:"Dark and moody, suiting the raw material palette of brick and steel."}
+  ],
+  why: "Industrial conversions usually have small, hard-surfaced courtyards rather than garden beds — planting is concentrated in pots and narrow strips, chosen to contrast texturally with raw brick, steel and concrete rather than compete with it.",
+  quote: "A growing niche as inner-Melbourne warehouse conversions increase — often tight budgets for greenery relative to the build cost, so a few well-chosen statement pots go a long way.",
+  warning: "Confirm available light — many warehouse courtyards are genuinely quite shaded by surrounding buildings, ruling out sun-loving choices regardless of how well they'd otherwise suit the aesthetic."
+},
+{
+  name: "New Estate Display Home / Volume Builder", style: "New Build", location: "New housing estates, volume-builder homes, render and Colorbond roofs, small tight-setback front yards",
+  water: "Low", sun: "Full Sun", maintenance: "Low",
+  plants: [
+    {role:"Feature", name:"Magnolia 'Little Gem'", desc:"A small ornamental tree scaled to a genuinely small new-estate front yard."},
+    {role:"Hedge", name:"Westringia fruticosa", desc:"Tidy and low, suited to tight setbacks and narrow beds."},
+    {role:"Mass Planting", name:"Lomandra 'Lime Tuff'", desc:"Compact groundcover for narrow garden strips along the driveway and fence."},
+    {role:"Letterbox Planting", name:"Agapanthus (dwarf form)", desc:"A small formal flourish clients specifically ask for at the entry."}
+  ],
+  why: "New estate blocks have tiny front setbacks and, on many estates, strict landscaping covenants — the palette needs to be compact, tidy and genuinely low-water, since these gardens are usually planted before irrigation habits are established.",
+  quote: "High-volume, repeatable work as new estates keep developing on Melbourne's fringe — a standardised, efficient package here is about speed and consistency, not bespoke design.",
+  warning: "Check the estate's landscaping covenant or guidelines before finalising the plant list — many new estates have specific requirements (e.g. a minimum canopy tree, no lawn-only front yards) that override personal preference."
 }
 ];
 console.log("Total palettes:", palettes.length);
