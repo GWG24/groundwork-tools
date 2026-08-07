@@ -3859,6 +3859,19 @@ function applyInvCustomPct() {
   applyInvPct(pct);
 }
 
+  function applyFinalRemaining() {
+    var contractEl = document.getElementById('inv-contract-total');
+    var total = contractEl ? (parseFloat(contractEl.value) || 0) : 0;
+    if (total <= 0) { showToast('⚠ Enter Total Contract Value in Invoice Details first'); return; }
+    var paidEl = document.getElementById('inv-deposit');
+    var alreadyPaid = paidEl ? (parseFloat(paidEl.value) || 0) : 0;
+    var remaining = Math.max(0, parseFloat((total - alreadyPaid).toFixed(2)));
+    var remainingExGST = Math.round(remaining / 1.10 * 100) / 100;
+    invItems.push({ name: 'Remaining contract balance', qty: 1, price: remainingExGST });
+    renderInvItems();
+    showToast('✓ Added remaining balance — ' + fmt(remaining));
+  }
+
 // ==================== AUTO INVOICE NUMBER ====================
 function autoInvoiceNumber() {
   var year = new Date().getFullYear();
