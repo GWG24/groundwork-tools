@@ -334,7 +334,46 @@
   </div>
 </div>
 
-<div class="divider"></div>
+<div class="section">
+        <div class="section-title">💵 Payment Splitter</div>
+        <div class="money-card">
+          <div class="field" style="margin-bottom:10px">
+            <label style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Amount Received ($)</label>
+            <input type="number" id="ps-amount" placeholder="0" oninput="calcPaymentSplit()" style="width:100%;background:#f9fbf8;border:0.5px solid #c5d4c0;border-radius:8px;padding:10px 12px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:600;color:var(--text-primary);margin-top:4px">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px">
+            <div>
+              <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#c0392b">Tax %</div>
+              <input type="number" id="ps-pct-tax" value="30" min="0" max="100" oninput="calcPaymentSplit()" style="width:100%;background:#f9fbf8;border:0.5px solid #c5d4c0;border-radius:6px;padding:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary);text-align:center;margin-top:2px">
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#2e6da4">Pay %</div>
+              <input type="number" id="ps-pct-pay" value="45" min="0" max="100" oninput="calcPaymentSplit()" style="width:100%;background:#f9fbf8;border:0.5px solid #c5d4c0;border-radius:6px;padding:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary);text-align:center;margin-top:2px">
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--green)">Profit %</div>
+              <input type="number" id="ps-pct-profit" value="25" min="0" max="100" oninput="calcPaymentSplit()" style="width:100%;background:#f9fbf8;border:0.5px solid #c5d4c0;border-radius:6px;padding:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary);text-align:center;margin-top:2px">
+            </div>
+          </div>
+          <div id="ps-warn" style="display:none;background:rgba(192,122,47,0.08);border:1px solid var(--orange);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--orange);margin-top:8px">⚠ Percentages must add to 100% — currently <span id="ps-pct-total">100</span>%</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">
+            <div style="text-align:center">
+              <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#c0392b">Tax</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#c0392b" id="ps-out-tax">$0.00</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#2e6da4">Pay</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#2e6da4" id="ps-out-pay">$0.00</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--green)">Profit</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--green)" id="ps-out-profit">$0.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     <div class="divider"></div>
 
 <div class="section">
   <div class="section-title">📄 Generate Reports</div>
