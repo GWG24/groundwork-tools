@@ -2911,7 +2911,7 @@ function generateInvoicePDF(mode) {
     if (contractTotal > 0 && paymentType !== 'full') {
       var invoiceSubtotal = invItems.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
       var firstItemOnly = invItems.length > 0 ? (parseFloat(invItems[0].price)||0)*(parseFloat(invItems[0].qty)||1) : invoiceSubtotal;
-     var pct = contractTotal > 0 ? Math.round((firstItemOnly * 1.10 / contractTotal) * 100) : 0;
+     var pct = contractTotal > 0 ? Math.round((invoiceSubtotal * 1.10 / contractTotal) * 100) : 0;
       // Remaining = contract - deposit already paid - this invoice subtotal
       var depositPdfEl = document.getElementById('inv-deposit');
       var depositPdf = depositPdfEl ? (parseFloat(depositPdfEl.value) || 0) : 0;
