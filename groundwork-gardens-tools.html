@@ -1382,7 +1382,8 @@
     <button onclick="saveInvoice()" style="flex:1;background:transparent;border:1px solid var(--green);border-radius:6px;color:var(--green-bright);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">☁ Save Invoice</button>
     <button onclick="showLoadInvoices()" style="flex:1;background:transparent;border:1px solid #2e6da4;border-radius:6px;color:#4a90d9;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase">📂 Load Invoice</button>
   </div>
-  <button class="gen-btn" onclick="generateInvoicePDF()">⬇ Download Invoice PDF</button>
+ <button class="gen-btn" onclick="generateInvoicePDF('preview')" style="background:#6b7280;margin-bottom:8px">👁 Preview PDF</button>
+      <button class="gen-btn" onclick="generateInvoicePDF()">⬇ Download Invoice PDF</button>
   <button class="gen-btn" onclick="generateInvoicePDF('share')" style="background:#1a73e8;margin-top:8px">📤 Save to Drive</button>
   <button onclick="openInvEmailModal()" style="width:100%;background:transparent;border:2px solid #1a73e8;border-radius:6px;color:#1a73e8;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:14px;text-transform:uppercase;margin-top:8px;">📧 Send Invoice Email</button>
   <div id="inv-status-msg"></div>
@@ -2929,9 +2930,13 @@ function generateInvoicePDF(mode) {
     doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, y, {align:'center'});
 
 var invFilename = 'Invoice-' + invNum + '-Groundwork-Gardens.pdf';
-    if (mode === 'share') {
+  if (mode === 'share') {
       sharePDF(doc, invFilename);
       if (status) status.textContent = '';
+    } else if (mode === 'preview') {
+      var blobUrl = doc.output('bloburl');
+      window.open(blobUrl, '_blank');
+      if (status) status.textContent = '✓ Preview opened in new tab!';
     } else {
       doc.save(invFilename);
       if (status) status.textContent = '✓ PDF downloaded!';
