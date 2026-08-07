@@ -497,6 +497,24 @@ async function db(path){
 }
 
 function fmt(n){return '$'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+  function calcPaymentSplit(){
+  var amount = parseFloat(document.getElementById('ps-amount').value) || 0;
+  var tax = parseFloat(document.getElementById('ps-pct-tax').value) || 0;
+  var pay = parseFloat(document.getElementById('ps-pct-pay').value) || 0;
+  var profit = parseFloat(document.getElementById('ps-pct-profit').value) || 0;
+  var total = tax + pay + profit;
+  var warnEl = document.getElementById('ps-warn');
+  var totEl = document.getElementById('ps-pct-total');
+  if (Math.abs(total - 100) > 0.1) {
+    warnEl.style.display = 'block';
+    totEl.textContent = total;
+  } else {
+    warnEl.style.display = 'none';
+  }
+  document.getElementById('ps-out-tax').textContent = fmt(amount * tax / 100);
+  document.getElementById('ps-out-pay').textContent = fmt(amount * pay / 100);
+  document.getElementById('ps-out-profit').textContent = fmt(amount * profit / 100);
+}
 function fmtN(n){return Number(n||0).toFixed(2);}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 function setSyncStatus(ok,msg){const b=document.getElementById('syncBar');b.className='sync-bar'+(ok?'':' error');document.getElementById('syncMsg').textContent=msg;}
