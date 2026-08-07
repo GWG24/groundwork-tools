@@ -2816,7 +2816,8 @@ var remaining = Math.max(0, contractTotal - alreadyPaid);
     if (remainingRow) { remainingRow.style.display = 'flex'; remainingDisplay.textContent = fmt(remaining); }
     if (paytypeRow && paytype !== 'full') {
       paytypeRow.style.display = 'flex';
-     var pct = contractTotal > 0 ? Math.round((firstItemAmount * 1.10 / contractTotal) * 100) : 0;
+     var invoiceSub = invItems.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
+       var pct = contractTotal > 0 ? Math.round((invoiceSub * 1.10 / contractTotal) * 100) : 0;
       var labels = { deposit: 'Deposit', progress: 'Progress Payment', final: 'Final Payment' };
       if (paytypeLabel) paytypeLabel.textContent = labels[paytype] || 'Payment';
       if (paytypePct) paytypePct.textContent = pct + '% of contract';
