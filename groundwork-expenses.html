@@ -279,6 +279,15 @@
         <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)" id="gstThumb"></span>
       </label>
     </div>
+    <div class="field">
+      <label>Receipt Photo</label>
+      <input type="file" id="f-photo" accept="image/*" capture="environment" style="display:none" onchange="handlePhotoSelect(event)">
+      <div id="photo-preview-wrap" style="display:none;margin-bottom:8px">
+        <img id="photo-preview" style="max-width:100%;border-radius:8px;border:0.5px solid #c5d4c0">
+        <button type="button" onclick="removePhoto()" style="margin-top:6px;background:transparent;border:1px solid var(--red);border-radius:6px;color:var(--red);padding:6px 12px;font-size:12px;cursor:pointer">✕ Remove Photo</button>
+      </div>
+      <button type="button" id="photo-btn" onclick="document.getElementById('f-photo').click()" style="background:transparent;border:1px dashed #c5d4c0;border-radius:8px;color:var(--text-secondary);padding:12px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;width:100%">📷 Add Receipt Photo</button>
+    </div>
     <div class="modal-actions">
       <button class="clear-btn" onclick="closeAdd()">Cancel</button>
       <button class="gen-btn" id="saveBtn" onclick="saveExpense()">Save Expense</button>
@@ -531,6 +540,43 @@ document.getElementById('f-gst').addEventListener('change', function() {
   document.getElementById('gstTrack').style.background = this.checked ? 'var(--green-leaf)' : '#ccc';
   document.getElementById('gstThumb').style.transform = this.checked ? 'translateX(20px)' : 'translateX(0)';
 });
+
+  // ==================== RECEIPT PHOTO ====================
+let currentPhotoData = null;
+
+function handlePhotoSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const maxDim = 1200;
+      let w = img.width, h = img.height;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+        else { w = Math.round(w * maxDim / h); h = maxDim; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      currentPhotoData = canvas.toDataURL('image/jpeg', 0.6);
+      document.getElementById('photo-preview').src = currentPhotoData;
+      document.getElementById('photo-preview-wrap').style.display = 'block';
+      document.getElementById('photo-btn').textContent = '📷 Replace Photo';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto() {
+  currentPhotoData = null;
+  document.getElementById('f-photo').value = '';
+  document.getElementById('photo-preview-wrap').style.display = 'none';
+  document.getElementById('photo-btn').textContent = '📷 Add Receipt Photo';
+}
 
 function switchView(view) {
   currentView = view;
@@ -834,6 +880,7 @@ function openAdd(){
   document.getElementById('f-gst').checked=true;
   document.getElementById('gstTrack').style.background='var(--green-leaf)';
   document.getElementById('gstThumb').style.transform='translateX(20px)';
+  currentPhotoData=null;document.getElementById('photo-preview-wrap').style.display='none';document.getElementById('photo-btn').textContent='📷 Add Receipt Photo';
   document.getElementById('addOverlay').classList.add('show');
 }
 
@@ -850,7 +897,8 @@ async function saveExpense(){
     job_ref:document.getElementById('f-job').value.trim(),
     expense_date:document.getElementById('f-date').value,
     payment_method:document.getElementById('f-pay').value,
-    gst_applicable:document.getElementById('f-gst').checked
+   gst_applicable:document.getElementById('f-gst').checked,
+          receipt_photo:currentPhotoData
   };
   try{
     if(editId){await db(`expenses?id=eq.${editId}`,'PATCH',data);showToast('Expense updated');}
@@ -875,6 +923,7 @@ function openDetail(id){
       ${e.job_ref?`<div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">Job</div><div style="font-size:15px;font-weight:500">${e.job_ref}</div></div>`:''}
       ${gstOn?`<div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">GST Credit</div><div style="font-size:15px;font-weight:500;color:var(--orange)">${fmt(parseFloat(e.amount)/11)}</div></div>`:''}
     </div>
+    ${e.receipt_photo?`<img src="${e.receipt_photo}" style="width:100%;border-radius:8px;border:0.5px solid #c5d4c0;margin-bottom:16px;cursor:pointer" onclick="window.open('${e.receipt_photo}','_blank')">`:''}
     <div style="display:flex;gap:8px">
       <button class="clear-btn" style="flex:1" onclick="document.getElementById('detailOverlay').classList.remove('show');editExpense('${e.id}')">Edit</button>
       <button class="danger-btn" onclick="deleteExpense('${e.id}')">Delete</button>
@@ -896,6 +945,7 @@ function editExpense(id){
   document.getElementById('f-gst').checked = gstOn;
   document.getElementById('gstTrack').style.background = gstOn ? 'var(--green-leaf)' : '#ccc';
   document.getElementById('gstThumb').style.transform = gstOn ? 'translateX(20px)' : 'translateX(0)';
+  currentPhotoData=e.receipt_photo||null;if(e.receipt_photo){document.getElementById('photo-preview').src=e.receipt_photo;document.getElementById('photo-preview-wrap').style.display='block';document.getElementById('photo-btn').textContent='📷 Replace Photo';}else{document.getElementById('photo-preview-wrap').style.display='none';document.getElementById('photo-btn').textContent='📷 Add Receipt Photo';}
   if(e.category==='Travel'){
     document.getElementById('travel-fields').style.display='block';
     document.getElementById('f-amount').closest('.field').style.display='none';
