@@ -1241,6 +1241,7 @@
   </div>
   <button onclick="exportQuoteData('share')" style="width:100%;background:transparent;border:1px solid #9e3a2e;border-radius:6px;color:#c07a2f;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase;margin-bottom:10px">💾 Save Backup File</button>
   <button onclick="sendToInvoice()" style="width:100%;background:transparent;border:1px solid var(--orange);border-radius:6px;color:var(--orange);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;padding:13px;text-transform:uppercase;margin-bottom:10px">🧾 Send to Invoice</button>
+ <button class="gen-btn" onclick="generatePDF('preview')" style="background:#6b7280;margin-bottom:8px">👁 Preview PDF</button>
   <button class="gen-btn" id="genBtn" onclick="generatePDF()">⬇ Download Quote PDF</button>
   <button class="gen-btn" onclick="generatePDF('share')" style="background:#1a73e8;margin-top:8px">📤 Save to Drive</button>
   <button onclick="openEmailModal()" style="width:100%;background:transparent;border:2px solid #1a73e8;border-radius:6px;color:#1a73e8;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:2px;padding:14px;text-transform:uppercase;margin-top:8px;">📧 Send Quote Email</button>
@@ -2718,9 +2719,13 @@ doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAI
 doc.setFontSize(7); doc.setTextColor(180,180,180); doc.setFont('helvetica','normal');
 doc.text('GROUNDWORK GARDENS  ·  ABN 28 594 108 955  ·  GROUNDWORKGARDENS.EMAIL@GMAIL.COM', pw/2, 289, {align:'center'});
 var quoteFilename = 'Quote-' + quoteNum + '-Groundwork-Gardens.pdf';
-    if (mode === 'share') {
+if (mode === 'share') {
       sharePDF(doc, quoteFilename);
       status.textContent = '';
+    } else if (mode === 'preview') {
+      var blobUrl = doc.output('bloburl');
+      window.open(blobUrl, '_blank');
+      status.textContent = '✓ Preview opened in new tab!';
     } else {
       doc.save(quoteFilename);
       status.textContent = '✓ PDF downloaded!';
