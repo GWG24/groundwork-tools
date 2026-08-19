@@ -2376,7 +2376,7 @@ async function exportQuoteData(mode) {
 
   var clientName = document.getElementById('clientName').value || 'Client';
   var clientAddress = document.getElementById('clientAddress').value || '';
-  var quoteNum = document.getElementById('quoteNum').value || 'draft';
+  var quoteNum = document.getElementById('quoteNum').value || '⚠️MISSING-NUMBER';
   var issueDate = document.getElementById('issueDate').value || '';
   var jobTitle = document.getElementById('jobTitle').value || '';
   var rate = getRate();
@@ -2608,7 +2608,7 @@ async function sharePDF(doc, filename) {
     var showItemised = document.getElementById('itemiseToggle').checked;
     var clientName = document.getElementById('clientName').value || 'Client';
     var clientAddress = document.getElementById('clientAddress').value || '';
-    var quoteNum = document.getElementById('quoteNum').value || '001';
+    var quoteNum = document.getElementById('quoteNum').value || '⚠️MISSING-NUMBER';
     var issueDate = document.getElementById('issueDate').value || '';
     var validDate = document.getElementById('validDate').value || '';
     var jobTitle = document.getElementById('jobTitle').value || 'Landscaping Works';
@@ -3978,7 +3978,7 @@ function buildAcceptLink(quoteNum, clientName, jobTitle, totalRaw, issueDate, va
 function populateEmailModal() {
   var tmpl = getEmailTemplate();
   var clientName = document.getElementById('clientName').value || 'there';
-  var quoteNum = document.getElementById('quoteNum').value || '001';
+  var quoteNum = document.getElementById('quoteNum').value || '⚠️MISSING-NUMBER';
   var jobTitle = document.getElementById('jobTitle').value || 'Landscaping Works';
   var issueDate = document.getElementById('issueDate').value || '';
   var validDate = document.getElementById('validDate').value || '';
