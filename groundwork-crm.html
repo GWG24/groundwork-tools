@@ -289,7 +289,7 @@ const SB_URL = 'https://vgegsaarmzuqpacisbrl.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
 
 async function db(path, method='GET', body=null) {
-  const opts = { method, headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer '+SB_KEY, 'Content-Type': 'application/json', 'Prefer': (method==='POST'||method==='PATCH')?'return=representation':'' }};
+  const opts = { method, headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer '+SB_KEY, 'Content-Type': 'application/json', 'Prefer': method==='POST'?'return=representation':(method==='PATCH'?'return=minimal':'') }};
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(SB_URL+'/rest/v1/'+path, opts);
   if (!res.ok) throw new Error(await res.text());
