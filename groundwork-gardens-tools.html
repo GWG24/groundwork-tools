@@ -1360,7 +1360,11 @@
 <div class="section">
   <div class="section-title">Invoice Summary</div>
   <div class="card">
-    <div class="field"><label>Deposit Paid ($)</label><input type="number" id="inv-deposit" placeholder="0.00" oninput="calcInv()" style="background-image:none !important;"></div>
+<div class="field"><label>Deposit Paid ($)</label><input type="number" id="inv-deposit" placeholder="0.00" oninput="calcInv()" style="background-image:none !important;"></div>
+    <div class="toggle-row" style="margin-top:10px;margin-bottom:0">
+      <div class="toggle-label">No GST on this invoice<small>Use for a fixed figure — the amount entered is the final total, GST is not added on top</small></div>
+      <label class="toggle"><input type="checkbox" id="inv-no-gst" onchange="calcInv()"><span class="toggle-slider"></span></label>
+    </div>
   </div>
   <div class="summary-card">
     <div class="sum-row" id="inv-contract-row" style="display:none"><span class="sl">Total Contract Value</span><span class="sv" id="inv-contract-display" style="color:var(--text-secondary)">$0.00</span></div>
@@ -2759,7 +2763,10 @@ function renderInvItems() {
 
 function calcInv() {
   var subtotal = invItems.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
-  var gst = subtotal * 0.10, total = subtotal + gst;
+  var noGstEl = document.getElementById('inv-no-gst');
+  var noGst = noGstEl ? noGstEl.checked : false;
+  var gst = noGst ? 0 : subtotal * 0.10;
+  var total = subtotal + gst;
   var depositEl = document.getElementById('inv-deposit');
   var deposit = depositEl ? (parseFloat(depositEl.value) || 0) : 0;
   var balance = total - deposit;
@@ -2845,7 +2852,10 @@ function generateInvoicePDF(mode) {
     var doc = new jsPDF({ unit: 'mm', format: 'a4' });
     var pw = 210, margin = 15, cw = pw - margin * 2, y = 12;
     var subtotal = invItems.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
-    var gst = subtotal * 0.10, total = subtotal + gst;
+    var noGstPdfEl = document.getElementById('inv-no-gst');
+    var noGstPdf = noGstPdfEl ? noGstPdfEl.checked : false;
+    var gst = noGstPdf ? 0 : subtotal * 0.10;
+    var total = subtotal + gst;
     var clientName = document.getElementById('inv-client').value || 'Client';
     var clientAddress = document.getElementById('inv-address').value || '';
     var invNum = document.getElementById('inv-num').value || 'INV-001';
