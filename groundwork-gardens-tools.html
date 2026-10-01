@@ -1362,8 +1362,15 @@
   <div class="card">
 <div class="field"><label>Deposit Paid ($)</label><input type="number" id="inv-deposit" placeholder="0.00" oninput="calcInv()" style="background-image:none !important;"></div>
     <div class="toggle-row" style="margin-top:10px;margin-bottom:0">
-      <div class="toggle-label">No GST on this invoice<small>Use for a fixed figure — the amount entered is the final total, GST is not added on top</small></div>
+<div class="toggle-label">No GST on this invoice<small>Use for a fixed figure — the amount entered is the final total, GST is not added on top</small></div>
       <label class="toggle"><input type="checkbox" id="inv-no-gst" onchange="calcInv()"><span class="toggle-slider"></span></label>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px">
+      <label style="font-size:12px;color:#666;white-space:nowrap">Round final total to:</label>
+      <input type="number" id="inv-price-override" placeholder="e.g. 5570" min="0" step="1"
+        style="flex:1;border:1px solid #c5d4c0;border-radius:6px;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;color:var(--text-primary);background:#f9fbf8"
+        oninput="calcInv()">
+      <button onclick="document.getElementById('inv-price-override').value='';calcInv()" style="background:none;border:none;font-size:12px;color:#aaa;cursor:pointer;white-space:nowrap">✕ Clear</button>
     </div>
   </div>
   <div class="summary-card">
@@ -2767,6 +2774,13 @@ function calcInv() {
   var noGst = noGstEl ? noGstEl.checked : false;
   var gst = noGst ? 0 : subtotal * 0.10;
   var total = subtotal + gst;
+  var overrideEl = document.getElementById('inv-price-override');
+  var overrideVal = overrideEl ? parseFloat(overrideEl.value) : NaN;
+  if (!isNaN(overrideVal) && overrideVal > 0) {
+    total = overrideVal;
+    if (noGst) { subtotal = overrideVal; gst = 0; }
+    else { subtotal = Math.round((overrideVal / 1.10) * 100) / 100; gst = Math.round((overrideVal - subtotal) * 100) / 100; }
+  }
   var depositEl = document.getElementById('inv-deposit');
   var deposit = depositEl ? (parseFloat(depositEl.value) || 0) : 0;
   var balance = total - deposit;
@@ -2856,6 +2870,13 @@ function generateInvoicePDF(mode) {
     var noGstPdf = noGstPdfEl ? noGstPdfEl.checked : false;
     var gst = noGstPdf ? 0 : subtotal * 0.10;
     var total = subtotal + gst;
+    var overridePdfEl = document.getElementById('inv-price-override');
+    var overridePdfVal = overridePdfEl ? parseFloat(overridePdfEl.value) : NaN;
+    if (!isNaN(overridePdfVal) && overridePdfVal > 0) {
+      total = overridePdfVal;
+      if (noGstPdf) { subtotal = overridePdfVal; gst = 0; }
+      else { subtotal = Math.round((overridePdfVal / 1.10) * 100) / 100; gst = Math.round((overridePdfVal - subtotal) * 100) / 100; }
+    }
     var clientName = document.getElementById('inv-client').value || 'Client';
     var clientAddress = document.getElementById('inv-address').value || '';
     var invNum = document.getElementById('inv-num').value || 'INV-001';
