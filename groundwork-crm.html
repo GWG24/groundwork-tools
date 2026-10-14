@@ -408,7 +408,8 @@ function openAdd(){
   document.getElementById('modalTitle').textContent='New Contact';
   ['name','phone','email','suburb','job','notes'].forEach(f=>document.getElementById('f-'+f).value='');
   document.getElementById('f-type').value='lead';
-  document.getElementById('f-followup').value='';
+    var tmrw = new Date(Date.now() + 86400000);
+  document.getElementById('f-followup').value = tmrw.getFullYear() + '-' + String(tmrw.getMonth() + 1).padStart(2, '0') + '-' + String(tmrw.getDate()).padStart(2, '0');
   document.getElementById('addOverlay').classList.add('show');
 }
 function openEdit(id){
@@ -428,7 +429,9 @@ function openEdit(id){
 function closeAdd(){document.getElementById('addOverlay').classList.remove('show');}
 
 async function saveContact(){
-  const name=document.getElementById('f-name').value.trim();if(!name){alert('Name is required');return;}
+ let name=document.getElementById('f-name').value.trim();
+  if(!name){name=document.getElementById('f-phone').value.trim();}
+  if(!name){alert('Please enter a name or phone number');return;}
   const btn=document.getElementById('saveBtn');btn.textContent='Saving...';btn.disabled=true;
   const followupDate = document.getElementById('f-followup').value || null;
   const data={
@@ -622,6 +625,10 @@ async function deleteContact(id){
 }
 
 loadContacts();
+if (new URLSearchParams(location.search).get('quick') === '1') {
+  openAdd();
+  setTimeout(function() { document.getElementById('f-name').focus(); }, 300);
+}
 </script>
 </body>
 </html>
