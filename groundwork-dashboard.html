@@ -1053,7 +1053,7 @@ _customers=customers;
     const unpaidInv=_invoices.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
     const paidInv=_invoices.filter(r=>getStatus(r)==='paid');
     const monthInv=_invoices.filter(r=>thisMonth(r.updated_at));
-    const monthExp=expenses.filter(e=>thisMonth(e.expense_date)||thisMonth(e.created_at));
+    const monthExp=expenses.filter(e=>thisMonth(e.expense_date));
 
     document.getElementById('m-invoiced').textContent=fmt(monthInv.reduce((s,r)=>s+getTotal(r),0));
     document.getElementById('m-invoiced-sub').textContent=monthInv.length+' invoice'+(monthInv.length!==1?'s':'')+' this month';
