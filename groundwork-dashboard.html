@@ -527,7 +527,8 @@ function fmt(n){return '$'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))
   document.getElementById('ps-out-pay').textContent = fmt(amount * pay / 100);
   document.getElementById('ps-out-profit').textContent = fmt(amount * profit / 100);
 }
-function fmtN(n){return Number(n||0).toFixed(2);}
+function fmtDate(s){ if(!s) return ''; var p=String(s).split('-'); return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : s; }
+  function fmtN(n){return Number(n||0).toFixed(2);}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 function setSyncStatus(ok,msg){const b=document.getElementById('syncBar');b.className='sync-bar'+(ok?'':' error');document.getElementById('syncMsg').textContent=msg;}
 
@@ -986,7 +987,7 @@ function renderInvList(limit){
   invEl.innerHTML = unique.slice(0, limit).map(r=>{
     const s=getStatus(r);
 const paidBtn = s === 'unpaid' ? `<button onclick="markInvoicePaid('${r.id}')" style="margin-top:5px;background:var(--green-leaf);border:none;border-radius:6px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;padding:4px 10px;cursor:pointer;width:100%">✓ Mark Paid</button>` : '';
-      return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+getDue(r):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span>${paidBtn}</div></div>`;
+      return `<div class="inv-item"><div><div class="inv-name">${getClient(r)}</div><div class="inv-sub">#${getInvNum(r)}${getDue(r)?' · Due '+fmtDate(getDue(r)):''}</div></div><div class="inv-right"><div class="inv-amt ${s}">${fmt(getTotal(r))}</div><span class="status-pill ${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span>${paidBtn}</div></div>`;
   }).join('') + (unique.length > limit ? `<button class="see-more-btn" onclick="renderInvList(${limit+10})">Show More Invoices (${unique.length-limit} remaining)</button>` : '');
 }
 
@@ -1016,7 +1017,7 @@ function renderQuoteList(limit){
       </div>
       <div class="quote-card-body" id="qbody-${r.id}">
         <div class="quote-detail-row"><span>Quote Number</span><span>${r.id}</span></div>
-        <div class="quote-detail-row"><span>Date</span><span>${r.updated_at?r.updated_at.substring(0,10):'—'}</span></div>
+        <div class="quote-detail-row"><span>Date</span><span>${r.updated_at?fmtDate(r.updated_at.substring(0,10)):'—'}</span></div>
         <div class="quote-detail-row"><span>Address</span><span>${address}</span></div>
         <div class="quote-detail-row"><span>Deposit</span><span>${deposit}</span></div>
         <button class="approval-btn ${isApproved?'approved':'pending'}" id="appr-${r.id}" onclick="toggleApproval('${r.id}',this)" style="margin-top:8px;width:100%">${statusLabel}</button>
