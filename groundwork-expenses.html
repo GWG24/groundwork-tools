@@ -285,8 +285,11 @@
       <div id="photo-preview-wrap" style="display:none;margin-bottom:8px">
         <img id="photo-preview" style="max-width:100%;border-radius:8px;border:0.5px solid #c5d4c0">
         <button type="button" onclick="removePhoto()" style="margin-top:6px;background:transparent;border:1px solid var(--red);border-radius:6px;color:var(--red);padding:6px 12px;font-size:12px;cursor:pointer">✕ Remove Photo</button>
+        <button type="button" onclick="shareReceiptPhoto()" style="margin-top:6px;margin-left:8px;background:#1a73e8;border:none;border-radius:6px;color:white;padding:6px 12px;font-size:12px;cursor:pointer">📤 Save copy to Drive</button>
       </div>
       <button type="button" id="photo-btn" onclick="document.getElementById('f-photo').click()" style="background:transparent;border:1px dashed #c5d4c0;border-radius:8px;color:var(--text-secondary);padding:12px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;width:100%">📷 Add Receipt Photo</button>
+            <input type="file" id="f-photo-lib" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)">
+      <button type="button" onclick="document.getElementById('f-photo-lib').click()" style="margin-top:8px;background:transparent;border:1px dashed #c5d4c0;border-radius:8px;color:var(--text-secondary);padding:12px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;width:100%">🖼️ Choose from Phone</button>
     </div>
     <div class="modal-actions">
       <button class="clear-btn" onclick="closeAdd()">Cancel</button>
@@ -543,6 +546,8 @@ document.getElementById('f-gst').addEventListener('change', function() {
 
   // ==================== RECEIPT PHOTO ====================
 let currentPhotoData = null;
+let currentPhotoFile = null;
+let currentPhotoFileFor = null;
 
 function handlePhotoSelect(event) {
   const file = event.target.files[0];
@@ -562,6 +567,8 @@ function handlePhotoSelect(event) {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, w, h);
       currentPhotoData = canvas.toDataURL('image/jpeg', 0.6);
+      currentPhotoFile = file;
+      currentPhotoFileFor = currentPhotoData;
       document.getElementById('photo-preview').src = currentPhotoData;
       document.getElementById('photo-preview-wrap').style.display = 'block';
       document.getElementById('photo-btn').textContent = '📷 Replace Photo';
@@ -571,9 +578,38 @@ function handlePhotoSelect(event) {
   reader.readAsDataURL(file);
 }
 
-function removePhoto() {
+async function shareReceiptPhoto() {
+  if (!currentPhotoData) { showToast('No photo to share'); return; }
+  try {
+    var desc = (document.getElementById('f-desc').value || 'receipt').trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '');
+    var date = document.getElementById('f-date').value || new Date().toISOString().split('T')[0];
+    var baseName = 'Receipt-' + date + '-' + (desc || 'receipt');
+    var file;
+    if (currentPhotoFile && currentPhotoFileFor === currentPhotoData) {
+      var ext = currentPhotoFile.type === 'image/png' ? 'png' : 'jpg';
+      file = new File([currentPhotoFile], baseName + '.' + ext, { type: currentPhotoFile.type || 'image/jpeg' });
+    } else {
+      var blob = await (await fetch(currentPhotoData)).blob();
+      file = new File([blob], baseName + '.jpg', { type: 'image/jpeg' });
+    }
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: file.name });
+    } else {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(file);
+      a.download = file.name;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('Share not supported here, downloaded instead');
+    }
+  } catch (e) {
+    if (e.name !== 'AbortError') { console.error(e); showToast('Could not open share sheet'); }
+  }
+}
+  function removePhoto() {
   currentPhotoData = null;
   document.getElementById('f-photo').value = '';
+  var lib = document.getElementById('f-photo-lib');
+  if (lib) lib.value = '';
   document.getElementById('photo-preview-wrap').style.display = 'none';
   document.getElementById('photo-btn').textContent = '📷 Add Receipt Photo';
 }
