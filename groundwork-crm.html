@@ -328,7 +328,8 @@ function setTab(tab,el) { currentTab=tab; document.querySelectorAll('.ftab').for
   var location = c.suburb || '';
   return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + '&dates=' + d + '/' + d2 + '&details=' + encodeURIComponent(details) + '&location=' + encodeURIComponent(location);
 }
-function getFollowupStatus(c) {
+function fmtAdded(ts){ if(!ts) return ''; var d=new Date(ts); if(isNaN(d)) return ''; return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
+  function getFollowupStatus(c) {
   if (!c.followup_date) return null;
   if (c.followup_date < todayStr) return 'overdue';
   if (c.followup_date === todayStr) return 'today';
@@ -364,6 +365,7 @@ function render() {
     }
     return `<div class="contact-card ${isJob?'job-card':''} ${cardClass}" onclick="openDetail('${c.id}')">
       <div class="card-top"><div class="card-name">${c.name}</div><span class="badge ${bc}">${bl}</span></div>
+           ${c.created_at?`<div class="card-detail">🗓 Added ${fmtAdded(c.created_at)}</div>`:''}
       ${c.phone?`<div class="card-detail">📞 ${c.phone}</div>`:''}
       ${c.suburb?`<div class="card-detail">📍 ${c.suburb}</div>`:''}
       ${intake&&intake.jobTypes&&intake.jobTypes.length?`<div class="card-detail">🔨 ${intake.jobTypes.map(id=>{const jt=JOB_TYPES.find(j=>j.id===id);return jt?jt.label.replace(/^\S+\s/,''):id;}).join(', ')}</div>`:(c.job?`<div class="card-detail">🌿 ${c.job}</div>`:'')}
@@ -600,6 +602,7 @@ let fuDetailHTML = '';
       ${c.phone?`<div class="detail-field"><div class="dl">Phone</div><div class="dv">${c.phone}</div></div>`:''}
       ${c.email?`<div class="detail-field"><div class="dl">Email</div><div class="dv">${c.email}</div></div>`:''}
       ${c.suburb?`<div class="detail-field"><div class="dl">Address</div><div class="dv">${c.suburb}</div></div>`:''}
+            ${c.created_at?`<div class="detail-field"><div class="dl">Added</div><div class="dv">${fmtAdded(c.created_at)}</div></div>`:''}
     </div>
     ${fuDetailHTML}
     ${intakeHTML}
