@@ -1287,6 +1287,17 @@ function renderToday(customers){
     var btn='display:inline-block;margin:6px 6px 0 0;padding:4px 10px;border:1px solid var(--green-leaf);border-radius:6px;color:var(--green-leaf);font-size:12px;text-decoration:none';
     rows.push({sort:due,html:'<div class="lead-item"><div><div class="lead-name">🧾 '+esc(cl)+'</div><div class="lead-sub">Invoice '+esc(num)+' · '+fmt(getTotal(r))+'</div><div><a href="'+esc(mailHref)+'" style="'+btn+'">✉ Email</a><a href="'+esc(smsHref)+'" style="'+btn+'">💬 Text</a></div></div>'+tag(daysLate(due))+'</div>'});
   });
+  try{
+    jobNotes.forEach(function(j){
+      (j.datesList||[]).forEach(function(x){
+        if(!x.date)return;
+        var n=-daysLate(x.date);
+        if(n<0||n>2)return;
+        var lbl=n===0?'<span class="badge badge-followup">Today</span>':'<span class="badge" style="background:rgba(192,122,47,0.15);color:#c07a2f">'+(n===1?'Tomorrow':'In 2 days')+'</span>';
+        rows.push({sort:x.date,html:'<div class="lead-item"><div><div class="lead-name">📅 '+esc(x.text)+'</div><div class="lead-sub">'+esc(j.name)+'</div></div>'+lbl+'</div>'});
+      });
+    });
+  }catch(e){}
   rows.sort(function(a,b){return a.sort<b.sort?-1:1;});
   el.innerHTML=rows.length?rows.map(function(r){return r.html;}).join(''):'<div class="empty-state">Nothing due today 🌿</div>';
 }
@@ -1475,12 +1486,14 @@ async function loadJobNotes(){
             parsed.notes = raw.notes || [];
             parsed.issues = raw.issues || [];
             parsed.customerId = raw.customerId || null;
+            parsed.dates = raw.dates || [];
           }
         }
       }catch(e){ /* keep defaults */ }
-      return {id:r.id, name:r.name, items: parsed.tasks, notesList: parsed.notes, issuesList: parsed.issues, customerId: parsed.customerId, colorIdx:r.color_idx||0, date:r.created_at?new Date(r.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):''};
+      return {id:r.id, name:r.name, items: parsed.tasks, notesList: parsed.notes, issuesList: parsed.issues, customerId: parsed.customerId, datesList: parsed.dates||[], colorIdx:r.color_idx||0, date:r.created_at?new Date(r.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):''};
     });
   }catch(e){ jobNotes = []; }
+  try{renderToday(_customers);}catch(e){}
   renderJobNotes();
 }
 
@@ -1585,6 +1598,7 @@ function renderJobNotes(){
           <button class="job-subtab-btn tasks-tab ${tab==='tasks'?'active':''}" onclick="switchJobTab('${job.id}','tasks')">Tasks<span class="job-subtab-count">${items.filter(i=>i.done).length}/${items.length}</span></button>
           <button class="job-subtab-btn notes-tab ${tab==='notes'?'active':''}" onclick="switchJobTab('${job.id}','notes')">Notes<span class="job-subtab-count">${notesList.length}</span></button>
           <button class="job-subtab-btn issues-tab ${tab==='issues'?'active':''}" onclick="switchJobTab('${job.id}','issues')">Issues<span class="job-subtab-count">${issuesList.length}</span></button>
+          <button class="job-subtab-btn dates-tab ${tab==='dates'?'active':''}" onclick="switchJobTab('${job.id}','dates')">Dates<span class="job-subtab-count">${(job.datesList||[]).length}</span></button>
         </div>
 
         <div class="job-subpane ${tab==='tasks'?'active':''}" id="pane-tasks-${job.id}">
@@ -1612,6 +1626,10 @@ function renderJobNotes(){
           </div>
         </div>
 
+        <div class="job-subpane ${tab==='dates'?'active':''}" id="pane-dates-${job.id}">
+          ${datesPaneHtml(job)}
+        </div>
+
         <div class="job-note-footer">
           <span class="job-note-saved" id="saved-${job.id}">✓ Saved</span>
           <button class="job-note-delete" onclick="deleteJobNote('${job.id}')">× Remove job</button>
@@ -1619,6 +1637,42 @@ function renderJobNotes(){
       </div>
     </div>`;
   }).join('');
+}
+
+function datesPaneHtml(job){
+  var list=(job.datesList||[]).map(function(x,i){return {d:x.date,t:x.text,i:i};}).sort(function(a,b){return a.d<b.d?-1:1;});
+  var h=list.length?list.map(function(x){
+    var p=String(x.d).split('-');
+    var ds=p.length===3?p[2]+'/'+p[1]+'/'+p[0]:x.d;
+    return '<div class="checklist-item"><span class="checklist-text"><b>'+ds+'</b> · '+escapeHtml(x.t)+'</span><button class="note-entry-action delete" onclick="deleteDateEntry(\''+job.id+'\','+x.i+')">Delete</button></div>';
+  }).join(''):'<div style="font-size:13px;color:#aaa;padding:8px 4px">No dates yet — add one below</div>';
+  return '<div id="dates-wrap-'+job.id+'">'+h+'</div><div style="padding:6px 0 0"><input type="date" id="dateinput-'+job.id+'" class="checklist-input" style="width:100%;box-sizing:border-box"></div><div class="checklist-add"><input class="checklist-input" id="datetext-'+job.id+'" type="text" placeholder="e.g. Concrete pour, council inspection" maxlength="120" onkeydown="if(event.key===\'Enter\')addDateEntry(\''+job.id+'\')"><button class="checklist-add-btn" onclick="addDateEntry(\''+job.id+'\')">+ Add</button></div>';
+}
+
+function addDateEntry(id){
+  var di=document.getElementById('dateinput-'+id), ti=document.getElementById('datetext-'+id);
+  if(!di||!ti)return;
+  var d=di.value, t=ti.value.trim();
+  if(!d){di.focus();return;}
+  if(!t){ti.focus();return;}
+  var job=jobNotes.find(function(j){return j.id===id;});
+  if(!job)return;
+  if(!job.datesList)job.datesList=[];
+  job.datesList.push({date:d,text:t});
+  renderJobNotes();
+  reopenJob(id,'dates','datetext-'+id);
+  saveJobData(id);
+  try{renderToday(_customers);}catch(e){}
+}
+
+function deleteDateEntry(id,index){
+  var job=jobNotes.find(function(j){return j.id===id;});
+  if(!job||!job.datesList)return;
+  job.datesList.splice(index,1);
+  renderJobNotes();
+  reopenJob(id,'dates');
+  saveJobData(id);
+  try{renderToday(_customers);}catch(e){}
 }
 
 function escapeHtml(str){
@@ -1632,7 +1686,7 @@ function switchJobTab(jobId, tabName){
   if(!card) return;
   card.querySelectorAll('.job-subtab-btn').forEach(b=>b.classList.remove('active'));
   card.querySelectorAll('.job-subpane').forEach(p=>p.classList.remove('active'));
-  const btnClass = tabName==='tasks'?'tasks-tab':tabName==='notes'?'notes-tab':'issues-tab';
+  const btnClass = tabName==='tasks'?'tasks-tab':tabName==='notes'?'notes-tab':tabName==='dates'?'dates-tab':'issues-tab';
   const btn = card.querySelector('.job-subtab-btn.'+btnClass);
   if(btn) btn.classList.add('active');
   const pane = document.getElementById('pane-'+tabName+'-'+jobId);
@@ -1825,7 +1879,7 @@ function reopenJob(id, tab, focusId){
 async function saveJobData(id){
   const job = jobNotes.find(j=>j.id===id);
   if(!job) return;
-  const payload = JSON.stringify({tasks: job.items||[], notes: job.notesList||[], issues: job.issuesList||[]});
+  const payload = JSON.stringify({tasks: job.items||[], notes: job.notesList||[], issues: job.issuesList||[], dates: job.datesList||[], customerId: job.customerId||null});
   try{
     const encodedId = encodeURIComponent(id);
     const res = await fetch(SB_URL+'/rest/v1/gg_job_notes?id=eq.'+encodedId, {
