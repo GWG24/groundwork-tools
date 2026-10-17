@@ -609,7 +609,7 @@ async function loadAll(){
   try {
     [expenses, quotes] = await Promise.all([
       db('expenses?order=expense_date.desc'),
-      db('gg_quotes?select=id,name,data&order=updated_at.desc')
+      db('gg_quotes?select=id,name,data,updated_at&order=updated_at.desc')
     ]);
     setSyncStatus(true,'☁ Synced to Groundwork Gardens cloud');
     render();
