@@ -720,8 +720,8 @@ function generateMonthlyReport(){
       const monthName=months[selMonth]+' '+selYear;
 
       // Cash basis - only paid invoices for selected month
-const monthPaidInv=_invoices.filter(r=>getStatus(r)==='paid'&&(isSelMonth(getDate(r))||isSelMonth(r.updated_at)));
-      const monthExp=_expenses.filter(e=>isSelMonth(e.expense_date)||isSelMonth(e.created_at));
+const monthPaidInv=_invoices.filter(r=>getStatus(r)==='paid'&&isSelMonth(getPaidDate(r)));
+      const monthExp=_expenses.filter(e=>isSelMonth(e.expense_date));
       const totalReceived=monthPaidInv.reduce((s,r)=>s+getTotal(r),0);
       const totalExp=monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
       const profit=totalReceived-totalExp;
@@ -817,7 +817,7 @@ function generateQuarterlyReport(){
       const qMonths=[qStart,qStart+1,qStart+2];
       const qName='Q'+q+' '+now.getFullYear()+' ('+months[qStart]+' – '+months[qStart+2]+')';
 
-      const qInv=_invoices.filter(r=>{const d=new Date(r.updated_at);return d.getFullYear()===now.getFullYear()&&qMonths.includes(d.getMonth());});
+      const qInv=_invoices.filter(r=>{const d=new Date(getPaidDate(r));return d.getFullYear()===now.getFullYear()&&qMonths.includes(d.getMonth());});
       const qExp=_expenses.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d.getFullYear()===now.getFullYear()&&qMonths.includes(d.getMonth());});
 
       const totalInv=qInv.reduce((s,r)=>s+getTotal(r),0);
@@ -845,7 +845,7 @@ function generateQuarterlyReport(){
         y=pdfSectionTitle(doc,'REVENUE RECEIVED THIS QUARTER',y);
         doc.autoTable({startY:y,head:[['Month','Paid Invoices','Revenue (inc GST)']],
           body:qMonths.map(m=>{
-            const mPaid=qInv.filter(r=>getStatus(r)==='paid'&&new Date(r.updated_at).getMonth()===m);
+            const mPaid=qInv.filter(r=>getStatus(r)==='paid'&&new Date(getPaidDate(r)).getMonth()===m);
             return [months[m]+' '+now.getFullYear(), mPaid.length, fmt(mPaid.reduce((s,r)=>s+getTotal(r),0))];
           }),
           theme:'plain',headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
@@ -893,7 +893,7 @@ function generateYearlyReport(){
       const fyStartDate = new Date(fyStart, 6, 1); // 1 July
       const fyEndDate = new Date(fyEnd, 5, 30, 23, 59, 59); // 30 June
 
-      const yrInv=_invoices.filter(r=>{const d=new Date(r.updated_at);return d>=fyStartDate&&d<=fyEndDate;});
+      const yrInv=_invoices.filter(r=>{const d=new Date(getPaidDate(r));return d>=fyStartDate&&d<=fyEndDate;});
       const yrExp=_expenses.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d>=fyStartDate&&d<=fyEndDate;});
       const totalInv=yrInv.reduce((s,r)=>s+getTotal(r),0);
       const totalPaid=yrInv.filter(r=>getStatus(r)==='paid').reduce((s,r)=>s+getTotal(r),0);
@@ -923,7 +923,7 @@ function generateYearlyReport(){
       const fyMonths=[6,7,8,9,10,11,0,1,2,3,4,5];
       fyMonths.forEach(m=>{
         const mYear = m>=6 ? fyStart : fyEnd;
-        const mPaid=yrPaidInv.filter(r=>{const d=new Date(r.updated_at);return d.getMonth()===m&&d.getFullYear()===mYear;});
+        const mPaid=yrPaidInv.filter(r=>{const d=new Date(getPaidDate(r));return d.getMonth()===m&&d.getFullYear()===mYear;});
         const mExp=yrExp.filter(e=>{const d=new Date(e.expense_date||e.created_at);return d.getMonth()===m&&d.getFullYear()===mYear;});
         const mRev=mPaid.reduce((s,r)=>s+getTotal(r),0);
         const mExpT=mExp.reduce((s,e)=>s+parseFloat(e.amount||0),0);
@@ -1122,7 +1122,7 @@ async function loadAll(){
   setSyncStatus(true,'Refreshing...');
   try{
     const [ggQuotes,expenses,customers]=await Promise.all([
-      db('gg_quotes?order=updated_at.desc&limit=100'),
+      db('gg_quotes?order=updated_at.desc&limit=1000'),
       db('expenses?order=expense_date.desc'),
       db('customers?order=created_at.desc')
     ]);
