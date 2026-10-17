@@ -625,6 +625,7 @@ function thisMonth(d){if(!d)return false;const x=new Date(d);return x.getFullYea
 function getTotal(r){
   try{
     const d=typeof r.data==='string'?JSON.parse(r.data):r.data;
+     if(d.invTotal!==undefined&&d.invTotal!==null&&d.invTotal!=='')return parseFloat(d.invTotal)||0;
     // Invoice format
     if(d.items&&d.items.length){
       return d.items.reduce((s,i)=>s+(parseFloat(i.price)||0)*(parseFloat(i.qty)||1),0)*1.10;
