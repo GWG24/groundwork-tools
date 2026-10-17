@@ -388,6 +388,7 @@ async function ggDoLogin(){
       <div class="field"><label>Distance (km)</label><input id="f-km" type="number" step="1" min="0" placeholder="e.g. 45" oninput="calcTravel()"></div>
       <div id="travel-calc" style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--text-secondary);padding:4px 2px 10px">ATO rate: 88c/km — enter km above</div>
     </div>
+    <div class="field"><label>Job (pick from list)</label><select id="f-job-pick" onchange="jobPicked(this)"><option value="">— choose a job —</option></select></div>
     <div class="field"><label>Job / Reference</label><input id="f-job" type="text" placeholder="e.g. Smith garden, Invoice #12"></div>
     <div class="field"><label>Date</label><input id="f-date" type="date"></div>
     <div class="field"><label>Paid via</label><select id="f-pay">
@@ -1222,7 +1223,29 @@ function openRecurring(){
   document.getElementById('recOverlay').classList.add('show');
 }
 function closeRecurring(){document.getElementById('recOverlay').classList.remove('show');}
-function recInit(){recParse();recBanner();recRender();}
+function recInit(){recParse();recBanner();recRender();fillJobPicker();}
+
+function fillJobPicker(){
+  var sel=document.getElementById('f-job-pick');
+  if(!sel)return;
+  var seen={},list=[];
+  quotes.filter(function(q){return q.id&&q.id.indexOf('invoice_')===0;}).forEach(function(q){
+    var d;
+    try{d=typeof q.data==='string'?JSON.parse(q.data):q.data;}catch(e){return;}
+    if(!d||!d.num)return;
+    var base=String(d.num).split('/')[0].trim();
+    if(!/^\d{4}-\d+$/.test(base)||seen[base])return;
+    seen[base]=1;
+    list.push({base:base,client:d.client||'',t:q.updated_at||''});
+  });
+  list.sort(function(a,b){return a.t<b.t?1:-1;});
+  sel.innerHTML='<option value="">— choose a job —</option>'+list.map(function(j){var v=recEsc(j.base+' '+j.client);return '<option value="'+v+'">'+v+'</option>';}).join('');
+}
+
+function jobPicked(sel){
+  if(sel.value){document.getElementById('f-job').value=sel.value;}
+  sel.value='';
+}
 
 async function saveExpense(){
   const desc=document.getElementById('f-desc').value.trim(),amount=parseFloat(document.getElementById('f-amount').value);
