@@ -647,6 +647,7 @@ function getStatus(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.
 function getInvNum(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.num||d.number||r.id||'';}catch(e){return r.id||'';}}
 function getDue(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.due||d.dueDate||'';}catch(e){return '';}}
 function getDate(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.date||r.updated_at?.substring(0,10)||'';}catch(e){return '';}}
+function getPaidDate(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.paid_date||r.updated_at||'';}catch(e){return r.updated_at||'';}}
 function getDesc(r){try{const d=typeof r.data==='string'?JSON.parse(r.data):r.data;return d.desc||d.jobTitle||'';}catch(e){return '';}}
 function getClient(r){
   if(r.name){
@@ -1140,8 +1141,12 @@ _customers=customers;
     document.getElementById('m-invoiced-sub').textContent=monthInv.length+' invoice'+(monthInv.length!==1?'s':'')+' this month';
     document.getElementById('m-outstanding').textContent=fmt(unpaidInv.reduce((s,r)=>s+getTotal(r),0));
     document.getElementById('m-outstanding-sub').textContent=unpaidInv.length+' unpaid';
-    document.getElementById('m-paid').textContent=fmt(paidInv.reduce((s,r)=>s+getTotal(r),0));
-    document.getElementById('m-paid-sub').textContent=paidInv.length+' paid';
+    const monthPaid=paidInv.filter(r=>thisMonth(getPaidDate(r)));
+    const fyY=now.getMonth()>=6?now.getFullYear():now.getFullYear()-1;
+    const fyStartD=new Date(fyY,6,1);
+    const fyPaid=paidInv.filter(r=>new Date(getPaidDate(r))>=fyStartD);
+    document.getElementById('m-paid').textContent=fmt(monthPaid.reduce((s,r)=>s+getTotal(r),0));
+    document.getElementById('m-paid-sub').textContent=monthPaid.length+' paid this month · FY to date '+fmt(fyPaid.reduce((s,r)=>s+getTotal(r),0));
     document.getElementById('m-expenses').textContent=fmt(monthExp.reduce((s,e)=>s+parseFloat(e.amount||0),0));
     document.getElementById('m-expenses-sub').textContent=monthExp.length+' expense'+(monthExp.length!==1?'s':'')+' this month';
 
@@ -1211,7 +1216,7 @@ async function markInvoicePaid(id){
     const rows = await res.json();
     if(!rows.length) return;
     const d = typeof rows[0].data==='string' ? JSON.parse(rows[0].data) : rows[0].data;
-    d.status = 'paid';
+   d.status = 'paid'; d.paid_date = new Date().toLocaleDateString('en-CA');
     await fetch(SB_URL+'/rest/v1/gg_quotes?id=eq.'+id, {
       method:'PATCH',
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
