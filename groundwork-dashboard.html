@@ -1278,7 +1278,14 @@ function renderToday(customers){
     if(s!=='unpaid'&&s!=='partial')return;
     var due=getDue(r);
     if(!due||due>today)return;
-    rows.push({sort:due,html:'<div class="lead-item"><div><div class="lead-name">🧾 '+esc(getClient(r))+'</div><div class="lead-sub">Invoice '+esc(getInvNum(r))+' · '+fmt(getTotal(r))+'</div></div>'+tag(daysLate(due))+'</div>'});
+    var cl=getClient(r),num=getInvNum(r);
+    var cu=(customers||[]).find(function(c){return String(c.name||'').trim().toLowerCase()===cl.toLowerCase();})||{};
+    var dp=due.split('-'),dueTxt=dp.length===3?dp[2]+'/'+dp[1]+'/'+dp[0]:due;
+    var msg='Hi '+cl.split(' ')[0]+',\n\nJust a quick reminder that invoice '+num+' for '+fmt(getTotal(r))+' was due on '+dueTxt+'. If you have already paid, please ignore this, thanks!\n\nPayment details:\nGroundwork Gardens\nBSB: 633 000\nAcc: 222 994 287\nReference: '+num+'\n\nAny questions, just let me know.\n\nCheers,\nMarcus';
+    var mailHref='mailto:'+(cu.email||'')+'?subject='+encodeURIComponent('Payment reminder - Invoice '+num)+'&body='+encodeURIComponent(msg);
+    var smsHref='sms:'+(cu.phone||'')+'?&body='+encodeURIComponent(msg);
+    var btn='display:inline-block;margin:6px 6px 0 0;padding:4px 10px;border:1px solid var(--green-leaf);border-radius:6px;color:var(--green-leaf);font-size:12px;text-decoration:none';
+    rows.push({sort:due,html:'<div class="lead-item"><div><div class="lead-name">🧾 '+esc(cl)+'</div><div class="lead-sub">Invoice '+esc(num)+' · '+fmt(getTotal(r))+'</div><div><a href="'+esc(mailHref)+'" style="'+btn+'">✉ Email</a><a href="'+esc(smsHref)+'" style="'+btn+'">💬 Text</a></div></div>'+tag(daysLate(due))+'</div>'});
   });
   rows.sort(function(a,b){return a.sort<b.sort?-1:1;});
   el.innerHTML=rows.length?rows.map(function(r){return r.html;}).join(''):'<div class="empty-state">Nothing due today 🌿</div>';
