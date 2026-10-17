@@ -273,6 +273,9 @@ async function ggDoLogin(){
     <div class="summary-card full" id="chart-wrap"></div>
   </div>
 
+  <div id="recBanner" style="display:none;margin:0 14px 12px;background:#fffbe6;border:0.5px solid #e8d88a;border-radius:10px;padding:12px 14px;font-size:13px;color:#7d6000"></div>
+  <div style="padding:0 14px 12px"><button class="clear-btn" style="width:100%" onclick="openRecurring()">🔁 Recurring expenses</button></div>
+
   <div class="cat-pills">
     <div class="cat-pill active all" onclick="setCat('all',this)">All</div>
     <div class="cat-pill" onclick="setCat('Materials',this)">🪨 Materials</div>
@@ -312,6 +315,51 @@ async function ggDoLogin(){
 
   <div class="bas-summary" id="basSummary">
     <div class="empty"><div class="empty-icon">📊</div><div class="empty-title">Loading BAS data...</div></div>
+  </div>
+</div>
+
+<!-- Recurring Expenses Modal -->
+<div class="overlay" id="recOverlay">
+  <div class="modal">
+    <div class="modal-title"><span>Recurring Expenses</span><button class="modal-close" onclick="closeRecurring()">✕</button></div>
+    <div id="recList" style="margin-bottom:14px"></div>
+    <div style="border-top:0.5px solid #c5d4c0;padding-top:14px">
+      <div class="field"><label id="recFormTitle">Add a recurring expense</label><input id="rec-desc" type="text" placeholder="e.g. Phone plan, Insurance"></div>
+      <div class="field"><label>Amount ($)</label><input id="rec-amount" type="number" step="0.01" placeholder="0.00"></div>
+      <div class="field"><label>Category</label><select id="rec-cat">
+        <option value="Materials">Materials</option>
+        <option value="Fuel">Fuel / Diesel</option>
+        <option value="Labour">Labour / Sub</option>
+        <option value="Tools">Tools & Equipment</option>
+        <option value="CityLink">CityLink</option>
+        <option value="Work Clothes">Work Clothes</option>
+        <option value="Insurance">Insurance</option>
+        <option value="Vehicle">Vehicle & Rego</option>
+        <option value="Phone & Internet">Phone & Internet</option>
+        <option value="Software">Software & Programs</option>
+        <option value="Tip">Tip / Waste Disposal</option>
+        <option value="Other">Other</option>
+      </select></div>
+      <div class="field"><label>How often</label><select id="rec-freq">
+        <option value="weekly">Weekly</option>
+        <option value="fortnightly">Fortnightly</option>
+        <option value="monthly" selected>Monthly</option>
+        <option value="quarterly">Quarterly</option>
+        <option value="yearly">Yearly</option>
+      </select></div>
+      <div class="field"><label>Next due date (the next one not yet entered)</label><input id="rec-next" type="date"></div>
+      <div class="field"><label>Paid via</label><select id="rec-pay">
+        <option value="Card">Card</option>
+        <option value="Cash">Cash</option>
+        <option value="Bank transfer">Bank transfer</option>
+        <option value="Account">Account / Invoice</option>
+      </select></div>
+      <div class="field" style="flex-direction:row;align-items:center;gap:10px"><input id="rec-gst" type="checkbox" checked style="width:18px;height:18px"><label style="margin:0">GST included (untick for no-GST items)</label></div>
+      <div class="modal-actions">
+        <button class="clear-btn" onclick="recFormReset()">Clear</button>
+        <button class="gen-btn" onclick="recSaveItem()">Save</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -612,6 +660,7 @@ async function loadAll(){
       db('gg_quotes?select=id,name,data,updated_at&order=updated_at.desc')
     ]);
     setSyncStatus(true,'☁ Synced to Groundwork Gardens cloud');
+    recInit();
     render();
     if(currentView==='bas') renderBAS();
   } catch(e) {
@@ -1021,6 +1070,159 @@ function openAdd(){
 }
 
 function closeAdd(){document.getElementById('addOverlay').classList.remove('show');}
+
+// ==================== RECURRING EXPENSES ====================
+var recItems=[];
+var recEditIdx=-1;
+
+function recEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function recToday(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+function recNext(it){
+  var p=it.next.split('-');
+  var d=new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10));
+  if(it.freq==='weekly'){d.setDate(d.getDate()+7);}
+  else if(it.freq==='fortnightly'){d.setDate(d.getDate()+14);}
+  else{
+    var step={monthly:1,quarterly:3,yearly:12}[it.freq]||1;
+    var want=it.day||d.getDate();
+    d.setDate(1);
+    d.setMonth(d.getMonth()+step);
+    var last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+    d.setDate(Math.min(want,last));
+  }
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+function recParse(){
+  var r=quotes.find(function(q){return q.id==='recurring_expenses';});
+  try{
+    var d=r?(typeof r.data==='string'?JSON.parse(r.data):r.data):null;
+    recItems=(d&&d.items)?d.items:[];
+  }catch(e){recItems=[];}
+}
+
+async function recSave(){
+  var res=await fetch(SB_URL+'/rest/v1/gg_quotes',{
+    method:'POST',
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+    body:JSON.stringify({id:'recurring_expenses',name:'Recurring expenses',data:{items:recItems},updated_at:new Date().toISOString()})
+  });
+  if(!res.ok)throw new Error(await res.text());
+}
+
+function recBanner(){
+  var el=document.getElementById('recBanner');
+  if(!el)return;
+  var today=recToday();
+  var due=recItems.filter(function(i){return i.next<=today;});
+  if(!due.length){el.style.display='none';return;}
+  var lines=due.map(function(i){return recEsc(i.description)+' '+fmt(i.amount)+' (due '+fmtDate(i.next)+')';}).join('<br>');
+  el.innerHTML='<div style="font-weight:600;margin-bottom:6px">🔁 '+due.length+' recurring expense'+(due.length>1?'s':'')+' due</div><div style="margin-bottom:10px">'+lines+'</div><div style="display:flex;gap:8px"><button class="gen-btn" id="recAddBtn" style="flex:1" onclick="recAddDue(false)">Add to expenses</button><button class="clear-btn" style="flex:1" onclick="recAddDue(true)">Skip this time</button></div>';
+  el.style.display='block';
+}
+
+async function recAddDue(skip){
+  var b=document.getElementById('recAddBtn');
+  if(b)b.disabled=true;
+  var today=recToday();
+  var rows=[];
+  recItems.forEach(function(it){
+    var n=0;
+    while(it.next<=today&&n<36){
+      if(!skip){rows.push({description:it.description,amount:it.amount,category:it.category,job_ref:'',expense_date:it.next,payment_method:it.pay,gst_applicable:it.gst!==false,receipt_photo:null});}
+      it.next=recNext(it);
+      n++;
+    }
+  });
+  try{
+    if(rows.length)await db('expenses','POST',rows);
+  }catch(e){
+    alert('Could not add the expenses: '+e.message);
+    await loadAll();
+    return;
+  }
+  try{await recSave();}catch(e){alert('Expenses were added but the schedule could not be updated. Do NOT tap Add again - tell Claude.');}
+  showToast(skip?'Skipped':'✓ Added '+rows.length+' expense'+(rows.length===1?'':'s'));
+  await loadAll();
+}
+
+function recRender(){
+  var el=document.getElementById('recList');
+  if(!el)return;
+  if(!recItems.length){el.innerHTML='<div style="color:var(--text-secondary);font-size:13px;padding:6px 0">No recurring expenses yet. Add one below.</div>';return;}
+  el.innerHTML=recItems.map(function(it,i){
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:0.5px solid #e8f0e6"><div><div style="font-weight:600;font-size:14px">'+recEsc(it.description)+'</div><div style="font-size:12px;color:var(--text-secondary)">'+fmt(it.amount)+' · '+it.freq+' · next '+fmtDate(it.next)+(it.gst===false?' · no GST':'')+'</div></div><div style="display:flex;gap:6px"><button class="clear-btn" style="padding:6px 10px" onclick="recEdit('+i+')">Edit</button><button class="clear-btn" style="padding:6px 10px" onclick="recDelete('+i+')">✕</button></div></div>';
+  }).join('');
+}
+
+function recFormReset(){
+  recEditIdx=-1;
+  document.getElementById('recFormTitle').textContent='Add a recurring expense';
+  document.getElementById('rec-desc').value='';
+  document.getElementById('rec-amount').value='';
+  document.getElementById('rec-cat').value='Other';
+  document.getElementById('rec-freq').value='monthly';
+  document.getElementById('rec-next').value=recToday();
+  document.getElementById('rec-pay').value='Card';
+  document.getElementById('rec-gst').checked=true;
+}
+
+function recEdit(i){
+  var it=recItems[i];
+  if(!it)return;
+  recEditIdx=i;
+  document.getElementById('recFormTitle').textContent='Editing: '+it.description;
+  document.getElementById('rec-desc').value=it.description;
+  document.getElementById('rec-amount').value=it.amount;
+  document.getElementById('rec-cat').value=it.category;
+  document.getElementById('rec-freq').value=it.freq;
+  document.getElementById('rec-next').value=it.next;
+  document.getElementById('rec-pay').value=it.pay;
+  document.getElementById('rec-gst').checked=it.gst!==false;
+}
+
+async function recSaveItem(){
+  var desc=document.getElementById('rec-desc').value.trim();
+  var amount=parseFloat(document.getElementById('rec-amount').value);
+  var next=document.getElementById('rec-next').value;
+  if(!desc||isNaN(amount)||amount<=0||!next){alert('Please enter a description, an amount and the next due date');return;}
+  var it={
+    id:recEditIdx>=0?recItems[recEditIdx].id:('r'+Date.now()),
+    description:desc,
+    amount:amount,
+    category:document.getElementById('rec-cat').value,
+    freq:document.getElementById('rec-freq').value,
+    next:next,
+    day:parseInt(next.split('-')[2],10),
+    pay:document.getElementById('rec-pay').value,
+    gst:document.getElementById('rec-gst').checked
+  };
+  if(recEditIdx>=0)recItems[recEditIdx]=it;else recItems.push(it);
+  try{await recSave();}catch(e){alert('Save failed: '+e.message);return;}
+  recFormReset();
+  recRender();
+  recBanner();
+  showToast('Recurring expense saved');
+}
+
+async function recDelete(i){
+  var it=recItems[i];
+  if(!it)return;
+  if(!confirm('Delete recurring expense "'+it.description+'"? Expenses already added stay.'))return;
+  recItems.splice(i,1);
+  try{await recSave();}catch(e){alert('Delete failed: '+e.message);await loadAll();return;}
+  recRender();
+  recBanner();
+}
+
+function openRecurring(){
+  recFormReset();
+  recRender();
+  document.getElementById('recOverlay').classList.add('show');
+}
+function closeRecurring(){document.getElementById('recOverlay').classList.remove('show');}
+function recInit(){recParse();recBanner();recRender();}
 
 async function saveExpense(){
   const desc=document.getElementById('f-desc').value.trim(),amount=parseFloat(document.getElementById('f-amount').value);
