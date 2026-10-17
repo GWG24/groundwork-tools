@@ -461,7 +461,7 @@ const ATO_RATE=0.88;
     const noGstExpenses = qExpenses.filter(e => e.gst_applicable === false);
 
     const totalIncome = paidInvoices.reduce((s, inv) => s + invoiceTotal(inv), 0);
-    const gstCollected = totalIncome / 11;
+   const gstCollected = paidInvoices.reduce((s, inv) => s + invoiceGst(inv), 0);
     const totalGstExpenses = gstExpenses.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
     const gstCredits = totalGstExpenses / 11;
     const netPayable = gstCollected - gstCredits;
@@ -526,11 +526,11 @@ const ATO_RATE=0.88;
       const invRows = paidInvoices.map(inv => {
         const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
         const total = invoiceTotal(inv);
-        return [d.client || inv.name || inv.id, d.num || inv.id, d.date || '', fmt(total), fmt(total/11)];
+        return [d.client || inv.name || inv.id, d.num || inv.id, fmtDate(invoicePaidDate(inv)), fmt(total), fmt(invoiceGst(inv))];
       });
       doc.autoTable({
         startY: y,
-        head: [['Client', 'Invoice #', 'Date', 'Total', 'GST']],
+        head: [['Client', 'Invoice #', 'Paid', 'Total', 'GST']],
         body: invRows,
         theme: 'plain',
         headStyles: { fillColor: [30,30,30], textColor: [255,255,255], fontSize: 8, fontStyle: 'bold', cellPadding: 2.5 },
@@ -727,7 +727,26 @@ function monthExpenses(){
   });
 }
 
+function invoicePaidDate(inv) {
+  const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
+  return (d && d.paid_date) || (inv.updated_at ? inv.updated_at.substring(0, 10) : '') || (d && (d.date || d.due)) || '';
+}
+
 function invoiceTotal(inv) {
+  const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
+  if (!d) return 0;
+  if (d.invTotal !== undefined && d.invTotal !== null && d.invTotal !== '') return parseFloat(d.invTotal) || 0;
+  if (!d.items) return 0;
+  return d.items.reduce((s, item) => s + (parseFloat(item.price || 0) * (parseFloat(item.qty) || 1)), 0) * 1.10;
+}
+
+function invoiceGst(inv) {
+  const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
+  if (d && d.invGst !== undefined && d.invGst !== null && d.invGst !== '') return parseFloat(d.invGst) || 0;
+  return invoiceTotal(inv) / 11;
+}
+
+function invoiceTotalOld(inv) {
   const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
   if (!d || !d.items) return 0;
   return d.items.reduce((s, item) => s + parseFloat(item.price || 0), 0);
@@ -749,7 +768,7 @@ function quarterPaidInvoices(fy, q) {
     const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
     if (!d || d.status !== 'paid') return false;
     // Use invoice date from data
-    const dateStr = d.date || d.due || '';
+    const dateStr = invoicePaidDate(inv);
     if (!dateStr) return false;
     const [ey, em] = dateStr.split('-');
     return months.some(m => m.y === parseInt(ey) && m.m === parseInt(em));
@@ -768,7 +787,7 @@ function renderBAS() {
   const noGstExpenses = qExpenses.filter(e => e.gst_applicable === false);
 
   const totalIncome = paidInvoices.reduce((s, inv) => s + invoiceTotal(inv), 0);
-  const gstCollected = totalIncome / 11;
+  const gstCollected = paidInvoices.reduce((s, inv) => s + invoiceGst(inv), 0);
 
   const totalGstExpenses = gstExpenses.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
   const gstCredits = totalGstExpenses / 11;
@@ -820,10 +839,10 @@ function renderBAS() {
     paidInvoices.forEach(inv => {
       const d = typeof inv.data === 'string' ? JSON.parse(inv.data) : inv.data;
       const total = invoiceTotal(inv);
-      const gst = total / 11;
+      const gst = invoiceGst(inv);
       const name = d.client || inv.name || inv.id;
       const num = d.num || inv.id;
-      const date = d.date || '';
+      const date = 'paid ' + fmtDate(invoicePaidDate(inv));
       invoiceHTML += `<div class="bas-invoice-row">
         <div>
           <div class="bas-invoice-name">${name}</div>
