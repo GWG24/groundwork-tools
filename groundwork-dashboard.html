@@ -1079,7 +1079,7 @@ function generateFullReport(){
         doc.autoTable({
           startY:y,
           head:[['Date','Description','Category','Job / Reference','Amount','Paid Via']],
-          body:_expenses.map(e=>[e.expense_date||'—',e.description||'—',e.category||'—',e.job_ref||'—',fmt(e.amount||0),e.payment_method||'—']),
+          body:_expenses.map(e=>[(e.expense_date?e.expense_date.split('-').reverse().join('/'):'—'),e.description||'—',e.category||'—',e.job_ref||'—',fmt(e.amount||0),e.payment_method||'—']),
           theme:'plain',
           headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
           bodyStyles:{fontSize:7.5,cellPadding:2.5,textColor:[50,50,50]},
@@ -1096,7 +1096,7 @@ function generateFullReport(){
         doc.autoTable({
           startY:y,
           head:[['Quote ID','Client','Date','Amount (inc GST)']],
-          body:_quotes.map(r=>[r.id,getClient(r),r.updated_at?r.updated_at.substring(0,10):'—',fmt(getTotal(r))]),
+          body:_quotes.map(r=>[r.id,getClient(r),r.updated_at?r.updated_at.substring(0,10).split('-').reverse().join('/'):'—',fmt(getTotal(r))]),
           theme:'plain',
           headStyles:{fillColor:[26,46,23],textColor:[255,255,255],fontSize:8,fontStyle:'bold',cellPadding:3},
           bodyStyles:{fontSize:8,cellPadding:3,textColor:[50,50,50]},
