@@ -441,7 +441,7 @@ function render() {
     } else if (fuStatus === 'today') {
       fuBadge = `<span class="followup-badge today">📅 Follow-up due today</span>`;
     } else if (fuStatus === 'upcoming') {
-      fuBadge = `<span class="followup-badge upcoming">🔔 Follow-up ${c.followup_date}</span>`;
+      fuBadge = `<span class="followup-badge upcoming">🔔 Follow-up ${c.followup_date.split('-').reverse().join('/')}</span>`;
     }
     return `<div class="contact-card ${isJob?'job-card':''} ${cardClass}" onclick="openDetail('${c.id}')">
       <div class="card-top"><div class="card-name">${c.name}</div><span class="badge ${bc}">${bl}</span></div>
