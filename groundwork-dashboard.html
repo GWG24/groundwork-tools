@@ -232,6 +232,38 @@
 </head>
 <body>
 
+<!-- SIGN-IN SCREEN -->
+<div id="ggLogin" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000;background:#14301f;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+  <img src="logo.png" alt="Groundwork Gardens" style="height:120px;width:auto;max-width:90vw;object-fit:contain;margin-bottom:10px;">
+  <div style="color:#e8c99b;letter-spacing:.15em;text-transform:uppercase;font-size:13px;margin-bottom:20px;">Sign in</div>
+  <input id="ggLoginEmail" type="email" placeholder="Email" autocomplete="username" onkeydown="event.stopPropagation()" style="width:100%;max-width:320px;padding:14px;border-radius:8px;border:none;font-size:16px;margin-bottom:10px;box-sizing:border-box;">
+  <input id="ggLoginPass" type="password" placeholder="Password" autocomplete="current-password" onkeydown="event.stopPropagation();if(event.key==='Enter')ggDoLogin()" style="width:100%;max-width:320px;padding:14px;border-radius:8px;border:none;font-size:16px;margin-bottom:14px;box-sizing:border-box;">
+  <button id="ggLoginBtn" onclick="ggDoLogin()" style="width:100%;max-width:320px;padding:14px;border-radius:8px;border:none;background:#e8c99b;color:#1a1a1a;font-size:16px;font-weight:700;cursor:pointer;">Sign in</button>
+  <div id="ggLoginErr" style="color:#ff9b9b;font-size:14px;margin-top:12px;min-height:20px;text-align:center;"></div>
+</div>
+<script>
+(function(){
+  var ok=false;
+  try{ok=!!localStorage.getItem('gg_auth_session');}catch(e){}
+  if(!ok) document.getElementById('ggLogin').style.display='flex';
+})();
+async function ggDoLogin(){
+  var email=document.getElementById('ggLoginEmail').value.trim();
+  var pass=document.getElementById('ggLoginPass').value;
+  var err=document.getElementById('ggLoginErr');
+  var btn=document.getElementById('ggLoginBtn');
+  if(!email||!pass){err.textContent='Enter your email and password.';return;}
+  btn.disabled=true;btn.textContent='Signing in...';err.textContent='';
+  try{
+    await ggSignIn(email,pass);
+    location.reload();
+  }catch(e){
+    err.textContent='Sign in failed: '+e.message;
+    btn.disabled=false;btn.textContent='Sign in';
+  }
+}
+</script>
+
 <!-- PIN LOCK SCREEN -->
 <div class="pin-overlay show" id="pinOverlay">
 <img src="logo.png" alt="Groundwork Gardens" style="height:150px;width:auto;max-width:90vw;object-fit:contain;margin-bottom:-10px;">
