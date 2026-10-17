@@ -430,7 +430,9 @@ async function ggDoLogin(){
     <button class="export-btn" onclick="generateMonthlyReport()"><span>📊</span>Monthly Report</button>
     <button class="export-btn orange" onclick="generateQuarterlyReport()"><span>📅</span>Quarterly Report</button>
     <button class="export-btn blue" onclick="generateYearlyReport()"><span>📋</span>Yearly Report</button>
-    <button class="export-btn blue" onclick="generateFullReport()"><span>📁</span>Full Export</button>
+   <button class="export-btn blue" onclick="generateFullReport()"><span>📁</span>Full Export</button>
+    <button class="export-btn" onclick="backupAllData()" style="grid-column:1/-1"><span>💾</span>Backup All Data</button>
+    <div id="lastBackup" style="grid-column:1/-1;font-size:11px;color:var(--text-secondary);text-align:center"></div>
   </div>
   <div style="font-size:11px;color:var(--text-secondary);text-align:center;padding:10px 0 4px">Downloads as a branded PDF — ready to email to your accountant</div>
 </div>
@@ -960,6 +962,53 @@ function generateYearlyReport(){
     }catch(err){console.error(err);showToast('⚠ Error generating report');}
   },100);
 }
+
+function showLastBackup(){
+  var el=document.getElementById('lastBackup');
+  if(!el)return;
+  var d='';
+  try{d=localStorage.getItem('gg_last_backup')||'';}catch(e){}
+  el.textContent=d?('Last backup: '+d):'No backup made on this device yet';
+}
+async function backupAllData(){
+  showToast('Backing up... one moment');
+  try{
+    const tables=['gg_quotes','expenses','customers','gg_job_notes','gg_pending_quote','gg_irrigation_projects','plant_hire_jobs','plant_hire_enquiries','plant_hire_appointments'];
+    const out={backup_date:new Date().toISOString(),tables:{}};
+    let total=0;
+    const capped=[];
+    for(const t of tables){
+      const rows=await db(t+'?select=*');
+      out.tables[t]=rows;
+      total+=rows.length;
+      if(rows.length>=1000)capped.push(t);
+    }
+    const name='GG-Backup-'+new Date().toLocaleDateString('en-CA')+'.json';
+    const blob=new Blob([JSON.stringify(out)],{type:'application/json'});
+    const mobile=/Android|iPhone|iPad/i.test(navigator.userAgent);
+    let shared=false;
+    if(mobile&&navigator.canShare){
+      const file=new File([blob],name,{type:'application/json'});
+      if(navigator.canShare({files:[file]})){
+        try{await navigator.share({files:[file],title:name});shared=true;}
+        catch(e){if(e&&e.name==='AbortError'){showToast('Backup cancelled');return;}throw e;}
+      }
+    }
+    if(!shared){
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function(){URL.revokeObjectURL(a.href);},5000);
+    }
+    try{localStorage.setItem('gg_last_backup',new Date().toLocaleDateString('en-AU')+' '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}));}catch(e){}
+    showLastBackup();
+    showToast(capped.length?'⚠ Saved, but '+capped.join(', ')+' may be cut off at 1000 rows':'✓ Backup saved — '+total+' records');
+  }catch(e){console.error(e);showToast('⚠ Backup failed');}
+}
+showLastBackup();
 
 function generateFullReport(){
   showToast('Generating full report...');
