@@ -593,7 +593,7 @@ const ATO_RATE=0.88;
     if (y > 240) { doc.addPage(); y = 15; }
     if (gstExpenses.length > 0) {
       doc.setFontSize(7); doc.setTextColor(150,150,150); doc.text('GST-APPLICABLE EXPENSES', margin, y); y += 4;
-      const expRows = gstExpenses.map(e => [e.description, e.category, e.expense_date || '', fmt(e.amount), fmt(parseFloat(e.amount)/11)]);
+      const expRows = gstExpenses.map(e => [e.description, e.category, fmtDate(e.expense_date), fmt(e.amount), fmt(parseFloat(e.amount)/11)]);
       doc.autoTable({
         startY: y,
         head: [['Description', 'Category', 'Date', 'Amount', 'GST']],
@@ -610,7 +610,7 @@ const ATO_RATE=0.88;
     if (y > 250) { doc.addPage(); y = 15; }
     if (noGstExpenses.length > 0) {
       doc.setFontSize(7); doc.setTextColor(150,150,150); doc.text('NO-GST EXPENSES (EXCLUDED)', margin, y); y += 4;
-      const noGstRows = noGstExpenses.map(e => [e.description, e.category, e.expense_date || '', fmt(e.amount)]);
+      const noGstRows = noGstExpenses.map(e => [e.description, e.category, fmtDate(e.expense_date), fmt(e.amount)]);
       doc.autoTable({
         startY: y,
         head: [['Description', 'Category', 'Date', 'Amount']],
