@@ -3172,6 +3172,7 @@ function getInvoiceData() {
     invGst: invCalcTotals().gst,
     invNoGst: invCalcTotals().noGst,
     invOverride: invCalcTotals().override,
+    paid_date: window._invPaidDate || '',
     items: invItems
   };
 }
