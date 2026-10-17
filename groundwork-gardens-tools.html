@@ -3188,6 +3188,7 @@ function loadInvoiceData(d) {
   if (document.getElementById('inv-deposit')) document.getElementById('inv-deposit').value = d.deposit || '';
   document.getElementById('inv-itemise').checked = d.itemise || false;
   invItems = d.items || [];
+  window._invPaidDate = d.paid_date || '';
   if (document.getElementById('inv-no-gst')) document.getElementById('inv-no-gst').checked = !!d.invNoGst;
   if (document.getElementById('inv-price-override')) document.getElementById('inv-price-override').value = d.invOverride || '';
   renderInvItems();
