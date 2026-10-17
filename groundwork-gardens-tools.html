@@ -3139,6 +3139,24 @@ function sendToInvoice() {
 }
 
 // ==================== INVOICE SAVE/LOAD ====================
+function invCalcTotals() {
+  var subtotal = invItems.reduce(function(s,m) { return s + (parseFloat(m.price)||0)*(parseFloat(m.qty)||1); }, 0);
+  var noGstEl = document.getElementById('inv-no-gst');
+  var noGst = noGstEl ? noGstEl.checked : false;
+  var gst = noGst ? 0 : subtotal * 0.10;
+  var total = subtotal + gst;
+  var overrideEl = document.getElementById('inv-price-override');
+  var ov = overrideEl ? parseFloat(overrideEl.value) : NaN;
+  var override = '';
+  if (!isNaN(ov) && ov > 0) {
+    override = ov;
+    total = ov;
+    if (noGst) { gst = 0; }
+    else { gst = Math.round((ov - Math.round((ov / 1.10) * 100) / 100) * 100) / 100; }
+  }
+  return { total: Math.round(total * 100) / 100, gst: Math.round(gst * 100) / 100, noGst: noGst, override: override };
+}
+
 function getInvoiceData() {
   return {
     client: document.getElementById('inv-client').value,
@@ -3149,7 +3167,11 @@ function getInvoiceData() {
     status: document.getElementById('inv-status').value,
     desc: document.getElementById('inv-desc').value,
     deposit: document.getElementById('inv-deposit') ? document.getElementById('inv-deposit').value : 0,
-    itemise: document.getElementById('inv-itemise').checked,
+        itemise: document.getElementById('inv-itemise').checked,
+    invTotal: invCalcTotals().total,
+    invGst: invCalcTotals().gst,
+    invNoGst: invCalcTotals().noGst,
+    invOverride: invCalcTotals().override,
     items: invItems
   };
 }
@@ -3165,6 +3187,8 @@ function loadInvoiceData(d) {
   if (document.getElementById('inv-deposit')) document.getElementById('inv-deposit').value = d.deposit || '';
   document.getElementById('inv-itemise').checked = d.itemise || false;
   invItems = d.items || [];
+  if (document.getElementById('inv-no-gst')) document.getElementById('inv-no-gst').checked = !!d.invNoGst;
+  if (document.getElementById('inv-price-override')) document.getElementById('inv-price-override').value = d.invOverride || '';
   renderInvItems();
   calcInv();
 }
