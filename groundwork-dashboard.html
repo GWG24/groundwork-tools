@@ -315,6 +315,11 @@ async function ggDoLogin(){
 </div>
 
 <div class="section" style="margin-top:16px">
+  <div class="section-title">📌 Today</div>
+  <div id="today-list"><div class="empty-state">Loading...</div></div>
+</div>
+
+<div class="section" style="margin-top:16px">
   <div class="section-title">💰 This Month</div>
   <div class="money-grid">
     <div class="money-card highlight">
@@ -1168,6 +1173,32 @@ function toggleQuoteCard(id){
   arrow.classList.toggle('open',!isOpen);
 }
 
+function renderToday(customers){
+  var el=document.getElementById('today-list');
+  if(!el)return;
+  var d=new Date();
+  var today=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  function daysLate(ds){return Math.round((new Date(today)-new Date(ds))/86400000);}
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function tag(n){return n<=0?'<span class="badge badge-followup">Today</span>':'<span class="badge" style="background:rgba(192,57,43,0.12);color:var(--red)">'+n+' day'+(n>1?'s':'')+' overdue</span>';}
+  var rows=[];
+  (customers||[]).forEach(function(c){
+    var fu=c.followup_date||'';
+    if(!fu){try{var it=typeof c.intake_data==='string'?JSON.parse(c.intake_data):c.intake_data;fu=(it&&it.followup)||'';}catch(e){}}
+    if(!fu||fu>today)return;
+    rows.push({sort:fu,html:'<div class="lead-item"><div><div class="lead-name">📞 '+esc(c.name)+'</div><div class="lead-sub">Follow-up'+(c.job?' · '+esc(c.job):'')+(c.phone?' · <a href="tel:'+esc(c.phone)+'" style="color:var(--green-leaf)">'+esc(c.phone)+'</a>':'')+'</div></div>'+tag(daysLate(fu))+'</div>'});
+  });
+  _invoices.forEach(function(r){
+    var s=getStatus(r);
+    if(s!=='unpaid'&&s!=='partial')return;
+    var due=getDue(r);
+    if(!due||due>today)return;
+    rows.push({sort:due,html:'<div class="lead-item"><div><div class="lead-name">🧾 '+esc(getClient(r))+'</div><div class="lead-sub">Invoice '+esc(getInvNum(r))+' · '+fmt(getTotal(r))+'</div></div>'+tag(daysLate(due))+'</div>'});
+  });
+  rows.sort(function(a,b){return a.sort<b.sort?-1:1;});
+  el.innerHTML=rows.length?rows.map(function(r){return r.html;}).join(''):'<div class="empty-state">Nothing due today 🌿</div>';
+}
+
 async function loadAll(){
   setSyncStatus(true,'Refreshing...');
   try{
@@ -1221,6 +1252,7 @@ _customers=customers;
     }
 
     // Leads
+    renderToday(customers);
     const leads=customers.filter(c=>c.type==='lead'||c.type==='followup');
     const lEl=document.getElementById('leads-list');
     if(!leads.length){lEl.innerHTML=`<div class="empty-state">No active leads</div>`;}
