@@ -500,6 +500,55 @@ document.addEventListener('keydown', function(e){
 const SB_URL='https://vgegsaarmzuqpacisbrl.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZWdzYWFybXp1cXBhY2lzYnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODU5NjgsImV4cCI6MjA5MzU2MTk2OH0.rL4mB4OcoGeZcFcbmjE4NHjJfhJaIid0-WNHPSV9b24';
 
+// ==================== SIGN-IN (Supabase Auth) ====================
+const GG_AUTH_KEY='gg_auth_session';
+const _ggFetch=window.fetch.bind(window);
+
+function ggGetSession(){
+  try{return JSON.parse(localStorage.getItem(GG_AUTH_KEY)||'null');}catch(e){return null;}
+}
+function ggSetSession(s){
+  try{
+    if(s) localStorage.setItem(GG_AUTH_KEY,JSON.stringify(s));
+    else localStorage.removeItem(GG_AUTH_KEY);
+  }catch(e){}
+}
+function ggStoreTokens(j){
+  ggSetSession({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:Math.floor(Date.now()/1000)+(j.expires_in||3600)});
+}
+async function ggSignIn(email,password){
+  const res=await _ggFetch(SB_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:email,password:password})});
+  const j=await res.json();
+  if(!res.ok) throw new Error(j.error_description||j.msg||'Sign in failed');
+  ggStoreTokens(j);
+  return true;
+}
+function ggSignOut(){ggSetSession(null);location.reload();}
+async function ggToken(){
+  const s=ggGetSession();
+  if(!s) return null;
+  if(s.expires_at-60 > Math.floor(Date.now()/1000)) return s.access_token;
+  try{
+    const res=await _ggFetch(SB_URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:s.refresh_token})});
+    if(!res.ok){ggSetSession(null);return null;}
+    const j=await res.json();
+    ggStoreTokens(j);
+    return j.access_token;
+  }catch(e){return null;}
+}
+window.fetch=async function(url,opts){
+  try{
+    if(typeof url==='string' && url.indexOf(SB_URL+'/rest/v1/')===0){
+      const t=await ggToken();
+      if(t){
+        opts=Object.assign({},opts);
+        opts.headers=Object.assign({},opts.headers,{'Authorization':'Bearer '+t});
+      }
+    }
+  }catch(e){}
+  return _ggFetch(url,opts);
+};
+
 var _invoices=[], _expenses=[], _quotes=[], _customers=[];
 
 async function db(path){
