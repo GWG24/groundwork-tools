@@ -377,6 +377,11 @@ async function ggDoLogin(){
 <div class="divider"></div>
 
 <div class="section">
+  <div class="section-title">💼 Job Profit</div>
+  <div id="job-profit-list"><div class="empty-state">Loading...</div></div>
+</div>
+
+<div class="section">
   <div class="section-title">📊 Expenses by Category</div>
   <div class="money-card" style="margin-bottom:4px">
     <div id="exp-chart"><div class="empty-state">Loading...</div></div>
@@ -1173,6 +1178,86 @@ function toggleQuoteCard(id){
   arrow.classList.toggle('open',!isOpen);
 }
 
+var _jobProfitAll=false;
+function renderJobProfit(expenses){
+  var el=document.getElementById('job-profit-list');
+  if(!el)return;
+  window._lastExpenses=expenses;
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  var jobs={};
+  _invoices.forEach(function(r){
+    var d;
+    try{d=typeof r.data==='string'?JSON.parse(r.data):r.data;}catch(e){return;}
+    var base=String((d&&d.num)||'').split('/')[0].trim();
+    if(!/^\d{4}-\d+$/.test(base))return;
+    var total=getTotal(r);
+    var gst=(d.invGst!==undefined&&d.invGst!==null&&d.invGst!=='')?(parseFloat(d.invGst)||0):total/11;
+    var j=jobs[base]||(jobs[base]={base:base,client:d.client||'',inv:0,cost:0,n:0,t:''});
+    j.inv+=total-gst;
+    if((r.updated_at||'')>j.t)j.t=r.updated_at||'';
+  });
+  (expenses||[]).forEach(function(e){
+    var ref=String(e.job_ref||'').trim();
+    if(!ref)return;
+    var base=ref.split(/\s+/)[0].split('/')[0];
+    if(!jobs[base])return;
+    var amt=parseFloat(e.amount||0);
+    jobs[base].cost+=(e.gst_applicable===false?amt:amt/1.1);
+    jobs[base].n++;
+  });
+  var list=Object.keys(jobs).map(function(k){return jobs[k];}).sort(function(a,b){return a.t<b.t?1:-1;});
+  if(!list.length){el.innerHTML='<div class="empty-state">No jobs yet. Jobs appear once an invoice has a job number.</div>';return;}
+  var shown=_jobProfitAll?list:list.slice(0,8);
+  var html=shown.map(function(j){
+    var profit=j.inv-j.cost;
+    var detail='Invoiced '+fmt(j.inv)+' ex GST · Costs '+fmt(j.cost)+(j.n?' ('+j.n+')':'');
+    var margin=j.inv>0&&j.n?(' · '+Math.round(profit/j.inv*100)+'% margin'):(j.n?'':' · no costs recorded yet');
+    return '<div class="lead-item" style="flex-direction:column;align-items:stretch"><div style="display:flex;justify-content:space-between;align-items:center"><div class="lead-name">'+esc(j.base)+' · '+esc(j.client)+'</div><div style="font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:16px;color:'+(profit>=0?'var(--green-leaf)':'var(--red)')+'">'+fmt(profit)+'</div></div><div class="lead-sub">'+detail+margin+'</div></div>';
+  }).join('');
+  if(list.length>8){html+='<button class="refresh-btn" style="width:100%;margin-top:4px" onclick="_jobProfitAll=!_jobProfitAll;renderJobProfit(window._lastExpenses)">'+(_jobProfitAll?'Show fewer':'Show all '+list.length+' jobs')+'</button>';}
+  el.innerHTML=html;
+}
+
+var _jobProfitAll=false;
+function renderJobProfit(expenses){
+  var el=document.getElementById('job-profit-list');
+  if(!el)return;
+  window._lastExpenses=expenses;
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  var jobs={};
+  _invoices.forEach(function(r){
+    var d;
+    try{d=typeof r.data==='string'?JSON.parse(r.data):r.data;}catch(e){return;}
+    var base=String((d&&d.num)||'').split('/')[0].trim();
+    if(!/^\d{4}-\d+$/.test(base))return;
+    var total=getTotal(r);
+    var gst=(d.invGst!==undefined&&d.invGst!==null&&d.invGst!=='')?(parseFloat(d.invGst)||0):total/11;
+    var j=jobs[base]||(jobs[base]={base:base,client:d.client||'',inv:0,cost:0,n:0,t:''});
+    j.inv+=total-gst;
+    if((r.updated_at||'')>j.t)j.t=r.updated_at||'';
+  });
+  (expenses||[]).forEach(function(e){
+    var ref=String(e.job_ref||'').trim();
+    if(!ref)return;
+    var base=ref.split(/\s+/)[0].split('/')[0];
+    if(!jobs[base])return;
+    var amt=parseFloat(e.amount||0);
+    jobs[base].cost+=(e.gst_applicable===false?amt:amt/1.1);
+    jobs[base].n++;
+  });
+  var list=Object.keys(jobs).map(function(k){return jobs[k];}).sort(function(a,b){return a.t<b.t?1:-1;});
+  if(!list.length){el.innerHTML='<div class="empty-state">No jobs yet. Jobs appear once an invoice has a job number.</div>';return;}
+  var shown=_jobProfitAll?list:list.slice(0,8);
+  var html=shown.map(function(j){
+    var profit=j.inv-j.cost;
+    var detail='Invoiced '+fmt(j.inv)+' ex GST · Costs '+fmt(j.cost)+(j.n?' ('+j.n+')':'');
+    var margin=j.inv>0&&j.n?(' · '+Math.round(profit/j.inv*100)+'% margin'):(j.n?'':' · no costs recorded yet');
+    return '<div class="lead-item" style="flex-direction:column;align-items:stretch"><div style="display:flex;justify-content:space-between;align-items:center"><div class="lead-name">'+esc(j.base)+' · '+esc(j.client)+'</div><div style="font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:16px;color:'+(profit>=0?'var(--green-leaf)':'var(--red)')+'">'+fmt(profit)+'</div></div><div class="lead-sub">'+detail+margin+'</div></div>';
+  }).join('');
+  if(list.length>8){html+='<button class="refresh-btn" style="width:100%;margin-top:4px" onclick="_jobProfitAll=!_jobProfitAll;renderJobProfit(window._lastExpenses)">'+(_jobProfitAll?'Show fewer':'Show all '+list.length+' jobs')+'</button>';}
+  el.innerHTML=html;
+}
+
 function renderToday(customers){
   var el=document.getElementById('today-list');
   if(!el)return;
@@ -1253,6 +1338,7 @@ _customers=customers;
 
     // Leads
     renderToday(customers);
+    renderJobProfit(expenses);
     const leads=customers.filter(c=>c.type==='lead'||c.type==='followup');
     const lEl=document.getElementById('leads-list');
     if(!leads.length){lEl.innerHTML=`<div class="empty-state">No active leads</div>`;}
