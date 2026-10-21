@@ -1153,6 +1153,7 @@ function renderQuoteList(limit){
         <div>
           <div class="quote-card-name">${getClient(r)}</div>
           <div class="quote-card-sub" style="color:${statusColor}">${statusLabel}</div>
+          <button onclick="event.stopPropagation();location.href='groundwork-gardens-tools.html?previewQuote='+encodeURIComponent('${r.id}')" style="margin-top:6px;background:var(--green-leaf);border:none;border-radius:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;padding:4px 12px;cursor:pointer;text-transform:uppercase">👁 Preview</button>
         </div>
         <div class="quote-card-right">
           <div class="quote-card-amt">${fmt(getTotal(r))}</div>
