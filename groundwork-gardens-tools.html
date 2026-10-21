@@ -4160,7 +4160,7 @@ function sendQuoteEmail() {
     showToast('⚠ Please enter the client email address');
     return;
   }
-window.location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);  document.getElementById('emailModal').classList.remove('show');
+(function(){var mob=/Android|iPhone|iPad/i.test(navigator.userAgent);if(mob){window.location.href='mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);}else{window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(to)+'&su='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body),'_blank');}})();  document.getElementById('emailModal').classList.remove('show');
   showToast('✓ Gmail opened — attach your PDF and send!');
 }
 
@@ -4214,7 +4214,7 @@ function sendInvoiceEmail() {
     showToast('⚠ Please enter the client email address');
     return;
   }
-window.location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);  document.getElementById('invEmailModal').classList.remove('show');
+(function(){var mob=/Android|iPhone|iPad/i.test(navigator.userAgent);if(mob){window.location.href='mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);}else{window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(to)+'&su='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body),'_blank');}})();  document.getElementById('invEmailModal').classList.remove('show');
   showToast('✓ Gmail opened — attach your PDF invoice and send!');
 }
     // ==================== INIT ====================
