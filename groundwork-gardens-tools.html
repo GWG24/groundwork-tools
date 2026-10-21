@@ -4242,6 +4242,22 @@ window.addEventListener('load', function() {
 
   // Start on calculator tab
   switchTab('calc');
+
+  // Preview a quote straight from the Dashboard (?previewQuote=ID)
+  try{
+    var pq=new URLSearchParams(location.search).get('previewQuote');
+    if(pq){
+      setTimeout(async function(){
+        try{
+          await loadQuoteById(pq);
+          if(!document.getElementById('clientName').value)return;
+          var wo=window.open;
+          window.open=function(u){window.open=wo;location.href=u;return null;};
+          generatePDF('preview');
+        }catch(e){showToast('⚠ Could not preview quote');}
+      },1200);
+    }
+  }catch(e){}
 });
 </script>
 </body>
