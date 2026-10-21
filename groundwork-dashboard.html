@@ -1001,7 +1001,7 @@ async function backupAllData(){
       const file=new File([blob],name,{type:'application/json'});
       if(navigator.canShare({files:[file]})){
         try{await navigator.share({files:[file],title:name});shared=true;}
-        catch(e){if(e&&e.name==='AbortError'){showToast('Backup cancelled');return;}throw e;}
+        catch(e){if(e&&e.name==='AbortError'){showToast('Backup cancelled');return;}console.error(e);}
       }
     }
     if(!shared){
@@ -1016,7 +1016,7 @@ async function backupAllData(){
     try{localStorage.setItem('gg_last_backup',new Date().toLocaleDateString('en-AU')+' '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}));}catch(e){}
     showLastBackup();
     showToast(capped.length?'⚠ Saved, but '+capped.join(', ')+' may be cut off at 1000 rows':'✓ Backup saved — '+total+' records');
-  }catch(e){console.error(e);showToast('⚠ Backup failed');}
+  }catch(e){console.error(e);showToast('⚠ Backup failed: '+(e&&e.message?String(e.message).slice(0,90):'unknown'));}
 }
 showLastBackup();
 
