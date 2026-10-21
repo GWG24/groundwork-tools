@@ -317,6 +317,7 @@ async function ggDoLogin(){
 <div class="section" style="margin-top:16px">
   <div class="section-title">📌 Today</div>
   <div id="today-list"><div class="empty-state">Loading...</div></div>
+  <div id="todo-box"></div>
 </div>
 
 <div class="section" style="margin-top:16px">
@@ -1258,6 +1259,78 @@ function renderJobProfit(expenses){
   el.innerHTML=html;
 }
 
+var _todo=[], _todoLoaded=false;
+function todoParse(rows){
+  var r=(rows||[]).find(function(x){return x.id==='todo_list';});
+  _todo=[];
+  _todoLoaded=true;
+  if(!r)return;
+  try{var d=typeof r.data==='string'?JSON.parse(r.data):r.data;_todo=(d&&d.items)||[];}catch(e){_todoLoaded=false;return;}
+  var n=new Date();
+  var today=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+  var before=_todo.length;
+  _todo=_todo.filter(function(x){return !x.done||x.doneDate===today;});
+  if(_todo.length!==before)todoSave();
+}
+async function todoSave(){
+  try{
+    var res=await fetch(SB_URL+'/rest/v1/gg_quotes',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({id:'todo_list',name:'To-do list',data:{items:_todo},updated_at:new Date().toISOString()})});
+    if(!res.ok)showToast('⚠ Could not save list');
+  }catch(e){showToast('⚠ Could not save list');}
+}
+function todoRender(){
+  var el=document.getElementById('todo-box');
+  if(!el)return;
+  var d=new Date();
+  var today=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  var lists=[['todo','To do'],['buy','Buy / Order']];
+  var anyDone=_todo.some(function(x){return x.done;});
+  el.innerHTML=lists.map(function(L){
+    var items=_todo.map(function(x,i){return {x:x,i:i};}).filter(function(o){return (o.x.list||'todo')===L[0];});
+    items.sort(function(a,b){
+      if(!!a.x.done!==!!b.x.done)return a.x.done?1:-1;
+      var da=a.x.date||'9999',dd=b.x.date||'9999';
+      return da<dd?-1:da>dd?1:a.i-b.i;
+    });
+    var rows=items.map(function(o){
+      var x=o.x,badge='';
+      if(x.date&&!x.done){
+        var n=Math.round((new Date(x.date)-new Date(today))/86400000);
+        var p=x.date.split('-');
+        var ds=p.length===3?p[2]+'/'+p[1]+'/'+p[0]:x.date;
+        if(n<0)badge='<span class="badge" style="background:rgba(192,57,43,0.12);color:var(--red)">'+ds+'</span>';
+        else if(n===0)badge='<span class="badge badge-followup">Today</span>';
+        else if(n===1)badge='<span class="badge" style="background:rgba(192,122,47,0.15);color:#c07a2f">Tomorrow</span>';
+        else badge='<span class="badge" style="background:#eef3ec;color:#6b7f66">'+ds+'</span>';
+      }
+      return '<div class="checklist-item"><input type="checkbox" class="checklist-cb"'+(x.done?' checked':'')+' onchange="todoToggle('+o.i+')"><span class="checklist-text'+(x.done?' done':'')+'">'+esc(x.t)+'</span>'+badge+'<button onclick="todoDel('+o.i+')" style="background:none;border:none;color:#bbb;font-size:20px;cursor:pointer;padding:0 4px;line-height:1">×</button></div>';
+    }).join('');
+    return '<div style="background:#fff;border:0.5px solid #c5d4c0;border-radius:8px;padding:12px 16px;margin-top:10px"><div style="font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-bottom:4px">'+L[1]+'</div>'+(rows||'<div style="font-size:13px;color:#aaa;padding:6px 4px">Nothing here</div>')+'<div class="checklist-add"><input class="checklist-input" id="todo-in-'+L[0]+'" type="text" placeholder="Add..." maxlength="120" onkeydown="if(event.key===\'Enter\')todoAdd(\''+L[0]+'\')"><button class="checklist-add-btn" onclick="todoAdd(\''+L[0]+'\')">+ Add</button></div><div style="margin-top:6px;font-size:12px;color:#888">Date (optional): <input type="date" id="todo-d-'+L[0]+'" style="border:0.5px solid #c5d4c0;border-radius:6px;padding:4px 8px;font-size:13px"></div></div>';
+  }).join('')+(anyDone?'<div style="margin-top:8px"><button class="refresh-btn" onclick="todoClear()">Clear ticked items</button></div>':'');
+}
+function todoAdd(list){
+  if(!_todoLoaded){showToast('Still loading, try again in a moment');return;}
+  var inp=document.getElementById('todo-in-'+list),di=document.getElementById('todo-d-'+list);
+  if(!inp)return;
+  var t=inp.value.trim();
+  if(!t){inp.focus();return;}
+  _todo.push({id:'t'+Date.now(),t:t,done:false,list:list,date:di&&di.value?di.value:''});
+  todoSave();
+  todoRender();
+  var again=document.getElementById('todo-in-'+list);
+  if(again)again.focus();
+}
+function todoToggle(i){
+  if(!_todo[i])return;
+  var n=new Date();
+  _todo[i].done=!_todo[i].done;
+  _todo[i].doneDate=_todo[i].done?n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'):'';
+  todoSave();todoRender();
+}
+function todoDel(i){_todo.splice(i,1);todoSave();todoRender();}
+function todoClear(){_todo=_todo.filter(function(x){return !x.done;});todoSave();todoRender();}
+
 function renderToday(customers){
   var el=document.getElementById('today-list');
   if(!el)return;
@@ -1315,6 +1388,7 @@ async function loadAll(){
     _quotes=ggQuotes.filter(r=>r.id&&r.id.startsWith('quote_'));
    _expenses=expenses;
 _customers=customers;
+todoParse(ggQuotes);todoRender();
 
     const unpaidInv=_invoices.filter(r=>getStatus(r)==='unpaid'||getStatus(r)==='partial');
     const paidInv=_invoices.filter(r=>getStatus(r)==='paid');
