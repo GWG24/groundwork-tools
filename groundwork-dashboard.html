@@ -380,6 +380,7 @@ async function ggDoLogin(){
 
 <div class="section">
   <div class="section-title">💼 Job Profit</div>
+  <div id="unlinked-warn"></div>
   <div id="job-profit-list"><div class="empty-state">Loading...</div></div>
 </div>
 
@@ -1337,6 +1338,36 @@ function todoToggle(i){
 function todoDel(i){_todo.splice(i,1);todoSave();todoRender();}
 function todoClear(){_todo=_todo.filter(function(x){return !x.done;});todoSave();todoRender();}
 
+function toggleUnlinked(){var l=document.getElementById('unlinked-list');if(l)l.style.display=l.style.display==='none'?'block':'none';}
+function renderUnlinked(expenses){
+  var el=document.getElementById('unlinked-warn');
+  if(!el)return;
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  var bases={};
+  _invoices.forEach(function(r){
+    try{var d=typeof r.data==='string'?JSON.parse(r.data):r.data;var b=String((d&&d.num)||'').split('/')[0].trim();if(/^\d{4}-\d+$/.test(b))bases[b]=1;}catch(e){}
+  });
+  var n=new Date();
+  var cut=new Date(n.getFullYear(),n.getMonth()-1,1);
+  var cutoff=cut.getFullYear()+'-'+String(cut.getMonth()+1).padStart(2,'0')+'-01';
+  var cats={Materials:1,Labour:1,Tip:1};
+  var unl=(expenses||[]).filter(function(e){
+    if(!cats[e.category])return false;
+    if((e.expense_date||'')<cutoff)return false;
+    var ref=String(e.job_ref||'').trim();
+    if(!ref)return true;
+    return !bases[ref.split(/\s+/)[0].split('/')[0]];
+  });
+  if(!unl.length){el.innerHTML='';return;}
+  var tot=unl.reduce(function(s,e){return s+parseFloat(e.amount||0);},0);
+  var rows=unl.map(function(e){
+    var p=String(e.expense_date||'').split('-');
+    var ds=p.length===3?p[2]+'/'+p[1]+'/'+p[0]:'';
+    return '<div class="lead-item"><div><div class="lead-name">'+esc(e.description||e.category)+'</div><div class="lead-sub">'+ds+' · '+esc(e.category)+(e.job_ref?' · ref: '+esc(e.job_ref):' · no job')+'</div></div><div style="font-weight:600">'+fmt(e.amount||0)+'</div></div>';
+  }).join('');
+  el.innerHTML='<div onclick="toggleUnlinked()" style="background:rgba(192,122,47,0.12);border:0.5px solid #c07a2f;border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:13px;color:#8a5a1f;cursor:pointer">⚠ '+unl.length+' job cost'+(unl.length>1?'s':'')+' ('+fmt(tot)+') not linked to a job — tap to see</div><div id="unlinked-list" style="display:none;margin-bottom:8px">'+rows+'<a href="groundwork-expenses.html" style="display:block;margin:4px 0 8px;color:var(--green-leaf);font-size:13px">Open Expenses to link them →</a></div>';
+}
+
 function renderToday(customers){
   var el=document.getElementById('today-list');
   if(!el)return;
@@ -1439,6 +1470,7 @@ todoParse(ggQuotes);todoRender();
     // Leads
     renderToday(customers);
     renderJobProfit(expenses);
+    renderUnlinked(expenses);
     const leads=customers.filter(c=>c.type==='lead'||c.type==='followup');
     const lEl=document.getElementById('leads-list');
     if(!leads.length){lEl.innerHTML=`<div class="empty-state">No active leads</div>`;}
