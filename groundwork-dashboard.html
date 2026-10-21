@@ -1295,7 +1295,7 @@ function todoRender(){
       return da<dd?-1:da>dd?1:a.i-b.i;
     });
     var rows=items.map(function(o){
-      var x=o.x,badge='';
+      var x=o.x,badge='',cal='';
       if(x.date&&!x.done){
         var n=Math.round((new Date(x.date)-new Date(today))/86400000);
         var p=x.date.split('-');
@@ -1304,8 +1304,12 @@ function todoRender(){
         else if(n===0)badge='<span class="badge badge-followup">Today</span>';
         else if(n===1)badge='<span class="badge" style="background:rgba(192,122,47,0.15);color:#c07a2f">Tomorrow</span>';
         else badge='<span class="badge" style="background:#eef3ec;color:#6b7f66">'+ds+'</span>';
+        var ed=new Date(x.date+'T00:00:00');ed.setDate(ed.getDate()+1);
+        var ed2=ed.getFullYear()+String(ed.getMonth()+1).padStart(2,'0')+String(ed.getDate()).padStart(2,'0');
+        var cu='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(x.t)+'&dates='+x.date.replace(/-/g,'')+'/'+ed2;
+        cal='<a href="'+esc(cu)+'" target="_blank" rel="noopener" title="Add to calendar" style="text-decoration:none;font-size:18px;padding:0 4px">📅</a>';
       }
-      return '<div class="checklist-item"><input type="checkbox" class="checklist-cb"'+(x.done?' checked':'')+' onchange="todoToggle('+o.i+')"><span class="checklist-text'+(x.done?' done':'')+'">'+esc(x.t)+'</span>'+badge+'<button onclick="todoDel('+o.i+')" style="background:none;border:none;color:#bbb;font-size:20px;cursor:pointer;padding:0 4px;line-height:1">×</button></div>';
+      return '<div class="checklist-item"><input type="checkbox" class="checklist-cb"'+(x.done?' checked':'')+' onchange="todoToggle('+o.i+')"><span class="checklist-text'+(x.done?' done':'')+'">'+esc(x.t)+'</span>'+badge+cal+'<button onclick="todoDel('+o.i+')" style="background:none;border:none;color:#bbb;font-size:20px;cursor:pointer;padding:0 4px;line-height:1">×</button></div>';
     }).join('');
     return '<div style="background:#fff;border:0.5px solid #c5d4c0;border-radius:8px;padding:12px 16px;margin-top:10px"><div style="font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-bottom:4px">'+L[1]+'</div>'+(rows||'<div style="font-size:13px;color:#aaa;padding:6px 4px">Nothing here</div>')+'<div class="checklist-add"><input class="checklist-input" id="todo-in-'+L[0]+'" type="text" placeholder="Add..." maxlength="120" onkeydown="if(event.key===\'Enter\')todoAdd(\''+L[0]+'\')"><button class="checklist-add-btn" onclick="todoAdd(\''+L[0]+'\')">+ Add</button></div><div style="margin-top:6px;font-size:12px;color:#888">Date (optional): <input type="date" id="todo-d-'+L[0]+'" style="border:0.5px solid #c5d4c0;border-radius:6px;padding:4px 8px;font-size:13px"></div></div>';
   }).join('')+(anyDone?'<div style="margin-top:8px"><button class="refresh-btn" onclick="todoClear()">Clear ticked items</button></div>':'');
