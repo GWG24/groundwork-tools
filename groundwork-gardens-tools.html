@@ -2658,14 +2658,17 @@ function loadQuoteData(d) {
   document.getElementById('margin').value = d.margin || 20;
   document.getElementById('markupToggle').checked = d.markup !== false;
   document.getElementById('itemiseToggle').checked = d.itemise || false;
+  document.getElementById('priceOverride').value = d.priceOverride || '';
   scopeLines = d.scopeLines || []; exclusions = d.exclusions || []; materials = d.materials || [];
   quoteSections = d.quoteSections || []; renderSections();
   renderScope(); renderExclusions(); renderMats(); recalc();
+  if (d.priceOverride) { applyPriceOverride(); } else { clearPriceOverride(); }
   // Restore calculator state if saved
   if (d.calcState) {
     restoreCalcInputs(d.calcState);
     if (d.allResults) allResults = d.allResults;
     updateReview();
+    if (d.priceOverride) { applyPriceOverride(); }
     showToast('✓ Calculator inputs restored!');
   }
 }
