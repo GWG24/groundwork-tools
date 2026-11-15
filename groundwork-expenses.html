@@ -1229,7 +1229,7 @@ function fillJobPicker(){
   var sel=document.getElementById('f-job-pick');
   if(!sel)return;
   var seen={},list=[];
-  indexOf('invoice_')===0||q.id.indexOf('quote_')===0;}).forEach(function(q){
+    quotes.filter(function(q){return q.id&&(q.id.indexOf('invoice_')===0||q.id.indexOf('quote_')===0);}).forEach(function(q){
     var d;
     try{d=typeof q.data==='string'?JSON.parse(q.data):q.data;}catch(e){return;}
     if(!d)return;d.num=d.num||d.quoteNum;if(!d.num)return;
