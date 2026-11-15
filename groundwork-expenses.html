@@ -11,7 +11,7 @@
   :root {
     --black: #0a0a0a; --border: #2a2a2a;
     --cream: #d4c9a8; --cream-dim: #9e9278; --green: #4a7c3f;
-    --green-bright: #5d9e50; --green-leaf: #3d6b34; --white: #f0ece0;
+    --green-bright: #5d9e50; --green-leaf: #3d6b34; --white: #f0ece0;,
     --orange: #c07a2f; --bg-page: #f5f5f5; --text-primary: #1a2e17; --text-secondary: #4a5e45;
     --red: #c0392b; --blue: #1a5276; --purple: #6c3483;
     --cat-materials: #3d6b34; --cat-fuel: #1a5276; --cat-labour: #6c3483; --cat-tools: #c07a2f; --cat-other: #4a5e45; --cat-travel: #c0392b;
@@ -1229,15 +1229,14 @@ function fillJobPicker(){
   var sel=document.getElementById('f-job-pick');
   if(!sel)return;
   var seen={},list=[];
-  quotes.filter(function(q){return q.id&&q.id.indexOf('invoice_')===0;}).forEach(function(q){
+  indexOf('invoice_')===0||q.id.indexOf('quote_')===0;}).forEach(function(q){
     var d;
     try{d=typeof q.data==='string'?JSON.parse(q.data):q.data;}catch(e){return;}
-    if(!d||!d.num)return;
+    if(!d)return;d.num=d.num||d.quoteNum;if(!d.num)return;
     var base=String(d.num).split('/')[0].trim();
     if(!/^\d{4}-\d+$/.test(base)||seen[base])return;
     seen[base]=1;
-    list.push({base:base,client:d.client||'',t:q.updated_at||''});
-  });
+    list.push({base:base,client:d.client||d.clientName||'',t:q.updated_at||''});  });
   list.sort(function(a,b){return a.t<b.t?1:-1;});
   sel.innerHTML='<option value="">— choose a job —</option>'+list.map(function(j){var v=recEsc(j.base+' '+j.client);return '<option value="'+v+'">'+v+'</option>';}).join('');
 }
